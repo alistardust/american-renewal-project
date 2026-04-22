@@ -19,6 +19,16 @@ NUMERIC_SOURCE_PRIORITY = {
     "AI-statement-branch.txt": 4,
 }
 
+# Fetched directly from ChatGPT API — higher fidelity than copy-paste exports.
+# These live under sources/chatgpt-fetched/ and use the same priority tiers.
+FETCHED_SOURCE_PRIORITY = {
+    "political_project_main.txt": 1,
+    "branch_branch_political_project_main.txt": 1,
+    "political_project_brainstorm.txt": 2,
+    "branch_political_project_brainstorm.txt": 2,
+    "political_project_comparisons.txt": 3,
+}
+
 NUMERIC_ROW_MIN_FIELDS = 4
 RULE_ID_RE = re.compile(r"^[A-Z]{2,}(?:-[A-Z0-9]+)+-\d{3}[A-Z]?$")
 PROSE_RULE_ID_RE = re.compile(r"^([A-Z]{2,}(?:-[A-Z0-9]+)+-\d{3}[A-Z]?)\s{1,2}(.+)$")
@@ -31,32 +41,32 @@ MANUAL_RULE_SEEDS = {
         "family_code": "TAX",
         "statement": "Anti-wealth hoarding",
         "status": "PARTIAL",
-        "source_name": "main-branch.txt",
-        "line_number": 2043,
+        "source_name": "branch_political_project_brainstorm.txt",
+        "line_number": 21098,
     },
     "ADM-CHV-001": {
         "scope_code": "ADM",
         "family_code": "CHV",
         "statement": "Restore Chevron deference",
         "status": "MISSING",
-        "source_name": "main-branch.txt",
-        "line_number": 2044,
+        "source_name": "branch_political_project_brainstorm.txt",
+        "line_number": 21099,
     },
     "ADM-AGY-001": {
         "scope_code": "ADM",
         "family_code": "AGY",
         "statement": "Congress explicitly empowered to create agencies",
         "status": "MISSING",
-        "source_name": "main-branch.txt",
-        "line_number": 2045,
+        "source_name": "branch_political_project_brainstorm.txt",
+        "line_number": 21100,
     },
     "HLT-TRL-001": {
         "scope_code": "HLT",
         "family_code": "TRL",
         "statement": "Approvals and trials for new treatments funded and streamlined",
         "status": "MISSING",
-        "source_name": "main-branch.txt",
-        "line_number": 2096,
+        "source_name": "branch_political_project_brainstorm.txt",
+        "line_number": 21157,
     },
 }
 MANUAL_POLICY_ITEM_TO_RULE_ID = {
@@ -247,6 +257,11 @@ def get_source_files(chat_dir: Path) -> list[SourceFile]:
     files: list[SourceFile] = []
     for name, priority in NUMERIC_SOURCE_PRIORITY.items():
         path = chat_dir / name
+        if path.exists():
+            files.append(SourceFile(name=name, path=path, priority=priority))
+    fetched_dir = chat_dir.parent  # chatgpt-fetched files are now directly under sources/
+    for name, priority in FETCHED_SOURCE_PRIORITY.items():
+        path = fetched_dir / name
         if path.exists():
             files.append(SourceFile(name=name, path=path, priority=priority))
     return files
@@ -1058,6 +1073,8 @@ def main() -> None:
     if not sources:
         raise SystemExit(f"No chat logs found under {chat_dir}")
 
+    all_source_priority = {**NUMERIC_SOURCE_PRIORITY, **FETCHED_SOURCE_PRIORITY}
+
     all_policy_occurrences: list[PolicyOccurrence] = []
     all_rule_occurrences: list[RuleOccurrence] = []
     all_record_link_occurrences: list[RecordLinkOccurrence] = []
@@ -1073,10 +1090,10 @@ def main() -> None:
         create_schema(conn)
         reset_import_tables(conn)
         source_ids = insert_source_files(conn, repo_root, sources)
-        import_policy_items(conn, source_ids, NUMERIC_SOURCE_PRIORITY, all_policy_occurrences)
-        import_rule_items(conn, source_ids, NUMERIC_SOURCE_PRIORITY, all_rule_occurrences)
+        import_policy_items(conn, source_ids, all_source_priority, all_policy_occurrences)
+        import_rule_items(conn, source_ids, all_source_priority, all_rule_occurrences)
         insert_manual_rule_seeds(conn, source_lookup, source_ids)
-        import_record_links(conn, source_ids, NUMERIC_SOURCE_PRIORITY, all_record_link_occurrences)
+        import_record_links(conn, source_ids, all_source_priority, all_record_link_occurrences)
         apply_manual_policy_item_links(conn)
         import_prose_rule_mentions(conn, source_ids, all_prose_rule_mentions)
         conn.commit()
