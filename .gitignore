@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 *.sqlite-shm
 *.sqlite-wal
+node_modules/
+playwright-report/
+test-results/
