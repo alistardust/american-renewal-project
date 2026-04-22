@@ -57,10 +57,19 @@ test.describe('Foundations page', () => {
     }
   });
 
-  test('pillar tags are links to pillar pages', async ({ page }) => {
-    const firstTag = page.locator('a.pillar-tag').first();
-    await expect(firstTag).toBeVisible();
-    await expect(firstTag).toHaveAttribute('href', /pillars\//);
+  test('pillar cards are links to pillar pages', async ({ page }) => {
+    const firstCard = page.locator('a.f-pillar-card').first();
+    await expect(firstCard).toBeVisible();
+    await expect(firstCard).toHaveAttribute('href', /pillars\//);
+  });
+
+  test('has architecture intro explaining foundations and pillars', async ({ page }) => {
+    await expect(page.locator('.arch-intro')).toBeVisible();
+    await expect(page.locator('text=What Is a Foundation').first()).toBeVisible();
+  });
+
+  test('has 18 total pillar cards across all foundations', async ({ page }) => {
+    await expect(page.locator('a.f-pillar-card')).toHaveCount(18);
   });
 
   test('has 10 demand/reject blocks across 5 foundations', async ({ page }) => {
