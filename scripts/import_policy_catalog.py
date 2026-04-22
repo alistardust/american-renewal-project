@@ -216,6 +216,40 @@ MANUAL_RULE_SEEDS = {
         "source_name": "branch_branch_political_project_main.txt",
         "line_number": 17932,
     },
+    # ── Elections / Voter ID and Access (ELE-IDA scope) ──────────────────────
+    "ELE-IDA-003": {
+        "scope_code": "ELE",
+        "family_code": "IDA",
+        "statement": "If a state requires voter ID, it must provide free transportation to the nearest qualifying ID-issuing office for any eligible voter who lacks access; no voter may be disenfranchised by the inability to physically reach an ID office",
+        "status": "PROPOSED",
+        "source_name": "branch_branch_political_project_main.txt",
+        "line_number": 16604,
+    },
+    "ELE-IDA-004": {
+        "scope_code": "ELE",
+        "family_code": "IDA",
+        "statement": "States requiring voter ID must proactively identify and contact eligible voters who lack qualifying ID and offer enrollment in ID-assistance services; the burden of discovery must not fall entirely on the voter",
+        "status": "PROPOSED",
+        "source_name": "branch_branch_political_project_main.txt",
+        "line_number": 16604,
+    },
+    "ELE-IDA-005": {
+        "scope_code": "ELE",
+        "family_code": "IDA",
+        "statement": "States requiring voter ID must operate mobile ID-issuing units that regularly and proactively serve rural, elderly, disabled, low-income, and underserved communities, with publicly posted schedules at least 90 days in advance",
+        "status": "PROPOSED",
+        "source_name": "branch_branch_political_project_main.txt",
+        "line_number": 16604,
+    },
+    # ── Rights & Civil Liberties (RGT scope) ─────────────────────────────────
+    "RGT-BOD-010": {
+        "scope_code": "RGT",
+        "family_code": "BOD",
+        "statement": "Repeal the Comstock Act and any surviving federal provisions that suppress lawful healthcare or reproductive autonomy through archaic morality law",
+        "status": "INCLUDED",
+        "source_name": "branch_political_project_brainstorm.txt",
+        "line_number": 35757,
+    },
 }
 MANUAL_POLICY_ITEM_TO_RULE_ID = {
     192: "TRM-LIM-001",

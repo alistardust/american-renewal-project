@@ -149,31 +149,23 @@ details.design-logic .design-body li { font-size:.93rem; line-height:1.65; margi
 <section class="bg-parchment ruled" id="pil-intro">
 <div class="wrap">
   <div class="stats-bar">
-  <div class="stat-item"><span class="stat-num">2</span><span class="stat-label">Total Rules</span></div>
+  <div class="stat-item"><span class="stat-num">18</span><span class="stat-label">Total Rules</span></div>
   <div class="stat-item"><span class="stat-num" style="color:#1e8449">0</span><span class="stat-label">Active</span></div>
   <div class="stat-item"><span class="stat-num" style="color:#c9952a">0</span><span class="stat-label">Partial</span></div>
-  <div class="stat-item"><span class="stat-num" style="color:#888">2</span><span class="stat-label">Proposed</span></div>
+  <div class="stat-item"><span class="stat-num" style="color:#888">18</span><span class="stat-label">Proposed</span></div>
 </div>
-<div class="completion-status" style="margin:1rem 0 1.5rem;padding:1rem 1.2rem;background:#fff;border-radius:6px;border:1px solid #e0d8c8;border-left:5px solid #bf0a30">
+<div class="completion-status" style="margin:1rem 0 1.5rem;padding:1rem 1.2rem;background:#fff;border-radius:6px;border:1px solid #e0d8c8;border-left:5px solid #c9952a">
   <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
     <div>
       <span style="font-family:'Oswald',sans-serif;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:#888">Development Status</span>
-      <div style="font-size:1.1rem;font-weight:700;color:#bf0a30;margin-top:.15rem">🔴 Needs Expansion</div>
+      <div style="font-size:1.1rem;font-weight:700;color:#c9952a;margin-top:.15rem">🟡 Framework Complete — Activation Pending</div>
     </div>
     <div style="flex:1;min-width:200px">
       <div style="height:8px;background:#eee;border-radius:4px;overflow:hidden">
-        <div style="width:25%;height:100%;background:#bf0a30;border-radius:4px"></div>
+        <div style="width:60%;height:100%;background:#c9952a;border-radius:4px"></div>
       </div>
-      <div style="font-size:.8rem;color:#666;margin-top:.3rem">Problem and reform narrative present; only 2 policy rules drafted; key regulation frameworks incomplete</div>
+      <div style="font-size:.8rem;color:#666;margin-top:.3rem">All 18 rules drafted across 7 families; full narrative, research, and design logic present; rules awaiting activation</div>
     </div>
-  </div>
-  <div class="gap-callout" style="margin-top:.75rem;padding:.7rem 1rem;background:#fff8f0;border-radius:4px;border-left:3px solid #c9952a">
-    <strong style="color:#c9952a;font-size:.82rem">⚠ Content Gap:</strong>
-    <span style="font-size:.85rem;color:#555"> Only 2 policy rules drafted — militia regulation, background check expansion, safe storage, weapons-of-war definition rules all missing</span>
-  </div>
-  <div class="gap-callout" style="margin-top:.75rem;padding:.7rem 1rem;background:#fff8f0;border-radius:4px;border-left:3px solid #c9952a">
-    <strong style="color:#c9952a;font-size:.82rem">⚠ Content Gap:</strong>
-    <span style="font-size:.85rem;color:#555"> Reform area cards have empty &lt;p&gt;&lt;/p&gt; content — constitutional clarification framework not yet detailed</span>
   </div>
 </div>
   <div class="pil-intro">
@@ -208,7 +200,7 @@ details.design-logic .design-body li { font-size:.93rem; line-height:1.65; margi
 <div class="wrap" style="margin-bottom:0">
   <h2 style="color:#7d3c98">Key Reform Areas</h2>
 </div>
-<div class="wrap"><div class="reform-grid"><div class="reform-card"><h3>Constitutional clarification affirming government authority to regulate firearms and weaponry</h3><p></p></div>
+<div class="wrap"><div class="reform-grid"><div class="reform-card"><h3>Constitutional clarification affirming government authority to regulate firearms and weaponry</h3><p>The Second Amendment's ambiguous text has been weaponized to challenge nearly every gun safety law. A targeted constitutional amendment explicitly affirming Congress's and states' authority to regulate firearms, weapons of war, and armed organizations would resolve this uncertainty — allowing background checks, safe storage mandates, training requirements, and militia accountability standards to stand on firm ground without requiring each law to survive an ever-shifting "history and tradition" test.</p></div>
 </div></div>
 <div class="wrap">
 <div class="cross-links-box" style="margin-top:1.5rem;padding:1rem 1.2rem;background:var(--navy);color:#fff;border-radius:6px;border-top:3px solid #c9952a">
@@ -270,74 +262,229 @@ details.design-logic .design-body li { font-size:.93rem; line-height:1.65; margi
 </div>
   </div>
 </div>
-<div class="policy-family" id="fam-gun">
+<div class="policy-family" id="fam-gun-reg">
   <div class="family-header">
     <span class="family-code">GUN</span>
     <span class="family-title">REG — General Firearm Regulation Authority</span>
-    <span class="family-count">0/0 active</span>
+    <span class="family-count">0/1 active</span>
   </div>
   <div class="rule-grid">
-    
+    <div class="rule-card status-missing">
+  <div class="rule-header">
+    <code class="rule-id">GUN-REG-001</code>
+    <span class="rule-badge">Proposed</span>
+  </div>
+  <p class="rule-title">Constitutional authority to regulate firearms</p>
+  <p class="rule-stmt">Amend the Constitution to explicitly affirm government authority to regulate firearms and weaponry</p>
+  <p class="rule-notes">The Second Amendment's text has generated two centuries of interpretive conflict, most recently crystallized in <em>Bruen</em> (2022), which requires gun regulations to satisfy a "history and tradition" test that effectively immunizes modern safety laws from modern evidence. A targeted constitutional amendment explicitly affirming Congress's and states' authority to regulate firearms and weaponry would provide stable legal ground for the rest of this pillar — background checks, weapons-of-war bans, training requirements, and militia accountability — without requiring each rule to survive judicial second-guessing.</p>
+</div>
   </div>
 </div>
-<div class="policy-family" id="fam-gun">
+<div class="policy-family" id="fam-gun-ban">
   <div class="family-header">
     <span class="family-code">GUN</span>
     <span class="family-title">BAN — Prohibited Weapons and Ownership</span>
-    <span class="family-count">0/0 active</span>
+    <span class="family-count">0/3 active</span>
   </div>
   <div class="rule-grid">
-    
+    <div class="rule-card status-missing">
+  <div class="rule-header">
+    <code class="rule-id">GUN-BAN-001</code>
+    <span class="rule-badge">Proposed</span>
+  </div>
+  <p class="rule-title">Ban weapons of war from civilian ownership</p>
+  <p class="rule-stmt">Ban private ownership of weapons of war including automatic weapons and semi-automatic military analogues designed to evade regulation</p>
+  <p class="rule-notes">Automatic weapons have been federally restricted since the National Firearms Act (1934) and effectively banned for new civilian manufacture since 1986. This rule extends that principle to semi-automatic military analogues — AR-15 and AK-47 variants — designed to maximize lethality in sustained combat. These weapons offer no legitimate civilian use that a standard semi-automatic hunting rifle or handgun cannot serve. Their defining characteristic is combat optimization: high-capacity magazines, rapid fire, and ergonomic design for sustained shooting.</p>
+</div>
+<div class="rule-card status-missing">
+  <div class="rule-header">
+    <code class="rule-id">GUN-BAN-002</code>
+    <span class="rule-badge">Proposed</span>
+  </div>
+  <p class="rule-title">Evasion-resistant definition of weapons of war</p>
+  <p class="rule-stmt">Definition of weapons of war must be evasion-resistant and cover both automatic weapons and demilitarized semi-automatic civilian versions</p>
+  <p class="rule-notes">Without an evasion-resistant statutory definition, manufacturers can circumvent bans through minor mechanical modifications — removing a third-position selector, for example — while producing functionally equivalent weapons. The definition must address design intent and lethality optimization rather than mechanical configuration alone. A weapons-of-war definition that is not evasion-resistant is no definition at all; industry will exploit any gap.</p>
+</div>
+<div class="rule-card status-missing">
+  <div class="rule-header">
+    <code class="rule-id">GUN-BAN-003</code>
+    <span class="rule-badge">Proposed</span>
+  </div>
+  <p class="rule-title">Ban high-capacity ammunition magazines</p>
+  <p class="rule-stmt">Ban high-capacity ammunition magazines above a defined threshold</p>
+  <p class="rule-notes">High-capacity magazines allow shooters to fire more rounds without reloading, directly increasing the body count in mass shootings. Research has found significant reductions in high-fatality mass shootings in states that enacted large-capacity magazine bans. The threshold — commonly set at 10 rounds — must be defined in statute. Existing magazines should be subject to grandfathering provisions tied to surrender or modification programs, with meaningful enforcement mechanisms rather than unenforceable paper bans.</p>
+</div>
   </div>
 </div>
-<div class="policy-family" id="fam-gun">
+<div class="policy-family" id="fam-gun-acq">
   <div class="family-header">
     <span class="family-code">GUN</span>
     <span class="family-title">ACQ — Acquisition and Background Checks</span>
-    <span class="family-count">0/0 active</span>
+    <span class="family-count">0/3 active</span>
   </div>
   <div class="rule-grid">
-    
+    <div class="rule-card status-missing">
+  <div class="rule-header">
+    <code class="rule-id">GUN-ACQ-001</code>
+    <span class="rule-badge">Proposed</span>
+  </div>
+  <p class="rule-title">Universal background checks for all acquisitions</p>
+  <p class="rule-stmt">Require background checks for all firearm acquisitions</p>
+  <p class="rule-notes">Federal law currently requires background checks only for purchases from federally licensed dealers. Private sales, gun show transactions, and informal transfers between individuals are exempt in most states, creating an enforcement gap consistently exploited by prohibited buyers. Universal background checks are supported by large majorities of Americans across party lines and represent the most foundational element of any serious gun safety framework.</p>
+</div>
+<div class="rule-card status-missing">
+  <div class="rule-header">
+    <code class="rule-id">GUN-ACQ-002</code>
+    <span class="rule-badge">Proposed</span>
+  </div>
+  <p class="rule-title">Background checks cover all transfers including private sales</p>
+  <p class="rule-stmt">Background check requirement applies to all transfers including private sales and gun shows</p>
+  <p class="rule-notes">The private-sale exemption in the Brady Handgun Violence Prevention Act allows individuals to transfer firearms without any federal oversight. Extending the requirement to all transfers — gifts, loans, gun show sales, and online transactions — requires federal legislation and coordination with state-level enforcement. Without this extension, background checks remain only partially universal, and the gun show and private-sale loopholes remain open to exploitation.</p>
+</div>
+<div class="rule-card status-missing">
+  <div class="rule-header">
+    <code class="rule-id">GUN-ACQ-003</code>
+    <span class="rule-badge">Proposed</span>
+  </div>
+  <p class="rule-title">Comprehensive and interoperable background check databases</p>
+  <p class="rule-stmt">Background check databases must be comprehensive, interoperable, and up to date</p>
+  <p class="rule-notes">Multiple mass shooters passed background checks because prior disqualifying records — mental health adjudications, domestic violence convictions, felony charges — had not been properly submitted to the National Instant Criminal Background Check System (NICS). Comprehensive database coverage and interoperability across all jurisdictions is a prerequisite for background checks to be effective. Record submission must be mandatory, not voluntary, for all disqualifying events.</p>
+</div>
   </div>
 </div>
-<div class="policy-family" id="fam-gun">
+<div class="policy-family" id="fam-gun-trn">
   <div class="family-header">
     <span class="family-code">GUN</span>
     <span class="family-title">TRN — Training and Safety Requirements</span>
-    <span class="family-count">0/0 active</span>
+    <span class="family-count">0/3 active</span>
   </div>
   <div class="rule-grid">
-    
+    <div class="rule-card status-missing">
+  <div class="rule-header">
+    <code class="rule-id">GUN-TRN-001</code>
+    <span class="rule-badge">Proposed</span>
+  </div>
+  <p class="rule-title">Mandatory safety training for firearm ownership</p>
+  <p class="rule-stmt">Require safety training as a condition of firearm ownership</p>
+  <p class="rule-notes">Safety training requirements — analogous to driver's license requirements — reduce accidental discharges, improve handling under stress, and establish a baseline of competence. Training does not prohibit gun ownership; it ensures owners can safely handle and store the weapons they own. Federal minimum standards should define required curriculum, qualified instructors, and certification processes. States may impose higher standards but not lower.</p>
+</div>
+<div class="rule-card status-missing">
+  <div class="rule-header">
+    <code class="rule-id">GUN-TRN-002</code>
+    <span class="rule-badge">Proposed</span>
+  </div>
+  <p class="rule-title">Mandatory de-escalation training for ownership</p>
+  <p class="rule-stmt">Require de-escalation training as a condition of firearm ownership</p>
+  <p class="rule-notes">The presence of a firearm in a confrontational situation frequently escalates rather than resolves the conflict. De-escalation training teaches firearm owners to recognize threatening dynamics before they become lethal, defuse tension, and avoid situations where a weapon is drawn unnecessarily. This training is particularly important given research showing that most defensive gun uses involve ambiguous situations where de-escalation was available but not employed.</p>
+</div>
+<div class="rule-card status-missing">
+  <div class="rule-header">
+    <code class="rule-id">GUN-TRN-003</code>
+    <span class="rule-badge">Proposed</span>
+  </div>
+  <p class="rule-title">Safe storage requirement</p>
+  <p class="rule-stmt">Require secure storage of firearms; safe storage law as federal minimum standard</p>
+  <p class="rule-notes">Unsecured firearms in the home are a leading source of youth gun deaths, stolen weapons diverted to crime, and accidental discharges. Safe storage requirements — requiring firearms to be stored in locked containers or with trigger locks when not in active use — are associated with significant reductions in youth firearm injuries and gun theft. A federal minimum standard ensures baseline protection nationwide and removes the patchwork of inconsistent state requirements that currently allow unsafe storage practices to persist in much of the country.</p>
+</div>
   </div>
 </div>
-<div class="policy-family" id="fam-gun">
+<div class="policy-family" id="fam-gun-mhe">
   <div class="family-header">
     <span class="family-code">GUN</span>
     <span class="family-title">MHE — Mental Health Evaluations</span>
-    <span class="family-count">0/0 active</span>
+    <span class="family-count">0/2 active</span>
   </div>
   <div class="rule-grid">
-    
+    <div class="rule-card status-missing">
+  <div class="rule-header">
+    <code class="rule-id">GUN-MHE-001</code>
+    <span class="rule-badge">Proposed</span>
+  </div>
+  <p class="rule-title">Dangerousness-based mental health evaluation</p>
+  <p class="rule-stmt">Mental health evaluations for gun ownership must be narrowly tailored to dangerousness, not diagnosis category</p>
+  <p class="rule-notes">The existing federal prohibition on firearm ownership by persons "adjudicated as a mental defective" is both overbroad and underinclusive — excluding non-dangerous individuals while missing dangerous ones without formal adjudication. Evaluations must focus narrowly on the specific question of imminent risk of harm to self or others, using trained professionals applying evidence-based criteria. Dangerousness, not diagnosis category, is the constitutionally and ethically appropriate standard.</p>
+</div>
+<div class="rule-card status-missing">
+  <div class="rule-header">
+    <code class="rule-id">GUN-MHE-002</code>
+    <span class="rule-badge">Proposed</span>
+  </div>
+  <p class="rule-title">No blanket exclusion based on diagnosis alone</p>
+  <p class="rule-stmt">Prohibit blanket exclusion from firearm ownership based solely on a mental health diagnosis</p>
+  <p class="rule-notes">Categorical exclusions based on diagnosis — ADHD, depression, autism, PTSD — are both discriminatory and counterproductive. The vast majority of individuals with mental health conditions pose no elevated risk of violence. Blanket diagnosis-based exclusions also discourage people from seeking mental health treatment, fearing loss of gun rights, which worsens population health outcomes without meaningfully improving safety. The criterion must be individual dangerousness assessment, not categorical diagnosis.</p>
+</div>
   </div>
 </div>
-<div class="policy-family" id="fam-gun">
+<div class="policy-family" id="fam-gun-rfl">
   <div class="family-header">
     <span class="family-code">GUN</span>
     <span class="family-title">RFL — Red Flag / Extreme Risk Protection Orders</span>
-    <span class="family-count">0/0 active</span>
+    <span class="family-count">0/1 active</span>
   </div>
   <div class="rule-grid">
-    
+    <div class="rule-card status-missing">
+  <div class="rule-header">
+    <code class="rule-id">GUN-RFL-001</code>
+    <span class="rule-badge">Proposed</span>
+  </div>
+  <p class="rule-title">Federal minimum standards for red flag laws</p>
+  <p class="rule-stmt">Establish federal minimum standards for red flag / extreme risk protection orders with due process protections</p>
+  <p class="rule-notes">Extreme risk protection orders (ERPOs) allow courts to temporarily remove firearms from individuals who present an imminent danger to themselves or others. States with red flag laws have seen significant reductions in firearm suicides. Federal minimum standards should ensure due process — notice, opportunity to be heard, judicial review, and time limits — while ensuring ERPOs are available in every state. The standard for removal must be clear evidence of imminent risk, not mere allegation; temporary removal must be time-limited and subject to prompt judicial review.</p>
+</div>
   </div>
 </div>
-<div class="policy-family" id="fam-gun">
+<div class="policy-family" id="fam-gun-mil">
   <div class="family-header">
     <span class="family-code">GUN</span>
     <span class="family-title">MIL — Militia Regulation and Armed Groups</span>
-    <span class="family-count">0/0 active</span>
+    <span class="family-count">0/5 active</span>
   </div>
   <div class="rule-grid">
-    
+    <div class="rule-card status-missing">
+  <div class="rule-header">
+    <code class="rule-id">GUN-MIL-001</code>
+    <span class="rule-badge">Proposed</span>
+  </div>
+  <p class="rule-title">Define "well regulated militia" in enforceable law</p>
+  <p class="rule-stmt">Define 'well regulated militia' in enforceable constitutional and statutory terms</p>
+  <p class="rule-notes">The Second Amendment's reference to "well regulated Militia" has never been given operational legal meaning. Without a statutory definition, the term cannot be enforced — either to protect legitimate community militias or to prohibit armed groups that claim constitutional protection while refusing accountability. A definition must specify what "well regulated" requires: transparency, safety training, state oversight, and accountability. Without this foundation, the other MIL rules lack clear legal anchoring.</p>
+</div>
+<div class="rule-card status-missing">
+  <div class="rule-header">
+    <code class="rule-id">GUN-MIL-002</code>
+    <span class="rule-badge">Proposed</span>
+  </div>
+  <p class="rule-title">Ban private armies and mercenary groups</p>
+  <p class="rule-stmt">Ban private armies and mercenary groups</p>
+  <p class="rule-notes">Private armies and mercenary groups — armed formations that operate outside democratic accountability, refuse state oversight, and function as parallel structures of organized violence — represent a direct threat to democratic order. Most states have statutes prohibiting private paramilitary organizations, but enforcement is inconsistent and federal authority is unclear. This rule establishes a federal floor and closes gaps where existing state laws have failed to prevent armed groups from training for anti-government violence while claiming militia status.</p>
+</div>
+<div class="rule-card status-missing">
+  <div class="rule-header">
+    <code class="rule-id">GUN-MIL-003</code>
+    <span class="rule-badge">Proposed</span>
+  </div>
+  <p class="rule-title">Militia transparency and accountability requirements</p>
+  <p class="rule-stmt">Require militias to maintain membership records, financial transparency, audits, insurance, and disclosed chain of command</p>
+  <p class="rule-notes">The line between a regulated community defense organization and an unaccountable armed group is accountability. Militias that wish to claim constitutional protection must demonstrate they are "well regulated" by maintaining public membership records, disclosing leadership and chain of command, carrying liability insurance, submitting to regular audits, and meeting safety training standards. These requirements parallel those placed on other organized bodies exercising constitutional rights — political parties, nonprofits, religious organizations — and are not extraordinary burdens.</p>
+</div>
+<div class="rule-card status-missing">
+  <div class="rule-header">
+    <code class="rule-id">GUN-MIL-004</code>
+    <span class="rule-badge">Proposed</span>
+  </div>
+  <p class="rule-title">Government oversight of militia training</p>
+  <p class="rule-stmt">Federal and state governments must have oversight authority over militia training materials and requirements</p>
+  <p class="rule-notes">Without oversight of training content, militias can train for insurrection while claiming lawful status. Federal and state oversight authority enables review of training curricula, equipment, and operational procedures to ensure compliance with lawful militia standards. This does not prohibit militia training — it ensures that training prepares members for lawful activities (disaster relief, search and rescue, community emergency response) rather than anti-government violence. Oversight is the mechanism that distinguishes a "well regulated" militia from an armed insurgency.</p>
+</div>
+<div class="rule-card status-missing">
+  <div class="rule-header">
+    <code class="rule-id">GUN-MIL-005</code>
+    <span class="rule-badge">Proposed</span>
+  </div>
+  <p class="rule-title">Regulated militias integrated into disaster relief</p>
+  <p class="rule-stmt">Provide mechanisms for regulated militias to train for disaster relief and search and rescue alongside first responders</p>
+  <p class="rule-notes">Regulated militias can serve legitimate public purposes, particularly in under-resourced areas where disaster response capacity is limited. This rule creates a constructive channel: militias that meet accountability standards can be integrated into emergency management frameworks, training and operating alongside FEMA, the National Guard, fire departments, and local law enforcement. This transforms accountability compliance from a restriction into an opportunity for genuine public service — and establishes the model that distinguishes legitimate regulated militias from prohibited armed groups.</p>
+</div>
   </div>
 </div>
 </div>
