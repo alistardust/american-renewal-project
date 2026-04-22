@@ -2274,6 +2274,242 @@ MANUAL_RULE_SEEDS = {
         "source_name": "branch_political_project_brainstorm.txt",
         "line_number": 22403,
     },
+    # EDU-RGT: Constitutional Right
+    "EDU-RGT-001": {
+        "scope_code": "EDU", "family_code": "RGT",
+        "statement": "All persons have a constitutionally protected right to quality public education",
+        "status": "MISSING", "source_name": "branch_branch_political_project_main.txt", "line_number": 17936,
+    },
+    # EDU-CHR: Charter Schools
+    "EDU-CHR-001": {
+        "scope_code": "EDU", "family_code": "CHR",
+        "statement": "Charter schools and private school voucher programs may not be structured to drain resources from the public school system without equivalent accountability and access requirements",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 43210,
+    },
+    # ── Housing (HOU scope) ───────────────────────────────────────────────────
+    "HOU-RGT-001": {
+        "scope_code": "HOU", "family_code": "RGT",
+        "statement": "Housing policy must prioritize stable, safe, habitable, and affordable living conditions rather than treating shelter alone as sufficient",
+        "status": "INCLUDED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 37305,
+    },
+    "HOU-MKT-001": {
+        "scope_code": "HOU", "family_code": "MKT",
+        "statement": "Housing markets may not be structured so that large investors, private equity, or concentrated ownership outcompete ordinary residents for primary homes at scale",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 37355,
+    },
+    "HOU-SUP-001": {
+        "scope_code": "HOU", "family_code": "SUP",
+        "statement": "Housing policy must expand the supply of affordable and moderate-cost housing in high-demand areas through zoning and land-use reform that removes unnecessary barriers to building",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 37365,
+    },
+    "HOU-GEN-001": {
+        "scope_code": "HOU", "family_code": "GEN",
+        "statement": "Housing policy must include proactive anti-gentrification measures to protect existing residents from displacement caused by rising land values, redevelopment, or speculative investment",
+        "status": "PROPOSED", "source_name": "branch_branch_political_project_main.txt", "line_number": 18216,
+    },
+    "HOU-VAC-001": {
+        "scope_code": "HOU", "family_code": "VAC",
+        "statement": "Purchase of homes in developing or supply-constrained areas for prolonged vacancy or speculative holding should be prohibited or heavily taxed",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 37483,
+    },
+    "HOU-TEN-001": {
+        "scope_code": "HOU", "family_code": "TEN",
+        "statement": "Tenants must have meaningful protection from retaliatory eviction, rent increases designed to displace, and lease terms that systematically disadvantage renters relative to landlords",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 37420,
+    },
+    "HOU-PUB-001": {
+        "scope_code": "HOU", "family_code": "PUB",
+        "statement": "Public and social housing must be maintained as a permanent, non-privatizable component of the housing supply in high-cost and underserved communities",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 37390,
+    },
+    # ── Taxation (TAX scope) ──────────────────────────────────────────────────
+    "TAX-SYS-001": {
+        "scope_code": "TAX", "family_code": "SYS",
+        "statement": "Tax policy must raise revenue fairly, sustain public goods, reduce destabilizing inequality, and prevent extraction of wealth from the social systems that made it possible",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 45617,
+    },
+    "TAX-GEN-001": {
+        "scope_code": "TAX", "family_code": "GEN",
+        "statement": "Tax systems must be progressive overall and may not shift disproportionate burden onto lower-income or middle-income households",
+        "status": "INCLUDED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 45625,
+    },
+    "TAX-WTH-001": {
+        "scope_code": "TAX", "family_code": "WTH",
+        "statement": "Tax policy must more effectively reach concentrated wealth, capital gains, passive income, and other forms of non-labor wealth accumulation",
+        "status": "INCLUDED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 45633,
+    },
+    "TAX-CAP-001": {
+        "scope_code": "TAX", "family_code": "CAP",
+        "statement": "Income derived from capital, including dividends, capital gains, and passive income, may not be taxed at lower effective rates than income derived from labor",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 45793,
+    },
+    "TAX-HVN-001": {
+        "scope_code": "TAX", "family_code": "HVN",
+        "statement": "Individuals and corporations may not evade tax obligations by shifting residence, profits, assets, or ownership structures to tax havens without corresponding real economic substance",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 45651,
+    },
+    "TAX-COR-001": {
+        "scope_code": "TAX", "family_code": "COR",
+        "statement": "Corporate tax rates must be sufficient to prevent profit-shifting, tax avoidance through subsidiary structures, and the effective zero-rating of domestic income through offshore arrangements",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 45670,
+    },
+    "TAX-ENF-001": {
+        "scope_code": "TAX", "family_code": "ENF",
+        "statement": "The IRS must be funded and staffed to enforce tax law equitably across income levels, with audit rates for high-income and corporate filers not systematically lower than for working-class filers",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 45790,
+    },
+    # ── Consumer Rights (CON scope) ───────────────────────────────────────────
+    "CON-OWN-001": {
+        "scope_code": "CON", "family_code": "OWN",
+        "statement": "Purchase of a physical product conveys full access to its core functionality and such functionality may not be restricted behind ongoing subscription fees",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 39043,
+    },
+    "CON-OWN-002": {
+        "scope_code": "CON", "family_code": "OWN",
+        "statement": "Ownership of a product may not be converted into a subscription dependency through software locks, paywalls, or post-sale feature restrictions",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 39047,
+    },
+    "CON-FTR-001": {
+        "scope_code": "CON", "family_code": "FTR",
+        "statement": "Manufacturers may not artificially disable or withhold functionality that is technically available in hardware solely to create paid upgrade tiers",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 39091,
+    },
+    "CON-TRN-005": {
+        "scope_code": "CON", "family_code": "TRN",
+        "statement": "Post-sale changes that move previously included features behind paywalls are prohibited",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 39121,
+    },
+    "CON-ENF-001": {
+        "scope_code": "CON", "family_code": "ENF",
+        "statement": "Violations of ownership-based functionality rules must result in mandatory feature restoration, consumer restitution, and penalties",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 39129,
+    },
+    "CON-ENF-002": {
+        "scope_code": "CON", "family_code": "ENF",
+        "statement": "Consumers must have a private right of action where product functionality is unlawfully restricted after purchase",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 39133,
+    },
+    # ── Legislative Reform (LEG scope) ───────────────────────────────────────
+    "LEG-DRF-001": {
+        "scope_code": "LEG", "family_code": "DRF",
+        "statement": "A constitutional amendment or equivalent binding rule should establish drafting standards for all new federal laws",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 35721,
+    },
+    "LEG-DRF-002": {
+        "scope_code": "LEG", "family_code": "DRF",
+        "statement": "Every new law must include a plain-language statement of intent, purpose, and context",
+        "status": "INCLUDED", "source_name": "branch_branch_political_project_main.txt", "line_number": 17724,
+    },
+    "LEG-PRO-001": {
+        "scope_code": "LEG", "family_code": "PRO",
+        "statement": "Legislative procedure may not allow indefinite minority obstruction of legislation through mechanisms such as unlimited debate without resolution",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 47657,
+    },
+    "LEG-DMJ-001": {
+        "scope_code": "LEG", "family_code": "DMJ",
+        "statement": "Legislative systems must prevent structural minority rule where a minority of the population can consistently control or block national policy",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 47703,
+    },
+    "LEG-RPL-001": {
+        "scope_code": "LEG", "family_code": "RPL",
+        "statement": "Repeal the Alien Enemies Act framework and related emergency-authority structures that enable abuse against non-citizens through vague wartime or insurrection logic",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 35755,
+    },
+    "LEG-SEN-003": {
+        "scope_code": "LEG", "family_code": "SEN",
+        "statement": "The Senate may serve as a review, delay, and revision body rather than a co-equal veto chamber for all legislation",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 47639,
+    },
+    # ── Labor (LAB scope) ─────────────────────────────────────────────────────
+    "LAB-RGT-001": {
+        "scope_code": "LAB", "family_code": "RGT",
+        "statement": "All workers are entitled to fair wages, safe working conditions, reasonable hours, and protection from discrimination and retaliation",
+        "status": "INCLUDED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 40921,
+    },
+    "LAB-PAY-001": {
+        "scope_code": "LAB", "family_code": "PAY",
+        "statement": "Workers must receive compensation sufficient to meet basic living standards including housing food healthcare and transportation",
+        "status": "INCLUDED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 40937,
+    },
+    "LAB-PAY-002": {
+        "scope_code": "LAB", "family_code": "PAY",
+        "statement": "The federal minimum wage must be set at a level sufficient for a single full-time worker to meet basic living expenses and must be automatically indexed to inflation",
+        "status": "INCLUDED", "source_name": "branch_branch_political_project_main.txt", "line_number": 17972,
+    },
+    "LAB-LVE-001": {
+        "scope_code": "LAB", "family_code": "LVE",
+        "statement": "Workers are entitled to paid leave including vacation sick leave parental leave and medical leave",
+        "status": "INCLUDED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 40975,
+    },
+    "LAB-COL-001": {
+        "scope_code": "LAB", "family_code": "COL",
+        "statement": "Workers have the right to organize unionize and engage in collective bargaining without retaliation or interference",
+        "status": "INCLUDED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 41061,
+    },
+    "LAB-CLS-001": {
+        "scope_code": "LAB", "family_code": "CLS",
+        "statement": "Worker classification must reflect actual working conditions and may not be manipulated to avoid providing benefits or protections",
+        "status": "INCLUDED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 41049,
+    },
+    "LAB-SUR-001": {
+        "scope_code": "LAB", "family_code": "SUR",
+        "statement": "Employers may not use invasive surveillance systems that undermine worker privacy dignity or autonomy without clear necessity and proportionality",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 40997,
+    },
+    "LAB-SFT-001": {
+        "scope_code": "LAB", "family_code": "SFT",
+        "statement": "All workers have the right to a safe workplace and employers must prevent foreseeable harm without placing cost burdens on workers to enforce their own safety",
+        "status": "INCLUDED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 41030,
+    },
+    # ── Justice: Police Militarization (JUS-MIL scope) ───────────────────────
+    "JUS-MIL-001": {
+        "scope_code": "JUS", "family_code": "MIL",
+        "statement": "Ban police use of automatic weapons, weapons of war, explosives, grenades, and armored vehicles equipped with offensive weapons",
+        "status": "MISSING", "source_name": "branch_branch_political_project_main.txt", "line_number": 18072,
+    },
+    "JUS-MIL-002": {
+        "scope_code": "JUS", "family_code": "MIL",
+        "statement": "Police militarization rules apply to federal agencies including the FBI and similar law enforcement bodies",
+        "status": "MISSING", "source_name": "branch_branch_political_project_main.txt", "line_number": 18084,
+    },
+    "JUS-MIL-003": {
+        "scope_code": "JUS", "family_code": "MIL",
+        "statement": "Where military capabilities are genuinely necessary for a law enforcement operation, the National Guard rather than local police should be deployed under appropriate authorization",
+        "status": "PROPOSED", "source_name": "branch_branch_political_project_main.txt", "line_number": 18088,
+    },
+    # ── Justice: Capital Punishment (JUS-CAP scope) ───────────────────────────
+    "JUS-CAP-001": {
+        "scope_code": "JUS", "family_code": "CAP",
+        "statement": "Eliminate the death penalty except for war crimes and crimes against humanity adjudicated through international processes",
+        "status": "MISSING", "source_name": "branch_branch_political_project_main.txt", "line_number": 18016,
+    },
+    # ── Environment: Parks & Urban Green Space (ENV-PKS, ENV-URB) ────────────
+    "ENV-PKS-001": {
+        "scope_code": "ENV", "family_code": "PKS",
+        "statement": "Federal and state governments must protect wildlife habitats and national parks from privatization, extraction, and degradation",
+        "status": "MISSING", "source_name": "branch_branch_political_project_main.txt", "line_number": 18160,
+    },
+    "ENV-URB-001": {
+        "scope_code": "ENV", "family_code": "URB",
+        "statement": "Cities and municipalities must provide and maintain publicly accessible green spaces proportional to population density",
+        "status": "MISSING", "source_name": "branch_branch_political_project_main.txt", "line_number": 18164,
+    },
+    # ── Economy: Antitrust (ECO-ANT scope) ───────────────────────────────────
+    "ECO-ANT-001": {
+        "scope_code": "ECO", "family_code": "ANT",
+        "statement": "Strengthen federal antitrust enforcement to prevent and break up market concentration that harms consumers workers or democratic governance",
+        "status": "MISSING", "source_name": "branch_branch_political_project_main.txt", "line_number": 18120,
+    },
+    "ECO-ANT-002": {
+        "scope_code": "ECO", "family_code": "ANT",
+        "statement": "Require consumer goods to be designed for durability repairability and right to repair rather than planned obsolescence",
+        "status": "PROPOSED", "source_name": "branch_branch_political_project_main.txt", "line_number": 18124,
+    },
+    "ECO-ANT-003": {
+        "scope_code": "ECO", "family_code": "ANT",
+        "statement": "Algorithmic price coordination between competing market participants is prohibited as a form of per se antitrust violation",
+        "status": "PROPOSED", "source_name": "branch_political_project_brainstorm.txt", "line_number": 22990,
+    },
 }
 MANUAL_POLICY_ITEM_TO_RULE_ID = {
     192: "TRM-LIM-001",
@@ -2377,6 +2613,21 @@ MANUAL_POLICY_ITEM_TO_RULE_ID = {
     290: "HLT-REB-006",
     291: "HLT-REB-007",
     292: "RGT-BOD-001",
+    # ── New seeds: HOU, TAX, LAB, EDU, JUS-MIL, ENV, ECO-ANT ─────────────────
+    125: "EDU-RGT-001",
+    132: "LAB-PAY-001",
+    133: "LAB-PAY-002",
+    138: "HOU-RGT-001",
+    139: "LAB-LVE-001",
+    143: "JUS-CAP-001",
+    157: "JUS-MIL-001",
+    158: "JUS-MIL-001",
+    163: "TAX-GEN-001",
+    164: "TAX-WTH-001",
+    167: "ECO-ANT-001",
+    175: "ENV-PKS-001",
+    176: "ENV-URB-001",
+    188: "HOU-GEN-001",
 }
 
 
