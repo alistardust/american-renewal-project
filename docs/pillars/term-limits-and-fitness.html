@@ -201,7 +201,7 @@ details.design-logic .design-body li { font-size:.93rem; line-height:1.65; margi
 <div class="wrap"><div class="reform-grid"><div class="reform-card"><h3>Congressional Term Limits</h3><p>House maximum 6 terms (12 years); Senate maximum 3 terms (18 years); combined maximum 8 terms or 20 years across all federal legislative offices</p></div>
 <div class="reform-card"><h3>Anti-Office-Hopping Rules</h3><p>Two-year waiting period before seeking next federal office after term ends; prohibition on running for office while serving in another office; prevents perpetual office-seeking</p></div>
 <div class="reform-card"><h3>Vacancy Procedures</h3><p>Special elections and Senate appointments for vacancies respect waiting period rules with explicit exceptions to prevent democratic gaps</p></div>
-<div class="reform-card"><h3>Fitness Standards for Federal Office</h3><p>Age cap of 75 for re-election to federal office; mandatory independent cognitive and medical assessments every two years for officials and judges over 70; public summary disclosure within 30 days; independent non-partisan review panel insulated from political appointment — with results informing voters, Congress, and oversight bodies but not triggering automatic removal</p></div>
+<div class="reform-card"><h3>Fitness Standards for Federal Office</h3><p>Age cap of 75 for re-election to federal office. Mechanisms for independent fitness review and health transparency are under active development; the framework must resist weaponization and age discrimination while providing voters with material information about officials' capacity to serve.</p></div>
 </div></div>
 <div class="wrap">
 <div class="cross-links-box" style="margin-top:1.5rem;padding:1rem 1.2rem;background:var(--navy);color:#fff;border-radius:6px;border-top:3px solid #c9952a">
@@ -221,8 +221,8 @@ details.design-logic .design-body li { font-size:.93rem; line-height:1.65; margi
   <details class="design-logic">
     <summary>Design Logic — How These Positions Work Together</summary>
     <div class="design-body"><p>The term limits component uses a tiered approach: relatively generous individual chamber limits (House: 6 terms/12 years, Senate: 3 terms/18 years) combined with an aggregate cap (8 total terms or 20 years across all federal legislative offices) to prevent simple office-hopping to circumvent limits. The system also includes waiting periods between offices (2 years) and prohibitions on running while serving in another office, preventing officials from perpetually seeking the next position while neglecting current responsibilities. Vacancy rules respect these constraints while allowing special elections and appointments to fill emergency gaps.</p>
-<p>The fitness component (TRM-FIT-001 through TRM-FIT-004) formalizes what was previously only discussed. The rules establish four interlocking mechanisms: an age cap for re-election (no ballot appearance for office held past age 75), mandatory cognitive and medical assessments every two years for officials and judges over 70, mandatory public summary disclosure of results within 30 days, and an independent non-partisan review panel insulated from political appointment. Assessment results may not trigger automatic removal — they must be transmitted to voters, Congress, and the relevant body's ethics process so that democratic and institutional judgment, not a medical algorithm, determines consequences. This design addresses the 25th Amendment gap: that provision applies only to the president, leaving no structured incapacity process for legislators, federal judges, or other officials. The independent panel structure is the critical safeguard preventing fitness assessment from becoming a partisan removal weapon.</p>
-<p>Rules are organized by family: limits (LIM) for hard term caps, running (RUN) for requirements and restrictions while seeking office, vacating (VAC) for special rules when positions become vacant mid-term, and fitness (FIT) for age, cognitive assessment, disclosure, and independent review standards.</p></div>
+<p>The fitness component (TRM-FIT-001) establishes an age cap for re-election: no ballot appearance for an office held past age 75. This is the one fitness rule currently formalized. Mechanisms for independent fitness review — mandatory health disclosures, incapacity processes for non-presidential officials (the 25th Amendment gap), and the framework for balancing medical privacy against democratic accountability — remain under development. The design challenge is significant: any fitness standard must resist weaponization as a partisan removal tool while still giving voters material information about officials' capacity to serve.</p>
+<p>Positions are organized by family: limits (LIM) for hard term caps, running (RUN) for requirements and restrictions while seeking office, vacating (VAC) for special rules when positions become vacant mid-term, and fitness (FIT) for age and fitness standards.</p></div>
   </details>
 </div>
 </section>
@@ -339,7 +339,7 @@ details.design-logic .design-body li { font-size:.93rem; line-height:1.65; margi
   <div class="family-header">
     <span class="family-code">FIT</span>
     <span class="family-title">Fitness for Office</span>
-    <span class="family-count">0/4 active</span>
+    <span class="family-count">0/1 active</span>
   </div>
   <div class="rule-grid">
     <div class="rule-card status-missing">
@@ -349,34 +349,7 @@ details.design-logic .design-body li { font-size:.93rem; line-height:1.65; margi
   </div>
   <p class="rule-title">Age cap for re-election to federal office</p>
   <p class="rule-stmt">No person may appear on a federal election ballot for an office they would hold past their 75th birthday, absent extraordinary circumstances defined by statute.</p>
-  <p class="rule-notes">Addresses the documented acceleration of cognitive decline with age and the reality that voters frequently cannot assess fitness from campaign performance alone. An age ceiling for re-election — not service, but seeking a new term — balances democratic choice with structural protection against officials who could not realistically complete a new term. Extraordinary-circumstances clauses provide limited statutory relief while preserving the norm. Source: main log line 17762.</p>
-</div>
-<div class="rule-card status-missing">
-  <div class="rule-header">
-    <code class="rule-id">TRM-FIT-002</code>
-    <span class="rule-badge">Proposed</span>
-  </div>
-  <p class="rule-title">Mandatory cognitive assessment for officials over 70</p>
-  <p class="rule-stmt">All federal elected officials and federal judges over the age of 70 must complete an independent cognitive and medical fitness assessment every two years, administered by a non-partisan panel of medical professionals.</p>
-  <p class="rule-notes">Standardizes fitness review through an objective, clinically administered process rather than leaving it to voluntary disclosure or partisan accusation. Assessment applies equally regardless of party or office. The two-year interval reflects the pace at which age-related cognitive changes can become material to governing capacity. Administration by a non-partisan medical panel insulates the process from political manipulation. Source: main log line 17766.</p>
-</div>
-<div class="rule-card status-missing">
-  <div class="rule-header">
-    <code class="rule-id">TRM-FIT-003</code>
-    <span class="rule-badge">Proposed</span>
-  </div>
-  <p class="rule-title">Public disclosure of fitness assessment results</p>
-  <p class="rule-stmt">Results of mandatory fitness assessments must be disclosed publicly in summary form within 30 days of completion, with full results available to an independent oversight panel.</p>
-  <p class="rule-notes">Voters have a legitimate interest in knowing whether officials can perform their duties. Summary disclosure balances medical privacy (protecting clinical detail) with democratic accountability (informing the public of material fitness concerns). Full results go to an independent oversight panel rather than partisan actors, preventing weaponization while enabling meaningful review. Source: main log line 17770.</p>
-</div>
-<div class="rule-card status-missing">
-  <div class="rule-header">
-    <code class="rule-id">TRM-FIT-004</code>
-    <span class="rule-badge">Proposed</span>
-  </div>
-  <p class="rule-title">Independent fitness review panel</p>
-  <p class="rule-stmt">Fitness assessments must be conducted and reviewed by a non-partisan independent panel of medical professionals insulated from political appointment or removal. Assessment results may not be used as a basis for automatic removal but must be provided to voters, Congress, and the relevant body's ethics and oversight process.</p>
-  <p class="rule-notes">The panel structure is the key institutional safeguard: insulation from political appointment prevents the panel from becoming a partisan removal tool, while mandatory transmission of results to ethics and oversight bodies ensures information reaches decision-makers with authority to act. Automatic removal is deliberately excluded — the goal is informed democratic and institutional judgment, not a mechanism that bypasses the political process. This addresses the 25th Amendment gap for non-presidential officials, for whom no structured incapacity process currently exists.</p>
+  <p class="rule-notes">An age ceiling for re-election — not service, but seeking a new term — provides a structural check against officials seeking terms they could not realistically complete. Extraordinary-circumstances clauses provide limited statutory relief while preserving the norm.</p>
 </div>
   </div>
 </div>
