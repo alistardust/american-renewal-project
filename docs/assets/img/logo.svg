@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="American Renewal Project seal">
+  <defs>
+    <clipPath id="seal-clip"><circle cx="100" cy="100" r="87"/></clipPath>
+    <!-- 5-pointed star, upright, centered at origin, R=5.5 r=2.3 -->
+    <polygon id="star"
+      points="0,-5.5 1.35,-1.86 5.23,-1.70 2.19,0.71 3.23,4.45 0,2.3 -3.23,4.45 -2.19,0.71 -5.23,-1.70 -1.35,-1.86"
+      fill="#c9952a"/>
+    <!-- CCW full circle starting from top for bottom-arc text -->
+    <path id="arc-text-path" d="M 100,13 A 87,87 0 1,0 99.999,13" fill="none"/>
+  </defs>
+
+  <!-- Outer rings -->
+  <circle cx="100" cy="100" r="97" fill="none" stroke="#c9952a" stroke-width="1.5" opacity="0.5"/>
+  <circle cx="100" cy="100" r="93" fill="none" stroke="#c9952a" stroke-width="2.5"/>
+
+  <!-- Navy fill -->
+  <circle cx="100" cy="100" r="91" fill="#0a2240"/>
+
+  <!-- Sunrise stripes at bottom, clipped -->
+  <g clip-path="url(#seal-clip)">
+    <rect x="0" y="152" width="200" height="9"  fill="#bf0a30" opacity="0.80"/>
+    <rect x="0" y="164" width="200" height="5"  fill="#bf0a30" opacity="0.55"/>
+    <rect x="0" y="172" width="200" height="4"  fill="#bf0a30" opacity="0.38"/>
+    <rect x="0" y="179" width="200" height="3"  fill="#bf0a30" opacity="0.22"/>
+    <rect x="0" y="185" width="200" height="15" fill="#bf0a30" opacity="0.12"/>
+  </g>
+
+  <!-- 5 stars arc at top, r=73 from center, ±36° spread -->
+  <!-- Positions: (-126°),(-108°),(-90°),(-72°),(-54°) from east -->
+  <!-- x=100+73*cos(θ), y=100+73*sin(θ) -->
+  <use href="#star" transform="translate(57.1,40.9)"/>
+  <use href="#star" transform="translate(77.4,30.6)"/>
+  <use href="#star" transform="translate(100,27)"/>
+  <use href="#star" transform="translate(122.6,30.6)"/>
+  <use href="#star" transform="translate(142.9,40.9)"/>
+
+  <!-- Torch: elegant proportions -->
+  <!-- Flame -->
+  <path d="M100,58
+           C106,63 110,70 108,78
+           C106,84 103,89 100,92
+           C97,89 94,84 92,78
+           C90,70 94,63 100,58Z"
+        fill="#c9952a"/>
+  <!-- Inner flame -->
+  <path d="M100,66
+           C103,70 105,74 104,79
+           C103,83 101,85 100,87
+           C99,85 97,83 96,79
+           C95,74 97,70 100,66Z"
+        fill="#bf0a30"/>
+  <!-- Flame tip highlight -->
+  <ellipse cx="100" cy="70" rx="1.8" ry="3.5" fill="#e8c96a" opacity="0.6"/>
+
+  <!-- Cup / collar -->
+  <path d="M93,92 Q96.5,97.5 100,97.5 Q103.5,97.5 107,92Z"
+        fill="#a8791a"/>
+  <!-- Grip divider ring -->
+  <rect x="94.5" y="97.5" width="11" height="2.5" rx="1.25" fill="#b8941c"/>
+
+  <!-- Shaft -->
+  <rect x="95.5" y="100" width="9" height="28" rx="2" fill="#c9952a"/>
+  <!-- Grip bands -->
+  <rect x="93.5" y="105" width="13" height="2.5" rx="1.25" fill="#a8791a"/>
+  <rect x="93.5" y="111" width="13" height="2.5" rx="1.25" fill="#a8791a"/>
+  <rect x="93.5" y="117" width="13" height="2.5" rx="1.25" fill="#a8791a"/>
+
+  <!-- Base cap -->
+  <rect x="93.5" y="128" width="13" height="4.5" rx="2.25" fill="#b8941c"/>
+  <!-- Base foot -->
+  <rect x="95"   y="132.5" width="10" height="2"   rx="1" fill="#a8791a"/>
+
+  <!-- Bottom arc text: CCW circle from top, text appears at bottom readable -->
+  <text font-family="'Oswald','Arial Narrow',sans-serif" font-size="9.5"
+        font-weight="600" letter-spacing="4" fill="#c9952a">
+    <textPath href="#arc-text-path" startOffset="29%">AMERICAN RENEWAL PROJECT</textPath>
+  </text>
+</svg>
