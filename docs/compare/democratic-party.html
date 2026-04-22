@@ -80,7 +80,7 @@
   <div class="wrap">
     <p class="eyebrow">Overview</p>
     <h2>Platform at a Glance</h2>
-    <p>The Democratic Party is one of America's two dominant political parties, operating within the current institutional framework and pursuing reform through electoral victories, legislative action, and administrative policy. Its platform emphasizes protecting civil rights, expanding healthcare access, reducing economic inequality, addressing climate change, and defending democratic institutions against erosion. The party's approach is predominantly incremental: it works with existing agencies, courts, and constitutional structures rather than proposing systemic redesign.</p>
+    <p>The Democratic Party is one of America's two dominant political parties, operating within the current institutional framework and pursuing reform through electoral victories, legislative action, and administrative policy. Its platform emphasizes protecting civil rights, expanding healthcare access, reducing economic inequality, addressing climate change, and defending democratic institutions against erosion.<sup><a href="#fn1" id="ref1">[1]</a></sup> The party's approach is predominantly incremental: it works with existing agencies, courts, and constitutional structures rather than proposing systemic redesign.</p>
     <h3>Key Focus Areas</h3>
     <ul class="item-list">
       <li>Voting rights protection and election security</li>
@@ -98,7 +98,7 @@
   <div class="wrap">
     <p class="eyebrow">Points of Overlap</p>
     <h2>Where They Align with ARP</h2>
-    <p>The Democratic Party and ARP share significant concern about threats to democratic institutions, civil rights, and economic access — though they differ sharply on how deep the structural response needs to go.</p>
+    <p>The Democratic Party and ARP share significant concern about threats to democratic institutions, civil rights, and economic access — though they differ sharply on how deep the structural response needs to go.<sup><a href="#fn3" id="ref3">[3]</a></sup></p>
     <ul class="item-list">
       <li><strong>Elections and representation:</strong> Shared commitment to voting rights expansion, election security, and reducing discriminatory barriers to participation</li>
       <li><strong>Civil rights and liberties:</strong> Broad alignment on anti-discrimination protections, reproductive rights, and LGBTQ+ rights as durable legal guarantees</li>
@@ -194,7 +194,7 @@
       <div class="cov-row">
         <div class="cov-pillar">Labor &amp; Workers&#39; Rights</div>
         <div class="cov-level cov-partial">Partial</div>
-        <div class="cov-gap">Democrats passed the PRO Act in the House in 2021 and 2023 but it stalled in the Senate. Biden strengthened NLRB enforcement and supported union campaigns including the UAW's 2023 strikes. However, sectoral bargaining — the framework that produces the best outcomes in peer democracies — has not been introduced as legislation. ARP requires stronger structural reform than enterprise-level bargaining improvements alone.</div>
+        <div class="cov-gap">Democrats passed the PRO Act in the House in 2021 and 2023 but it stalled in the Senate.<sup><a href="#fn2" id="ref2">[2]</a></sup> Biden strengthened NLRB enforcement and supported union campaigns including the UAW's 2023 strikes. However, sectoral bargaining — the framework that produces the best outcomes in peer democracies — has not been introduced as legislation. ARP requires stronger structural reform than enterprise-level bargaining improvements alone.</div>
       </div>
       <div class="cov-row">
         <div class="cov-pillar">Housing</div>
@@ -285,34 +285,15 @@
 </div>
 </section>
 
-<footer class="site-footer">
-  <div class="wrap">
-    <span class="footer-brand">American Renewal Project</span>
-    <ul class="footer-links">
-      <li><a href="../index.html">Home</a></li>
-      <li><a href="../foundations.html">Foundations</a></li>
-      <li><a href="../pillars/index.html">Pillars</a></li>
-      <li><a href="index.html">Compare</a></li>
-    </ul>
-    <span class="footer-note">A framework for democratic renewal. · <a href="../about-ai.html" style="color:inherit;opacity:.7">On the Use of AI</a></span>
-  </div>
-</footer>
+<section style="background:#ece7dc;padding:2rem 0" id="refs">
+<div class="wrap">
+  <h2 style="font-family:'Oswald',sans-serif;color:#1a2744">References</h2>
+  <ol style="font-size:.87rem;line-height:1.75;padding-left:1.3rem">
+    <li id="fn1">Democratic National Committee. (2020). <em>2020 Democratic Party platform</em>. <a href="https://democrats.org/where-we-stand/party-platform/" target="_blank" rel="noopener">https://democrats.org/where-we-stand/party-platform/</a> <a href="#ref1" style="font-size:.8rem">↩</a></li>
+    <li id="fn2">GovTrack. (2024). <em>Congressional voting records</em>. <a href="https://www.govtrack.us/congress/votes" target="_blank" rel="noopener">https://www.govtrack.us/congress/votes</a> <a href="#ref2" style="font-size:.8rem">↩</a></li>
+    <li id="fn3">Pew Research Center. (2021). <em>Beyond red vs. blue: The political typology</em>. <a href="https://www.pewresearch.org/politics/2021/11/09/beyond-red-vs-blue-the-political-typology-2/" target="_blank" rel="noopener">https://www.pewresearch.org/politics/2021/11/09/beyond-red-vs-blue-the-political-typology-2/</a> <a href="#ref3" style="font-size:.8rem">↩</a></li>
+  </ol>
+</div>
+</section>
 
-<script>
-(function(){
-  var links = document.querySelectorAll('.cmp-snav a');
-  var ids = ['cmp-overview','cmp-align','cmp-diff','cmp-gaps','cmp-strengths','cmp-wrongs','cmp-sources'];
-  var sections = ids.map(function(id){ return document.getElementById(id); });
-  function update(){
-    var idx = 0;
-    sections.forEach(function(s,i){ if(s && s.getBoundingClientRect().top <= 110) idx = i; });
-    links.forEach(function(a,i){ a.classList.toggle('active', i===idx); });
-  }
-  window.addEventListener('scroll', update, {passive:true});
-  update();
-})();
-</script>
-<script src="../assets/js/data.js"></script>
-<script src="../assets/js/app.js"></script>
-</body>
-</html>
+<footer class="site-footer">

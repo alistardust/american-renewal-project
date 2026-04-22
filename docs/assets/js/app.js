@@ -49,10 +49,12 @@
     const aiHref = base + 'about-ai.html';
     const missionHref = base + 'mission.html';
     const constitutionHref = base + 'constitution.html';
+    const classificationHref = base + 'classification.html';
     const isAiPage = pageName === 'about-ai';
     const isMissionPage = pageName === 'mission';
     const isConstitutionPage = pageName === 'constitution';
     const isAboutUsPage = pageName === 'about-us';
+    const isClassificationPage = pageName === 'classification';
 
     if (navList && !navList.querySelector('a[href*="mission"]')) {
       const li = document.createElement('li');
@@ -63,6 +65,12 @@
     if (navList && !navList.querySelector('a[href*="constitution"]')) {
       const li = document.createElement('li');
       li.innerHTML = `<a href="${constitutionHref}"${isConstitutionPage ? ' class="active"' : ''}>Constitution</a>`;
+      navList.appendChild(li);
+    }
+
+    if (navList && !navList.querySelector('a[href*="classification"]')) {
+      const li = document.createElement('li');
+      li.innerHTML = `<a href="${classificationHref}"${isClassificationPage ? ' class="active"' : ''}>Classification</a>`;
       navList.appendChild(li);
     }
 
@@ -78,7 +86,7 @@
       navList.appendChild(li);
     }
 
-    // Inject Mission, Constitution, About Us, and About AI into footer-links
+    // Inject Mission, Constitution, Classification, About Us, and About AI into footer-links
     const footerLinks = document.querySelector('ul.footer-links');
     if (footerLinks && !footerLinks.querySelector('a[href*="mission"]')) {
       const fli = document.createElement('li');
@@ -88,6 +96,11 @@
     if (footerLinks && !footerLinks.querySelector('a[href*="constitution"]')) {
       const fli = document.createElement('li');
       fli.innerHTML = `<a href="${constitutionHref}">Constitution</a>`;
+      footerLinks.appendChild(fli);
+    }
+    if (footerLinks && !footerLinks.querySelector('a[href*="classification"]')) {
+      const fli = document.createElement('li');
+      fli.innerHTML = `<a href="${classificationHref}">Classification</a>`;
       footerLinks.appendChild(fli);
     }
     if (footerLinks && !footerLinks.querySelector('a[href*="about-us"]')) {

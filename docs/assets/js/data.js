@@ -52,8 +52,8 @@ const ARP = {
       belief: 'You can\'t be free if you\'re sick, homeless, or in debt.',
       value: 'The right to healthcare, housing, a living wage, clean air, clean water, and an economy that works for you—not just for the people at the top.',
       why: 'FDR called it the Second Bill of Rights. We are completing that work for the 21st century. Economic security is not charity. It is the foundation on which every other freedom rests.',
-      demands: ['Universal healthcare as a right, not a commodity', 'Housing as a human necessity, not a speculative asset', 'A tax system that rewards work over wealth', 'A livable planet for the next generation'],
-      rejects: ['Healthcare tied to employment', 'A housing market that treats homes as investment vehicles', 'An economy that socializes losses and privatizes gains'],
+      demands: ['Universal healthcare as a right, not a commodity', 'Housing as a human necessity, not a speculative asset', 'Clean water and clean air as constitutional rights — not regulatory privileges subject to rollback', 'A tax system that rewards work over wealth', 'A livable planet for the next generation', 'Water conservation, infrastructure, and equitable access as national priorities'],
+      rejects: ['Healthcare tied to employment', 'A housing market that treats homes as investment vehicles', 'An economy that socializes losses and privatizes gains', 'Privatization of water systems that communities depend on for survival'],
       pillars: ['healthcare', 'taxation_and_wealth', 'environment_and_agriculture', 'education', 'labor_and_workers_rights', 'housing']
     }
   ],
