@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  /* ── NAV ACTIVE STATE ─────────────────────────────── */
+  /* ── NAV ACTIVE STATE + ABOUT AI LINK ────────────────── */
   (function () {
     const page = location.pathname.split('/').pop() || 'index.html';
     document.querySelectorAll('.nav-links a').forEach(a => {
@@ -11,6 +11,26 @@
         a.classList.add('active');
       }
     });
+
+    // Inject "About AI" link into the nav + footer (path-aware for subdirectories)
+    const navList = document.querySelector('ul.nav-links');
+    const inSubdir = location.pathname.replace(/\/+$/, '').split('/').filter(Boolean).length > 1;
+    const aiHref = inSubdir ? '../about-ai.html' : 'about-ai.html';
+    const isAiPage = page === 'about-ai.html';
+
+    if (navList && !navList.querySelector('a[href*="about-ai"]')) {
+      const li = document.createElement('li');
+      li.innerHTML = `<a href="${aiHref}"${isAiPage ? ' class="active"' : ''}>About AI</a>`;
+      navList.appendChild(li);
+    }
+
+    // Inject "About AI" into footer-links so it appears in every page's footer nav
+    const footerLinks = document.querySelector('ul.footer-links');
+    if (footerLinks && !footerLinks.querySelector('a[href*="about-ai"]')) {
+      const fli = document.createElement('li');
+      fli.innerHTML = `<a href="${aiHref}">About AI</a>`;
+      footerLinks.appendChild(fli);
+    }
   })();
 
   /* ── HAMBURGER ────────────────────────────────────── */
@@ -69,13 +89,29 @@
     }
   }
 
+  /* ── BACK-TO-TOP BUTTON ──────────────────────────── */
+  (function () {
+    const btn = document.createElement('button');
+    btn.id = 'back-to-top';
+    btn.setAttribute('aria-label', 'Back to top');
+    btn.innerHTML = '&#8679;';
+    document.body.appendChild(btn);
+    window.addEventListener('scroll', () => {
+      btn.classList.toggle('btt-visible', window.scrollY > 400);
+    }, { passive: true });
+    btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  })();
+
   /* ── SMOOTH SECTION REVEAL ───────────────────────── */
   if ('IntersectionObserver' in window) {
     const obs = new IntersectionObserver(entries => {
       entries.forEach(e => {
         if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
       });
-    }, { threshold: 0.08 });
+    // threshold: 0 fires as soon as any pixel of the section enters the viewport.
+  // A higher threshold (e.g. 0.08) breaks for very tall sections (like #pil-policy)
+  // because 8% of a 5000px section never fits in the viewport, keeping it invisible.
+  }, { threshold: 0 });
     document.querySelectorAll('section').forEach(s => {
       s.style.opacity = '0';
       s.style.transform = 'translateY(18px)';
