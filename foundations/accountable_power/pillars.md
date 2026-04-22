@@ -18,6 +18,8 @@ Ensures that public office is not held indefinitely or beyond reasonable capacit
 Governs how courts operate, how judges are selected and held accountable, and how the judiciary is protected from politicization and capture. Covers Supreme Court reform, mandatory judicial ethics codes, and the structural independence of courts.
 → [overview.md](../../pillars/courts_and_judicial_system/overview.md) | [policy rules](../../pillars/courts_and_judicial_system/policy.md)
 
-## Administrative State
+## Legislative Reform
+Restores Congress as a functional, representative lawmaking body capable of checking executive overreach and enacting coherent policy. Covers Senate structural reform, filibuster reform, House expansion, anti-gridlock procedural mechanisms, and the capacity of Congress to legislate effectively rather than delegating its authority to the executive branch or courts by default.
+→ [overview.md](../../pillars/legislative_reform/overview.md) | [policy rules](../../pillars/legislative_reform/policy.md)
 Defines the constitutional foundation and accountability framework for federal agencies. Covers agency authority limits, protection from executive politicization, insulation from industry capture, and the obligation of agencies to serve the public rather than those they regulate.
 → [overview.md](../../pillars/administrative_state/overview.md) | [policy rules](../../pillars/administrative_state/policy.md)

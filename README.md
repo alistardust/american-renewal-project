@@ -21,7 +21,7 @@ This repository is now organized around the architecture described in the branch
 - `sources/chat-logs/` contains the downloaded ChatGPT branch transcripts.
 - `data/policy_catalog.sqlite` contains the first-pass structured catalog extracted from the chats:
   - 101 canonical numeric policy items
-  - 1,051 canonical prefixed rule items
+  - 1,095 canonical prefixed rule items
   - 138 canonical dedupe links
   - 888 contextual ID mentions from prose/summary sections
 - The catalog is built from the formal IDs already present in the chat logs:

@@ -17,7 +17,7 @@ Beyond the rights framing, this project is building a complete system: a structu
 The project has two primary public layers, plus internal working infrastructure:
 
 1. **Foundations** (5 core values, `foundations/` directory) — The moral and political commitments that define what the project believes. Written to be public-facing, accessible, and resonant. Each foundation explains *why* the work matters before getting into *what* must change. See [`foundations/README.md`](../foundations/README.md) for the full index.
-2. **Pillars** — domain-by-domain policy design (17 pillars, `pillars/` directory). Each pillar is anchored to one of the five foundations and contains `overview.md` (purpose and design logic) and `policy.md` (all canonical rules).
+2. **Pillars** — domain-by-domain policy design (22 pillars, `pillars/` directory). Each pillar is anchored to one of the five foundations and contains `overview.md` (purpose and design logic) and `policy.md` (all canonical rules).
 3. **System rules** — cross-domain constraints and design invariants
 4. **Strategy** — communication, rollout, and coalition work
 5. **Catalog data** — structured IDs for policy items and rules (`data/policy_catalog.sqlite`)
@@ -34,7 +34,7 @@ The foundations layer sits above the pillars — it is the "why" that the pillar
 | [Real Freedom](../foundations/real_freedom/values.md) | Rights must be explicit, enforceable, and protected |
 | [Freedom to Thrive](../foundations/freedom_to_thrive/values.md) | Material security is a prerequisite for real freedom |
 
-## The 17 Pillars
+## The 22 Pillars
 
 Each pillar has `overview.md` (purpose, design logic, research synthesis) and `policy.md` (all canonical DB rules):
 
@@ -55,6 +55,11 @@ Each pillar has `overview.md` (purpose, design logic, research synthesis) and `p
 15. **Technology and AI** (`technology_and_ai/`) — AI governance, surveillance, data privacy, platform regulation
 16. **Immigration** (`immigration/`) — Legal pathways, asylum, due process, enforcement limits
 17. **Environment and Agriculture** (`environment_and_agriculture/`) — Climate, biodiversity, regenerative farming
+18. **Education** (`education/`) — Universal access to quality education, student debt reform, school funding equity
+19. **Labor and Workers' Rights** (`labor_and_workers_rights/`) — Collective bargaining, wage standards, worker protections
+20. **Housing** (`housing/`) — Affordable housing, tenant protections, anti-speculation, community land trusts
+21. **Consumer Rights** (`consumer_rights/`) — Right to repair, mandatory arbitration bans, data exploitation protections
+22. **Legislative Reform** (`legislative_reform/`) — Senate reform, anti-gridlock mechanisms, congressional capacity
 
 ## Working principles
 
@@ -66,4 +71,4 @@ Each pillar has `overview.md` (purpose, design logic, research synthesis) and `p
 
 ## Scope of the catalog
 
-As of July 2025: **1,095 canonical rules** across **20 scope codes** in `data/policy_catalog.sqlite`. The three largest domains are Technology/AI (361 rules), Immigration (222 rules), and Healthcare (184 rules). See `overview/current-state.md` for the full breakdown and source-of-truth ordering.
+As of the July 2025 DB build: **1,095 canonical rules** across **20 scope codes** in `data/policy_catalog.sqlite`. The three largest domains are Technology/AI (361 rules), Immigration (222 rules), and Healthcare (184 rules). Five new pillars (Education, Labor & Workers' Rights, Housing, Consumer Rights, Legislative Reform) were added in April 2026 with full markdown content pending a DB reimport. See `overview/current-state.md` for the full breakdown and source-of-truth ordering.

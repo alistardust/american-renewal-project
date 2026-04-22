@@ -10,7 +10,7 @@ const ARP = {
       why: 'The promise of democracy has been hollowed out by money in politics, courts captured by ideology, and an executive branch that has learned to govern by fiat. Accountability is not a procedural nicety—it is the bedrock of consent.',
       demands: ['Term limits and fitness standards for every federal office', 'Campaign finance reform that ends the donor class\'s veto over legislation', 'Courts that apply the law, not an agenda', 'An executive constrained by law, not just norms'],
       rejects: ['The idea that money is speech', 'Lifetime tenure without accountability', 'Executive power that expands in darkness'],
-      pillars: ['executive_power', 'checks_and_balances', 'term_limits_and_fitness', 'courts_and_judicial_system', 'administrative_state']
+      pillars: ['executive_power', 'checks_and_balances', 'term_limits_and_fitness', 'courts_and_judicial_system', 'administrative_state', 'legislative_reform']
     },
     {
       id: 'clean-democracy',
@@ -43,7 +43,7 @@ const ARP = {
       why: 'The old freedom debate is over. The threats to freedom today come not just from government but from corporations with unprecedented power to monitor, manipulate, and control. Real freedom requires confronting both.',
       demands: ['Constitutional protection against corporate surveillance', 'Algorithmic accountability for platforms that shape public life', 'Sensible gun policy grounded in public safety and the actual text of the Second Amendment'],
       rejects: ['The surveillance economy as the price of modernity', 'Platforms that amplify hate and call it free speech', 'Weapons of war in civilian hands'],
-      pillars: ['rights_and_civil_liberties', 'gun_policy', 'technology_and_ai']
+      pillars: ['rights_and_civil_liberties', 'gun_policy', 'technology_and_ai', 'consumer_rights']
     },
     {
       id: 'freedom-to-thrive',
@@ -54,7 +54,7 @@ const ARP = {
       why: 'FDR called it the Second Bill of Rights. We are completing that work for the 21st century. Economic security is not charity. It is the foundation on which every other freedom rests.',
       demands: ['Universal healthcare as a right, not a commodity', 'Housing as a human necessity, not a speculative asset', 'A tax system that rewards work over wealth', 'A livable planet for the next generation'],
       rejects: ['Healthcare tied to employment', 'A housing market that treats homes as investment vehicles', 'An economy that socializes losses and privatizes gains'],
-      pillars: ['healthcare', 'taxation_and_wealth', 'environment_and_agriculture']
+      pillars: ['healthcare', 'taxation_and_wealth', 'environment_and_agriculture', 'education', 'labor_and_workers_rights', 'housing']
     }
   ],
 
@@ -75,7 +75,12 @@ const ARP = {
     { id: 'technology_and_ai',             title: 'Technology & AI',               foundation: 'real-freedom',       summary: 'Technology must serve people. Surveillance capitalism and unaccountable AI are threats to freedom.',                       points: ['Federal data privacy law', 'AI accountability framework', 'Antitrust action against Big Tech'] },
     { id: 'healthcare',                    title: 'Healthcare',                    foundation: 'freedom-to-thrive',  summary: 'Healthcare is a right. No one should go bankrupt, go without, or die because they couldn\'t afford care.',                  points: ['Universal coverage', 'Drug price negotiation', 'Mental health parity'] },
     { id: 'taxation_and_wealth',           title: 'Taxation & Wealth',             foundation: 'freedom-to-thrive',  summary: 'The tax system must reward work, not inheritance. Extreme concentration of wealth is incompatible with democracy.',        points: ['Wealth tax on extreme fortunes', 'Capital gains taxed as ordinary income', 'End of stepped-up basis loophole'] },
-    { id: 'environment_and_agriculture',   title: 'Environment & Agriculture',     foundation: 'freedom-to-thrive',  summary: 'A livable planet and a food supply that is clean, safe, and fairly produced are non-negotiable.',                          points: ['Carbon pricing and clean energy transition', 'Family farm protections', 'Clean water enforcement'] }
+    { id: 'environment_and_agriculture',   title: 'Environment & Agriculture',     foundation: 'freedom-to-thrive',  summary: 'A livable planet and a food supply that is clean, safe, and fairly produced are non-negotiable.',                          points: ['Carbon pricing and clean energy transition', 'Family farm protections', 'Clean water enforcement'] },
+    { id: 'education',                     title: 'Education',                     foundation: 'freedom-to-thrive',  summary: 'Every person deserves access to a high-quality education regardless of wealth, zip code, or background.',               points: ['Equitable school funding', 'Student debt relief and affordable higher education', 'Universal pre-K and school-based support'] },
+    { id: 'labor_and_workers_rights',      title: 'Labor & Workers\' Rights',      foundation: 'freedom-to-thrive',  summary: 'Workers have the right to organize, bargain collectively, and share in the productivity they create.',                    points: ['Strengthen collective bargaining rights', 'Federal minimum wage and overtime reform', 'End worker misclassification and wage theft'] },
+    { id: 'housing',                       title: 'Housing',                       foundation: 'freedom-to-thrive',  summary: 'Housing is a human necessity. No one should be priced out of stability by speculation or policy failure.',                 points: ['Anti-speculation controls and vacancy taxes', 'Community land trust investment', 'Tenant protections and anti-eviction standards'] },
+    { id: 'consumer_rights',               title: 'Consumer Rights',               foundation: 'real-freedom',       summary: 'Corporations cannot be allowed to strip consumers of rights through contracts, monopoly, or engineered dependency.',        points: ['Right-to-repair legislation', 'Ban mandatory arbitration clauses', 'Data exploitation and dark pattern protections'] },
+    { id: 'legislative_reform',            title: 'Legislative Reform',            foundation: 'accountable-power',  summary: 'Congress must be able to legislate. Structural dysfunction serves concentrated power and no one else.',                    points: ['Filibuster reform to restore majority governance', 'Senate representation and House size reform', 'Anti-gridlock procedural mechanisms'] }
   ]
 };
 
