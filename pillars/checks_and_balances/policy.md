@@ -585,3 +585,80 @@
 **Implementation:** Regular cross-pillar analysis, consistency checking, gap analysis, redundancy elimination where appropriate (or deliberate reinforcement where redundancy serves resilience). When rules conflict, higher-level principles (SYS-FND) provide resolution framework.
 
 ---
+
+---
+
+## LAW Family — Rule of Law
+
+
+### SYS-LAW-001 — Laws and system rules must be enforceable, clear
+**Status:** INCLUDED
+**Statement:** Laws and system rules must be enforceable, clear, and drafted to minimize bad-faith interpretation, while preserving narrowly defined flexibility for unforeseen circumstances.
+**Notes:** Core rule in the SYS-LAW family establishing: Laws and system rules must be enforceable, clear, and drafted to minimize bad-faith interpretation, while preserving narrowly defined flexibility for unforeseen circumstances.
+
+
+### SYS-LAW-002 — Laws should be written with definite terms, explicit
+**Status:** INCLUDED
+**Statement:** Laws should be written with definite terms, explicit scope, and clear enforcement mechanisms rather than vague aspirational language alone.
+**Notes:** Core rule in the SYS-LAW family establishing: Laws should be written with definite terms, explicit scope, and clear enforcement mechanisms rather than vague aspirational language alone.
+
+
+### SYS-LAW-003 — Flexibility clauses must be bounded, reviewable, and tied
+**Status:** INCLUDED
+**Statement:** Flexibility clauses must be bounded, reviewable, and tied to clear standards so they do not become loopholes for abuse.
+**Notes:** Core rule in the SYS-LAW family establishing: Flexibility clauses must be bounded, reviewable, and tied to clear standards so they do not become loopholes for abuse.
+
+
+---
+
+## REG Family — Regulatory Balance
+
+
+### SYS-REG-001 — Regulation must protect safety, quality, fairness
+**Status:** INCLUDED
+**Statement:** Regulation must protect safety, quality, fairness, and the public interest and may not be removed or weakened solely to reduce cost or increase private profit.
+**Notes:** Core rule in the SYS-REG family establishing: Regulation must protect safety, quality, fairness, and the public interest and may not be removed or weakened solely to reduce cost or increase private profit.
+
+
+### SYS-REG-002 — Regulatory systems must distinguish between protections that materially
+**Status:** INCLUDED
+**Statement:** Regulatory systems must distinguish between protections that materially improve safety, durability, health, or fairness and rules that primarily create delay, exclusion, or artificial scarcity.
+**Notes:** Core rule in the SYS-REG family establishing: Regulatory systems must distinguish between protections that materially improve safety, durability, health, or fairness and rules that primarily create delay, exclusion, or artific.
+
+
+### SYS-REG-003 — Removal or modification of regulations must be evidence-based
+**Status:** INCLUDED
+**Statement:** Removal or modification of regulations must be evidence-based and may not be driven by industry preference, lobbying pressure, or unsupported claims of efficiency.
+**Notes:** Core rule in the SYS-REG family establishing: Removal or modification of regulations must be evidence-based and may not be driven by industry preference, lobbying pressure, or unsupported claims of efficiency.
+
+
+### SYS-REG-004 — Regulations that protect safety, habitability, environmental integrity
+**Status:** INCLUDED
+**Statement:** Regulations that protect safety, habitability, environmental integrity, and structural durability are presumptively necessary and may not be weakened without clear evidence that protections are preserved or improved.
+**Notes:** Core rule in the SYS-REG family establishing: Regulations that protect safety, habitability, environmental integrity, and structural durability are presumptively necessary and may not be weakened without clear evidence that pr.
+
+
+### SYS-REG-005 — Regulatory processes may not be structured to create
+**Status:** INCLUDED
+**Statement:** Regulatory processes may not be structured to create unnecessary delay, opacity, or discretionary gatekeeping that enables arbitrary denial or abuse.
+**Notes:** Core rule in the SYS-REG family establishing: Regulatory processes may not be structured to create unnecessary delay, opacity, or discretionary gatekeeping that enables arbitrary denial or abuse.
+
+
+### SYS-REG-006 — Regulatory systems must include safeguards against regulatory capture
+**Status:** INCLUDED
+**Statement:** Regulatory systems must include safeguards against regulatory capture, including transparency, independent oversight, and limits on industry influence over rulemaking and enforcement.
+**Notes:** Core rule in the SYS-REG family establishing: Regulatory systems must include safeguards against regulatory capture, including transparency, independent oversight, and limits on industry influence over rulemaking and enforceme.
+
+
+### SYS-REG-007 — Regulation must be enforceable in practice; under-enforced
+**Status:** INCLUDED
+**Statement:** Regulation must be enforceable in practice; under-enforced or symbolic rules that allow widespread violation are considered system failures and must be corrected.
+**Notes:** Core rule in the SYS-REG family establishing: Regulation must be enforceable in practice; under-enforced or symbolic rules that allow widespread violation are considered system failures and must be corrected.
+
+
+### SYS-REG-008 — Regulatory frameworks must be periodically reviewed to remove
+**Status:** INCLUDED
+**Statement:** Regulatory frameworks must be periodically reviewed to remove or reform rules that do not serve a legitimate public-interest function while strengthening those that do.
+**Notes:** Core rule in the SYS-REG family establishing: Regulatory frameworks must be periodically reviewed to remove or reform rules that do not serve a legitimate public-interest function while strengthening those that do.
+
+

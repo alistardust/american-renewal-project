@@ -8,6 +8,21 @@ Prevent the presidency from becoming a quasi-monarchical office by limiting, con
 ## Core Principle
 No president should be able to act above the law, consolidate unchecked power, or use the office for personal, political, or financial gain. The executive is subject to law, not above it.
 
+## The Three-Node Executive
+
+The cornerstone structural reform of this pillar is the **Three-Node Executive**: a division of executive authority across three distinct roles with separate democratic mandates, separated powers, and independent accountability mechanisms.
+
+**Node 1 — President (Head of State)**
+The President serves as head of state: representing the nation abroad, embodying constitutional continuity, and fulfilling ceremonial and symbolic functions. The President has reduced day-to-day domestic governing authority compared to the current system—this role is the constitutional anchor, not the primary driver of domestic policy.
+
+**Node 2 — Vice President (Independent Oversight Officer)**
+The Vice President is directly elected on a separate ticket, not chosen by the President. The VP's primary role is independent oversight of the executive branch: with authority to investigate, refer for prosecution, and report publicly on executive misconduct. The VP cannot be removed by the President and serves as an independent check within the executive branch itself.
+
+**Node 3 — Head of Government (Primary Domestic Executive)**
+The Head of Government is the primary driver of domestic policy: directing the cabinet, managing federal agencies, and implementing legislative programs. The Head of Government is confirmed by Congress and can be removed by a legislative vote of no confidence, creating a parliamentary-style accountability link without eliminating the presidential system entirely.
+
+This three-node structure addresses the fundamental democratic failure of the unitary executive: it separates the symbolic from the operational, creates an internal oversight officer with independent electoral mandate, and aligns domestic executive authority with legislative accountability.
+
 ## The Problem It Solves
 The American presidency has accumulated dangerous levels of unchecked power through emergency declarations, executive orders, immunity doctrines, financial conflicts of interest, pardon abuse, war powers expansion, and systematic erosion of checks and balances. Without structural reform, the executive branch can effectively operate as an elected monarchy, shielded from accountability, able to self-deal, retaliate against opponents, bypass Congress, and undermine the rule of law itself. This pillar prevents authoritarian consolidation by restoring hard constitutional limits on executive authority.
 

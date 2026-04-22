@@ -389,3 +389,506 @@ This pillar contains **15 formalized rules** across four scope codes:
 - **LAB (Labor):** 3 rules — 4-day work week, automation productivity-sharing, overtime protections
 
 These rules reflect the interconnected nature of environmental, labor, and education policies. Environmental protection requires addressing how corporate power externalizes costs, how labor practices shape environmental impacts, and how education influences capacity for ecological restoration and civic engagement in environmental governance.
+
+---
+
+## SYS Family — System Principles
+
+
+### ENV-SYS-001 — Waste reduction, recyclability, repairability, and durability requirements
+**Status:** INCLUDED
+**Statement:** Waste reduction, recyclability, repairability, and durability requirements must be integrated across consumer protection, manufacturing, housing, and infrastructure policy.
+**Notes:** Core rule in the ENV-SYS family establishing: Waste reduction, recyclability, repairability, and durability requirements must be integrated across consumer protection, manufacturing, housing, and infrastructure policy.
+
+
+---
+
+## CLN Family — Cleanup and Remediation
+
+
+### ENV-CLN-001 — Environmental policy must include active cleanup and remediation
+**Status:** INCLUDED
+**Statement:** Environmental policy must include active cleanup and remediation of existing pollution, waste accumulation, and ecological damage rather than focusing only on prevention of future harm.
+**Notes:** Core rule in the ENV-CLN family establishing: Environmental policy must include active cleanup and remediation of existing pollution, waste accumulation, and ecological damage rather than focusing only on prevention of future .
+
+
+### ENV-CLN-002 — Polluters and responsible entities must bear the cost
+**Status:** INCLUDED
+**Statement:** Polluters and responsible entities must bear the cost of cleanup, remediation, and restoration where responsibility can be identified.
+**Notes:** Core rule in the ENV-CLN family establishing: Polluters and responsible entities must bear the cost of cleanup, remediation, and restoration where responsibility can be identified.
+
+
+### ENV-CLN-003 — Liability rules for environmental contamination must be strong
+**Status:** INCLUDED
+**Statement:** Liability rules for environmental contamination must be strong enough to prevent firms from treating cleanup costs as an acceptable externality.
+**Notes:** Core rule in the ENV-CLN family establishing: Liability rules for environmental contamination must be strong enough to prevent firms from treating cleanup costs as an acceptable externality.
+
+
+### ENV-CLN-004 — Governments must have authority and dedicated funding
+**Status:** INCLUDED
+**Statement:** Governments must have authority and dedicated funding to clean up pollution and waste where responsible parties are unknown, defunct, insolvent, or beyond reach.
+**Notes:** Core rule in the ENV-CLN family establishing: Governments must have authority and dedicated funding to clean up pollution and waste where responsible parties are unknown, defunct, insolvent, or beyond reach.
+
+
+### ENV-CLN-005 — Cleanup funding mechanisms should include dedicated public funds
+**Status:** INCLUDED
+**Statement:** Cleanup funding mechanisms should include dedicated public funds, industry assessments, bonds, or other durable financing structures.
+**Notes:** Core rule in the ENV-CLN family establishing: Cleanup funding mechanisms should include dedicated public funds, industry assessments, bonds, or other durable financing structures.
+
+
+### ENV-CLN-006 — Federal, state, and local governments must coordinate active
+**Status:** INCLUDED
+**Statement:** Federal, state, and local governments must coordinate active cleanup of plastics, synthetic waste, toxic runoff, and debris from rivers, lakes, wetlands, coastlines, and oceans.
+**Notes:** Core rule in the ENV-CLN family establishing: Federal, state, and local governments must coordinate active cleanup of plastics, synthetic waste, toxic runoff, and debris from rivers, lakes, wetlands, coastlines, and oceans.
+
+
+### ENV-CLN-007 — Environmental cleanup programs must prioritize areas where waste
+**Status:** INCLUDED
+**Statement:** Environmental cleanup programs must prioritize areas where waste accumulation threatens drinking water, ecosystems, food systems, public health, or vulnerable communities.
+**Notes:** Core rule in the ENV-CLN family establishing: Environmental cleanup programs must prioritize areas where waste accumulation threatens drinking water, ecosystems, food systems, public health, or vulnerable communities.
+
+
+### ENV-CLN-008 — Public agencies must fund research, monitoring, and remediation
+**Status:** INCLUDED
+**Statement:** Public agencies must fund research, monitoring, and remediation strategies for microplastics and other persistent contaminants in water, soil, food systems, and human environments.
+**Notes:** Core rule in the ENV-CLN family establishing: Public agencies must fund research, monitoring, and remediation strategies for microplastics and other persistent contaminants in water, soil, food systems, and human environments.
+
+
+### ENV-CLN-009 — Cleanup and remediation standards must address persistent synthetic
+**Status:** INCLUDED
+**Statement:** Cleanup and remediation standards must address persistent synthetic contamination even where traditional waste removal methods are insufficient.
+**Notes:** Core rule in the ENV-CLN family establishing: Cleanup and remediation standards must address persistent synthetic contamination even where traditional waste removal methods are insufficient.
+
+
+### ENV-CLN-010 — Contaminated industrial, commercial, and waste sites must be
+**Status:** INCLUDED
+**Statement:** Contaminated industrial, commercial, and waste sites must be remediated to safe standards before reuse, redevelopment, or continued occupancy.
+**Notes:** Core rule in the ENV-CLN family establishing: Contaminated industrial, commercial, and waste sites must be remediated to safe standards before reuse, redevelopment, or continued occupancy.
+
+
+### ENV-CLN-011 — Brownfield and contaminated-site policy should prioritize remediation, community
+**Status:** INCLUDED
+**Statement:** Brownfield and contaminated-site policy should prioritize remediation, community safety, and long-term ecological restoration rather than cosmetic reuse alone.
+**Notes:** Core rule in the ENV-CLN family establishing: Brownfield and contaminated-site policy should prioritize remediation, community safety, and long-term ecological restoration rather than cosmetic reuse alone.
+
+
+### ENV-CLN-012 — Cleanup policy must include restoration of habitats, waterways
+**Status:** INCLUDED
+**Statement:** Cleanup policy must include restoration of habitats, waterways, soils, and ecological systems damaged by pollution, extraction, or unmanaged waste.
+**Notes:** Core rule in the ENV-CLN family establishing: Cleanup policy must include restoration of habitats, waterways, soils, and ecological systems damaged by pollution, extraction, or unmanaged waste.
+
+
+### ENV-CLN-013 — Environmental restoration should prioritize biodiversity, water quality, soil
+**Status:** INCLUDED
+**Statement:** Environmental restoration should prioritize biodiversity, water quality, soil health, and long-term ecosystem resilience.
+**Notes:** Core rule in the ENV-CLN family establishing: Environmental restoration should prioritize biodiversity, water quality, soil health, and long-term ecosystem resilience.
+
+
+### ENV-CLN-014 — Communities affected by environmental contamination must have access
+**Status:** INCLUDED
+**Statement:** Communities affected by environmental contamination must have access to clear information, health guidance, remediation plans, and meaningful participation in cleanup decisions.
+**Notes:** Core rule in the ENV-CLN family establishing: Communities affected by environmental contamination must have access to clear information, health guidance, remediation plans, and meaningful participation in cleanup decisions.
+
+
+### ENV-CLN-015 — Cleanup progress, contamination data, and remediation outcomes
+**Status:** INCLUDED
+**Statement:** Cleanup progress, contamination data, and remediation outcomes must be publicly reported in accessible and standardized formats.
+**Notes:** Core rule in the ENV-CLN family establishing: Cleanup progress, contamination data, and remediation outcomes must be publicly reported in accessible and standardized formats.
+
+
+### ENV-CLN-016 — Cleanup obligations may not be delayed indefinitely through
+**Status:** INCLUDED
+**Statement:** Cleanup obligations may not be delayed indefinitely through procedural abuse, corporate restructuring, bankruptcy tactics, or jurisdictional fragmentation.
+**Notes:** Core rule in the ENV-CLN family establishing: Cleanup obligations may not be delayed indefinitely through procedural abuse, corporate restructuring, bankruptcy tactics, or jurisdictional fragmentation.
+
+
+### ENV-CLN-017 — Repeated failure to remediate known contamination must trigger
+**Status:** INCLUDED
+**Statement:** Repeated failure to remediate known contamination must trigger escalating penalties, loss of permits, or direct government intervention.
+**Notes:** Core rule in the ENV-CLN family establishing: Repeated failure to remediate known contamination must trigger escalating penalties, loss of permits, or direct government intervention.
+
+
+---
+
+## AUD Family — Environmental Auditing
+
+
+### ENV-AUD-001 — Corporations must file standardized environmental audits
+**Status:** INCLUDED
+**Statement:** Corporations must file standardized environmental audits on a quarterly basis.
+**Notes:** Core rule in the ENV-AUD family establishing: Corporations must file standardized environmental audits on a quarterly basis.
+
+
+### ENV-AUD-002 — Audits must include water use, emissions, pollutants, waste
+**Status:** INCLUDED
+**Statement:** Audits must include water use, emissions, pollutants, waste, and environmental impact metrics.
+**Notes:** Core rule in the ENV-AUD family establishing: Audits must include water use, emissions, pollutants, waste, and environmental impact metrics.
+
+
+### ENV-AUD-003 — Audits must include both internal reporting and multiple
+**Status:** INCLUDED
+**Statement:** Audits must include both internal reporting and multiple independent third-party audits.
+**Notes:** Core rule in the ENV-AUD family establishing: Audits must include both internal reporting and multiple independent third-party audits.
+
+
+### ENV-AUD-004 — Auditors, including individuals, are criminally liable for fraudulent
+**Status:** INCLUDED
+**Statement:** Auditors, including individuals, are criminally liable for fraudulent reporting, misrepresentation, or negligence.
+**Notes:** Core rule in the ENV-AUD family establishing: Auditors, including individuals, are criminally liable for fraudulent reporting, misrepresentation, or negligence.
+
+
+### ENV-AUD-005 — Collusion, conspiracy, or coordinated fraud in environmental reporting
+**Status:** INCLUDED
+**Statement:** Collusion, conspiracy, or coordinated fraud in environmental reporting constitutes criminal enterprise and may be prosecuted under racketeering statutes.
+**Notes:** Core rule in the ENV-AUD family establishing: Collusion, conspiracy, or coordinated fraud in environmental reporting constitutes criminal enterprise and may be prosecuted under racketeering statutes.
+
+
+---
+
+## EPR Family — Extended Producer Responsibility
+
+
+### ENV-EPR-001 — Producers are responsible for the full lifecycle
+**Status:** INCLUDED
+**Statement:** Producers are responsible for the full lifecycle of their products, including collection, recycling, disposal, and environmental impact mitigation.
+**Notes:** Core rule in the ENV-EPR family establishing: Producers are responsible for the full lifecycle of their products, including collection, recycling, disposal, and environmental impact mitigation.
+
+
+### ENV-EPR-002 — Producers must fund and participate in systems
+**Status:** INCLUDED
+**Statement:** Producers must fund and participate in systems for recovery, recycling, or safe disposal of materials they introduce into the market.
+**Notes:** Core rule in the ENV-EPR family establishing: Producers must fund and participate in systems for recovery, recycling, or safe disposal of materials they introduce into the market.
+
+
+### ENV-EPR-003 — Products that are difficult to recycle, hazardous
+**Status:** INCLUDED
+**Statement:** Products that are difficult to recycle, hazardous, or environmentally persistent must be subject to higher responsibility, restrictions, or phase-out requirements.
+**Notes:** Core rule in the ENV-EPR family establishing: Products that are difficult to recycle, hazardous, or environmentally persistent must be subject to higher responsibility, restrictions, or phase-out requirements.
+
+
+---
+
+## ESC Family — Escape Prevention
+
+
+### ENV-ESC-001 — Waste systems must be designed to prevent materials
+**Status:** INCLUDED
+**Statement:** Waste systems must be designed to prevent materials from escaping into natural environments, including waterways, oceans, and ecosystems.
+**Notes:** Core rule in the ENV-ESC family establishing: Waste systems must be designed to prevent materials from escaping into natural environments, including waterways, oceans, and ecosystems.
+
+
+### ENV-ESC-002 — Entities responsible for production, transport, or disposal
+**Status:** INCLUDED
+**Statement:** Entities responsible for production, transport, or disposal of materials must implement safeguards to prevent leakage, runoff, or dispersal into the environment.
+**Notes:** Core rule in the ENV-ESC family establishing: Entities responsible for production, transport, or disposal of materials must implement safeguards to prevent leakage, runoff, or dispersal into the environment.
+
+
+### ENV-ESC-003 — Release of plastics, microplastics, synthetic materials, or persistent
+**Status:** INCLUDED
+**Statement:** Release of plastics, microplastics, synthetic materials, or persistent waste into natural systems must be minimized, monitored, and subject to enforcement.
+**Notes:** Core rule in the ENV-ESC family establishing: Release of plastics, microplastics, synthetic materials, or persistent waste into natural systems must be minimized, monitored, and subject to enforcement.
+
+
+---
+
+## IND Family — Industrial Standards
+
+
+### ENV-IND-001 — Industrial processes must minimize waste output and prevent
+**Status:** INCLUDED
+**Statement:** Industrial processes must minimize waste output and prevent release of materials into surrounding ecosystems.
+**Notes:** Core rule in the ENV-IND family establishing: Industrial processes must minimize waste output and prevent release of materials into surrounding ecosystems.
+
+
+### ENV-IND-002 — Facilities must monitor, report, and mitigate waste leakage
+**Status:** INCLUDED
+**Statement:** Facilities must monitor, report, and mitigate waste leakage, including microplastics and synthetic materials.
+**Notes:** Core rule in the ENV-IND family establishing: Facilities must monitor, report, and mitigate waste leakage, including microplastics and synthetic materials.
+
+
+---
+
+## INF Family — Waste Infrastructure
+
+
+### ENV-INF-001 — Waste management infrastructure must prevent leakage into
+**Status:** INCLUDED
+**Statement:** Waste management infrastructure must prevent leakage into the environment through proper containment, transport, and processing systems.
+**Notes:** Core rule in the ENV-INF family establishing: Waste management infrastructure must prevent leakage into the environment through proper containment, transport, and processing systems.
+
+
+### ENV-INF-002 — Landfills, transfer stations, and waste facilities must meet
+**Status:** INCLUDED
+**Statement:** Landfills, transfer stations, and waste facilities must meet strict environmental containment standards to prevent runoff, leakage, and pollution.
+**Notes:** Core rule in the ENV-INF family establishing: Landfills, transfer stations, and waste facilities must meet strict environmental containment standards to prevent runoff, leakage, and pollution.
+
+
+### ENV-INF-003 — Stormwater, wastewater, and drainage systems must include filtration
+**Status:** INCLUDED
+**Statement:** Stormwater, wastewater, and drainage systems must include filtration or mitigation to reduce plastic and waste flow into natural systems.
+**Notes:** Core rule in the ENV-INF family establishing: Stormwater, wastewater, and drainage systems must include filtration or mitigation to reduce plastic and waste flow into natural systems.
+
+
+---
+
+## PKG Family — Packaging
+
+
+### ENV-PKG-001 — Excessive packaging and non-essential materials must be reduced
+**Status:** INCLUDED
+**Statement:** Excessive packaging and non-essential materials must be reduced through regulation and design standards.
+**Notes:** Core rule in the ENV-PKG family establishing: Excessive packaging and non-essential materials must be reduced through regulation and design standards.
+
+
+### ENV-PKG-002 — Reusable, refillable, or minimal packaging systems should be
+**Status:** INCLUDED
+**Statement:** Reusable, refillable, or minimal packaging systems should be prioritized over single-use formats.
+**Notes:** Core rule in the ENV-PKG family establishing: Reusable, refillable, or minimal packaging systems should be prioritized over single-use formats.
+
+
+---
+
+## PLS Family — Plastics
+
+
+### ENV-PLS-001 — Production and use of single-use plastics and non-essential
+**Status:** INCLUDED
+**Statement:** Production and use of single-use plastics and non-essential disposable materials should be reduced, restricted, or phased out where viable alternatives exist.
+**Notes:** Core rule in the ENV-PLS family establishing: Production and use of single-use plastics and non-essential disposable materials should be reduced, restricted, or phased out where viable alternatives exist.
+
+
+### ENV-PLS-002 — Microplastic generation from products, manufacturing processes, and material
+**Status:** INCLUDED
+**Statement:** Microplastic generation from products, manufacturing processes, and material degradation must be limited through design standards and regulation.
+**Notes:** Core rule in the ENV-PLS family establishing: Microplastic generation from products, manufacturing processes, and material degradation must be limited through design standards and regulation.
+
+
+### ENV-PLS-003 — Synthetic materials that persist in ecosystems without safe
+**Status:** INCLUDED
+**Statement:** Synthetic materials that persist in ecosystems without safe degradation pathways must be regulated or replaced with safer alternatives where feasible.
+**Notes:** Core rule in the ENV-PLS family establishing: Synthetic materials that persist in ecosystems without safe degradation pathways must be regulated or replaced with safer alternatives where feasible.
+
+
+---
+
+## REC Family — Recycling
+
+
+### ENV-REC-001 — Recycling systems must be expanded, standardized, and modernized
+**Status:** INCLUDED
+**Statement:** Recycling systems must be expanded, standardized, and modernized to handle current material volumes and complexity.
+**Notes:** Core rule in the ENV-REC family establishing: Recycling systems must be expanded, standardized, and modernized to handle current material volumes and complexity.
+
+
+### ENV-REC-002 — Recycling infrastructure must be accessible, consistent, and effective
+**Status:** INCLUDED
+**Statement:** Recycling infrastructure must be accessible, consistent, and effective across regions, with clear standards and minimal consumer confusion.
+**Notes:** Core rule in the ENV-REC family establishing: Recycling infrastructure must be accessible, consistent, and effective across regions, with clear standards and minimal consumer confusion.
+
+
+### ENV-REC-003 — Materials placed into the market must be compatible
+**Status:** INCLUDED
+**Statement:** Materials placed into the market must be compatible with existing or planned recycling systems or subject to restrictions.
+**Notes:** Core rule in the ENV-REC family establishing: Materials placed into the market must be compatible with existing or planned recycling systems or subject to restrictions.
+
+
+---
+
+## TRN Family — Transition
+
+
+### ENV-TRN-001 — Governments must track and publish data on waste
+**Status:** INCLUDED
+**Statement:** Governments must track and publish data on waste generation, recycling rates, environmental leakage, and material flows.
+**Notes:** Core rule in the ENV-TRN family establishing: Governments must track and publish data on waste generation, recycling rates, environmental leakage, and material flows.
+
+
+### ENV-TRN-002 — High-risk materials and sectors must be subject
+**Status:** INCLUDED
+**Statement:** High-risk materials and sectors must be subject to enhanced monitoring and reporting requirements.
+**Notes:** Core rule in the ENV-TRN family establishing: High-risk materials and sectors must be subject to enhanced monitoring and reporting requirements.
+
+
+---
+
+## WST Family — Waste Reduction
+
+
+### ENV-WST-001 — Waste generation must be minimized at the source
+**Status:** INCLUDED
+**Statement:** Waste generation must be minimized at the source, and materials must be managed to prevent environmental release, accumulation, and long-term ecological harm.
+**Notes:** Core rule in the ENV-WST family establishing: Waste generation must be minimized at the source, and materials must be managed to prevent environmental release, accumulation, and long-term ecological harm.
+
+
+---
+
+## DES Family — Product Design
+
+
+### ENV-DES-001 — Products and packaging must be designed for recyclability
+**Status:** INCLUDED
+**Statement:** Products and packaging must be designed for recyclability, reuse, or safe degradation, minimizing mixed materials and non-recoverable components.
+**Notes:** Core rule in the ENV-DES family establishing: Products and packaging must be designed for recyclability, reuse, or safe degradation, minimizing mixed materials and non-recoverable components.
+
+
+### ENV-DES-002 — Use of composite, bonded, or mixed materials that
+**Status:** INCLUDED
+**Statement:** Use of composite, bonded, or mixed materials that prevent recycling must be limited or justified.
+**Notes:** Core rule in the ENV-DES family establishing: Use of composite, bonded, or mixed materials that prevent recycling must be limited or justified.
+
+
+---
+
+## ENF Family — Environmental Enforcement
+
+
+### ENV-ENF-001 — Entities responsible for environmental contamination through waste leakage
+**Status:** INCLUDED
+**Statement:** Entities responsible for environmental contamination through waste leakage or mismanagement must be held liable for cleanup, remediation, and damages.
+**Notes:** Core rule in the ENV-ENF family establishing: Entities responsible for environmental contamination through waste leakage or mismanagement must be held liable for cleanup, remediation, and damages.
+
+
+### ENV-ENF-002 — Repeated or large-scale violations of waste containment
+**Status:** INCLUDED
+**Statement:** Repeated or large-scale violations of waste containment and environmental protection rules must trigger escalating penalties and operational restrictions.
+**Notes:** Core rule in the ENV-ENF family establishing: Repeated or large-scale violations of waste containment and environmental protection rules must trigger escalating penalties and operational restrictions.
+
+
+---
+
+## AI Family — AI and Environment
+
+
+### ENV-AI-001 — AI used in infrastructure, energy, water, transport
+**Status:** INCLUDED
+**Statement:** AI used in infrastructure, energy, water, transport, or environmental management must be constrained by public-safety, resilience, and environmental-protection obligations above efficiency or profit goals.
+**Notes:** Core rule in the ENV-AI family establishing: AI used in infrastructure, energy, water, transport, or environmental management must be constrained by public-safety, resilience, and environmental-protection obligations above ef.
+
+
+
+---
+
+## LIF Family — Lifecycle Responsibility
+
+
+### EWT-LIF-001 — Manufacturers are responsible for the full lifecycle impact
+**Status:** INCLUDED
+**Statement:** Manufacturers are responsible for the full lifecycle impact of their products, including end-of-life disposal, recycling, and material recovery.
+**Notes:** Core rule in the EWT-LIF family establishing: Manufacturers are responsible for the full lifecycle impact of their products, including end-of-life disposal, recycling, and material recovery.
+
+
+### EWT-LIF-002 — Producers must provide accessible take-back, recycling, or refurbishment
+**Status:** INCLUDED
+**Statement:** Producers must provide accessible take-back, recycling, or refurbishment programs for products at end of life.
+**Notes:** Core rule in the EWT-LIF family establishing: Producers must provide accessible take-back, recycling, or refurbishment programs for products at end of life.
+
+
+### EWT-LIF-003 — Products may not be designed in ways that
+**Status:** INCLUDED
+**Statement:** Products may not be designed in ways that make recycling, disassembly, or material recovery impractical or economically unviable.
+**Notes:** Core rule in the EWT-LIF family establishing: Products may not be designed in ways that make recycling, disassembly, or material recovery impractical or economically unviable.
+
+
+---
+
+## SUP Family — Software Support Requirements
+
+
+### EWT-SUP-001 — Withdrawal of software support may not render hardware
+**Status:** INCLUDED
+**Statement:** Withdrawal of software support may not render hardware unusable where continued basic functionality is technically feasible.
+**Notes:** Core rule in the EWT-SUP family establishing: Withdrawal of software support may not render hardware unusable where continued basic functionality is technically feasible.
+
+
+### EWT-SUP-002 — Devices must retain baseline usability after end-of-support unless
+**Status:** INCLUDED
+**Statement:** Devices must retain baseline usability after end-of-support unless a clear and demonstrable safety or security risk exists.
+**Notes:** Core rule in the EWT-SUP family establishing: Devices must retain baseline usability after end-of-support unless a clear and demonstrable safety or security risk exists.
+
+
+
+---
+
+## ENV-REG Family — Environmental Regulation
+
+
+### ENV-REG-001 — Environmental Protection Agency must be constitutionally established, funded
+**Status:** INCLUDED
+**Statement:** The Environmental Protection Agency must be constitutionally established, funded, and empowered to enforce environmental protections.
+**Notes:** Core rule in the ENV-REG family establishing: The Environmental Protection Agency must be constitutionally established, funded, and empowered to enforce environmental protections.
+
+
+### ENV-REG-002 — Baseline environmental protections must include limits on emissions
+**Status:** INCLUDED
+**Statement:** Baseline environmental protections must include limits on emissions, pollutants, resource use, and ecological harm, with a mandate for active enforcement.
+**Notes:** Core rule in the ENV-REG family establishing: Baseline environmental protections must include limits on emissions, pollutants, resource use, and ecological harm, with a mandate for active enforcement.
+
+
+### ENV-REG-003 — Carbon, water, and environmental offsets may not be
+**Status:** INCLUDED
+**Statement:** Carbon, water, and environmental offsets may not be used in place of direct reduction unless supported by clear, auditable, traceable, and publicly transparent evidence of equivalent impact.
+**Notes:** Core rule in the ENV-REG family establishing: Carbon, water, and environmental offsets may not be used in place of direct reduction unless supported by clear, auditable, traceable, and publicly transparent evidence of equivale.
+
+
+---
+
+## EWT-SYS Family — System Principles
+
+
+### EWT-SYS-001 — Products must be designed, manufactured, and supported
+**Status:** INCLUDED
+**Statement:** Products must be designed, manufactured, and supported to minimize waste, extend usable life, and reduce unnecessary disposal.
+**Notes:** Core rule in the EWT-SYS family establishing: Products must be designed, manufactured, and supported to minimize waste, extend usable life, and reduce unnecessary disposal.
+
+
+### EWT-SYS-002 — Anti-waste, repairability, and anti-lock-in requirements must be integrated
+**Status:** INCLUDED
+**Statement:** Anti-waste, repairability, and anti-lock-in requirements must be integrated into environmental policy, consumer protection, and competition law.
+**Notes:** Core rule in the EWT-SYS family establishing: Anti-waste, repairability, and anti-lock-in requirements must be integrated into environmental policy, consumer protection, and competition law.
+
+
+---
+
+## EWT-DES Family — Design for Durability
+
+
+### EWT-DES-001 — Products must be designed for long-term use, including
+**Status:** INCLUDED
+**Statement:** Products must be designed for long-term use, including durability, repairability, and upgradeability where feasible.
+**Notes:** Core rule in the EWT-DES family establishing: Products must be designed for long-term use, including durability, repairability, and upgradeability where feasible.
+
+
+### EWT-DES-002 — Use of non-replaceable components in high-failure areas, including
+**Status:** INCLUDED
+**Statement:** Use of non-replaceable components in high-failure areas, including batteries, storage, or wear parts, is prohibited where replaceable alternatives are feasible.
+**Notes:** Core rule in the EWT-DES family establishing: Use of non-replaceable components in high-failure areas, including batteries, storage, or wear parts, is prohibited where replaceable alternatives are feasible.
+
+
+---
+
+## EWT-TRN Family — Product Transparency
+
+
+### EWT-TRN-001 — Products must disclose expected lifespan, support duration, repairability
+**Status:** INCLUDED
+**Statement:** Products must disclose expected lifespan, support duration, repairability, and recyclability in standardized formats.
+**Notes:** Core rule in the EWT-TRN family establishing: Products must disclose expected lifespan, support duration, repairability, and recyclability in standardized formats.
+
+
+---
+
+## EWT-WST Family — Waste Reduction
+
+
+### EWT-WST-001 — Rapid product replacement cycles that drive unnecessary disposal
+**Status:** INCLUDED
+**Statement:** Rapid product replacement cycles that drive unnecessary disposal without meaningful functional improvement must be regulated or discouraged.
+**Notes:** Core rule in the EWT-WST family establishing: Rapid product replacement cycles that drive unnecessary disposal without meaningful functional improvement must be regulated or discouraged.
+
+
+### EWT-WST-002 — Marketing practices that encourage premature replacement of functional
+**Status:** INCLUDED
+**Statement:** Marketing practices that encourage premature replacement of functional products must be subject to consumer-protection standards.
+**Notes:** Core rule in the EWT-WST family establishing: Marketing practices that encourage premature replacement of functional products must be subject to consumer-protection standards.
+
+

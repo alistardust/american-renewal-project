@@ -644,3 +644,235 @@
 ### JUS-WIT-005 — Trauma-informed witness support
 **Status:** MISSING
 **Statement:** Trauma-informed witness support should be available without compromising accuracy due process or adversarial fairness
+
+---
+
+## DAT Family — Data and Evidence
+
+
+### JUS-DAT-001 — Criminal justice systems must collect and publish standardized
+**Status:** INCLUDED
+**Statement:** Criminal justice systems must collect and publish standardized data on arrests charges outcomes sentencing and disparities.
+**Notes:** Core rule in the JUS-DAT family establishing: Criminal justice systems must collect and publish standardized data on arrests charges outcomes sentencing and disparities.
+
+
+### JUS-DAT-002 — Data must be disaggregated to detect bias systemic
+**Status:** INCLUDED
+**Statement:** Data must be disaggregated to detect bias systemic inequities and enforcement inconsistencies.
+**Notes:** Core rule in the JUS-DAT family establishing: Data must be disaggregated to detect bias systemic inequities and enforcement inconsistencies.
+
+
+### JUS-DAT-003 — Public access to justice-system data must be free
+**Status:** INCLUDED
+**Statement:** Public access to justice-system data must be free timely and usable for independent analysis.
+**Notes:** Core rule in the JUS-DAT family establishing: Public access to justice-system data must be free timely and usable for independent analysis.
+
+
+---
+
+## ERR Family — Error Correction
+
+
+### JUS-ERR-001 — Mechanisms must exist to identify correct and remedy
+**Status:** INCLUDED
+**Statement:** Mechanisms must exist to identify correct and remedy wrongful convictions systemic errors and procedural failures.
+**Notes:** Core rule in the JUS-ERR family establishing: Mechanisms must exist to identify correct and remedy wrongful convictions systemic errors and procedural failures.
+
+
+### JUS-ERR-002 — Discovery of systemic error patterns must trigger mandatory
+**Status:** INCLUDED
+**Statement:** Discovery of systemic error patterns must trigger mandatory review of affected cases.
+**Notes:** Core rule in the JUS-ERR family establishing: Discovery of systemic error patterns must trigger mandatory review of affected cases.
+
+
+### JUS-ERR-003 — Individuals wrongfully convicted must receive compensation support
+**Status:** INCLUDED
+**Statement:** Individuals wrongfully convicted must receive compensation support and record restoration.
+**Notes:** Core rule in the JUS-ERR family establishing: Individuals wrongfully convicted must receive compensation support and record restoration.
+
+
+### JUS-ERR-004 — People wrongfully convicted are entitled to compensation, restoration
+**Status:** INCLUDED
+**Statement:** People wrongfully convicted are entitled to compensation, restoration of rights, access to services, and record repair as a matter of law.
+**Notes:** Core rule in the JUS-ERR family establishing: People wrongfully convicted are entitled to compensation, restoration of rights, access to services, and record repair as a matter of law.
+
+
+### JUS-ERR-005 — Compensation for wrongful conviction must increase where
+**Status:** INCLUDED
+**Statement:** Compensation for wrongful conviction must increase where the conviction resulted from malicious, vindictive, politically motivated, or knowingly wrongful prosecution.
+**Notes:** Core rule in the JUS-ERR family establishing: Compensation for wrongful conviction must increase where the conviction resulted from malicious, vindictive, politically motivated, or knowingly wrongful prosecution.
+
+
+### JUS-ERR-006 — In cases of malicious, vindictive, or politically motivated
+**Status:** INCLUDED
+**Statement:** In cases of malicious, vindictive, or politically motivated wrongful conviction, both the responsible government entity and the individual officials involved may be held liable.
+**Notes:** Core rule in the JUS-ERR family establishing: In cases of malicious, vindictive, or politically motivated wrongful conviction, both the responsible government entity and the individual officials involved may be held liable.
+
+
+### JUS-ERR-007 — Wrongful-conviction remedies should include compensation for lost liberty
+**Status:** INCLUDED
+**Statement:** Wrongful-conviction remedies should include compensation for lost liberty, lost income, medical and mental health harms, reputational damage, family disruption, and reentry barriers.
+**Notes:** Core rule in the JUS-ERR family establishing: Wrongful-conviction remedies should include compensation for lost liberty, lost income, medical and mental health harms, reputational damage, family disruption, and reentry barrier.
+
+
+---
+
+## ETH Family — Ethics and Conduct
+
+
+### JUS-ETH-001 — Prosecutors and regulators must disclose conflicts, including prior
+**Status:** INCLUDED
+**Statement:** Prosecutors and regulators must disclose conflicts, including prior representation or financial ties to subjects of investigation; conflicted officials must recuse.
+**Notes:** Core rule in the JUS-ETH family establishing: Prosecutors and regulators must disclose conflicts, including prior representation or financial ties to subjects of investigation; conflicted officials must recuse.
+
+
+### JUS-ETH-002 — Cooling-off periods apply before and after public service
+**Status:** INCLUDED
+**Statement:** Cooling-off periods apply before and after public service for attorneys switching between prosecution/regulation and defense in the same subject matter areas.
+**Notes:** Core rule in the JUS-ETH family establishing: Cooling-off periods apply before and after public service for attorneys switching between prosecution/regulation and defense in the same subject matter areas.
+
+
+---
+
+## PLB Family — Plea and Bargaining
+
+
+### JUS-PLB-001 — Plea bargaining systems may not be structured
+**Status:** INCLUDED
+**Statement:** Plea bargaining systems may not be structured to coerce defendants into waiving trial rights through extreme sentencing disparities.
+**Notes:** Core rule in the JUS-PLB family establishing: Plea bargaining systems may not be structured to coerce defendants into waiving trial rights through extreme sentencing disparities.
+
+
+### JUS-PLB-002 — Defendants must have access to all relevant evidence
+**Status:** INCLUDED
+**Statement:** Defendants must have access to all relevant evidence prior to entering plea agreements.
+**Notes:** Core rule in the JUS-PLB family establishing: Defendants must have access to all relevant evidence prior to entering plea agreements.
+
+
+### JUS-PLB-003 — Plea agreements must be reviewed for fairness
+**Status:** INCLUDED
+**Statement:** Plea agreements must be reviewed for fairness and may not be accepted where coercion or imbalance is evident.
+**Notes:** Core rule in the JUS-PLB family establishing: Plea agreements must be reviewed for fairness and may not be accepted where coercion or imbalance is evident.
+
+
+### JUS-PLB-004 — differential between plea offers and post-trial sentencing exposure
+**Status:** INCLUDED
+**Statement:** The differential between plea offers and post-trial sentencing exposure must be limited to prevent coercive waivers of trial rights.
+**Notes:** Core rule in the JUS-PLB family establishing: The differential between plea offers and post-trial sentencing exposure must be limited to prevent coercive waivers of trial rights.
+
+
+### JUS-PLB-005 — Defendants must receive full discovery and a minimum
+**Status:** INCLUDED
+**Statement:** Defendants must receive full discovery and a minimum preparation period before any plea deadline; “exploding offers” are prohibited.
+**Notes:** Core rule in the JUS-PLB family establishing: Defendants must receive full discovery and a minimum preparation period before any plea deadline; “exploding offers” are prohibited.
+
+
+### JUS-PLB-006 — Courts must review pleas for fairness, proportionality
+**Status:** INCLUDED
+**Statement:** Courts must review pleas for fairness, proportionality, and absence of coercion, with authority to reject agreements that undermine justice.
+**Notes:** Core rule in the JUS-PLB family establishing: Courts must review pleas for fairness, proportionality, and absence of coercion, with authority to reject agreements that undermine justice.
+
+
+---
+
+## PTL Family — Pretrial and Bail
+
+
+### JUS-PTL-001 — Monetary bail systems that condition pretrial liberty
+**Status:** INCLUDED
+**Statement:** Monetary bail systems that condition pretrial liberty on ability to pay are prohibited; release and conditions must be based on individualized risk and least-restrictive means.
+**Notes:** Core rule in the JUS-PTL family establishing: Monetary bail systems that condition pretrial liberty on ability to pay are prohibited; release and conditions must be based on individualized risk and least-restrictive means.
+
+
+### JUS-PTL-002 — Pretrial conditions must be time-limited, reviewable
+**Status:** INCLUDED
+**Statement:** Pretrial conditions must be time-limited, reviewable, and may not be used to coerce pleas or punish prior to conviction.
+**Notes:** Core rule in the JUS-PTL family establishing: Pretrial conditions must be time-limited, reviewable, and may not be used to coerce pleas or punish prior to conviction.
+
+
+---
+
+## SNT Family — Sentencing
+
+
+### JUS-SNT-001 — Sentencing must follow transparent, evidence-based guidelines with required
+**Status:** INCLUDED
+**Statement:** Sentencing must follow transparent, evidence-based guidelines with required written explanations for departures.
+**Notes:** Core rule in the JUS-SNT family establishing: Sentencing must follow transparent, evidence-based guidelines with required written explanations for departures.
+
+
+### JUS-SNT-002 — Sentencing data must be publicly reported and disaggregated
+**Status:** INCLUDED
+**Statement:** Sentencing data must be publicly reported and disaggregated to detect wealth-based disparities.
+**Notes:** Core rule in the JUS-SNT family establishing: Sentencing data must be publicly reported and disaggregated to detect wealth-based disparities.
+
+
+### JUS-SNT-003 — Ability to pay may not reduce custodial accountability
+**Status:** INCLUDED
+**Statement:** Ability to pay may not reduce custodial accountability; fines and restitution may scale with means but may not substitute for proportionate accountability in serious offenses.
+**Notes:** Core rule in the JUS-SNT family establishing: Ability to pay may not reduce custodial accountability; fines and restitution may scale with means but may not substitute for proportionate accountability in serious offenses.
+
+
+---
+
+## SOL Family — Solitary and Conditions
+
+
+### JUS-SOL-001 — Statutes of limitations for violent assault sexual assault
+**Status:** INCLUDED
+**Statement:** Statutes of limitations for violent assault sexual assault and comparable serious offenses must be eliminated or extended where strong physical or forensic evidence exists.
+**Notes:** Core rule in the JUS-SOL family establishing: Statutes of limitations for violent assault sexual assault and comparable serious offenses must be eliminated or extended where strong physical or forensic evidence exists.
+
+
+### JUS-SOL-002 — Legal frameworks must allow reopening or continuation
+**Status:** INCLUDED
+**Statement:** Legal frameworks must allow reopening or continuation of cases involving serious violent or sexual crimes when new evidence becomes available.
+**Notes:** Core rule in the JUS-SOL family establishing: Legal frameworks must allow reopening or continuation of cases involving serious violent or sexual crimes when new evidence becomes available.
+
+
+### JUS-SOL-003 — Limitations rules must not function to shield perpetrators
+**Status:** INCLUDED
+**Statement:** Limitations rules must not function to shield perpetrators of serious violent or sexual crimes where reliable evidence can still support prosecution.
+**Notes:** Core rule in the JUS-SOL family establishing: Limitations rules must not function to shield perpetrators of serious violent or sexual crimes where reliable evidence can still support prosecution.
+
+
+---
+
+## TRN Family — Transparency
+
+
+### JUS-TRN-001 — Ex parte communications with judges or prosecutors outside
+**Status:** INCLUDED
+**Statement:** Ex parte communications with judges or prosecutors outside lawful channels are prohibited and sanctionable.
+**Notes:** Core rule in the JUS-TRN family establishing: Ex parte communications with judges or prosecutors outside lawful channels are prohibited and sanctionable.
+
+
+### JUS-TRN-002 — Material meetings between defense and prosecutors in serious
+**Status:** INCLUDED
+**Statement:** Material meetings between defense and prosecutors in serious cases must be logged with dates, participants, and general purpose, subject to privilege protections.
+**Notes:** Core rule in the JUS-TRN family establishing: Material meetings between defense and prosecutors in serious cases must be logged with dates, participants, and general purpose, subject to privilege protections.
+
+
+---
+
+## WHT Family — Whistleblower Protections
+
+
+### JUS-WHT-001 — Enforcement agencies must maintain specialized units with adequate
+**Status:** INCLUDED
+**Statement:** Enforcement agencies must maintain specialized units with adequate forensic, financial, and technological expertise to investigate complex crimes.
+**Notes:** Core rule in the JUS-WHT family establishing: Enforcement agencies must maintain specialized units with adequate forensic, financial, and technological expertise to investigate complex crimes.
+
+
+### JUS-WHT-002 — Statutes of limitations for complex financial crimes
+**Status:** INCLUDED
+**Statement:** Statutes of limitations for complex financial crimes must account for concealment and discovery delay.
+**Notes:** Core rule in the JUS-WHT family establishing: Statutes of limitations for complex financial crimes must account for concealment and discovery delay.
+
+
+### JUS-WHT-003 — Whistleblower protections and incentives must be robust
+**Status:** INCLUDED
+**Statement:** Whistleblower protections and incentives must be robust, with anti-retaliation enforcement and confidential reporting channels.
+**Notes:** Core rule in the JUS-WHT family establishing: Whistleblower protections and incentives must be robust, with anti-retaliation enforcement and confidential reporting channels.
+
+

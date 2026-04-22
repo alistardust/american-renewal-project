@@ -1573,3 +1573,567 @@ This family bans deceptive use of synthetic media for fraud, impersonation, non-
 **Statement:** Allow use of synthetic media depicting real individuals with explicit informed consent
 
 ---
+
+---
+
+## CHD Family — Children and Minors
+
+
+### TEC-CHD-001 — AI systems directed at children or likely
+**Status:** INCLUDED
+**Statement:** AI systems directed at children or likely to be used by minors are subject to heightened safety, privacy, manipulation, and developmental protections.
+**Notes:** Core rule in the TEC-CHD family establishing: AI systems directed at children or likely to be used by minors are subject to heightened safety, privacy, manipulation, and developmental protections.
+
+
+### TEC-CHD-002 — AI companion systems may not be designed
+**Status:** INCLUDED
+**Statement:** AI companion systems may not be designed to foster unhealthy emotional dependency, social substitution, or manipulative attachment in minors.
+**Notes:** Core rule in the TEC-CHD family establishing: AI companion systems may not be designed to foster unhealthy emotional dependency, social substitution, or manipulative attachment in minors.
+
+
+### TEC-CHD-003 — AI systems may not simulate friendship, romance, parental
+**Status:** INCLUDED
+**Statement:** AI systems may not simulate friendship, romance, parental authority, therapeutic authority, or exclusive emotional dependence for children in ways likely to distort development or vulnerability.
+**Notes:** Core rule in the TEC-CHD family establishing: AI systems may not simulate friendship, romance, parental authority, therapeutic authority, or exclusive emotional dependence for children in ways likely to distort development or .
+
+
+### TEC-CHD-004 — Child-directed AI systems may not use persuasive design
+**Status:** INCLUDED
+**Statement:** Child-directed AI systems may not use persuasive design, behavioral nudges, or optimization patterns that exploit immaturity, impulsivity, or emotional vulnerability.
+**Notes:** Core rule in the TEC-CHD family establishing: Child-directed AI systems may not use persuasive design, behavioral nudges, or optimization patterns that exploit immaturity, impulsivity, or emotional vulnerability.
+
+
+### TEC-CHD-005 — AI systems for children must minimize data collection
+**Status:** INCLUDED
+**Statement:** AI systems for children must minimize data collection and may not use child data for behavioral advertising, model training beyond service necessity, or unrelated profiling.
+**Notes:** Core rule in the TEC-CHD family establishing: AI systems for children must minimize data collection and may not use child data for behavioral advertising, model training beyond service necessity, or unrelated profiling.
+
+
+### TEC-CHD-006 — High-risk generative features for minors, including sexually explicit
+**Status:** INCLUDED
+**Statement:** High-risk generative features for minors, including sexually explicit synthesis, bullying support, self-harm facilitation, or identity impersonation, are prohibited.
+**Notes:** Core rule in the TEC-CHD family establishing: High-risk generative features for minors, including sexually explicit synthesis, bullying support, self-harm facilitation, or identity impersonation, are prohibited.
+
+
+### TEC-CHD-007 — AI systems used by minors must include strong
+**Status:** INCLUDED
+**Statement:** AI systems used by minors must include strong default safeguards, age-appropriate design, human escalation channels, and easy-to-understand boundaries.
+**Notes:** Core rule in the TEC-CHD family establishing: AI systems used by minors must include strong default safeguards, age-appropriate design, human escalation channels, and easy-to-understand boundaries.
+
+
+### TEC-CHD-008 — Deepfake generation involving minors or school communities
+**Status:** INCLUDED
+**Statement:** Deepfake generation involving minors or school communities must trigger heightened prohibitions, preservation duties, and enforcement mechanisms.
+**Notes:** Core rule in the TEC-CHD family establishing: Deepfake generation involving minors or school communities must trigger heightened prohibitions, preservation duties, and enforcement mechanisms.
+
+
+### TEC-CHD-009 — Schools and guardians must have transparent controls over
+**Status:** INCLUDED
+**Statement:** Schools and guardians must have transparent controls over child-facing AI systems used in educational or developmental contexts.
+**Notes:** Core rule in the TEC-CHD family establishing: Schools and guardians must have transparent controls over child-facing AI systems used in educational or developmental contexts.
+
+
+### TEC-CHD-010 — AI systems may not replace qualified human support
+**Status:** INCLUDED
+**Statement:** AI systems may not replace qualified human support, instruction, or caregiving in contexts where children depend on human developmental relationships.
+**Notes:** Core rule in the TEC-CHD family establishing: AI systems may not replace qualified human support, instruction, or caregiving in contexts where children depend on human developmental relationships.
+
+
+### TEC-CHD-011 — Platforms hosting child-facing AI systems must maintain strong
+**Status:** INCLUDED
+**Statement:** Platforms hosting child-facing AI systems must maintain strong abuse-reporting, rapid response, and duty-to-protect mechanisms.
+**Notes:** Core rule in the TEC-CHD family establishing: Platforms hosting child-facing AI systems must maintain strong abuse-reporting, rapid response, and duty-to-protect mechanisms.
+
+
+### TEC-CHD-012 — Research on child impacts of AI systems, including
+**Status:** INCLUDED
+**Statement:** Research on child impacts of AI systems, including emotional dependency, cognition, social development, and mental health, should be publicly funded and continuously incorporated into regulation.
+**Notes:** Core rule in the TEC-CHD family establishing: Research on child impacts of AI systems, including emotional dependency, cognition, social development, and mental health, should be publicly funded and continuously incorporated i.
+
+
+---
+
+## DEM Family — Democracy and Disinformation
+
+
+### TEC-DEM-001 — AI systems may not be used to generate
+**Status:** INCLUDED
+**Statement:** AI systems may not be used to generate, distribute, or amplify deceptive election content intended to mislead voters about candidates, voting procedures, ballot access, or election outcomes.
+**Notes:** Core rule in the TEC-DEM family establishing: AI systems may not be used to generate, distribute, or amplify deceptive election content intended to mislead voters about candidates, voting procedures, ballot access, or election.
+
+
+### TEC-DEM-002 — Deepfakes and synthetic impersonation of candidates, election officials
+**Status:** INCLUDED
+**Statement:** Deepfakes and synthetic impersonation of candidates, election officials, journalists, or civic institutions in election contexts are prohibited except for clearly labeled satire or parody that cannot reasonably be mistaken as authentic.
+**Notes:** Core rule in the TEC-DEM family establishing: Deepfakes and synthetic impersonation of candidates, election officials, journalists, or civic institutions in election contexts are prohibited except for clearly labeled satire or.
+
+
+### TEC-DEM-003 — AI-generated political advertising must carry clear provenance, sponsor
+**Status:** INCLUDED
+**Statement:** AI-generated political advertising must carry clear provenance, sponsor disclosure, and synthetic-content disclosure requirements.
+**Notes:** Core rule in the TEC-DEM family establishing: AI-generated political advertising must carry clear provenance, sponsor disclosure, and synthetic-content disclosure requirements.
+
+
+### TEC-DEM-004 — Platforms must maintain rapid-response systems for synthetic election
+**Status:** INCLUDED
+**Statement:** Platforms must maintain rapid-response systems for synthetic election misinformation affecting voting logistics, ballot integrity, or fabricated candidate conduct.
+**Notes:** Core rule in the TEC-DEM family establishing: Platforms must maintain rapid-response systems for synthetic election misinformation affecting voting logistics, ballot integrity, or fabricated candidate conduct.
+
+
+### TEC-DEM-005 — AI systems may not be used to microtarget
+**Status:** INCLUDED
+**Statement:** AI systems may not be used to microtarget political messages based on sensitive personal data, inferred vulnerability, or manipulative psychological profiling.
+**Notes:** Core rule in the TEC-DEM family establishing: AI systems may not be used to microtarget political messages based on sensitive personal data, inferred vulnerability, or manipulative psychological profiling.
+
+
+### TEC-DEM-006 — Political campaigns, parties, PACs, and major advocacy entities
+**Status:** INCLUDED
+**Statement:** Political campaigns, parties, PACs, and major advocacy entities must disclose material use of AI for voter targeting, content generation, persuasion modeling, or automated outreach.
+**Notes:** Core rule in the TEC-DEM family establishing: Political campaigns, parties, PACs, and major advocacy entities must disclose material use of AI for voter targeting, content generation, persuasion modeling, or automated outreach.
+
+
+### TEC-DEM-007 — AI may not be used to impersonate voters
+**Status:** INCLUDED
+**Statement:** AI may not be used to impersonate voters, election workers, campaigns, parties, or public officials in communications affecting democratic participation.
+**Notes:** Core rule in the TEC-DEM family establishing: AI may not be used to impersonate voters, election workers, campaigns, parties, or public officials in communications affecting democratic participation.
+
+
+### TEC-DEM-008 — Election administration agencies may not rely on opaque
+**Status:** INCLUDED
+**Statement:** Election administration agencies may not rely on opaque AI systems to determine voter eligibility, purge decisions, ballot validity, or certification outcomes.
+**Notes:** Core rule in the TEC-DEM family establishing: Election administration agencies may not rely on opaque AI systems to determine voter eligibility, purge decisions, ballot validity, or certification outcomes.
+
+
+### TEC-DEM-009 — AI tools used in election administration must be
+**Status:** INCLUDED
+**Statement:** AI tools used in election administration must be limited to transparent assistive functions and remain fully auditable and reviewable.
+**Notes:** Core rule in the TEC-DEM family establishing: AI tools used in election administration must be limited to transparent assistive functions and remain fully auditable and reviewable.
+
+
+### TEC-DEM-010 — AI systems may not be used to suppress
+**Status:** INCLUDED
+**Statement:** AI systems may not be used to suppress turnout through false reminders, fabricated threats, deceptive hotline communications, or discriminatory targeting.
+**Notes:** Core rule in the TEC-DEM family establishing: AI systems may not be used to suppress turnout through false reminders, fabricated threats, deceptive hotline communications, or discriminatory targeting.
+
+
+### TEC-DEM-011 — Platforms and political advertisers may not use generative
+**Status:** INCLUDED
+**Statement:** Platforms and political advertisers may not use generative AI to create fabricated endorsements, fabricated admissions, or counterfeit documentary evidence in election periods.
+**Notes:** Core rule in the TEC-DEM family establishing: Platforms and political advertisers may not use generative AI to create fabricated endorsements, fabricated admissions, or counterfeit documentary evidence in election periods.
+
+
+### TEC-DEM-012 — Synthetic civic content affecting elections must be preserved
+**Status:** INCLUDED
+**Statement:** Synthetic civic content affecting elections must be preserved and logged to support investigation, enforcement, and public correction.
+**Notes:** Core rule in the TEC-DEM family establishing: Synthetic civic content affecting elections must be preserved and logged to support investigation, enforcement, and public correction.
+
+
+### TEC-DEM-013 — Public repositories of detected election-related synthetic media
+**Status:** INCLUDED
+**Statement:** Public repositories of detected election-related synthetic media and coordinated AI influence operations should be maintained for transparency and research.
+**Notes:** Core rule in the TEC-DEM family establishing: Public repositories of detected election-related synthetic media and coordinated AI influence operations should be maintained for transparency and research.
+
+
+### TEC-DEM-014 — Journalists, researchers, and election monitors must have lawful
+**Status:** INCLUDED
+**Statement:** Journalists, researchers, and election monitors must have lawful access to platform data and transparency interfaces necessary to study AI-driven election harms.
+**Notes:** Core rule in the TEC-DEM family establishing: Journalists, researchers, and election monitors must have lawful access to platform data and transparency interfaces necessary to study AI-driven election harms.
+
+
+### TEC-DEM-015 — AI moderation systems used in election contexts
+**Status:** INCLUDED
+**Statement:** AI moderation systems used in election contexts must be auditable for bias, political asymmetry, and viewpoint-discriminatory effects.
+**Notes:** Core rule in the TEC-DEM family establishing: AI moderation systems used in election contexts must be auditable for bias, political asymmetry, and viewpoint-discriminatory effects.
+
+
+### TEC-DEM-016 — Emergency election-content interventions by platforms or government
+**Status:** INCLUDED
+**Statement:** Emergency election-content interventions by platforms or government must be documented, reviewable, and time-limited to prevent abuse.
+**Notes:** Core rule in the TEC-DEM family establishing: Emergency election-content interventions by platforms or government must be documented, reviewable, and time-limited to prevent abuse.
+
+
+### TEC-DEM-017 — AI systems may not be used to fabricate
+**Status:** INCLUDED
+**Statement:** AI systems may not be used to fabricate public-consensus signals such as fake engagement, bot-generated support, or synthetic grassroots campaigns intended to distort democratic perception.
+**Notes:** Core rule in the TEC-DEM family establishing: AI systems may not be used to fabricate public-consensus signals such as fake engagement, bot-generated support, or synthetic grassroots campaigns intended to distort democratic pe.
+
+
+---
+
+## INF Family — Infrastructure
+
+
+### TEC-INF-001 — AI systems deployed in critical infrastructure must meet
+**Status:** INCLUDED
+**Statement:** AI systems deployed in critical infrastructure must meet heightened standards for safety, cybersecurity, resilience, human override, and incident response.
+**Notes:** Core rule in the TEC-INF family establishing: AI systems deployed in critical infrastructure must meet heightened standards for safety, cybersecurity, resilience, human override, and incident response.
+
+
+### TEC-INF-002 — Critical infrastructure AI may not be deployed
+**Status:** INCLUDED
+**Statement:** Critical infrastructure AI may not be deployed in fully autonomous control roles where failure could cause mass harm, cascading outages, or loss of life.
+**Notes:** Core rule in the TEC-INF family establishing: Critical infrastructure AI may not be deployed in fully autonomous control roles where failure could cause mass harm, cascading outages, or loss of life.
+
+
+### TEC-INF-003 — Human operators must retain real-time override authority over
+**Status:** INCLUDED
+**Statement:** Human operators must retain real-time override authority over AI systems affecting power grids, water systems, transportation networks, emergency communications, healthcare infrastructure, and similar essential services.
+**Notes:** Core rule in the TEC-INF family establishing: Human operators must retain real-time override authority over AI systems affecting power grids, water systems, transportation networks, emergency communications, healthcare infrast.
+
+
+### TEC-INF-004 — AI systems in critical infrastructure must be tested
+**Status:** INCLUDED
+**Statement:** AI systems in critical infrastructure must be tested for failure modes, adversarial attack, model drift, data poisoning, and unsafe automation interactions before deployment.
+**Notes:** Core rule in the TEC-INF family establishing: AI systems in critical infrastructure must be tested for failure modes, adversarial attack, model drift, data poisoning, and unsafe automation interactions before deployment.
+
+
+### TEC-INF-005 — Critical infrastructure operators must maintain fallback modes that
+**Status:** INCLUDED
+**Statement:** Critical infrastructure operators must maintain fallback modes that preserve safe operation if AI systems fail, are compromised, or are withdrawn.
+**Notes:** Core rule in the TEC-INF family establishing: Critical infrastructure operators must maintain fallback modes that preserve safe operation if AI systems fail, are compromised, or are withdrawn.
+
+
+### TEC-INF-006 — AI-enabled cybersecurity tools may assist detection and response
+**Status:** INCLUDED
+**Statement:** AI-enabled cybersecurity tools may assist detection and response, but may not autonomously take high-consequence actions without bounded safeguards and review.
+**Notes:** Core rule in the TEC-INF family establishing: AI-enabled cybersecurity tools may assist detection and response, but may not autonomously take high-consequence actions without bounded safeguards and review.
+
+
+### TEC-INF-007 — AI systems may not be used to optimize
+**Status:** INCLUDED
+**Statement:** AI systems may not be used to optimize infrastructure operations in ways that externalize safety, maintenance, resilience, or environmental costs.
+**Notes:** Core rule in the TEC-INF family establishing: AI systems may not be used to optimize infrastructure operations in ways that externalize safety, maintenance, resilience, or environmental costs.
+
+
+### TEC-INF-008 — Procurement of AI for critical infrastructure must require
+**Status:** INCLUDED
+**Statement:** Procurement of AI for critical infrastructure must require independent validation, security review, supply-chain review, and public-interest risk assessment.
+**Notes:** Core rule in the TEC-INF family establishing: Procurement of AI for critical infrastructure must require independent validation, security review, supply-chain review, and public-interest risk assessment.
+
+
+### TEC-INF-009 — Critical infrastructure AI incidents must be reported
+**Status:** INCLUDED
+**Statement:** Critical infrastructure AI incidents must be reported to appropriate regulators and oversight bodies under mandatory disclosure timelines.
+**Notes:** Core rule in the TEC-INF family establishing: Critical infrastructure AI incidents must be reported to appropriate regulators and oversight bodies under mandatory disclosure timelines.
+
+
+### TEC-INF-010 — Operators may not rely on vendor opacity
+**Status:** INCLUDED
+**Statement:** Operators may not rely on vendor opacity or proprietary claims to avoid inspection, audit, or challenge of infrastructure AI systems.
+**Notes:** Core rule in the TEC-INF family establishing: Operators may not rely on vendor opacity or proprietary claims to avoid inspection, audit, or challenge of infrastructure AI systems.
+
+
+### TEC-INF-011 — Essential public infrastructure using AI must maintain recordkeeping
+**Status:** INCLUDED
+**Statement:** Essential public infrastructure using AI must maintain recordkeeping sufficient for forensic review after failures, outages, or security incidents.
+**Notes:** Core rule in the TEC-INF family establishing: Essential public infrastructure using AI must maintain recordkeeping sufficient for forensic review after failures, outages, or security incidents.
+
+
+### TEC-INF-012 — Concentration of control over AI-enabled critical systems
+**Status:** INCLUDED
+**Statement:** Concentration of control over AI-enabled critical systems in a small number of firms must be treated as a public-risk issue subject to competition and resilience review.
+**Notes:** Core rule in the TEC-INF family establishing: Concentration of control over AI-enabled critical systems in a small number of firms must be treated as a public-risk issue subject to competition and resilience review.
+
+
+---
+
+## MED Family — Medical Technology
+
+
+### TEC-MED-001 — AI-driven recommender systems may not be optimized primarily
+**Status:** INCLUDED
+**Statement:** AI-driven recommender systems may not be optimized primarily for outrage, compulsion, polarization, or misinformation spread where such optimization predictably harms public discourse.
+**Notes:** Core rule in the TEC-MED family establishing: AI-driven recommender systems may not be optimized primarily for outrage, compulsion, polarization, or misinformation spread where such optimization predictably harms public discou.
+
+
+### TEC-MED-002 — Large platforms must audit recommender systems for amplification
+**Status:** INCLUDED
+**Statement:** Large platforms must audit recommender systems for amplification of misinformation, harassment, extremism, and civic manipulation.
+**Notes:** Core rule in the TEC-MED family establishing: Large platforms must audit recommender systems for amplification of misinformation, harassment, extremism, and civic manipulation.
+
+
+### TEC-MED-003 — Users must have meaningful control over recommendation systems
+**Status:** INCLUDED
+**Statement:** Users must have meaningful control over recommendation systems, including the ability to opt out of opaque algorithmic ranking in favor of transparent chronological or user-controlled modes.
+**Notes:** Core rule in the TEC-MED family establishing: Users must have meaningful control over recommendation systems, including the ability to opt out of opaque algorithmic ranking in favor of transparent chronological or user-control.
+
+
+### TEC-MED-004 — Platforms must disclose major ranking objectives and material
+**Status:** INCLUDED
+**Statement:** Platforms must disclose major ranking objectives and material changes that affect visibility, information quality, or civic participation.
+**Notes:** Core rule in the TEC-MED family establishing: Platforms must disclose major ranking objectives and material changes that affect visibility, information quality, or civic participation.
+
+
+### TEC-MED-005 — AI-generated news summaries, civic explainers, or public-information tools
+**Status:** INCLUDED
+**Statement:** AI-generated news summaries, civic explainers, or public-information tools must be transparently labeled and may not impersonate independent journalism.
+**Notes:** Core rule in the TEC-MED family establishing: AI-generated news summaries, civic explainers, or public-information tools must be transparently labeled and may not impersonate independent journalism.
+
+
+### TEC-MED-006 — Dominant platforms may not use AI systems
+**Status:** INCLUDED
+**Statement:** Dominant platforms may not use AI systems to preference their own content products, suppress lawful rivals, or distort media competition.
+**Notes:** Core rule in the TEC-MED family establishing: Dominant platforms may not use AI systems to preference their own content products, suppress lawful rivals, or distort media competition.
+
+
+---
+
+## SCI Family — Scientific Research
+
+
+### TEC-SCI-001 — AI systems may not be used to fabricate
+**Status:** INCLUDED
+**Statement:** AI systems may not be used to fabricate research data, images, citations, peer-review identities, or other scientific artifacts in ways that misrepresent truth or authorship.
+**Notes:** Core rule in the TEC-SCI family establishing: AI systems may not be used to fabricate research data, images, citations, peer-review identities, or other scientific artifacts in ways that misrepresent truth or authorship.
+
+
+### TEC-SCI-002 — Use of AI in research writing, coding, data
+**Status:** INCLUDED
+**Statement:** Use of AI in research writing, coding, data analysis, and literature review must be transparently disclosed where it materially affects content, interpretation, or conclusions.
+**Notes:** Core rule in the TEC-SCI family establishing: Use of AI in research writing, coding, data analysis, and literature review must be transparently disclosed where it materially affects content, interpretation, or conclusions.
+
+
+### TEC-SCI-003 — Scientific publishing systems must prohibit undisclosed AI-generated manuscripts
+**Status:** INCLUDED
+**Statement:** Scientific publishing systems must prohibit undisclosed AI-generated manuscripts, fabricated references, or synthetic peer review.
+**Notes:** Core rule in the TEC-SCI family establishing: Scientific publishing systems must prohibit undisclosed AI-generated manuscripts, fabricated references, or synthetic peer review.
+
+
+### TEC-SCI-004 — Research institutions must maintain policies for provenance, disclosure
+**Status:** INCLUDED
+**Statement:** Research institutions must maintain policies for provenance, disclosure, verification, and accountability in AI-assisted scholarship.
+**Notes:** Core rule in the TEC-SCI family establishing: Research institutions must maintain policies for provenance, disclosure, verification, and accountability in AI-assisted scholarship.
+
+
+### TEC-SCI-005 — AI may assist scientific analysis, but
+**Status:** INCLUDED
+**Statement:** AI may assist scientific analysis, but may not be treated as an expert authority independent of reproducible methods and accountable human interpretation.
+**Notes:** Core rule in the TEC-SCI family establishing: AI may assist scientific analysis, but may not be treated as an expert authority independent of reproducible methods and accountable human interpretation.
+
+
+### TEC-SCI-006 — Funding agencies and journals should require reproducibility
+**Status:** INCLUDED
+**Statement:** Funding agencies and journals should require reproducibility and disclosure standards for AI-assisted research workflows.
+**Notes:** Core rule in the TEC-SCI family establishing: Funding agencies and journals should require reproducibility and disclosure standards for AI-assisted research workflows.
+
+
+### TEC-SCI-007 — Scientific databases and search systems must guard against
+**Status:** INCLUDED
+**Statement:** Scientific databases and search systems must guard against AI-generated citation laundering, fake consensus, or synthetic evidence pollution.
+**Notes:** Core rule in the TEC-SCI family establishing: Scientific databases and search systems must guard against AI-generated citation laundering, fake consensus, or synthetic evidence pollution.
+
+
+### TEC-SCI-008 — Publicly funded research using AI should prioritize openness
+**Status:** INCLUDED
+**Statement:** Publicly funded research using AI should prioritize openness, reproducibility, and public-interest access where compatible with safety and privacy.
+**Notes:** Core rule in the TEC-SCI family establishing: Publicly funded research using AI should prioritize openness, reproducibility, and public-interest access where compatible with safety and privacy.
+
+
+### TEC-SCI-009 — Institutions must maintain misconduct procedures specifically addressing AI-enabled
+**Status:** INCLUDED
+**Statement:** Institutions must maintain misconduct procedures specifically addressing AI-enabled falsification, fabrication, image manipulation, and authorship abuse.
+**Notes:** Core rule in the TEC-SCI family establishing: Institutions must maintain misconduct procedures specifically addressing AI-enabled falsification, fabrication, image manipulation, and authorship abuse.
+
+
+### TEC-SCI-010 — AI systems may not be used to generate
+**Status:** INCLUDED
+**Statement:** AI systems may not be used to generate regulatory, medical, or scientific evidence in place of validated empirical research.
+**Notes:** Core rule in the TEC-SCI family establishing: AI systems may not be used to generate regulatory, medical, or scientific evidence in place of validated empirical research.
+
+
+
+---
+
+## SYS Family — Patent System Principles
+
+
+### PAT-SYS-001 — patent system must promote genuine innovation, public benefit
+**Status:** INCLUDED
+**Statement:** The patent system must promote genuine innovation, public benefit, and technological progress and may not be used primarily for extraction, litigation abuse, or anti-competitive control.
+**Notes:** Core rule in the PAT-SYS family establishing: The patent system must promote genuine innovation, public benefit, and technological progress and may not be used primarily for extraction, litigation abuse, or anti-competitive co.
+
+
+---
+
+## ANT Family — Antitrust and Patents
+
+
+### PAT-ANT-001 — Patent rights may not be used to justify
+**Status:** INCLUDED
+**Statement:** Patent rights may not be used to justify anti-competitive conduct, market exclusion, or monopolistic control.
+**Notes:** Core rule in the PAT-ANT family establishing: Patent rights may not be used to justify anti-competitive conduct, market exclusion, or monopolistic control.
+
+
+### PAT-ANT-002 — Patent enforcement strategies that function as anti-competitive tools
+**Status:** INCLUDED
+**Statement:** Patent enforcement strategies that function as anti-competitive tools are subject to antitrust review and remedies including licensing, limitation, or invalidation.
+**Notes:** Core rule in the PAT-ANT family establishing: Patent enforcement strategies that function as anti-competitive tools are subject to antitrust review and remedies including licensing, limitation, or invalidation.
+
+
+---
+
+## LIC Family — Licensing
+
+
+### PAT-LIC-001 — Compulsory licensing must be available where patent control
+**Status:** INCLUDED
+**Statement:** Compulsory licensing must be available where patent control restricts access to essential goods, services, or technologies.
+**Notes:** Core rule in the PAT-LIC family establishing: Compulsory licensing must be available where patent control restricts access to essential goods, services, or technologies.
+
+
+### PAT-LIC-002 — Essential sectors including healthcare, agriculture, infrastructure, and critical
+**Status:** INCLUDED
+**Statement:** Essential sectors including healthcare, agriculture, infrastructure, and critical technology may require licensing to ensure public access and competition.
+**Notes:** Core rule in the PAT-LIC family establishing: Essential sectors including healthcare, agriculture, infrastructure, and critical technology may require licensing to ensure public access and competition.
+
+
+---
+
+## RPR Family — Repair Rights
+
+
+### PAT-RPR-001 — Repair, maintenance, and restoration of legally owned products
+**Status:** INCLUDED
+**Statement:** Repair, maintenance, and restoration of legally owned products may not be restricted by patent claims once the product has been lawfully sold.
+**Notes:** Core rule in the PAT-RPR family establishing: Repair, maintenance, and restoration of legally owned products may not be restricted by patent claims once the product has been lawfully sold.
+
+
+### PAT-RPR-002 — Replacement parts, consumables, and repair processes
+**Status:** INCLUDED
+**Statement:** Replacement parts, consumables, and repair processes must not be monopolized through patent enforcement where doing so prevents practical repair.
+**Notes:** Core rule in the PAT-RPR family establishing: Replacement parts, consumables, and repair processes must not be monopolized through patent enforcement where doing so prevents practical repair.
+
+
+---
+
+## SCP Family — Patent Scope
+
+
+### PAT-SCP-001 — Patent duration and scope must be calibrated
+**Status:** INCLUDED
+**Statement:** Patent duration and scope must be calibrated to balance innovation incentives with public access and may be reduced in rapidly evolving technological fields.
+**Notes:** Core rule in the PAT-SCP family establishing: Patent duration and scope must be calibrated to balance innovation incentives with public access and may be reduced in rapidly evolving technological fields.
+
+
+### PAT-SCP-002 — Extensions, evergreening, and minor modification strategies that artificially
+**Status:** INCLUDED
+**Statement:** Extensions, evergreening, and minor modification strategies that artificially prolong patent control without meaningful innovation are prohibited.
+**Notes:** Core rule in the PAT-SCP family establishing: Extensions, evergreening, and minor modification strategies that artificially prolong patent control without meaningful innovation are prohibited.
+
+
+---
+
+## SFT Family — Software Patents
+
+
+### PAT-SFT-001 — Abstract software concepts, algorithms, and general computational methods
+**Status:** INCLUDED
+**Statement:** Abstract software concepts, algorithms, and general computational methods that do not represent specific, novel, and non-obvious technical implementations are not patentable.
+**Notes:** Core rule in the PAT-SFT family establishing: Abstract software concepts, algorithms, and general computational methods that do not represent specific, novel, and non-obvious technical implementations are not patentable.
+
+
+### PAT-SFT-002 — Software patents must be narrowly defined, technically specific
+**Status:** INCLUDED
+**Statement:** Software patents must be narrowly defined, technically specific, and may not cover broad functional concepts or general-purpose logic.
+**Notes:** Core rule in the PAT-SFT family establishing: Software patents must be narrowly defined, technically specific, and may not cover broad functional concepts or general-purpose logic.
+
+
+### PAT-SFT-003 — Patent claims that would prevent independent implementation
+**Status:** INCLUDED
+**Statement:** Patent claims that would prevent independent implementation of general computational ideas, protocols, or standard techniques are prohibited.
+**Notes:** Core rule in the PAT-SFT family establishing: Patent claims that would prevent independent implementation of general computational ideas, protocols, or standard techniques are prohibited.
+
+
+---
+
+## THK Family — Patent Thickets
+
+
+### PAT-THK-001 — Accumulation of large patent portfolios for the primary
+**Status:** INCLUDED
+**Statement:** Accumulation of large patent portfolios for the primary purpose of blocking competition or extracting licensing fees without corresponding innovation is prohibited.
+**Notes:** Core rule in the PAT-THK family establishing: Accumulation of large patent portfolios for the primary purpose of blocking competition or extracting licensing fees without corresponding innovation is prohibited.
+
+
+### PAT-THK-002 — Patent thickets that create unreasonable barriers to entry
+**Status:** INCLUDED
+**Statement:** Patent thickets that create unreasonable barriers to entry, interoperability, or independent innovation must be subject to review and corrective action.
+**Notes:** Core rule in the PAT-THK family establishing: Patent thickets that create unreasonable barriers to entry, interoperability, or independent innovation must be subject to review and corrective action.
+
+
+### PAT-THK-003 — Regulatory bodies must have authority to limit, unwind
+**Status:** INCLUDED
+**Statement:** Regulatory bodies must have authority to limit, unwind, or license patent portfolios where they function as anti-competitive barriers.
+**Notes:** Core rule in the PAT-THK family establishing: Regulatory bodies must have authority to limit, unwind, or license patent portfolios where they function as anti-competitive barriers.
+
+
+---
+
+## TR Family — Trade and Patents
+
+
+### PAT-TR-001 — Patent enforcement may not be conducted
+**Status:** INCLUDED
+**Statement:** Patent enforcement may not be conducted in a manner that constitutes abusive litigation, including mass claims, bad-faith assertions, or targeting of entities without meaningful opportunity to defend.
+**Notes:** Core rule in the PAT-TR family establishing: Patent enforcement may not be conducted in a manner that constitutes abusive litigation, including mass claims, bad-faith assertions, or targeting of entities without meaningful op.
+
+
+### PAT-TR-002 — Entities that do not produce, license in good
+**Status:** INCLUDED
+**Statement:** Entities that do not produce, license in good faith, or meaningfully commercialize patented inventions are subject to heightened scrutiny and restrictions on enforcement.
+**Notes:** Core rule in the PAT-TR family establishing: Entities that do not produce, license in good faith, or meaningfully commercialize patented inventions are subject to heightened scrutiny and restrictions on enforcement.
+
+
+### PAT-TR-003 — Courts must have authority to require fee-shifting, sanctions
+**Status:** INCLUDED
+**Statement:** Courts must have authority to require fee-shifting, sanctions, or dismissal in cases of abusive or bad-faith patent litigation.
+**Notes:** Core rule in the PAT-TR family establishing: Courts must have authority to require fee-shifting, sanctions, or dismissal in cases of abusive or bad-faith patent litigation.
+
+
+### PAT-TR-004 — Patent-assertion entities may not use shell structures
+**Status:** INCLUDED
+**Statement:** Patent-assertion entities may not use shell structures or ownership fragmentation to evade liability or obscure control of patent enforcement activity.
+**Notes:** Core rule in the PAT-TR family establishing: Patent-assertion entities may not use shell structures or ownership fragmentation to evade liability or obscure control of patent enforcement activity.
+
+
+---
+
+## TRN Family — Patent Transparency
+
+
+### PAT-TRN-001 — Patent ownership, licensing structures, and enforcement activity
+**Status:** INCLUDED
+**Statement:** Patent ownership, licensing structures, and enforcement activity must be transparent and publicly traceable.
+**Notes:** Core rule in the PAT-TRN family establishing: Patent ownership, licensing structures, and enforcement activity must be transparent and publicly traceable.
+
+
+### PAT-TRN-002 — Shell ownership structures used to obscure patent control
+**Status:** INCLUDED
+**Statement:** Shell ownership structures used to obscure patent control or enforcement must be disclosed and regulated.
+**Notes:** Core rule in the PAT-TRN family establishing: Shell ownership structures used to obscure patent control or enforcement must be disclosed and regulated.
+
+
+
+---
+
+## PAT-INT Family — Patent Interoperability
+
+
+### PAT-INT-001 — Patent rights may not be used to block
+**Status:** INCLUDED
+**Statement:** Patent rights may not be used to block interoperability, compatibility, reverse engineering, or lawful modification of products.
+**Notes:** Core rule in the PAT-INT family establishing: Patent rights may not be used to block interoperability, compatibility, reverse engineering, or lawful modification of products.
+
+
+### PAT-INT-002 — Circumvention of technical protections for the purpose
+**Status:** INCLUDED
+**Statement:** Circumvention of technical protections for the purpose of repair, interoperability, security research, or lawful use is permitted and may not be prohibited by patent or related law.
+**Notes:** Core rule in the PAT-INT family establishing: Circumvention of technical protections for the purpose of repair, interoperability, security research, or lawful use is permitted and may not be prohibited by patent or related law.
+
+
+### PAT-INT-003 — Patent enforcement may not be used to restrict
+**Status:** INCLUDED
+**Statement:** Patent enforcement may not be used to restrict development of compatible parts, tools, or independent implementations.
+**Notes:** Core rule in the PAT-INT family establishing: Patent enforcement may not be used to restrict development of compatible parts, tools, or independent implementations.
+
+
