@@ -105,8 +105,8 @@ test.describe('Pillars index', () => {
     await expect(page.locator('.pi-fv-col')).toHaveCount(5);
   });
 
-  test('fullview contains all 17 pillar links (18 with shared rights pillar)', async ({ page }) => {
-    await expect(page.locator('a.pi-fv-pill')).toHaveCount(18);
+  test('fullview contains all 22 pillar links (23 with shared rights pillar)', async ({ page }) => {
+    await expect(page.locator('a.pi-fv-pill')).toHaveCount(23);
   });
 
   test('each fullview pillar pill links to a .html page', async ({ page }) => {
@@ -129,8 +129,8 @@ test.describe('Pillars index', () => {
     await expect(page.locator('.pillar-index-section')).toHaveCount(5);
   });
 
-  test('shows all 17 pillar index links', async ({ page }) => {
-    await expect(page.locator('a.pillar-index-link')).toHaveCount(17);
+  test('shows all 22 pillar index links', async ({ page }) => {
+    await expect(page.locator('a.pillar-index-link')).toHaveCount(22);
   });
 
   test('each pillar index link points to a .html page', async ({ page }) => {

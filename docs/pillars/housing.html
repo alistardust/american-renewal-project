@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Housing — American Renewal Project</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+<style>
+/* ── Pillar page styles ─────────────────────────────────────── */
+.pil-snav {
+  position: sticky; top: 63px; z-index: 150;
+  background: var(--navy); border-bottom: 2px solid rgba(255,255,255,.12);
+  overflow-x: auto; white-space: nowrap;
+}
+.pil-snav ul { display:flex; gap:0; list-style:none; margin:0; padding:0; }
+.pil-snav a {
+  display:block; padding:.55rem 1.1rem; font-family:'Oswald',sans-serif;
+  font-size:.78rem; letter-spacing:.06em; text-transform:uppercase;
+  color:rgba(255,255,255,.62); text-decoration:none; transition:color .15s;
+}
+.pil-snav a:hover, .pil-snav a.active { color:#fff; }
+.pil-snav a.active { border-bottom:2px solid #c9952a; }
+
+/* ── Section layouts ────────────────────────────────────────── */
+.pil-intro { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+@media(max-width:700px){ .pil-intro { grid-template-columns:1fr; } }
+
+.pil-intro h2 { font-size:1.1rem; text-transform:uppercase; letter-spacing:.08em; margin-bottom:.6rem; }
+.pil-intro p, .pil-intro li { font-size:1rem; line-height:1.75; }
+
+.problem-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.25rem; margin-top:1rem; }
+.problem-card {
+  background:#fff; border-radius:6px; padding:1.2rem 1.4rem;
+  border-left:4px solid #c9952a;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);
+}
+.problem-card h3 { font-size:1rem; margin:0 0 .4rem; color:var(--navy); }
+.problem-card p  { font-size:.92rem; line-height:1.65; margin:0; color:#333; }
+
+.reform-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1rem; margin-top:1rem; }
+.reform-card {
+  background:var(--navy); color:#fff; border-radius:6px;
+  padding:1.1rem 1.3rem; border-top:3px solid #c9952a;
+}
+.reform-card h3 { font-size:.95rem; margin:0 0 .4rem; color:#c9952a; text-transform:uppercase; letter-spacing:.04em; }
+.reform-card p  { font-size:.88rem; line-height:1.6; margin:0; color:rgba(255,255,255,.8); }
+
+/* ── Policy rules ───────────────────────────────────────────── */
+.policy-family { margin-bottom:2.5rem; }
+.family-header {
+  display:flex; align-items:baseline; gap:.8rem; margin-bottom:1rem;
+  padding-bottom:.5rem; border-bottom:2px solid #c9952a;
+}
+.family-code {
+  font-family:'Oswald',sans-serif; font-size:1.1rem;
+  color:#c9952a; min-width:3rem;
+}
+.family-title { font-size:1rem; font-weight:600; color:var(--ink); }
+.family-count { margin-left:auto; font-size:.8rem; color:#888; white-space:nowrap; }
+
+.rule-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:.75rem;
+}
+.rule-card {
+  border-radius:5px; padding:.9rem 1rem;
+  background:#fff; border:1px solid #e0d8c8;
+  font-size:.88rem; line-height:1.55;
+}
+.rule-card.status-included { border-left:4px solid #1e8449; }
+.rule-card.status-updated  { border-left:4px solid #2471a3; }
+.rule-card.status-partial  { border-left:4px solid #c9952a; }
+.rule-card.status-missing  { border-left:4px solid #ccc; opacity:.72; }
+
+.rule-header { display:flex; align-items:center; gap:.5rem; margin-bottom:.35rem; }
+.rule-id { font-size:.72rem; color:#888; letter-spacing:.03em; }
+.rule-badge {
+  font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em;
+  padding:.12em .45em; border-radius:3px;
+}
+.status-included .rule-badge { background:#d4edda; color:#155724; }
+.status-updated  .rule-badge { background:#cce5ff; color:#004085; }
+.status-partial  .rule-badge { background:#fff3cd; color:#856404; }
+.status-missing  .rule-badge { background:#f0f0f0; color:#666; }
+
+.rule-title { font-weight:600; margin:.2rem 0 .2rem; color:var(--ink); }
+.rule-stmt  { font-size:.85rem; color:#444; margin:.15rem 0 0; }
+.rule-notes { font-size:.8rem; color:#666; font-style:italic; margin:.25rem 0 0; }
+
+/* ── Research section ───────────────────────────────────────── */
+.research-body h3 { font-size:1.05rem; color:#c9952a; margin:1.5rem 0 .4rem; }
+.research-body p  { line-height:1.8; font-size:.97rem; }
+
+/* ── Related pillars ────────────────────────────────────────── */
+.related-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:.85rem; margin-top:1rem; }
+.related-card {
+  background:var(--navy); color:#fff; border-radius:6px; padding:1rem;
+  text-decoration:none; transition:opacity .15s;
+}
+.related-card:hover { opacity:.82; }
+.related-card strong { display:block; font-size:.95rem; margin-bottom:.3rem; }
+.related-card span   { font-size:.8rem; color:rgba(255,255,255,.65); }
+
+/* ── Summary stats bar ──────────────────────────────────────── */
+.stats-bar {
+  display:flex; flex-wrap:wrap; gap:1.5rem; margin:1.2rem 0;
+  padding:1rem 1.2rem; background:#fff; border-radius:6px;
+  border:1px solid #e0d8c8;
+}
+.stat-item { text-align:center; }
+.stat-num { display:block; font-family:'Oswald',sans-serif; font-size:2rem; color:#c9952a; }
+.stat-label { font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; color:#888; }
+
+/* ── Design logic accordion ─────────────────────────────────── */
+details.design-logic { margin-top:1rem; }
+details.design-logic summary {
+  cursor:pointer; font-weight:700; padding:.6rem .8rem;
+  background:rgba(0,0,0,.06); border-radius:4px; user-select:none;
+}
+details.design-logic[open] summary { border-radius:4px 4px 0 0; }
+details.design-logic .design-body { padding:.8rem 1rem; background:#fff; border:1px solid #e0d8c8; border-top:none; border-radius:0 0 4px 4px; }
+details.design-logic .design-body p { font-size:.93rem; line-height:1.75; }
+details.design-logic .design-body ul { padding-left:1.3rem; }
+details.design-logic .design-body li { font-size:.93rem; line-height:1.65; margin-bottom:.3rem; }
+</style>
+<style>:root { --accent-color: #c9952a; }</style>
+</head>
+<body>
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-brand">
+      <img src="../assets/img/logo.svg" alt="American Renewal Project" width="36" height="36">
+      <span class="nav-wordmark">American Renewal<span>Project</span></span>
+    </a>
+    <button class="nav-hamburger" aria-label="Menu">☰</button>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../foundations.html">Foundations</a></li>
+      <li><a href="index.html">Pillars</a></li>
+      <li><a href="../compare/index.html">Compare</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="page-hero compact" style="border-bottom:4px solid #c9952a">
+  <div class="hero-eyebrow">
+    <a href="../foundations.html#freedom-to-thrive" style="color:rgba(255,255,255,.6);text-decoration:none">
+      Foundation V: Freedom to Thrive
+    </a>
+  </div>
+  <h1 class="hero-title" style="font-size:clamp(1.8rem,5vw,2.8rem)">Housing</h1>
+  <div class="hero-divider"><span>★ ★ ★</span></div>
+  <p class="hero-statement" style="font-size:1rem;max-width:680px;margin:0 auto">Guarantee stable, safe, habitable, and affordable housing for all people—addressing the full chain of failures from speculative corporate ownership and predatory landlords, through inadequate public housing, to zoning th</p>
+</div>
+<nav class="pil-snav" id="pil-snav"><ul><li><a href="#pil-intro">Overview</a></li><li><a href="#pil-problem">The Problem</a></li><li><a href="#pil-reform">Reform Areas</a></li><li><a href="#pil-policy">Policy Rules</a></li><li><a href="#pil-research">Research</a></li><li><a href="#pil-related">Related</a></li></ul></nav>
+<section class="bg-parchment ruled" id="pil-intro">
+<div class="wrap">
+  <div class="stats-bar">
+  <div class="stat-item"><span class="stat-num">155</span><span class="stat-label">Total Rules</span></div>
+  <div class="stat-item"><span class="stat-num" style="color:#1e8449">155</span><span class="stat-label">Active</span></div>
+  <div class="stat-item"><span class="stat-num" style="color:#c9952a">0</span><span class="stat-label">Partial</span></div>
+  <div class="stat-item"><span class="stat-num" style="color:#888">0</span><span class="stat-label">Proposed</span></div>
+</div>
+  <div class="pil-intro">
+    <div>
+      <h2 style="color:#c9952a;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.06em">Purpose</h2>
+      <p>Guarantee stable, safe, habitable, and affordable housing for all people—addressing the full chain of failures from speculative corporate ownership and predatory landlords, through inadequate public housing, to zoning that artificially constrains supply. This pillar establishes rights for tenants, limits on speculative ownership, supply reform, anti-displacement protections, and Housing First approaches to homelessness.</p>
+    </div>
+    <div>
+      <h2 style="color:#c9952a;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.06em">Core Principle</h2>
+      <p><strong>Stable housing is a prerequisite for health, employment, education, and civic participation.</strong> Housing systems must be designed to reduce extraction, displacement, and dependency—not normalize them. Shelter alone is not sufficient; quality, affordability, and security of tenure are the standard.</p>
+    </div>
+  </div>
+</div>
+</section>
+<section class="bg-dark on-dark ruled" id="pil-problem">
+<div class="wrap" style="margin-bottom:0">
+  <h2 style="color:#c9952a">The Problem It Solves</h2>
+</div>
+<div class="wrap"><ul>
+<li>Corporate and institutional investors are systematically purchasing single-family homes at scale, directly competing with owner-occupants and driving up prices in entry-level housing markets. Private equity ownership of rental housing has been linked to higher rents, reduced maintenance, and aggressive eviction practices.</li>
+<li>Exclusionary zoning—primarily single-family-only zoning covering roughly 75% of residential land in major American cities—artificially constrains housing supply, drives scarcity, and concentrates the costs of growth on lower-income communities.</li>
+<li>The U.S. public housing system has been chronically underfunded for decades, with the Capital Fund gap exceeding $70 billion. Residents live in deteriorating, often hazardous conditions while waiting lists stretch years.</li>
+<li>Homelessness affects over 600,000 Americans on any given night, yet criminalization of survival behavior—sleeping in public, encampments—has proven ineffective. Housing First approaches show dramatically better outcomes at lower cost.</li>
+</ul></div>
+</section>
+<section class="bg-cream ruled" id="pil-reform">
+<div class="wrap" style="margin-bottom:0">
+  <h2 style="color:#c9952a">Key Reform Areas</h2>
+</div>
+<div class="wrap"><div class="reform-grid"><div class="reform-card"><h3>Corporate and institutional ownership limits for single-family and owner-occupancy housing</h3><p></p></div>
+</div></div>
+</section>
+<section class="bg-parchment ruled">
+<div class="wrap">
+  <details class="design-logic">
+    <summary>Design Logic — How These Rules Work Together</summary>
+    <div class="design-body"><ul>
+<li>Anti-speculation and corporate ownership limits address the demand-side distortions that institutional investors create in owner-occupancy markets, restoring access for ordinary buyers.</li>
+<li>Zoning and supply reform expands production of affordable, family-capable housing in high-demand areas while requiring anti-displacement safeguards so new growth doesn't displace existing residents.</li>
+<li>Tenant protections and eviction reform ensure that housing security is real in practice, not just nominal on paper—including right to counsel, habitability enforcement, and anti-retaliation rules.</li>
+<li>Housing First homelessness policy replaces punitive criminalization with evidence-based approaches that provide permanent housing and wrap-around services as the foundation for stability.</li>
+</ul></div>
+  </details>
+</div>
+</section>
+<section class="bg-cream ruled" id="pil-policy">
+<div class="wrap">
+  <h2 style="color:#c9952a">Full Policy Platform</h2>
+  <p style="font-size:.95rem;color:#555;margin-bottom:1.5rem">
+    Every rule in this pillar, organized by policy area.
+    <strong style="color:#1e8449">Active</strong> rules are current platform commitments.
+    <strong style="color:#c9952a">Partial</strong> rules are in development.
+    <strong style="color:#888">Proposed</strong> rules are planned for future inclusion.
+  </p>
+  <div class="policy-family" id="fam-misc">
+  <div class="family-header">
+    <span class="family-code">MISC</span>
+    <span class="family-title">Miscellaneous</span>
+    <span class="family-count">155/155 active</span>
+  </div>
+  <div class="rule-grid">
+    <div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-RGT-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing policy must prioritize stable, safe, habitable, and</p>
+  <p class="rule-stmt">Housing policy must prioritize stable, safe, habitable, and affordable living conditions rather than treating shelter alone as sufficient.</p>
+  <p class="rule-notes">Housing rights establish that shelter is not sufficient—quality, affordability, and security of tenure are the minimum standards for a system that serves human dignity.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-RGT-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Access to housing must be practical in reality</p>
+  <p class="rule-stmt">Access to housing must be practical in reality and may not be undermined by unsafe conditions, predatory ownership structures, hidden costs, or chronic instability.</p>
+  <p class="rule-notes">Housing rights establish that shelter is not sufficient—quality, affordability, and security of tenure are the minimum standards for a system that serves human dignity.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-RGT-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing systems must be designed to reduce extraction</p>
+  <p class="rule-stmt">Housing systems must be designed to reduce extraction, displacement, precarity, and dependency rather than normalize them.</p>
+  <p class="rule-notes">Housing rights establish that shelter is not sufficient—quality, affordability, and security of tenure are the minimum standards for a system that serves human dignity.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-HAB-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">All housing receiving public subsidy, public voucher support</p>
+  <p class="rule-stmt">All housing receiving public subsidy, public voucher support, or public contract support must meet strong habitability, safety, sanitation, accessibility, and maintenance standards.</p>
+  <p class="rule-notes">Habitability standards ensure that publicly supported housing meets real standards for livability, not just nominal occupancy, and that landlords face consequences for chronic neglect.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-HAB-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing policy must treat livability as a core</p>
+  <p class="rule-stmt">Housing policy must treat livability as a core requirement, including structural safety, climate control, water, mold prevention, pest control, fire safety, and functional utilities.</p>
+  <p class="rule-notes">Habitability standards ensure that publicly supported housing meets real standards for livability, not just nominal occupancy, and that landlords face consequences for chronic neglect.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-HAB-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Repeated failure to maintain habitable housing must trigger</p>
+  <p class="rule-stmt">Repeated failure to maintain habitable housing must trigger mandatory enforcement, remediation, tenant protections, and possible loss of ownership or management authority for covered properties.</p>
+  <p class="rule-notes">Habitability standards ensure that publicly supported housing meets real standards for livability, not just nominal occupancy, and that landlords face consequences for chronic neglect.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-HAB-004</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Residents must have accessible mechanisms to report unsafe</p>
+  <p class="rule-stmt">Residents must have accessible mechanisms to report unsafe or unlivable conditions without retaliation, rent punishment, or loss of housing assistance.</p>
+  <p class="rule-notes">Habitability standards ensure that publicly supported housing meets real standards for livability, not just nominal occupancy, and that landlords face consequences for chronic neglect.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-PUB-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Government-owned or publicly administered housing must be safe</p>
+  <p class="rule-stmt">Government-owned or publicly administered housing must be safe, maintained, dignified, and integrated into normal standards of public service rather than treated as disposable or neglected warehousing.</p>
+  <p class="rule-notes">Public housing serves the most vulnerable residents; chronic underfunding and neglect are policy choices that impose unsafe conditions on people with the fewest alternatives.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-PUB-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Public housing systems must receive stable maintenance funding</p>
+  <p class="rule-stmt">Public housing systems must receive stable maintenance funding, capital repair funding, and oversight sufficient to prevent chronic decay and dangerous conditions.</p>
+  <p class="rule-notes">Public housing serves the most vulnerable residents; chronic underfunding and neglect are policy choices that impose unsafe conditions on people with the fewest alternatives.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-PUB-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Residents of public housing must have enforceable rights</p>
+  <p class="rule-stmt">Residents of public housing must have enforceable rights to habitability, repairs, due process, grievance procedures, and protection from retaliation.</p>
+  <p class="rule-notes">Public housing serves the most vulnerable residents; chronic underfunding and neglect are policy choices that impose unsafe conditions on people with the fewest alternatives.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-PUB-004</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Public housing policy must prioritize long-term quality, safety</p>
+  <p class="rule-stmt">Public housing policy must prioritize long-term quality, safety, and resident stability rather than minimal shelter provision alone.</p>
+  <p class="rule-notes">Public housing serves the most vulnerable residents; chronic underfunding and neglect are policy choices that impose unsafe conditions on people with the fewest alternatives.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-PUB-005</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Governments must directly develop, own, or support large-scale</p>
+  <p class="rule-stmt">Governments must directly develop, own, or support large-scale housing supply where private markets fail to provide sufficient affordable housing.</p>
+  <p class="rule-notes">Public housing serves the most vulnerable residents; chronic underfunding and neglect are policy choices that impose unsafe conditions on people with the fewest alternatives.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-PUB-006</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Public or social housing must be integrated into</p>
+  <p class="rule-stmt">Public or social housing must be integrated into communities and designed to avoid concentration of poverty or systemic neglect.</p>
+  <p class="rule-notes">Public housing serves the most vulnerable residents; chronic underfunding and neglect are policy choices that impose unsafe conditions on people with the fewest alternatives.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-PUB-007</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Public housing development must prioritize long-term affordability, durability</p>
+  <p class="rule-stmt">Public housing development must prioritize long-term affordability, durability, and livability rather than short-term cost minimization.</p>
+  <p class="rule-notes">Public housing serves the most vulnerable residents; chronic underfunding and neglect are policy choices that impose unsafe conditions on people with the fewest alternatives.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-PUB-008</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Public and social housing must be protected from</p>
+  <p class="rule-stmt">Public and social housing must be protected from the same forms of enshittification, under-maintenance, and extraction that affect private housing markets.</p>
+  <p class="rule-notes">Public housing serves the most vulnerable residents; chronic underfunding and neglect are policy choices that impose unsafe conditions on people with the fewest alternatives.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-PUB-009</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Public-housing management systems must be audited for maintenance</p>
+  <p class="rule-stmt">Public-housing management systems must be audited for maintenance performance, resident treatment, safety outcomes, and repair responsiveness.</p>
+  <p class="rule-notes">Public housing serves the most vulnerable residents; chronic underfunding and neglect are policy choices that impose unsafe conditions on people with the fewest alternatives.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-PUB-010</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Public or social housing may not be neglected</p>
+  <p class="rule-stmt">Public or social housing may not be neglected as a budget-balancing strategy where such neglect predictably creates unsafe or degrading living conditions.</p>
+  <p class="rule-notes">Public housing serves the most vulnerable residents; chronic underfunding and neglect are policy choices that impose unsafe conditions on people with the fewest alternatives.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-OWN-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Federal and state policy must address the long-term</p>
+  <p class="rule-stmt">Federal and state policy must address the long-term rise in housing purchase costs relative to incomes and inflation through supply reform, anti-speculation measures, and affordability-focused ownership policy.</p>
+  <p class="rule-notes">Homeownership access is a long-term wealth-building mechanism that has been structurally closed to many; anti-speculation rules and first-buyer support restore realistic pathways to ownership.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-OWN-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing policy must identify and reform legal, tax</p>
+  <p class="rule-stmt">Housing policy must identify and reform legal, tax, financing, zoning, and market structures that have caused homeownership to become increasingly inaccessible over time.</p>
+  <p class="rule-notes">Homeownership access is a long-term wealth-building mechanism that has been structurally closed to many; anti-speculation rules and first-buyer support restore realistic pathways to ownership.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-OWN-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">The cost of homeownership must be evaluated as</p>
+  <p class="rule-stmt">The cost of homeownership must be evaluated as total cost, including mortgage burden, insurance, taxes, maintenance, fees, and repair exposure, not only sticker price.</p>
+  <p class="rule-notes">Homeownership access is a long-term wealth-building mechanism that has been structurally closed to many; anti-speculation rules and first-buyer support restore realistic pathways to ownership.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-OWN-004</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Homeownership policy should prioritize long-term resident ownership and</p>
+  <p class="rule-stmt">Homeownership policy should prioritize long-term resident ownership and stability rather than speculative appreciation as the primary policy objective.</p>
+  <p class="rule-notes">Homeownership access is a long-term wealth-building mechanism that has been structurally closed to many; anti-speculation rules and first-buyer support restore realistic pathways to ownership.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-OWN-005</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing policy must ensure that ordinary income earners</p>
+  <p class="rule-stmt">Housing policy must ensure that ordinary income earners can realistically access homeownership without requiring disproportionate wealth, inheritance, or financial risk.</p>
+  <p class="rule-notes">Homeownership access is a long-term wealth-building mechanism that has been structurally closed to many; anti-speculation rules and first-buyer support restore realistic pathways to ownership.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-OWN-006</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">First-time homebuyers must have access to fair financing</p>
+  <p class="rule-stmt">First-time homebuyers must have access to fair financing options, including lower barriers to entry, predictable terms, and protection from predatory lending.</p>
+  <p class="rule-notes">Homeownership access is a long-term wealth-building mechanism that has been structurally closed to many; anti-speculation rules and first-buyer support restore realistic pathways to ownership.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-OWN-007</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Down payment assistance, public financing tools, or equivalent</p>
+  <p class="rule-stmt">Down payment assistance, public financing tools, or equivalent mechanisms should be available to reduce structural barriers to first-time ownership.</p>
+  <p class="rule-notes">Homeownership access is a long-term wealth-building mechanism that has been structurally closed to many; anti-speculation rules and first-buyer support restore realistic pathways to ownership.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-MKT-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing markets may not be structured so that</p>
+  <p class="rule-stmt">Housing markets may not be structured so that large investors, private equity, or concentrated ownership outcompete ordinary residents for primary homes at scale.</p>
+  <p class="rule-notes">Institutional investor control of residential housing markets creates structural competition that ordinary buyers and renters cannot overcome; ownership limits restore market access.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-MKT-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Government should limit speculative bulk acquisition of single-family</p>
+  <p class="rule-stmt">Government should limit speculative bulk acquisition of single-family homes and other owner-occupancy-oriented housing by large firms and institutional investors.</p>
+  <p class="rule-notes">Institutional investor control of residential housing markets creates structural competition that ordinary buyers and renters cannot overcome; ownership limits restore market access.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-MKT-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Ownership concentration in residential housing markets must be</p>
+  <p class="rule-stmt">Ownership concentration in residential housing markets must be monitored, reported, and subject to corrective action where it materially undermines affordability or access.</p>
+  <p class="rule-notes">Institutional investor control of residential housing markets creates structural competition that ordinary buyers and renters cannot overcome; ownership limits restore market access.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-MKT-004</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Corporate ownership of single-family homes and other owner-occupancy-oriented</p>
+  <p class="rule-stmt">Corporate ownership of single-family homes and other owner-occupancy-oriented residential housing must be strictly limited, contained, or banned, except for clearly defined categories such as multifamily apartment complexes.</p>
+  <p class="rule-notes">Institutional investor control of residential housing markets creates structural competition that ordinary buyers and renters cannot overcome; ownership limits restore market access.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-MKT-005</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Institutional and corporate ownership caps should apply in</p>
+  <p class="rule-stmt">Institutional and corporate ownership caps should apply in residential markets where concentrated ownership materially reduces affordability, access, or neighborhood stability.</p>
+  <p class="rule-notes">Institutional investor control of residential housing markets creates structural competition that ordinary buyers and renters cannot overcome; ownership limits restore market access.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-MKT-006</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Bulk acquisition of single-family homes, starter homes, or</p>
+  <p class="rule-stmt">Bulk acquisition of single-family homes, starter homes, or other ownership-oriented housing by corporations, private equity, or large investment entities should be prohibited or tightly restricted.</p>
+  <p class="rule-notes">Institutional investor control of residential housing markets creates structural competition that ordinary buyers and renters cannot overcome; ownership limits restore market access.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-MKT-007</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Shell-company, affiliate, and fragmented-title structures may not be</p>
+  <p class="rule-stmt">Shell-company, affiliate, and fragmented-title structures may not be used to evade corporate ownership limits in residential housing markets.</p>
+  <p class="rule-notes">Institutional investor control of residential housing markets creates structural competition that ordinary buyers and renters cannot overcome; ownership limits restore market access.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-MKT-008</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Ownership-concentration rules must distinguish between dense rental housing</p>
+  <p class="rule-stmt">Ownership-concentration rules must distinguish between dense rental housing operations and speculative control of ownership-oriented housing stock.</p>
+  <p class="rule-notes">Institutional investor control of residential housing markets creates structural competition that ordinary buyers and renters cannot overcome; ownership limits restore market access.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-MKT-009</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing policy may not prioritize asset appreciation or</p>
+  <p class="rule-stmt">Housing policy may not prioritize asset appreciation or investment returns over affordability, access, and stability for residents.</p>
+  <p class="rule-notes">Institutional investor control of residential housing markets creates structural competition that ordinary buyers and renters cannot overcome; ownership limits restore market access.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-MKT-010</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Tax, financing, and regulatory systems must not disproportionately</p>
+  <p class="rule-stmt">Tax, financing, and regulatory systems must not disproportionately advantage large-scale investors or speculative capital over primary residents.</p>
+  <p class="rule-notes">Institutional investor control of residential housing markets creates structural competition that ordinary buyers and renters cannot overcome; ownership limits restore market access.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-MKT-011</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Residential housing must not be treated primarily as</p>
+  <p class="rule-stmt">Residential housing must not be treated primarily as a financial asset class where doing so materially undermines affordability or access.</p>
+  <p class="rule-notes">Institutional investor control of residential housing markets creates structural competition that ordinary buyers and renters cannot overcome; ownership limits restore market access.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-MKT-012</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Ownership concentration that enables coordinated pricing, rent inflation</p>
+  <p class="rule-stmt">Ownership concentration that enables coordinated pricing, rent inflation, or reduced competition in housing markets must be limited or corrected.</p>
+  <p class="rule-notes">Institutional investor control of residential housing markets creates structural competition that ordinary buyers and renters cannot overcome; ownership limits restore market access.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-MKT-013</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Use of algorithmic or coordinated systems to artificially</p>
+  <p class="rule-stmt">Use of algorithmic or coordinated systems to artificially inflate rents or prices beyond competitive market behavior must be regulated or prohibited.</p>
+  <p class="rule-notes">Institutional investor control of residential housing markets creates structural competition that ordinary buyers and renters cannot overcome; ownership limits restore market access.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-MKT-014</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Residential housing markets are subject to heightened antitrust</p>
+  <p class="rule-stmt">Residential housing markets are subject to heightened antitrust scrutiny where concentration, algorithmic pricing, investor coordination, or market power materially undermine affordability or access.</p>
+  <p class="rule-notes">Institutional investor control of residential housing markets creates structural competition that ordinary buyers and renters cannot overcome; ownership limits restore market access.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-MKT-015</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Landlords, property managers, investors, and pricing vendors may</p>
+  <p class="rule-stmt">Landlords, property managers, investors, and pricing vendors may not use shared algorithms, common data systems, or coordinated tools to align rents or reduce competition.</p>
+  <p class="rule-notes">Institutional investor control of residential housing markets creates structural competition that ordinary buyers and renters cannot overcome; ownership limits restore market access.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-MKT-016</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Use of algorithmic rent-setting systems in concentrated housing</p>
+  <p class="rule-stmt">Use of algorithmic rent-setting systems in concentrated housing markets must be transparent, auditable, and prohibited where they function as collusion or artificial price inflation.</p>
+  <p class="rule-notes">Institutional investor control of residential housing markets creates structural competition that ordinary buyers and renters cannot overcome; ownership limits restore market access.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-MKT-017</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Large-scale residential ownership structures that enable anti-competitive conduct</p>
+  <p class="rule-stmt">Large-scale residential ownership structures that enable anti-competitive conduct, coordinated pricing, or local market domination must be subject to divestiture, ownership caps, or other structural remedies.</p>
+  <p class="rule-notes">Institutional investor control of residential housing markets creates structural competition that ordinary buyers and renters cannot overcome; ownership limits restore market access.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-SUP-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing policy must expand the supply of affordable</p>
+  <p class="rule-stmt">Housing policy must expand the supply of affordable and moderate-cost housing in high-demand areas through zoning and land-use reform that removes unnecessary barriers to building.</p>
+  <p class="rule-notes">Housing supply reform—removing exclusionary zoning—is the single most effective tool for reducing cost burdens in high-demand areas while preserving anti-displacement safeguards.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-SUP-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Restrictive zoning, exclusionary land-use rules, and permitting systems</p>
+  <p class="rule-stmt">Restrictive zoning, exclusionary land-use rules, and permitting systems that artificially constrain housing supply should be reformed where they drive scarcity and displacement.</p>
+  <p class="rule-notes">Housing supply reform—removing exclusionary zoning—is the single most effective tool for reducing cost burdens in high-demand areas while preserving anti-displacement safeguards.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-SUP-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing supply reform should prioritize abundant, family-capable, transit-connected</p>
+  <p class="rule-stmt">Housing supply reform should prioritize abundant, family-capable, transit-connected, and mixed-income housing rather than luxury production alone.</p>
+  <p class="rule-notes">Housing supply reform—removing exclusionary zoning—is the single most effective tool for reducing cost burdens in high-demand areas while preserving anti-displacement safeguards.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-SUP-004</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Inclusionary requirements, affordability set-asides, public-development tools, and preservation</p>
+  <p class="rule-stmt">Inclusionary requirements, affordability set-asides, public-development tools, and preservation strategies should be used so new housing growth includes permanently affordable stock where feasible.</p>
+  <p class="rule-notes">Housing supply reform—removing exclusionary zoning—is the single most effective tool for reducing cost burdens in high-demand areas while preserving anti-displacement safeguards.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-SUP-005</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Zoning and land-use systems may not be structured</p>
+  <p class="rule-stmt">Zoning and land-use systems may not be structured to create artificial housing scarcity in high-demand areas through exclusionary or unnecessarily restrictive rules.</p>
+  <p class="rule-notes">Housing supply reform—removing exclusionary zoning—is the single most effective tool for reducing cost burdens in high-demand areas while preserving anti-displacement safeguards.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-SUP-006</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Permitting and approval processes must be time-bounded, predictable</p>
+  <p class="rule-stmt">Permitting and approval processes must be time-bounded, predictable, and may not be used to indefinitely delay or block compliant housing development.</p>
+  <p class="rule-notes">Housing supply reform—removing exclusionary zoning—is the single most effective tool for reducing cost burdens in high-demand areas while preserving anti-displacement safeguards.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-SUP-007</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Discretionary approval systems that allow arbitrary denial of</p>
+  <p class="rule-stmt">Discretionary approval systems that allow arbitrary denial of compliant housing projects must be limited or replaced with rule-based approval frameworks.</p>
+  <p class="rule-notes">Housing supply reform—removing exclusionary zoning—is the single most effective tool for reducing cost burdens in high-demand areas while preserving anti-displacement safeguards.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-PRS-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing policy must preserve existing affordable housing stock</p>
+  <p class="rule-stmt">Housing policy must preserve existing affordable housing stock and prevent loss of livable low-cost units through neglect, demolition, speculative conversion, or predatory redevelopment.</p>
+  <p class="rule-notes">Anti-displacement protections ensure that new housing growth serves existing residents, not just incoming capital, preventing communities from being priced out of their own neighborhoods.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-PRS-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Anti-displacement protections must be built into redevelopment, rezoning</p>
+  <p class="rule-stmt">Anti-displacement protections must be built into redevelopment, rezoning, and infrastructure projects so existing residents are not sacrificed for nominal growth.</p>
+  <p class="rule-notes">Anti-displacement protections ensure that new housing growth serves existing residents, not just incoming capital, preventing communities from being priced out of their own neighborhoods.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-PRS-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Communities facing gentrification pressure must receive proactive tenant</p>
+  <p class="rule-stmt">Communities facing gentrification pressure must receive proactive tenant protections, preservation funding, and community-stability measures rather than after-the-fact displacement relief.</p>
+  <p class="rule-notes">Anti-displacement protections ensure that new housing growth serves existing residents, not just incoming capital, preventing communities from being priced out of their own neighborhoods.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-ALT-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing policy should promote nonprofit housing, cooperative housing</p>
+  <p class="rule-stmt">Housing policy should promote nonprofit housing, cooperative housing, resident-owned models, and community land trusts as durable anti-extraction alternatives.</p>
+  <p class="rule-notes">Community land trusts, cooperatives, and nonprofit models demonstrate that affordable housing can be sustained across generations without continuous public subsidy—permanently removing units from speculative markets.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-ALT-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Public subsidy and land policy should favor ownership</p>
+  <p class="rule-stmt">Public subsidy and land policy should favor ownership and stewardship models that keep housing permanently or long-term affordable.</p>
+  <p class="rule-notes">Community land trusts, cooperatives, and nonprofit models demonstrate that affordable housing can be sustained across generations without continuous public subsidy—permanently removing units from speculative markets.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-ALT-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Social housing systems should include mixed-income models that</p>
+  <p class="rule-stmt">Social housing systems should include mixed-income models that maintain financial sustainability without profit extraction.</p>
+  <p class="rule-notes">Community land trusts, cooperatives, and nonprofit models demonstrate that affordable housing can be sustained across generations without continuous public subsidy—permanently removing units from speculative markets.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-ALT-004</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Community land trusts, cooperatives, and nonprofit housing models</p>
+  <p class="rule-stmt">Community land trusts, cooperatives, and nonprofit housing models should be scaled as core components of the housing system.</p>
+  <p class="rule-notes">Community land trusts, cooperatives, and nonprofit models demonstrate that affordable housing can be sustained across generations without continuous public subsidy—permanently removing units from speculative markets.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-TEN-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Tenants must have enforceable rights to habitability, repairs</p>
+  <p class="rule-stmt">Tenants must have enforceable rights to habitability, repairs, due process, and protection from retaliation when asserting housing rights.</p>
+  <p class="rule-notes">Tenant protections make housing security real in practice: habitability enforcement, lease transparency, anti-retaliation rules, and anti-eviction safeguards convert nominal rights into actual stability.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-TEN-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Administrative barriers, legal complexity, and code-enforcement weakness may</p>
+  <p class="rule-stmt">Administrative barriers, legal complexity, and code-enforcement weakness may not be allowed to function as de facto permission for unsafe or predatory housing.</p>
+  <p class="rule-notes">Tenant protections make housing security real in practice: habitability enforcement, lease transparency, anti-retaliation rules, and anti-eviction safeguards convert nominal rights into actual stability.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-TEN-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing code enforcement must be proactive, adequately funded</p>
+  <p class="rule-stmt">Housing code enforcement must be proactive, adequately funded, and tied to real remediation rather than symbolic complaint intake alone.</p>
+  <p class="rule-notes">Tenant protections make housing security real in practice: habitability enforcement, lease transparency, anti-retaliation rules, and anti-eviction safeguards convert nominal rights into actual stability.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-TEN-004</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Tenants must have the right to clear, stable</p>
+  <p class="rule-stmt">Tenants must have the right to clear, stable, and understandable lease terms without hidden conditions or predatory clauses.</p>
+  <p class="rule-notes">Tenant protections make housing security real in practice: habitability enforcement, lease transparency, anti-retaliation rules, and anti-eviction safeguards convert nominal rights into actual stability.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-TEN-005</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Lease renewals and terminations must be governed by</p>
+  <p class="rule-stmt">Lease renewals and terminations must be governed by fair, transparent, and non-arbitrary standards.</p>
+  <p class="rule-notes">Tenant protections make housing security real in practice: habitability enforcement, lease transparency, anti-retaliation rules, and anti-eviction safeguards convert nominal rights into actual stability.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-TEN-006</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Tenants must have protection from sudden or extreme</p>
+  <p class="rule-stmt">Tenants must have protection from sudden or extreme rent increases that function as constructive eviction.</p>
+  <p class="rule-notes">Tenant protections make housing security real in practice: habitability enforcement, lease transparency, anti-retaliation rules, and anti-eviction safeguards convert nominal rights into actual stability.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-TEN-007</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Tenants must have the right to organize, form</p>
+  <p class="rule-stmt">Tenants must have the right to organize, form associations, and collectively advocate without retaliation.</p>
+  <p class="rule-notes">Tenant protections make housing security real in practice: habitability enforcement, lease transparency, anti-retaliation rules, and anti-eviction safeguards convert nominal rights into actual stability.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-OVR-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Federal, state, and local governments must collect and</p>
+  <p class="rule-stmt">Federal, state, and local governments must collect and publish standardized data on affordability, vacancy, code violations, ownership concentration, investor acquisition, and habitability enforcement.</p>
+  <p class="rule-notes">Transparent data collection and mandatory reporting on affordability, ownership concentration, and habitability violations enable evidence-based policy and prevent systemic abuses from going unaddressed.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-OVR-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Repeated patterns of unsafe housing, speculative extraction, or</p>
+  <p class="rule-stmt">Repeated patterns of unsafe housing, speculative extraction, or subsidy misuse must trigger mandatory review, corrective action, and where necessary loss of program eligibility or ownership authority.</p>
+  <p class="rule-notes">Transparent data collection and mandatory reporting on affordability, ownership concentration, and habitability violations enable evidence-based policy and prevent systemic abuses from going unaddressed.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-OVR-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing regulators must track and publish standardized data</p>
+  <p class="rule-stmt">Housing regulators must track and publish standardized data on eviction patterns, rent increases, ownership concentration, algorithmic pricing, code enforcement, repair failures, and subsidy misuse.</p>
+  <p class="rule-notes">Transparent data collection and mandatory reporting on affordability, ownership concentration, and habitability violations enable evidence-based policy and prevent systemic abuses from going unaddressed.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-OVR-004</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Repeated patterns of abuse, neglect, collusion, unsafe conditions</p>
+  <p class="rule-stmt">Repeated patterns of abuse, neglect, collusion, unsafe conditions, or anti-competitive conduct in housing must trigger mandatory corrective action and enforcement.</p>
+  <p class="rule-notes">Transparent data collection and mandatory reporting on affordability, ownership concentration, and habitability violations enable evidence-based policy and prevent systemic abuses from going unaddressed.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-VAC-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Purchase of homes in developing or supply-constrained areas</p>
+  <p class="rule-stmt">Purchase of homes in developing or supply-constrained areas for prolonged vacancy or speculative holding should be prohibited or heavily taxed.</p>
+  <p class="rule-notes">Vacancy taxes and anti-land-banking rules address speculative holding that artificially constrains supply in high-demand areas and drives up costs without adding housing value.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-VAC-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Vacancy taxes or equivalent anti-speculation tools should apply</p>
+  <p class="rule-stmt">Vacancy taxes or equivalent anti-speculation tools should apply to residential properties left intentionally unoccupied without legitimate cause.</p>
+  <p class="rule-notes">Vacancy taxes and anti-land-banking rules address speculative holding that artificially constrains supply in high-demand areas and drives up costs without adding housing value.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-VAC-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing policy should discourage land banking and empty-home</p>
+  <p class="rule-stmt">Housing policy should discourage land banking and empty-home speculation where those practices worsen affordability or delay community development.</p>
+  <p class="rule-notes">Vacancy taxes and anti-land-banking rules address speculative holding that artificially constrains supply in high-demand areas and drives up costs without adding housing value.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-VAC-004</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Legitimate exceptions to vacancy restrictions may include temporary</p>
+  <p class="rule-stmt">Legitimate exceptions to vacancy restrictions may include temporary relocation, active renovation, probate, military deployment, disaster recovery, or other clearly defined non-speculative circumstances.</p>
+  <p class="rule-notes">Vacancy taxes and anti-land-banking rules address speculative holding that artificially constrains supply in high-demand areas and drives up costs without adding housing value.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-VAC-005</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Policies must prevent speculative holding of residential property</p>
+  <p class="rule-stmt">Policies must prevent speculative holding of residential property where the primary purpose is appreciation rather than occupancy or productive use.</p>
+  <p class="rule-notes">Vacancy taxes and anti-land-banking rules address speculative holding that artificially constrains supply in high-demand areas and drives up costs without adding housing value.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-VAC-006</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Rapid speculative turnover practices that destabilize housing markets</p>
+  <p class="rule-stmt">Rapid speculative turnover practices that destabilize housing markets or inflate prices without adding supply must be regulated or disincentivized.</p>
+  <p class="rule-notes">Vacancy taxes and anti-land-banking rules address speculative holding that artificially constrains supply in high-demand areas and drives up costs without adding housing value.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-HOA-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Homeowner associations must be subject to strong limits</p>
+  <p class="rule-stmt">Homeowner associations must be subject to strong limits on abuse, selective enforcement, retaliatory fines, and arbitrary restrictions on residents.</p>
+  <p class="rule-notes">HOA governance reform protects residents from predatory fines, arbitrary rules, and board misconduct that can impose significant costs and stress on homeowners with little recourse.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-HOA-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">HOA governance must include due process, transparent rules</p>
+  <p class="rule-stmt">HOA governance must include due process, transparent rules, accessible records, fair elections, and meaningful appeal rights for residents.</p>
+  <p class="rule-notes">HOA governance reform protects residents from predatory fines, arbitrary rules, and board misconduct that can impose significant costs and stress on homeowners with little recourse.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-HOA-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">HOA fines, liens, and enforcement powers must be</p>
+  <p class="rule-stmt">HOA fines, liens, and enforcement powers must be proportionate and may not be used as predatory revenue systems or tools of harassment.</p>
+  <p class="rule-notes">HOA governance reform protects residents from predatory fines, arbitrary rules, and board misconduct that can impose significant costs and stress on homeowners with little recourse.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-HOA-004</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">HOAs may not impose rules that violate protected</p>
+  <p class="rule-stmt">HOAs may not impose rules that violate protected rights, fair housing standards, or basic residential autonomy without a compelling and lawful justification.</p>
+  <p class="rule-notes">HOA governance reform protects residents from predatory fines, arbitrary rules, and board misconduct that can impose significant costs and stress on homeowners with little recourse.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-HOA-005</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">State law should provide oversight, complaint mechanisms, and</p>
+  <p class="rule-stmt">State law should provide oversight, complaint mechanisms, and remedies against abusive HOA governance and board misconduct.</p>
+  <p class="rule-notes">HOA governance reform protects residents from predatory fines, arbitrary rules, and board misconduct that can impose significant costs and stress on homeowners with little recourse.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-HOA-006</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">HOA rules may not be used to block</p>
+  <p class="rule-stmt">HOA rules may not be used to block environmentally responsible upgrades, accessibility improvements, repairs, or ordinary residential autonomy without compelling justification.</p>
+  <p class="rule-notes">HOA governance reform protects residents from predatory fines, arbitrary rules, and board misconduct that can impose significant costs and stress on homeowners with little recourse.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-HOA-007</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">HOAs may not use aesthetic rules to force</p>
+  <p class="rule-stmt">HOAs may not use aesthetic rules to force unnecessary replacement, wasteful maintenance, or anti-repair practices where safe and functional alternatives exist.</p>
+  <p class="rule-notes">HOA governance reform protects residents from predatory fines, arbitrary rules, and board misconduct that can impose significant costs and stress on homeowners with little recourse.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-GEN-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing policy must include proactive anti-gentrification measures to</p>
+  <p class="rule-stmt">Housing policy must include proactive anti-gentrification measures to protect existing residents from displacement caused by rising land values, redevelopment, or speculative investment.</p>
+  <p class="rule-notes">Anti-gentrification protections prevent investment and infrastructure improvements from functioning as displacement mechanisms by requiring proactive resident protection alongside development.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-GEN-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Redevelopment and upzoning policies must include anti-displacement safeguards</p>
+  <p class="rule-stmt">Redevelopment and upzoning policies must include anti-displacement safeguards, affordability preservation, and resident-protection measures for affected communities.</p>
+  <p class="rule-notes">Anti-gentrification protections prevent investment and infrastructure improvements from functioning as displacement mechanisms by requiring proactive resident protection alongside development.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-GEN-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Communities facing gentrification pressure should receive targeted preservation</p>
+  <p class="rule-stmt">Communities facing gentrification pressure should receive targeted preservation funding, tenant protections, community land support, and pathways to resident ownership.</p>
+  <p class="rule-notes">Anti-gentrification protections prevent investment and infrastructure improvements from functioning as displacement mechanisms by requiring proactive resident protection alongside development.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-GEN-004</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Public investment and infrastructure improvements may not be</p>
+  <p class="rule-stmt">Public investment and infrastructure improvements may not be structured in ways that predictably displace lower-income residents without protective measures and accountability.</p>
+  <p class="rule-notes">Anti-gentrification protections prevent investment and infrastructure improvements from functioning as displacement mechanisms by requiring proactive resident protection alongside development.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-GEN-005</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing and development policy must prevent predictable displacement</p>
+  <p class="rule-stmt">Housing and development policy must prevent predictable displacement cycles caused by investment inflows without corresponding protections for existing residents.</p>
+  <p class="rule-notes">Anti-gentrification protections prevent investment and infrastructure improvements from functioning as displacement mechanisms by requiring proactive resident protection alongside development.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-BLD-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing policy should expand investment in sustainable, renewable</p>
+  <p class="rule-stmt">Housing policy should expand investment in sustainable, renewable, environmentally responsible, and durable building materials and construction methods.</p>
+  <p class="rule-notes">Building standards and sustainable construction reduce long-term housing costs while lowering environmental impact; prioritizing durability over lowest upfront cost produces better outcomes for residents.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-BLD-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Residential construction incentives should prioritize long-term durability, energy</p>
+  <p class="rule-stmt">Residential construction incentives should prioritize long-term durability, energy efficiency, repairability, and lower environmental impact rather than lowest upfront cost alone.</p>
+  <p class="rule-notes">Building standards and sustainable construction reduce long-term housing costs while lowering environmental impact; prioritizing durability over lowest upfront cost produces better outcomes for residents.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-BLD-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Publicly supported housing development should favor construction standards</p>
+  <p class="rule-stmt">Publicly supported housing development should favor construction standards and materials that reduce lifecycle emissions, waste, and long-term maintenance burdens.</p>
+  <p class="rule-notes">Building standards and sustainable construction reduce long-term housing costs while lowering environmental impact; prioritizing durability over lowest upfront cost produces better outcomes for residents.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-BLD-004</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing production systems must incentivize construction of affordable</p>
+  <p class="rule-stmt">Housing production systems must incentivize construction of affordable and moderate-cost housing rather than exclusively high-margin or luxury units.</p>
+  <p class="rule-notes">Building standards and sustainable construction reduce long-term housing costs while lowering environmental impact; prioritizing durability over lowest upfront cost produces better outcomes for residents.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-BLD-005</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Regulatory frameworks must be evaluated to remove unnecessary</p>
+  <p class="rule-stmt">Regulatory frameworks must be evaluated to remove unnecessary cost drivers that do not materially improve safety, durability, or environmental outcomes.</p>
+  <p class="rule-notes">Building standards and sustainable construction reduce long-term housing costs while lowering environmental impact; prioritizing durability over lowest upfront cost produces better outcomes for residents.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-BLD-006</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing construction and renovation policy must minimize material</p>
+  <p class="rule-stmt">Housing construction and renovation policy must minimize material waste and prioritize reuse, recyclability, and lifecycle efficiency where feasible.</p>
+  <p class="rule-notes">Building standards and sustainable construction reduce long-term housing costs while lowering environmental impact; prioritizing durability over lowest upfront cost produces better outcomes for residents.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-BLD-007</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Residential construction may not rely on materials, methods</p>
+  <p class="rule-stmt">Residential construction may not rely on materials, methods, or system designs that create predictable premature failure, excessive demolition waste, or avoidable replacement cycles.</p>
+  <p class="rule-notes">Building standards and sustainable construction reduce long-term housing costs while lowering environmental impact; prioritizing durability over lowest upfront cost produces better outcomes for residents.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-BLD-008</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Publicly supported housing and large-scale residential development should</p>
+  <p class="rule-stmt">Publicly supported housing and large-scale residential development should prioritize materials and methods that reduce long-term waste, energy burden, and maintenance cost.</p>
+  <p class="rule-notes">Building standards and sustainable construction reduce long-term housing costs while lowering environmental impact; prioritizing durability over lowest upfront cost produces better outcomes for residents.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-QLT-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Residential construction must meet stronger quality and durability</p>
+  <p class="rule-stmt">Residential construction must meet stronger quality and durability standards and may not rely on systematically cheap, short-lived materials or methods that undermine long-term habitability.</p>
+  <p class="rule-notes">Quality and durability standards for residential construction prevent the systemic use of cheap, short-lived materials that shift long-term costs onto residents and communities.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-QLT-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Large-scale subdivision builders and mass residential developers must</p>
+  <p class="rule-stmt">Large-scale subdivision builders and mass residential developers must be subject to stronger inspection, durability, and accountability standards for build quality.</p>
+  <p class="rule-notes">Quality and durability standards for residential construction prevent the systemic use of cheap, short-lived materials that shift long-term costs onto residents and communities.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-QLT-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing policy should discourage construction patterns that maximize</p>
+  <p class="rule-stmt">Housing policy should discourage construction patterns that maximize superficial size or resale value while reducing durability, livability, neighborhood fit, and long-term sustainability.</p>
+  <p class="rule-notes">Quality and durability standards for residential construction prevent the systemic use of cheap, short-lived materials that shift long-term costs onto residents and communities.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-QLT-004</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Historic housing districts and architecturally significant neighborhoods should</p>
+  <p class="rule-stmt">Historic housing districts and architecturally significant neighborhoods should have stronger protections against low-quality incompatible mass-built development that degrades local character and durability standards.</p>
+  <p class="rule-notes">Quality and durability standards for residential construction prevent the systemic use of cheap, short-lived materials that shift long-term costs onto residents and communities.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-QLT-005</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Developers responsible for repeated quality failures, unsafe construction</p>
+  <p class="rule-stmt">Developers responsible for repeated quality failures, unsafe construction, or systemic use of substandard materials must face penalties, remediation duties, and possible loss of development eligibility.</p>
+  <p class="rule-notes">Quality and durability standards for residential construction prevent the systemic use of cheap, short-lived materials that shift long-term costs onto residents and communities.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-SYS-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Federal and state housing policy must identify and</p>
+  <p class="rule-stmt">Federal and state housing policy must identify and address the cumulative legal, financial, tax, zoning, ownership, and market structures that caused housing costs to outpace general inflation and incomes over time.</p>
+  <p class="rule-notes">System-level analysis of the structural causes of housing unaffordability—zoning, financialization, tax policy, speculation—is required to address root causes rather than isolated symptoms.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-SYS-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing reform should be based on root-cause analysis</p>
+  <p class="rule-stmt">Housing reform should be based on root-cause analysis of long-term affordability decline rather than isolated short-term price symptoms alone.</p>
+  <p class="rule-notes">System-level analysis of the structural causes of housing unaffordability—zoning, financialization, tax policy, speculation—is required to address root causes rather than isolated symptoms.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-SYS-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing, healthcare, employment, and social-service systems must be</p>
+  <p class="rule-stmt">Housing, healthcare, employment, and social-service systems must be coordinated to prevent people from cycling between instability, eviction, and homelessness.</p>
+  <p class="rule-notes">System-level analysis of the structural causes of housing unaffordability—zoning, financialization, tax policy, speculation—is required to address root causes rather than isolated symptoms.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-SYS-004</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Systems must intervene early to prevent eviction and</p>
+  <p class="rule-stmt">Systems must intervene early to prevent eviction and housing loss rather than relying primarily on post-displacement response.</p>
+  <p class="rule-notes">System-level analysis of the structural causes of housing unaffordability—zoning, financialization, tax policy, speculation—is required to address root causes rather than isolated symptoms.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-SYS-005</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing is an essential public-interest sector and is</p>
+  <p class="rule-stmt">Housing is an essential public-interest sector and is subject to heightened anti-concentration, anti-extraction, habitability, and fairness obligations.</p>
+  <p class="rule-notes">System-level analysis of the structural causes of housing unaffordability—zoning, financialization, tax policy, speculation—is required to address root causes rather than isolated symptoms.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-SYS-006</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing policy must measure success by affordability, stability</p>
+  <p class="rule-stmt">Housing policy must measure success by affordability, stability, livability, ownership access, displacement prevention, and long-term community health rather than production volume alone.</p>
+  <p class="rule-notes">System-level analysis of the structural causes of housing unaffordability—zoning, financialization, tax policy, speculation—is required to address root causes rather than isolated symptoms.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-REG-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing regulations must prioritize safety, durability, habitability, and</p>
+  <p class="rule-stmt">Housing regulations must prioritize safety, durability, habitability, and long-term livability over short-term cost reduction.</p>
+  <p class="rule-notes">Housing regulation must protect safety and quality while targeting unnecessary cost inflation; reforms that remove exclusionary barriers while maintaining safety standards serve both affordability and resident wellbeing.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-REG-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing regulation may not be weakened in ways</p>
+  <p class="rule-stmt">Housing regulation may not be weakened in ways that enable unsafe construction, substandard materials, or reduced structural integrity.</p>
+  <p class="rule-notes">Housing regulation must protect safety and quality while targeting unnecessary cost inflation; reforms that remove exclusionary barriers while maintaining safety standards serve both affordability and resident wellbeing.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-REG-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Land-use and zoning regulation may not be used</p>
+  <p class="rule-stmt">Land-use and zoning regulation may not be used to exclude residents, restrict access, or create artificial scarcity that drives up housing costs.</p>
+  <p class="rule-notes">Housing regulation must protect safety and quality while targeting unnecessary cost inflation; reforms that remove exclusionary barriers while maintaining safety standards serve both affordability and resident wellbeing.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-REG-004</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Building and safety codes must be strengthened or</p>
+  <p class="rule-stmt">Building and safety codes must be strengthened or maintained where they protect long-term durability, environmental performance, and resident well-being.</p>
+  <p class="rule-notes">Housing regulation must protect safety and quality while targeting unnecessary cost inflation; reforms that remove exclusionary barriers while maintaining safety standards serve both affordability and resident wellbeing.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-REG-005</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Regulatory reform in housing must target unnecessary delay</p>
+  <p class="rule-stmt">Regulatory reform in housing must target unnecessary delay, cost inflation without benefit, and discretionary abuse while preserving or improving safety and quality outcomes.</p>
+  <p class="rule-notes">Housing regulation must protect safety and quality while targeting unnecessary cost inflation; reforms that remove exclusionary barriers while maintaining safety standards serve both affordability and resident wellbeing.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-REG-006</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Industry influence over housing regulation must be limited</p>
+  <p class="rule-stmt">Industry influence over housing regulation must be limited to prevent weakening of safety, durability, or affordability protections for profit-driven reasons.</p>
+  <p class="rule-notes">Housing regulation must protect safety and quality while targeting unnecessary cost inflation; reforms that remove exclusionary barriers while maintaining safety standards serve both affordability and resident wellbeing.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-EVI-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Evictions may only occur through a transparent legal</p>
+  <p class="rule-stmt">Evictions may only occur through a transparent legal process with due process, adequate notice, and opportunity to respond.</p>
+  <p class="rule-notes">Eviction reform ensures that tenants have due process, legal representation, and time to respond before losing housing—preventing eviction from functioning as a tool of harassment or extractive rent-setting.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-EVI-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">No eviction may occur without judicial review; administrative</p>
+  <p class="rule-stmt">No eviction may occur without judicial review; administrative or informal evictions are prohibited.</p>
+  <p class="rule-notes">Eviction reform ensures that tenants have due process, legal representation, and time to respond before losing housing—preventing eviction from functioning as a tool of harassment or extractive rent-setting.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-EVI-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Tenants must have access to legal representation in</p>
+  <p class="rule-stmt">Tenants must have access to legal representation in eviction proceedings where loss of housing is at stake.</p>
+  <p class="rule-notes">Eviction reform ensures that tenants have due process, legal representation, and time to respond before losing housing—preventing eviction from functioning as a tool of harassment or extractive rent-setting.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-EVI-004</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Eviction timelines must provide sufficient time for tenants</p>
+  <p class="rule-stmt">Eviction timelines must provide sufficient time for tenants to respond, seek counsel, and access assistance.</p>
+  <p class="rule-notes">Eviction reform ensures that tenants have due process, legal representation, and time to respond before losing housing—preventing eviction from functioning as a tool of harassment or extractive rent-setting.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-EVI-005</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Evictions based on minor, technical, or non-material lease</p>
+  <p class="rule-stmt">Evictions based on minor, technical, or non-material lease violations must be restricted or prohibited.</p>
+  <p class="rule-notes">Eviction reform ensures that tenants have due process, legal representation, and time to respond before losing housing—preventing eviction from functioning as a tool of harassment or extractive rent-setting.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-EVI-006</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Retaliatory evictions for reporting code violations, asserting tenant</p>
+  <p class="rule-stmt">Retaliatory evictions for reporting code violations, asserting tenant rights, or participating in legal or organizing activity are prohibited.</p>
+  <p class="rule-notes">Eviction reform ensures that tenants have due process, legal representation, and time to respond before losing housing—preventing eviction from functioning as a tool of harassment or extractive rent-setting.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-EVI-007</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Evictions may not be used as a tool</p>
+  <p class="rule-stmt">Evictions may not be used as a tool of harassment, discrimination, or informal rent escalation.</p>
+  <p class="rule-notes">Eviction reform ensures that tenants have due process, legal representation, and time to respond before losing housing—preventing eviction from functioning as a tool of harassment or extractive rent-setting.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-EVI-008</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Serial eviction filings without legitimate cause must trigger</p>
+  <p class="rule-stmt">Serial eviction filings without legitimate cause must trigger review, penalties, and restrictions on landlord activity.</p>
+  <p class="rule-notes">Eviction reform ensures that tenants have due process, legal representation, and time to respond before losing housing—preventing eviction from functioning as a tool of harassment or extractive rent-setting.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-EVI-009</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Landlords may not use threats, lockouts, utility shutoffs</p>
+  <p class="rule-stmt">Landlords may not use threats, lockouts, utility shutoffs, or other extrajudicial means to force tenants out.</p>
+  <p class="rule-notes">Eviction reform ensures that tenants have due process, legal representation, and time to respond before losing housing—preventing eviction from functioning as a tool of harassment or extractive rent-setting.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-EVI-010</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Eviction for nonpayment must include mandatory opportunity for</p>
+  <p class="rule-stmt">Eviction for nonpayment must include mandatory opportunity for repayment plans, mediation, or rental assistance before removal.</p>
+  <p class="rule-notes">Eviction reform ensures that tenants have due process, legal representation, and time to respond before losing housing—preventing eviction from functioning as a tool of harassment or extractive rent-setting.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-EVI-011</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Courts must consider temporary hardship, income disruption, or</p>
+  <p class="rule-stmt">Courts must consider temporary hardship, income disruption, or systemic factors before approving eviction for nonpayment.</p>
+  <p class="rule-notes">Eviction reform ensures that tenants have due process, legal representation, and time to respond before losing housing—preventing eviction from functioning as a tool of harassment or extractive rent-setting.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-EVI-012</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Evictions for small or de minimis arrears that</p>
+  <p class="rule-stmt">Evictions for small or de minimis arrears that can be reasonably resolved must be restricted.</p>
+  <p class="rule-notes">Eviction reform ensures that tenants have due process, legal representation, and time to respond before losing housing—preventing eviction from functioning as a tool of harassment or extractive rent-setting.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-RNT-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Rent increases must be subject to reasonable limits</p>
+  <p class="rule-stmt">Rent increases must be subject to reasonable limits or stabilization mechanisms in markets experiencing rapid or destabilizing price growth.</p>
+  <p class="rule-notes">Rent stabilization limits destabilizing price increases that function as constructive eviction, protecting long-term residents from being priced out of their homes without cause.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-RNT-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Sudden, excessive rent increases that displace tenants without</p>
+  <p class="rule-stmt">Sudden, excessive rent increases that displace tenants without cause must be restricted.</p>
+  <p class="rule-notes">Rent stabilization limits destabilizing price increases that function as constructive eviction, protecting long-term residents from being priced out of their homes without cause.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-RNT-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Rent-setting practices that rely on coordinated pricing systems</p>
+  <p class="rule-stmt">Rent-setting practices that rely on coordinated pricing systems or algorithmic collusion must be regulated or prohibited.</p>
+  <p class="rule-notes">Rent stabilization limits destabilizing price increases that function as constructive eviction, protecting long-term residents from being priced out of their homes without cause.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-HML-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing policy must adopt a Housing First approach</p>
+  <p class="rule-stmt">Housing policy must adopt a Housing First approach that prioritizes stable housing as the foundation for addressing homelessness.</p>
+  <p class="rule-notes">Housing First approaches are the evidence-based foundation for addressing homelessness; criminalization is both ineffective and causes direct harm, while permanent housing with services produces lasting stability.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-HML-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Access to housing may not be conditioned on</p>
+  <p class="rule-stmt">Access to housing may not be conditioned on sobriety, employment, or compliance with unrelated requirements where those conditions delay or prevent housing stability.</p>
+  <p class="rule-notes">Housing First approaches are the evidence-based foundation for addressing homelessness; criminalization is both ineffective and causes direct harm, while permanent housing with services produces lasting stability.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-HML-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Homelessness interventions must include access to supportive services</p>
+  <p class="rule-stmt">Homelessness interventions must include access to supportive services including mental health care, substance use treatment, healthcare, and case management.</p>
+  <p class="rule-notes">Housing First approaches are the evidence-based foundation for addressing homelessness; criminalization is both ineffective and causes direct harm, while permanent housing with services produces lasting stability.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-HML-004</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Emergency shelters must meet safety, sanitation, and dignity</p>
+  <p class="rule-stmt">Emergency shelters must meet safety, sanitation, and dignity standards and may not function as long-term substitutes for permanent housing.</p>
+  <p class="rule-notes">Housing First approaches are the evidence-based foundation for addressing homelessness; criminalization is both ineffective and causes direct harm, while permanent housing with services produces lasting stability.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-HML-005</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Criminalization of homelessness through bans on sleeping, resting</p>
+  <p class="rule-stmt">Criminalization of homelessness through bans on sleeping, resting, or survival behavior without providing viable alternatives is prohibited.</p>
+  <p class="rule-notes">Housing First approaches are the evidence-based foundation for addressing homelessness; criminalization is both ineffective and causes direct harm, while permanent housing with services produces lasting stability.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-RPR-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Residents and property owners have the right to</p>
+  <p class="rule-stmt">Residents and property owners have the right to repair, maintain, and modify their homes without unnecessary restriction, provided safety and structural integrity are preserved.</p>
+  <p class="rule-notes">Right to repair ensures that residents and property owners can maintain their homes affordably, preventing proprietary lock-in from converting basic maintenance into extractive service relationships.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-RPR-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Manufacturers, builders, and contractors must not restrict access</p>
+  <p class="rule-stmt">Manufacturers, builders, and contractors must not restrict access to tools, parts, documentation, or knowledge required for maintenance and repair.</p>
+  <p class="rule-notes">Right to repair ensures that residents and property owners can maintain their homes affordably, preventing proprietary lock-in from converting basic maintenance into extractive service relationships.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-RPR-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing systems must not rely on proprietary, locked</p>
+  <p class="rule-stmt">Housing systems must not rely on proprietary, locked, or inaccessible components that prevent affordable repair and maintenance.</p>
+  <p class="rule-notes">Right to repair ensures that residents and property owners can maintain their homes affordably, preventing proprietary lock-in from converting basic maintenance into extractive service relationships.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-RPR-004</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Policies must prevent forced full-system replacement where repair</p>
+  <p class="rule-stmt">Policies must prevent forced full-system replacement where repair is feasible, especially in critical systems such as HVAC, electrical, plumbing, and structural components.</p>
+  <p class="rule-notes">Right to repair ensures that residents and property owners can maintain their homes affordably, preventing proprietary lock-in from converting basic maintenance into extractive service relationships.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-RPR-005</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Repairability must be considered a core design requirement</p>
+  <p class="rule-stmt">Repairability must be considered a core design requirement in residential construction and housing systems.</p>
+  <p class="rule-notes">Right to repair ensures that residents and property owners can maintain their homes affordably, preventing proprietary lock-in from converting basic maintenance into extractive service relationships.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-RPR-006</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Tenants must have the right to request and</p>
+  <p class="rule-stmt">Tenants must have the right to request and receive timely repairs, and failure to repair must trigger enforcement and tenant remedies.</p>
+  <p class="rule-notes">Right to repair ensures that residents and property owners can maintain their homes affordably, preventing proprietary lock-in from converting basic maintenance into extractive service relationships.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-RPR-007</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">In cases of landlord failure to maintain habitable</p>
+  <p class="rule-stmt">In cases of landlord failure to maintain habitable conditions, tenants must have access to repair-and-deduct or equivalent remedies under clear safeguards.</p>
+  <p class="rule-notes">Right to repair ensures that residents and property owners can maintain their homes affordably, preventing proprietary lock-in from converting basic maintenance into extractive service relationships.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-RPR-008</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing systems must prioritize long lifecycle durability, repairability</p>
+  <p class="rule-stmt">Housing systems must prioritize long lifecycle durability, repairability, and maintenance accessibility to reduce long-term cost and environmental impact.</p>
+  <p class="rule-notes">Right to repair ensures that residents and property owners can maintain their homes affordably, preventing proprietary lock-in from converting basic maintenance into extractive service relationships.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-RPR-009</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Core housing systems including HVAC, plumbing, electrical systems</p>
+  <p class="rule-stmt">Core housing systems including HVAC, plumbing, electrical systems, appliances, and accessibility equipment must be maintainable and repairable without unnecessary proprietary restrictions.</p>
+  <p class="rule-notes">Right to repair ensures that residents and property owners can maintain their homes affordably, preventing proprietary lock-in from converting basic maintenance into extractive service relationships.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-RPR-010</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Manufacturers and service providers may not use software</p>
+  <p class="rule-stmt">Manufacturers and service providers may not use software locks, proprietary diagnostics, or service monopolies to prevent lawful repair of housing-related systems and appliances.</p>
+  <p class="rule-notes">Right to repair ensures that residents and property owners can maintain their homes affordably, preventing proprietary lock-in from converting basic maintenance into extractive service relationships.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-RPR-011</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Building systems installed in homes, apartments, and public</p>
+  <p class="rule-stmt">Building systems installed in homes, apartments, and public housing must prioritize repairability, parts availability, and long-term service access.</p>
+  <p class="rule-notes">Right to repair ensures that residents and property owners can maintain their homes affordably, preventing proprietary lock-in from converting basic maintenance into extractive service relationships.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-TAX-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Property tax systems must protect long-term owner-occupants from</p>
+  <p class="rule-stmt">Property tax systems must protect long-term owner-occupants from displacement due to rising assessed values.</p>
+  <p class="rule-notes">Property tax systems must protect long-term owner-occupants from displacement by rising assessments while distinguishing primary residences from investment properties.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-TAX-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Property tax increases for primary residences should be</p>
+  <p class="rule-stmt">Property tax increases for primary residences should be stabilized or phased to prevent forced displacement.</p>
+  <p class="rule-notes">Property tax systems must protect long-term owner-occupants from displacement by rising assessments while distinguishing primary residences from investment properties.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-TAX-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Tax policy should distinguish between primary residences and</p>
+  <p class="rule-stmt">Tax policy should distinguish between primary residences and investment properties to discourage speculative ownership.</p>
+  <p class="rule-notes">Property tax systems must protect long-term owner-occupants from displacement by rising assessments while distinguishing primary residences from investment properties.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-INS-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Homeownership affordability must account for insurance costs, which</p>
+  <p class="rule-stmt">Homeownership affordability must account for insurance costs, which must be regulated to remain accessible and non-exploitative.</p>
+  <p class="rule-notes">Housing insurance affordability is a growing crisis in climate-vulnerable areas; market withdrawal without public alternatives threatens the economic stability of entire regions.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-INS-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Insurance markets may not withdraw or price-gouge entire</p>
+  <p class="rule-stmt">Insurance markets may not withdraw or price-gouge entire regions without regulatory intervention or public alternatives.</p>
+  <p class="rule-notes">Housing insurance affordability is a growing crisis in climate-vulnerable areas; market withdrawal without public alternatives threatens the economic stability of entire regions.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-FIN-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Mortgage lending must prohibit predatory terms, deceptive structures</p>
+  <p class="rule-stmt">Mortgage lending must prohibit predatory terms, deceptive structures, and risk-shifting practices that disproportionately harm borrowers.</p>
+  <p class="rule-notes">Mortgage standards and lender accountability prevent predatory lending cycles that lead to foreclosure, displacement, and systemic financial instability.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-FIN-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Adjustable-rate, variable-risk, or complex mortgage products must meet</p>
+  <p class="rule-stmt">Adjustable-rate, variable-risk, or complex mortgage products must meet strict transparency and suitability standards.</p>
+  <p class="rule-notes">Mortgage standards and lender accountability prevent predatory lending cycles that lead to foreclosure, displacement, and systemic financial instability.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-FIN-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Lenders must retain accountability for long-term loan performance</p>
+  <p class="rule-stmt">Lenders must retain accountability for long-term loan performance and may not offload risk entirely through securitization structures.</p>
+  <p class="rule-notes">Mortgage standards and lender accountability prevent predatory lending cycles that lead to foreclosure, displacement, and systemic financial instability.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-LND-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Public land should be prioritized for development of</p>
+  <p class="rule-stmt">Public land should be prioritized for development of affordable and social housing rather than sold for short-term revenue maximization.</p>
+  <p class="rule-notes">Public land prioritized for affordable housing permanently removes scarcity drivers while community land trust models ensure that public investment produces lasting rather than temporary affordability.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-LND-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Land-use policy must support long-term housing stability rather</p>
+  <p class="rule-stmt">Land-use policy must support long-term housing stability rather than speculative land value escalation.</p>
+  <p class="rule-notes">Public land prioritized for affordable housing permanently removes scarcity drivers while community land trust models ensure that public investment produces lasting rather than temporary affordability.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-EXT-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing may not be treated primarily as an</p>
+  <p class="rule-stmt">Housing may not be treated primarily as an extraction vehicle where ownership, management, or financing structures predictably undermine affordability, maintenance, or stability.</p>
+  <p class="rule-notes">Anti-extraction rules prevent housing from being operated primarily as a fee-extraction or neglect-and-collect system, establishing that ownership of housing carries affirmative quality obligations.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-EXT-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Landlords, developers, and housing owners may not rely</p>
+  <p class="rule-stmt">Landlords, developers, and housing owners may not rely on hidden fees, procedural traps, excessive penalties, or exploitative lease structures to increase extraction from residents.</p>
+  <p class="rule-notes">Anti-extraction rules prevent housing from being operated primarily as a fee-extraction or neglect-and-collect system, establishing that ownership of housing carries affirmative quality obligations.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-EXT-003</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Publicly subsidized or publicly supported housing may not</p>
+  <p class="rule-stmt">Publicly subsidized or publicly supported housing may not be used as a vehicle for profit extraction through neglect, fee layering, or degraded service quality.</p>
+  <p class="rule-notes">Anti-extraction rules prevent housing from being operated primarily as a fee-extraction or neglect-and-collect system, establishing that ownership of housing carries affirmative quality obligations.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-SUB-001</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Housing subsidies may not be structured in ways</p>
+  <p class="rule-stmt">Housing subsidies may not be structured in ways that increase purchasing power without increasing housing supply or affordability.</p>
+  <p class="rule-notes">Housing subsidies must be tied to supply and affordability outcomes rather than simply increasing purchasing power in constrained markets, where they can inflate prices without helping residents.</p>
+</div>
+<div class="rule-card status-included">
+  <div class="rule-header">
+    <code class="rule-id">HOU-SUB-002</code>
+    <span class="rule-badge">Included</span>
+  </div>
+  <p class="rule-title">Public subsidies must be tied to measurable affordability</p>
+  <p class="rule-stmt">Public subsidies must be tied to measurable affordability outcomes, long-term access, or housing stability rather than market inflation effects.</p>
+  <p class="rule-notes">Housing subsidies must be tied to supply and affordability outcomes rather than simply increasing purchasing power in constrained markets, where they can inflate prices without helping residents.</p>
+</div>
+  </div>
+</div>
+</div>
+</section>
+<section class="bg-dark on-dark ruled" id="pil-research">
+<div class="wrap">
+  <h2 style="color:#c9952a">Research & Context</h2>
+  <div class="research-body" style="color:rgba(255,255,255,.85)"><p>Research from the Federal Reserve and National Bureau of Economic Research documents that institutional investor purchases of single-family homes—which rose dramatically after 2010 and again during the pandemic—are concentrated in entry-level price tiers, directly competing with first-time buyers. A 2022 NBER paper found that institutional landlords in Atlanta raised rents faster and evicted tenants at higher rates than small landlords, and that neighborhoods with high institutional ownership showed worse maintenance quality and lower tenant satisfaction.</p>
+<p>Exclusionary zoning research from economists at Harvard, Berkeley, and the Urban Institute consistently finds that restrictions on multifamily housing significantly raise costs in high-demand metros. Minneapolis's elimination of single-family zoning in 2019 and subsequent rent stabilization showed meaningful effects on rent inflation compared to comparable peer cities. California's ADU reform package produced over 100,000 new permitted units in four years. YIMBY-adjacent reforms consistently outperform supply-restriction approaches in reducing cost burdens.</p>
+<p>The Housing First model—providing permanent housing without preconditions such as sobriety or employment—shows dramatically superior outcomes across dozens of randomized controlled trials and longitudinal studies. The At Home/Chez Soi study (Canada) and multiple U.S. studies show that Housing First produces 80%+ housing retention rates compared to 40-50% for treatment-first models, at comparable or lower cost. The criminalization alternative—encampment sweeps, sleeping bans, anti-camping laws—shows no evidence of reducing homelessness and substantial evidence of increasing trauma, health harms, and costs.</p>
+<p>Community land trusts and shared-equity models have demonstrated sustained affordability over decades. The Burlington Community Land Trust (now Champlain Housing Trust), studied extensively by the Lincoln Institute of Land Policy, shows that CLT homes remain affordable through resales at rates that market housing cannot sustain—preserving public investment in affordability across generations rather than converting it to windfall equity gains.</p></div>
+</div>
+</section>
+<section class="bg-parchment ruled" id="pil-related">
+<div class="wrap" style="margin-bottom:0">
+  <h2 style="color:#c9952a">Related Pillars</h2>
+  <p style="font-size:.92rem;color:#666;margin-bottom:.5rem">These pillars intersect with and reinforce this one.</p>
+</div>
+<div class="wrap"><div class="related-grid"><a href="consumer-rights-consumer-rights-overview-md.html" class="related-card"><strong>[Consumer Rights](../consumer_rights/overview.md)</strong><span>— Predatory lending, mortgage fraud, and housing subscription/ownership confusion are consumer protection issues requiri</span></a>
+<a href="labor-workers-rights-labor-and-workers-rights-overview-md.html" class="related-card"><strong>[Labor & Workers' Rights](../labor_and_workers_rights/overview.md)</strong><span>— Housing stability is a prerequisite for workforce participation; housing cost burdens suppress wages by narrowing work</span></a>
+<a href="environment-agriculture-environment-and-agriculture-overview-md.html" class="related-card"><strong>[Environment & Agriculture](../environment_and_agriculture/overview.md)</strong><span>— Building standards, energy efficiency, and sustainable construction reduce both environmental impact and long-term hou</span></a>
+<a href="equal-justice-policing-equal-justice-and-policing-overview-md.html" class="related-card"><strong>[Equal Justice & Policing](../equal_justice_and_policing/overview.md)</strong><span>— Housing discrimination, segregation, and criminalization of homelessness are equal justice issues requiring parallel r</span></a>
+<a href="antitrust-corporate-power-antitrust-and-corporate-power-overview-md.html" class="related-card"><strong>[Antitrust & Corporate Power](../antitrust_and_corporate_power/overview.md)</strong><span>— Corporate consolidation of housing markets is an antitrust and market concentration issue as much as a housing policy </span></a>
+</div></div>
+<div class="wrap" style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap">
+  <a href="../foundations.html#freedom-to-thrive" class="btn-primary" style="background:#c9952a">← Foundation V: Freedom to Thrive</a>
+  <a href="index.html" class="btn-primary" style="background:var(--navy)">All Pillars</a>
+</div>
+</section>
+<footer class="site-footer">
+  <div class="wrap">
+    <span class="footer-brand">American Renewal Project</span>
+    <ul class="footer-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../foundations.html">Foundations</a></li>
+      <li><a href="index.html">Pillars</a></li>
+      <li><a href="../compare/index.html">Compare</a></li>
+    </ul>
+    <span class="footer-note">A Third Bill of Rights for the 21st Century. · <a href="../about-ai.html" style="color:inherit;opacity:.7">On the Use of AI</a></span>
+  </div>
+</footer>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+(function(){
+  var nav = document.getElementById('pil-snav');
+  if(!nav) return;
+  var links = nav.querySelectorAll('a[href^="#"]');
+  var sections = Array.from(links).map(function(a){
+    return document.querySelector(a.getAttribute('href'));
+  }).filter(Boolean);
+  function onScroll(){
+    var y = window.scrollY + 120;
+    var active = sections[0];
+    sections.forEach(function(s){ if(s.offsetTop <= y) active = s; });
+    links.forEach(function(a){
+      a.classList.toggle('active', a.getAttribute('href') === '#'+active.id);
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+</script>
+</body>
+</html>

@@ -48,6 +48,11 @@ PILLARS = [
     ('healthcare',                'healthcare',                   'Healthcare',                   'freedom-to-thrive'),
     ('taxation-and-wealth',       'taxation_and_wealth',          'Taxation & Wealth',            'freedom-to-thrive'),
     ('environment-and-agriculture','environment_and_agriculture', 'Environment & Agriculture',    'freedom-to-thrive'),
+    ('education',                 'education',                    'Education',                    'freedom-to-thrive'),
+    ('labor-and-workers-rights',  'labor_and_workers_rights',     "Labor & Workers' Rights",      'freedom-to-thrive'),
+    ('housing',                   'housing',                      'Housing',                      'freedom-to-thrive'),
+    ('consumer-rights',           'consumer_rights',              'Consumer Rights',              'real-freedom'),
+    ('legislative-reform',        'legislative_reform',           'Legislative Reform',           'accountable-power'),
 ]
 
 STATUS_BADGE = {

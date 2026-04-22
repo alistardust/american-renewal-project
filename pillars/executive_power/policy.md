@@ -11,10 +11,11 @@
 **Statement:** President subject to law  
 **Notes:** Establishes the fundamental principle that presidents are not above the law. No immunity for official acts that violate the law. Independent prosecutorial mechanisms with safeguards against weaponization. This is the foundational rule for all executive accountability measures.
 
-### GOV-ACC-002 — Ban political firings
-**Status:** MISSING  
-**Statement:** Ban political firings  
-**Notes:** Prohibits firing officials for political reasons where the purpose is to obstruct oversight, punish lawful conduct, or consolidate personal power. Protects civil service, whistleblowers, and oversight officials. Requires cause for removal of key law enforcement and oversight positions.
+### GOV-ACC-002 — Protect civil servants and oversight officials from political removal
+**Status:** INCLUDED
+**Statement:** Civil servants, inspectors general, special counsels, and any official charged with oversight, audit, or enforcement may be removed only upon documented, reviewable cause unrelated to any investigation, testimony, or oversight action they conducted or initiated. Removal within 180 days of an oversight action, public testimony, or whistleblower disclosure creates a rebuttable presumption of unlawful retaliation, subject to independent review. Politically motivated removal of oversight officials constitutes an impeachable breach of executive duty.
+**Short label:** Protect civil servants and oversight officials from political removal
+**Notes:** Addresses the documented pattern of presidents firing inspectors general, special counsels, and enforcement officials to obstruct accountability. The 180-day rebuttable presumption creates a meaningful legal backstop against retaliatory removal while the impeachable breach designation elevates the rule's enforcement gravity.
 
 ### GOV-ACC-003 — Ban executive kill lists
 **Status:** PARTIAL  
