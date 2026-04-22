@@ -346,6 +346,7 @@ section { padding: 4.5rem 0; }
 /* ── PAGE BACKGROUNDS ─────────────────────────────────── */
 .bg-parchment { background: var(--parchment); }
 .bg-cream     { background: var(--cream); }
+.bg-white     { background: #fff; }
 .bg-dark      { background: var(--navy); }
 .bg-sky       { background: var(--sky); }
 
