@@ -82,3 +82,6 @@ const ARP = {
 /* Lookup helpers */
 ARP.getFoundation = id => ARP.foundations.find(f => f.id === id);
 ARP.getPillarsByFoundation = id => ARP.pillars.filter(p => p.foundation === id);
+
+/* Expose on window so app.js guard (window.ARP) works — const doesn't auto-attach */
+window.ARP = ARP;
