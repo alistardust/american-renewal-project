@@ -1,29 +1,6 @@
-/* American Renewal Project — app.js */
+/* Freedom and Dignity Project — app.js */
 (function () {
   'use strict';
-
-  /* ── NAME NOTICE BANNER ───────────────────────────── */
-  (function () {
-    if (sessionStorage.getItem('name-notice-dismissed')) return;
-    const banner = document.createElement('div');
-    banner.className = 'name-notice-banner';
-    banner.innerHTML =
-      '<div class="name-notice-inner">' +
-        '<span class="name-notice-icon">⚠</span>' +
-        '<span class="name-notice-text"><strong>Name Notice:</strong> ' +
-        'It has come to our attention that the name \u201cAmerican Renewal Project\u201d is already in use by ' +
-        'an existing organization with which this project has no affiliation, connection, or shared ideology. ' +
-        'The current name of this project is a <strong>placeholder</strong> while a permanent name is selected. ' +
-        'We apologize for any confusion.</span>' +
-        '<button class="name-notice-dismiss" aria-label="Dismiss notice">\u00d7</button>' +
-      '</div>';
-    const nav = document.querySelector('.site-nav') || document.body.firstElementChild;
-    document.body.insertBefore(banner, nav);
-    banner.querySelector('.name-notice-dismiss').addEventListener('click', function () {
-      banner.remove();
-      sessionStorage.setItem('name-notice-dismissed', '1');
-    });
-  })();
 
 
   (function () {
@@ -183,6 +160,45 @@
       });
     }
   }
+
+  /* ── POLICY ENFORCEMENT HIGHLIGHT ───────────────── */
+  // Wraps strong enforcement words in red-bold spans within policy content areas.
+  (function () {
+    const ENFORCE_RE = /\b(ban(s|ned|ning)?|prohibit(s|ed|ing|ion)?|restriction(s)?|restrict(s|ed|ing)?|mandate(s|d|ing)?|mandatory|criminalize[sd]?|criminalizing|abolish(es|ed|ing)?|outlaw(s|ed|ing)?)\b/gi;
+    const SELECTORS = [
+      '.rule-title', '.rule-stmt', '.rule-notes',
+      '.ai-compare-table td', '.compare-table td',
+      '.pillar-intro p', '.pi-desc', '.pi-summary',
+      '.pillar-summary', '.section-intro p'
+    ].join(', ');
+
+    function highlightNode(el) {
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+      const toReplace = [];
+      let node;
+      while ((node = walker.nextNode())) {
+        if (ENFORCE_RE.test(node.nodeValue)) toReplace.push(node);
+        ENFORCE_RE.lastIndex = 0;
+      }
+      toReplace.forEach(function (tn) {
+        const frag = document.createDocumentFragment();
+        let last = 0, m;
+        ENFORCE_RE.lastIndex = 0;
+        while ((m = ENFORCE_RE.exec(tn.nodeValue)) !== null) {
+          if (m.index > last) frag.appendChild(document.createTextNode(tn.nodeValue.slice(last, m.index)));
+          const span = document.createElement('span');
+          span.className = 'policy-strong';
+          span.textContent = m[0];
+          frag.appendChild(span);
+          last = m.index + m[0].length;
+        }
+        if (last < tn.nodeValue.length) frag.appendChild(document.createTextNode(tn.nodeValue.slice(last)));
+        tn.parentNode.replaceChild(frag, tn);
+      });
+    }
+
+    document.querySelectorAll(SELECTORS).forEach(highlightNode);
+  })();
 
   /* ── BACK-TO-TOP BUTTON ──────────────────────────── */
   (function () {

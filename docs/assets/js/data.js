@@ -1,4 +1,4 @@
-/* American Renewal Project — site data */
+/* Freedom and Dignity Project — site data */
 const ARP = {
   foundations: [
     {

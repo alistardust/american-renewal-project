@@ -18,6 +18,12 @@
   --rule:       #ddd0b3;
 }
 
+/* ── POLICY ENFORCEMENT HIGHLIGHT ────────────────────── */
+.policy-strong {
+  color: var(--red);
+  font-weight: 700;
+}
+
 /* ── RESET ────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 17px; scroll-behavior: smooth; }
