@@ -37,8 +37,8 @@ test.describe('Homepage', () => {
     await expect(page.locator('.demand-list li')).toHaveCount(10);
   });
 
-  test('nav has 4 links', async ({ page }) => {
-    await expect(page.locator('.nav-links a')).toHaveCount(4);
+  test('nav has 5 links (4 static + About AI injected by app.js)', async ({ page }) => {
+    await expect(page.locator('.nav-links a')).toHaveCount(5);
   });
 });
 
@@ -79,8 +79,8 @@ test.describe('Foundations page', () => {
     await expect(page.locator('text=What Is a Foundation').first()).toBeVisible();
   });
 
-  test('has 18 total pillar cards across all foundations', async ({ page }) => {
-    await expect(page.locator('a.f-pillar-card')).toHaveCount(18);
+  test('has 23 total pillar cards across all foundations', async ({ page }) => {
+    await expect(page.locator('a.f-pillar-card')).toHaveCount(23);
   });
 
   test('has 10 demand/reject blocks across 5 foundations', async ({ page }) => {
@@ -145,10 +145,28 @@ test.describe('Pillars index', () => {
 // ── INDIVIDUAL PILLAR PAGES ───────────────────────────────────────────────────
 
 const SAMPLE_PILLARS = [
-  { slug: 'executive-power',           title: 'Executive Power' },
-  { slug: 'healthcare',                title: 'Healthcare' },
-  { slug: 'gun-policy',                title: 'Gun Policy' },
-  { slug: 'environment-and-agriculture', title: 'Environment' },
+  { slug: 'executive-power',               title: 'Executive Power' },
+  { slug: 'elections-and-representation',  title: 'Elections' },
+  { slug: 'anti-corruption',               title: 'Anti-Corruption' },
+  { slug: 'equal-justice-and-policing',    title: 'Equal Justice' },
+  { slug: 'rights-and-civil-liberties',    title: 'Rights' },
+  { slug: 'courts-and-judicial-system',    title: 'Courts' },
+  { slug: 'checks-and-balances',           title: 'Checks' },
+  { slug: 'taxation-and-wealth',           title: 'Taxation' },
+  { slug: 'healthcare',                    title: 'Healthcare' },
+  { slug: 'antitrust-and-corporate-power', title: 'Antitrust' },
+  { slug: 'information-and-media',         title: 'Information' },
+  { slug: 'gun-policy',                    title: 'Gun Policy' },
+  { slug: 'term-limits-and-fitness',       title: 'Term Limits' },
+  { slug: 'administrative-state',          title: 'Administrative' },
+  { slug: 'technology-and-ai',             title: 'Technology' },
+  { slug: 'immigration',                   title: 'Immigration' },
+  { slug: 'environment-and-agriculture',   title: 'Environment' },
+  { slug: 'education',                     title: 'Education' },
+  { slug: 'labor-and-workers-rights',      title: 'Labor' },
+  { slug: 'housing',                       title: 'Housing' },
+  { slug: 'consumer-rights',              title: 'Consumer' },
+  { slug: 'legislative-reform',            title: 'Legislative' },
 ];
 
 for (const { slug, title } of SAMPLE_PILLARS) {
@@ -254,5 +272,129 @@ test.describe('Navigation', () => {
     await page.goto('/pillars/index.html');
     await page.click('a[href="../compare/index.html"]');
     await expect(page).toHaveURL(/compare/);
+  });
+});
+
+// ── ABOUT AI PAGE ─────────────────────────────────────────────────────────────
+
+test.describe('About AI page', () => {
+  test.beforeEach(async ({ page }) => { await page.goto('/about-ai.html'); });
+
+  test('has correct page title', async ({ page }) => {
+    await expect(page).toHaveTitle(/AI|Artificial/i);
+  });
+
+  test('renders main transparency statement heading', async ({ page }) => {
+    await expect(page.locator('.ai-hero h1')).toBeVisible();
+  });
+
+  test('nav About AI link is active', async ({ page }) => {
+    await expect(page.locator('.nav-links a.active')).toHaveText(/About AI/i);
+  });
+
+  test('footer About AI link is present', async ({ page }) => {
+    await expect(page.locator('.footer-links a[href*="about-ai"]')).toBeAttached();
+  });
+});
+
+// ── ABOUT AI ACCESSIBILITY (all pages) ───────────────────────────────────────
+
+test.describe('About AI link reachable from all page types', () => {
+  const pages = [
+    { url: '/',                          label: 'Homepage' },
+    { url: '/foundations.html',          label: 'Foundations' },
+    { url: '/pillars/index.html',        label: 'Pillars index' },
+    { url: '/pillars/healthcare.html',   label: 'Pillar page' },
+    { url: '/compare/index.html',        label: 'Compare index' },
+    { url: '/compare/republican-party.html', label: 'Compare page' },
+  ];
+
+  for (const { url, label } of pages) {
+    test(`${label} has About AI in nav`, async ({ page }) => {
+      await page.goto(url);
+      const link = page.locator('.nav-links a[href*="about-ai"]');
+      await expect(link).toBeAttached();
+      const href = await link.getAttribute('href');
+      // Must not be a broken cross-root path (../about-ai.html from root pages was the bug)
+      // Navigate to it and expect the About AI page to load
+      await page.goto(href.startsWith('http') ? href : new URL(href, page.url()).toString());
+      await expect(page).toHaveTitle(/AI|Artificial/i);
+    });
+  }
+});
+
+// ── BACK-TO-TOP BUTTON ────────────────────────────────────────────────────────
+
+test.describe('Back-to-top button', () => {
+  test('is hidden at page top', async ({ page }) => {
+    await page.goto('/');
+    const btn = page.locator('#back-to-top');
+    await expect(btn).toBeAttached();
+    // Should not have btt-visible class at the top
+    await expect(btn).not.toHaveClass(/btt-visible/);
+  });
+
+  test('appears after scrolling down on a tall page', async ({ page }) => {
+    await page.goto('/pillars/healthcare.html');
+    await page.evaluate(() => window.scrollTo(0, 1000));
+    await expect(page.locator('#back-to-top')).toHaveClass(/btt-visible/);
+  });
+
+  test('scrolls back to top when clicked', async ({ page }) => {
+    await page.goto('/pillars/healthcare.html');
+    await page.evaluate(() => window.scrollTo(0, 1000));
+    await page.locator('#back-to-top').click();
+    await page.waitForFunction(() => window.scrollY < 50);
+    const y = await page.evaluate(() => window.scrollY);
+    expect(y).toBeLessThan(50);
+  });
+});
+
+// ── HOMEPAGE AI TRANSPARENCY SECTION ─────────────────────────────────────────
+
+test.describe('Homepage AI transparency section', () => {
+  test.beforeEach(async ({ page }) => { await page.goto('/'); });
+
+  test('renders AI transparency section', async ({ page }) => {
+    await expect(page.locator('.ai-transparency-section')).toBeVisible();
+  });
+
+  test('AI transparency section has 3 fact cards', async ({ page }) => {
+    await expect(page.locator('.ai-fact')).toHaveCount(3);
+  });
+
+  test('CTA button links to about-ai.html', async ({ page }) => {
+    const cta = page.locator('.ai-transparency-section a[href*="about-ai"]');
+    await expect(cta).toBeVisible();
+    await cta.click();
+    await expect(page).toHaveTitle(/AI|Artificial/i);
+  });
+});
+
+// ── POLICY RULES SECTION VISIBILITY ──────────────────────────────────────────
+
+test.describe('Policy rules section renders content', () => {
+  // Tests the IntersectionObserver threshold:0 fix — #pil-policy must become
+  // visible when scrolled into view (not stay at opacity:0 forever)
+  const pillarWithRules = 'healthcare'; // 184 rules — guaranteed to have content
+
+  test('policy section is attached to DOM', async ({ page }) => {
+    await page.goto(`/pillars/${pillarWithRules}.html`);
+    await expect(page.locator('#pil-policy')).toBeAttached();
+  });
+
+  test('policy section contains at least one rule card after scroll', async ({ page }) => {
+    await page.goto(`/pillars/${pillarWithRules}.html`);
+    await page.locator('#pil-policy').scrollIntoViewIfNeeded();
+    // Wait for IntersectionObserver to fire and .visible class to be applied
+    await expect(page.locator('#pil-policy')).toHaveClass(/visible/, { timeout: 3000 });
+    await expect(page.locator('#pil-policy .rule-card').first()).toBeAttached();
+  });
+
+  test('policy section has more than one rule card', async ({ page }) => {
+    await page.goto(`/pillars/${pillarWithRules}.html`);
+    await page.locator('#pil-policy').scrollIntoViewIfNeeded();
+    const count = await page.locator('#pil-policy .rule-card').count();
+    expect(count).toBeGreaterThan(1);
   });
 });

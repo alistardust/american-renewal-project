@@ -14,7 +14,9 @@
 
     // Inject "About AI" link into the nav + footer (path-aware for subdirectories)
     const navList = document.querySelector('ul.nav-links');
-    const inSubdir = location.pathname.replace(/\/+$/, '').split('/').filter(Boolean).length > 1;
+    // Check for actual subdirectory pages (pillars/, compare/) not just path depth.
+    // Depth-counting breaks on GitHub Pages because the repo base path adds a segment.
+    const inSubdir = /\/(pillars|compare)\//.test(location.pathname);
     const aiHref = inSubdir ? '../about-ai.html' : 'about-ai.html';
     const isAiPage = page === 'about-ai.html';
 

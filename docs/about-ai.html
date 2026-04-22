@@ -25,6 +25,51 @@
 
 .ai-note { background: var(--sky); border: 1px solid var(--rule); padding: 1.2rem 1.5rem; margin: 2rem 0; font-size: .88rem; color: var(--mid); line-height: 1.7; font-family: "Libre Franklin", sans-serif; }
 .ai-note strong { color: var(--navy); }
+
+/* ── SAFEGUARDS GRID ─────────────────────────────────── */
+.ai-safeguards { display: flex; flex-direction: column; gap: 1.2rem; margin: 1.5rem 0 2rem; }
+.ai-sg-item { display: flex; gap: 1rem; align-items: flex-start; padding: 1rem 1.25rem; background: var(--parchment); border-left: 3px solid var(--gold); }
+.ai-sg-icon { color: var(--gold); font-size: 1.1rem; flex-shrink: 0; margin-top: .1rem; }
+.ai-sg-item div { font-family: "Libre Franklin", sans-serif; font-size: .95rem; line-height: 1.75; color: var(--ink); }
+.ai-sg-item strong { color: var(--navy); }
+.ai-footnotes { margin: 2rem 0; padding: 1.2rem 1.5rem; border-top: 1px solid var(--rule); }
+.ai-footnotes .fn-head { font-family: "Oswald", sans-serif; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--mid); margin-bottom: .75rem; }
+.ai-footnotes p { font-size: .82rem; color: var(--mid); line-height: 1.7; margin-bottom: .5rem; }
+
+/* ── MODELS GRID ─────────────────────────────────────── */
+.ai-models-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0 2rem; }
+.ai-model-card { background: var(--parchment); border: 1px solid var(--rule); padding: 1rem 1.1rem; }
+.ai-model-card .amc-vendor { font-family: "Oswald", sans-serif; font-size: .6rem; letter-spacing: .15em; text-transform: uppercase; color: var(--mid); margin-bottom: .3rem; }
+.ai-model-card .amc-name { font-family: "Oswald", sans-serif; font-size: .95rem; font-weight: 700; color: var(--navy); margin-bottom: .4rem; }
+.ai-model-card .amc-role { font-family: "Libre Franklin", sans-serif; font-size: .82rem; line-height: 1.55; color: var(--ink); }
+.ai-model-card.primary { border-left: 3px solid var(--gold); }
+.ai-model-card.secondary { border-left: 3px solid var(--red); }
+.ai-model-card.available { border-left: 3px solid rgba(0,0,0,.15); opacity: .8; }
+
+/* ── SKILLS LIST ─────────────────────────────────────── */
+.ai-skills-list { list-style: none; padding: 0; margin: 1rem 0 2rem; display: flex; flex-direction: column; gap: .75rem; }
+.ai-skills-list li { display: flex; gap: 1rem; align-items: flex-start; padding: .9rem 1.1rem; background: var(--parchment); border: 1px solid var(--rule); font-family: "Libre Franklin", sans-serif; font-size: .92rem; line-height: 1.65; color: var(--ink); }
+.ai-skills-list li strong { color: var(--navy); display: block; font-size: .95rem; margin-bottom: .2rem; }
+.ai-skill-tag { font-family: "Oswald", sans-serif; font-size: .65rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: .2rem .55rem; background: var(--navy); color: var(--gold); border-radius: 2px; flex-shrink: 0; margin-top: .15rem; }
+
+/* ── INSTRUCTION PANEL ───────────────────────────────── */
+.ai-instr-panel { border: 1px solid var(--rule); margin: 1.5rem 0 2rem; }
+.ai-instr-panel summary { font-family: "Oswald", sans-serif; font-size: .95rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 1rem 1.3rem; background: var(--navy); color: var(--gold); cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+.ai-instr-panel summary::after { content: "▾ expand"; font-size: .65rem; letter-spacing: .12em; color: rgba(255,255,255,.5); }
+.ai-instr-panel[open] summary::after { content: "▴ collapse"; }
+.ai-instr-body { padding: 1.5rem 1.75rem; background: var(--cream); max-height: 70vh; overflow-y: auto; }
+.ai-instr-body h3 { font-family: "Oswald", sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--navy); margin: 1.75rem 0 .6rem; border-left: 3px solid var(--gold); padding-left: .75rem; }
+.ai-instr-body h3:first-child { margin-top: 0; }
+.ai-instr-body h4 { font-family: "Libre Franklin", sans-serif; font-size: .9rem; font-weight: 700; color: var(--navy); margin: 1.2rem 0 .4rem; }
+.ai-instr-body p, .ai-instr-body li { font-family: "Libre Franklin", sans-serif; font-size: .9rem; line-height: 1.8; color: var(--ink); }
+.ai-instr-body ul, .ai-instr-body ol { padding-left: 1.4rem; margin: .4rem 0 .9rem; }
+.ai-instr-body code { background: rgba(0,0,0,.07); padding: .1em .35em; font-size: .82em; font-family: "Courier New", monospace; border-radius: 2px; }
+.ai-instr-body pre { background: #1a2535; color: #e8e0cf; padding: 1rem 1.25rem; overflow-x: auto; font-size: .8rem; line-height: 1.6; margin: .75rem 0 1rem; border-radius: 2px; }
+.ai-instr-divider { border: none; border-top: 1px solid var(--rule); margin: 1.5rem 0; }
+
+@media (max-width: 640px) {
+  .ai-models-grid { grid-template-columns: 1fr 1fr; }
+}
 </style>
 </head>
 <body>
@@ -95,6 +140,68 @@
 
   <p>That is why the source material is preserved. The chat logs, the canonical IDs, the policy catalog — all of it is version-controlled and traceable. If something in this platform is wrong, you can go find where it came from and why. That is not an accident. Accountability without traceability is just theater.</p>
 
+  <h2>Safeguards We Have Built In</h2>
+  <p>Using AI to build a platform about AI accountability creates an obligation to do it right. The following safeguards are built into this project's development process — not as aspirational goals, but as documented rules enforced at the source level.</p>
+
+  <div class="ai-safeguards">
+    <div class="ai-sg-item">
+      <div class="ai-sg-icon">✦</div>
+      <div>
+        <strong>Citation verification.</strong> Every factual claim, statistic, and external reference must be sourced to a real, accessible, independently verifiable publication. AI frequently generates plausible-sounding but fabricated citations. This project's instructions require that every citation be manually confirmed: the source exists, the URL resolves, and the source actually says what the citation claims.<sup><a href="#fn-nist">[1]</a></sup>
+      </div>
+    </div>
+    <div class="ai-sg-item">
+      <div class="ai-sg-icon">✦</div>
+      <div>
+        <strong>APA 7th edition citations with Wikipedia-style inline annotations.</strong> All research sections use numbered inline references [1], [2], etc., with full APA-formatted source lists. This makes every claim traceable and independently checkable by any reader.
+      </div>
+    </div>
+    <div class="ai-sg-item">
+      <div class="ai-sg-icon">✦</div>
+      <div>
+        <strong>Copyright compliance.</strong> No verbatim reproduction of copyrighted material beyond brief quotation for commentary and analysis. Facts and statistics — not copyrightable — are cited freely. Federal government works are public domain and may be quoted at length.<sup><a href="#fn-copyright">[2]</a></sup> All AI-generated text is treated as a draft subject to originality review, not a final source.
+      </div>
+    </div>
+    <div class="ai-sg-item">
+      <div class="ai-sg-icon">✦</div>
+      <div>
+        <strong>Adversarial review.</strong> Every section making empirical claims is reviewed adversarially — meaning the reviewer actively tries to disprove the claim, finds contradicting data, and either addresses the contradiction honestly or revises the conclusion. Suppressing inconvenient evidence is not permitted. This project acknowledges where the data is contested.
+      </div>
+    </div>
+    <div class="ai-sg-item">
+      <div class="ai-sg-icon">✦</div>
+      <div>
+        <strong>Distinguishing AI synthesis from primary research.</strong> AI synthesizes, organizes, and drafts. It does not conduct primary research. Wherever this project cites research findings, those findings are attributed to the original researchers, not to the AI tool that surfaced them.
+      </div>
+    </div>
+    <div class="ai-sg-item">
+      <div class="ai-sg-icon">✦</div>
+      <div>
+        <strong>Source preservation and traceability.</strong> The complete source transcripts — every conversation used to build this platform — are preserved locally and version-controlled. Every policy item has a canonical ID traceable to the conversation where it was defined. Nothing is orphaned from its origin.
+      </div>
+    </div>
+    <div class="ai-sg-item">
+      <div class="ai-sg-icon">✦</div>
+      <div>
+        <strong>Separating advocacy from analysis.</strong> Policy positions and normative arguments are clearly distinguished from empirical claims. "This is what the research shows" and "this is what we believe should be done" are never conflated. Weasel formulations ("studies show," "experts agree") without specific citations are prohibited.
+      </div>
+    </div>
+    <div class="ai-sg-item">
+      <div class="ai-sg-icon">✦</div>
+      <div>
+        <strong>Continuous human review.</strong> AI drafts every document; humans review, revise, and make every judgment call. The political values, priorities, and conclusions in this platform are human. The AI provides scale and infrastructure. The distinction matters and is maintained.
+      </div>
+    </div>
+  </div>
+
+  <p>These safeguards are documented in the project's <a href="https://github.com/alistardust/american-renewal-project/blob/main/.github/copilot-instructions.md">Copilot Instructions</a> — the standing rules that govern how AI is used to build and maintain this platform. They are public, reviewable, and updated as the project evolves.</p>
+
+  <div class="ai-footnotes" id="ai-page-refs">
+    <p class="fn-head">References</p>
+    <p id="fn-nist">[1] National Institute of Standards and Technology. (2023). <em>Artificial Intelligence Risk Management Framework (AI RMF 1.0)</em>. U.S. Department of Commerce. <a href="https://www.nist.gov/itl/ai-risk-management-framework">https://www.nist.gov/itl/ai-risk-management-framework</a></p>
+    <p id="fn-copyright">[2] U.S. Copyright Office. (2023). <em>Copyright and Artificial Intelligence: Part 1 — Digital Replicas</em>. U.S. Copyright Office. <a href="https://www.copyright.gov/ai/">https://www.copyright.gov/ai/</a>; 17 U.S.C. § 105 (works of the U.S. government are not subject to copyright protection).</p>
+  </div>
+
   <h2>The Bigger Point</h2>
   <p>There is a version of this transparency statement that is defensive — that treats AI use as something to apologize for. This is not that version.</p>
 
@@ -105,6 +212,256 @@
   <div class="ai-note">
     <strong>Technical note:</strong> This project was developed using GitHub Copilot (powered by Claude) for research synthesis, document drafting, and website development. The policy catalog is stored in <code>data/policy_catalog.sqlite</code> and rebuilt from source transcripts via <code>scripts/import_policy_catalog.py</code>. All source material is preserved under <code>sources/</code>. The repository is public at <a href="https://github.com/alistardust/american-renewal-project">github.com/alistardust/american-renewal-project</a>.
   </div>
+
+  <h2>Models and Tools Used</h2>
+  <p>This project was built using <strong>GitHub Copilot CLI</strong> as the AI development interface. All interactions route through GitHub's Copilot infrastructure. The following AI models were used at different stages of the work:</p>
+
+  <div class="ai-models-grid">
+    <div class="ai-model-card primary">
+      <div class="amc-vendor">Anthropic</div>
+      <div class="amc-name">Claude Sonnet 4.6</div>
+      <div class="amc-role">Primary model. Research synthesis, policy drafting, website development, consistency audits, comparison analysis. Used for the majority of this project.</div>
+    </div>
+    <div class="ai-model-card primary">
+      <div class="amc-vendor">Anthropic</div>
+      <div class="amc-name">Claude Opus 4.7</div>
+      <div class="amc-role">Complex, multi-step reasoning. Deep policy analysis, adversarial review, constitutional classification work, and tasks requiring premium reasoning.</div>
+    </div>
+    <div class="ai-model-card secondary">
+      <div class="amc-vendor">Anthropic</div>
+      <div class="amc-name">Claude Haiku 4.5</div>
+      <div class="amc-role">Fast parallel tasks. Codebase exploration, file searches, background research threads, and lightweight sub-agent operations.</div>
+    </div>
+    <div class="ai-model-card secondary">
+      <div class="amc-vendor">OpenAI</div>
+      <div class="amc-name">GPT-4.1</div>
+      <div class="amc-role">Available for cross-model validation and tasks where a second model perspective improves accuracy or catches blind spots.</div>
+    </div>
+    <div class="ai-model-card available">
+      <div class="amc-vendor">OpenAI</div>
+      <div class="amc-name">GPT-5 / GPT-5.4</div>
+      <div class="amc-role">Available for adversarial cross-checks and tasks where model diversity reduces the risk of systematic errors or shared hallucinations.</div>
+    </div>
+    <div class="ai-model-card available">
+      <div class="amc-vendor">OpenAI</div>
+      <div class="amc-name">GPT-5.3-Codex / GPT-5.2-Codex</div>
+      <div class="amc-role">Available for code-focused analysis, technical audits, and cross-model verification of website and data pipeline logic.</div>
+    </div>
+  </div>
+
+  <p>The use of multiple models from two independent AI companies — Anthropic and OpenAI — is itself a safeguard. No single AI system is treated as authoritative. Where conclusions matter, cross-model verification reduces the risk of systematic errors inherited from any one model's training.</p>
+
+  <h2>Skills and Agent Capabilities</h2>
+  <p>The Copilot CLI used to build this project supports specialized <em>skills</em> — purpose-built agents that run in separate context windows — and parallel sub-agent architectures. The following capabilities were used or are available:</p>
+
+  <ul class="ai-skills-list">
+    <li>
+      <span class="ai-skill-tag">skill</span>
+      <div>
+        <strong>customize-cloud-agent</strong>
+        Skill for configuring the AI development environment, including preinstalled tools, runner settings, and Copilot setup steps. Used to configure the development environment for this project.
+      </div>
+    </li>
+    <li>
+      <span class="ai-skill-tag">agent</span>
+      <div>
+        <strong>explore</strong>
+        Fast parallel research agent (Claude Haiku). Used for codebase investigation, file searches, and multi-threaded research tasks — running multiple independent searches simultaneously.
+      </div>
+    </li>
+    <li>
+      <span class="ai-skill-tag">agent</span>
+      <div>
+        <strong>general-purpose</strong>
+        Full-capability background agent (Claude Sonnet). Used for complex multi-step tasks — building pillar pages, running consistency audits, constructing comparison content — in a separate context to keep the main session clean.
+      </div>
+    </li>
+    <li>
+      <span class="ai-skill-tag">agent</span>
+      <div>
+        <strong>task</strong>
+        Command execution agent. Used to run builds, tests, linters, and dependency installs, returning full output on failure and brief summaries on success.
+      </div>
+    </li>
+    <li>
+      <span class="ai-skill-tag">agent</span>
+      <div>
+        <strong>code-review</strong>
+        High-signal adversarial code reviewer. Used to surface genuine bugs, logic errors, and security issues — not style or formatting — before committing changes.
+      </div>
+    </li>
+  </ul>
+
+  <h2>Governing Instructions: Repository Level</h2>
+  <p>The following instructions are stored in <code><a href="https://github.com/alistardust/american-renewal-project/blob/main/.github/copilot-instructions.md">.github/copilot-instructions.md</a></code> and applied automatically to every AI interaction with this repository. They define how the AI must behave when working on this project — what to prioritize, how to handle sources, citation requirements, copyright rules, quality gates, and testing standards.</p>
+
+  <details class="ai-instr-panel" open>
+    <summary>Repository Copilot Instructions — <code>.github/copilot-instructions.md</code></summary>
+    <div class="ai-instr-body">
+
+      <h3>Project Context</h3>
+      <p>This repository is reconstructing a document-first political/platform project from branch chat logs plus older markdown files. The policy corpus is centered on the local source transcripts and <code>data/policy_catalog.sqlite</code>. The markdown under <code>pillars/</code> is useful, but may be outdated relative to the logs and database. Read <code>overview/current-state.md</code> before making structural changes.</p>
+
+      <h3>Source of Truth</h3>
+      <ol>
+        <li>Formal structured IDs in the main/brainstorm chat logs</li>
+        <li>Later contextual summary blocks in those chats when earlier mappings conflict</li>
+        <li><code>data/policy_catalog.sqlite</code></li>
+        <li>Legacy pillar markdown</li>
+      </ol>
+      <p>Do <strong>not</strong> assume the current pillar files are complete.</p>
+
+      <h3>Working with IDs and the Catalog</h3>
+      <ul>
+        <li>Old numeric checkpoint items live in <code>policy_items</code></li>
+        <li>Structured ID system lives in <code>rule_items</code></li>
+        <li>Legacy-to-structured conversions live in <code>record_links</code></li>
+        <li>Prose/context-only IDs live in <code>prose_rule_mentions</code></li>
+        <li>Use <code>deduped_catalog_entries</code> for the canonical corpus without legacy duplicates</li>
+        <li>Use <code>unresolved_prose_rule_mentions</code> when auditing IDs mentioned in context but not promoted to canon</li>
+      </ul>
+      <p>Rebuild the catalog from source with <code>scripts/import_policy_catalog.py</code>. Do not hand-edit the SQLite database.</p>
+
+      <h3>Editing Guidance</h3>
+      <ul>
+        <li>Prefer updating import logic and source-backed docs over manual data patching</li>
+        <li>Preserve provenance — keep ID relationships visible through the database, not deleted</li>
+        <li>When updating policy content, search both main and brainstorm logs first</li>
+        <li>Keep changes surgical: context and traceability matter as much as final wording</li>
+      </ul>
+
+      <hr class="ai-instr-divider">
+
+      <h3>Citation Standards</h3>
+      <p>Every factual claim, statistic, poll result, legal reference, and externally sourced assertion <strong>must be cited</strong>. Use Wikipedia-style numbered inline annotations — <code>[1]</code>, <code>[2]</code> — with full APA 7th edition reference lists.</p>
+
+      <h4>APA 7th Edition Formats</h4>
+      <p><strong>News article:</strong> Author, A. A. (Year, Month Day). Title. <em>Publication</em>. URL<br>
+      <strong>Government report:</strong> Agency. (Year). <em>Title</em> (Report No.). URL<br>
+      <strong>Journal article:</strong> Author(s). (Year). Title. <em>Journal</em>, <em>Vol</em>(Issue), pages. DOI<br>
+      <strong>Federal statute:</strong> Name of Act, Pub. L. No. XXX-XX, § X, XX Stat. XXX (Year). URL</p>
+
+      <h4>What Must Be Cited</h4>
+      <ul>
+        <li>Every statistic, poll result, or numerical claim</li>
+        <li>Every reference to a study, report, or academic finding</li>
+        <li>Every historical fact that is not common knowledge</li>
+        <li>Every claim about what a law, court ruling, or official document says</li>
+        <li>Every claim about what another party or public figure has said or done</li>
+      </ul>
+
+      <h4>Source Quality Hierarchy</h4>
+      <ol>
+        <li>Primary sources: federal statutes, court opinions, official government data (Census, BLS, CBO, GAO, CRS)</li>
+        <li>Peer-reviewed academic research</li>
+        <li>Non-partisan research institutions (Pew, Brookings, EPI, KFF, Brennan Center)</li>
+        <li>Major news outlets with editorial standards (NYT, WaPo, Reuters, AP, NPR)</li>
+        <li>Advocacy or partisan sources — cite only for attribution, never as neutral fact</li>
+      </ol>
+
+      <hr class="ai-instr-divider">
+
+      <h3>Copyright and Plagiarism Safeguards</h3>
+      <ul>
+        <li><strong>Never reproduce substantial verbatim text from copyrighted sources.</strong> Quote sparingly — one or two sentences at most — and only when exact wording matters.</li>
+        <li><strong>Facts and statistics are not copyrightable.</strong> Their unique presentation by the original author is. State facts freely; cite the source.</li>
+        <li><strong>Federal government works are public domain</strong> (17 U.S.C. § 105). May be quoted at length; must still be cited.</li>
+        <li><strong>The "heart of the work" test:</strong> Even a short quote can infringe if it captures the essential value of the original. When in doubt, paraphrase and cite.</li>
+        <li><strong>AI-synthesized text is a draft, not a final source.</strong> All AI output incorporating external facts must be re-sourced from primary references.</li>
+        <li><strong>Do not cite sources you have not verified.</strong> Every citation must be confirmed: source exists, URL resolves, content matches the claim.</li>
+      </ul>
+
+      <hr class="ai-instr-divider">
+
+      <h3>Quality and Accuracy Safeguards</h3>
+      <p>Before publishing any factual claim:</p>
+      <ol>
+        <li>Verify the source exists and the URL resolves</li>
+        <li>Confirm the source actually supports the specific claim being made</li>
+        <li>Check the date — prefer the most recent data; note when data may be stale</li>
+        <li>Check for context — a technically accurate statistic can still be misleading</li>
+      </ol>
+
+      <h4>Adversarial Review Requirement</h4>
+      <p>Before finalizing any empirical section, actively try to disprove the claims. If contradicting data exists: acknowledge it, explain why it doesn't change the conclusion, or revise the conclusion. Suppressing contradicting evidence is not permitted. <strong>Intellectual honesty is a core value of this platform.</strong></p>
+
+      <h4>AI Hallucination Safeguards</h4>
+      <p>AI models can generate fabricated citations, misattribute quotes, confuse statistics from different years, and produce confident-sounding claims that are wrong. <strong>Every AI-generated factual claim must be independently verified before publication.</strong> If no source can be found, the claim must be removed or reframed as the project's own position.</p>
+
+      <h4>Language Integrity Rules</h4>
+      <ul>
+        <li>Do not present policy positions as established facts</li>
+        <li>Do not use weasel words ("studies show," "experts agree") without specific citations</li>
+        <li>Do not use emotional language in research sections</li>
+        <li>Always distinguish between "this is what the research shows" and "this is what we believe should be done"</li>
+      </ul>
+
+      <hr class="ai-instr-divider">
+
+      <h3>Testing Standards</h3>
+      <p><strong>Stack:</strong> Vitest for unit tests (<code>npm run test:unit</code>), Playwright/Firefox for E2E tests (<code>npm run test:e2e</code>). Always run unit tests before committing. Run E2E tests after any HTML/JS/CSS change.</p>
+
+      <h4>Always Test</h4>
+      <ul>
+        <li>Any new HTML page or section: title, key headings, critical elements present and visible</li>
+        <li>Any new JS feature injected by <code>app.js</code>: element exists in DOM, correct href, correct behavior</li>
+        <li>Any navigation path: link exists, href correct, target page loads</li>
+        <li>Any count-sensitive assertion: update counts when structure changes — stale counts are bugs</li>
+        <li>Any fix for a visual bug: write a regression test that would have caught it</li>
+        <li>Any link that could 404: navigate to the href and assert the page loads</li>
+      </ul>
+
+      <h4>Key Cautions</h4>
+      <ul>
+        <li>Do not use <code>toBeVisible()</code> alone to test opacity — Playwright considers <code>opacity:0</code> elements visible. Use <code>.toHaveClass(/visible/)</code> for IntersectionObserver-driven reveals.</li>
+        <li>GitHub Pages path logic: use named subdir checks (<code>/\/(pillars|compare)\//.test(location.pathname)</code>) not segment counting — segment counting breaks at the repo root level.</li>
+        <li>When adding pillars, update <code>SAMPLE_PILLARS</code> and all count assertions.</li>
+      </ul>
+
+    </div>
+  </details>
+
+  <h2>Governing Instructions: Global Quality Standards</h2>
+  <p>The following standards apply globally — across all repositories and all uses of this AI system. They define the baseline quality and accuracy expectations that govern every interaction, independent of project-specific rules.</p>
+
+  <details class="ai-instr-panel">
+    <summary>Global Copilot Quality Standards</summary>
+    <div class="ai-instr-body">
+
+      <h3>Model Selection</h3>
+      <p>Anthropic (Claude) models are preferred over OpenAI models when a choice is available. Claude Sonnet is the default for standard tasks; Claude Opus is used for complex, multi-step reasoning tasks requiring premium analytical depth.</p>
+      <p>The use of multiple model families — Anthropic and OpenAI — is maintained deliberately. No single AI system is treated as authoritative. Cross-model verification is used for conclusions that matter.</p>
+
+      <h3>Coding Rules</h3>
+      <ul>
+        <li>Follow the naming conventions of the language and repository in use</li>
+        <li>Prefer concise, efficient code; prefer completeness over brevity when the two conflict</li>
+        <li>Only comment code that genuinely needs clarification — do not over-comment</li>
+        <li>Always analyze code for robustness, completeness, and explicit error handling</li>
+        <li>Use UTF-8 encoding for all source files; keep scripts and configs ASCII-safe</li>
+        <li>Mentally trace through code against multiple input scenarios before declaring it correct</li>
+        <li>Generate unit tests where applicable and ensure they pass before declaring code complete</li>
+      </ul>
+
+      <h3>Quality Rules</h3>
+      <ul>
+        <li><strong>Prioritize accuracy over speed.</strong> A slow, correct answer is always better than a fast, wrong one.</li>
+        <li><strong>Never guess.</strong> Only provide answers that can be verified. If something cannot be confirmed, say so.</li>
+        <li><strong>Base answers on the latest stable version</strong> of any technology being discussed. Note when version matters.</li>
+        <li><strong>Adversarial review on all code:</strong> actively seek edge cases, failure modes, and security issues before declaring something complete.</li>
+      </ul>
+
+      <h3>Code Change Rules</h3>
+      <ul>
+        <li>Make precise, surgical changes that fully address the request — do not modify unrelated code</li>
+        <li>Do not fix pre-existing issues unrelated to the current task (unless directly caused by the change being made)</li>
+        <li>Update documentation if it is directly related to changes being made</li>
+        <li>Always validate that changes do not break existing behavior — run tests</li>
+        <li>Only run linters, builds, and tests that already exist; do not add new tooling unless necessary</li>
+      </ul>
+
+    </div>
+  </details>
 
   <p style="margin-top:2.5rem">
     <a href="index.html" class="btn-primary" style="background:var(--navy)">← Back to Home</a>
