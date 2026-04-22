@@ -30,6 +30,11 @@
     .cov-details > summary::before { content: "▶ "; font-size: .65rem; }
     .cov-details[open] > summary::before { content: "▼ "; }
     .cov-details > summary:hover { color: rgba(255,255,255,.8); }
+
+    .cmp-wrongs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.1rem; margin-top:1rem; }
+    .wrong-card { background:rgba(255,255,255,.07); border-radius:6px; padding:1.2rem 1.4rem; border-left:4px solid #bf0a30; }
+    .wrong-card h3 { font-size:.95rem; color:#e8c060; text-transform:uppercase; letter-spacing:.05em; margin:0 0 .5rem; }
+    .wrong-card p { font-size:.9rem; line-height:1.65; color:rgba(255,255,255,.82); margin:0; }
   </style>
 </head>
 <body>
@@ -66,6 +71,7 @@
     <a href="#cmp-diff">Differences</a>
     <a href="#cmp-gaps">Coverage Gaps</a>
     <a href="#cmp-strengths">Strengths</a>
+    <a href="#cmp-wrongs">What They Get Wrong</a>
     <a href="#cmp-sources">Sources</a>
   </div>
 </nav>
@@ -214,6 +220,49 @@
   </div>
 </section>
 
+<section class="bg-dark on-dark ruled" id="cmp-wrongs">
+<div class="wrap">
+  <h2 style="color:#bf0a30">What They Get Wrong</h2>
+  <p class="section-intro" style="color:rgba(255,255,255,.75);max-width:720px;margin-bottom:1.5rem">
+    The Republican Party channels genuine public frustration — then points it at scapegoats, dismantles the institutions that protect ordinary people, and serves the interests of concentrated wealth. The harms are specific, documented, and ongoing.
+  </p>
+  <div class="cmp-wrongs-grid">
+    <div class="wrong-card">
+      <h3>Authoritarianism &amp; Rights Erosion</h3>
+      <p>Project 2025's Mandate for Leadership — produced by the Heritage Foundation and former Trump officials — explicitly plans to abolish the civil service through Schedule F (reclassifying ~50,000 career federal employees as at-will political appointees), weaponize the DOJ against political opponents, and dismantle independent agency oversight. The Supreme Court's 2024 ruling in <em>Trump v. United States</em> granted sweeping presidential immunity from criminal prosecution for official acts — a structural erosion of checks on executive power. <em>Shelby County v. Holder</em> (2013) gutted the Voting Rights Act's preclearance requirements, enabling a wave of restrictive state voting laws. Dozens of state-level abortion bans enacted since <em>Dobbs</em> (2022) include no exceptions for rape or incest. Book bans accelerated to record levels post-2021, documented by the American Library Association (4,240 challenged titles in 2023 alone). Heritage Foundation's 2025/2026 Priorities ("Project 2026") builds directly on this framework, adding anti-RCV provisions, anti-trans measures, and "election integrity" restrictions on ballot access.</p>
+    </div>
+    <div class="wrong-card">
+      <h3>Fascist Drift</h3>
+      <p>Project 2025's framing invokes "Christian nationalism" and calls explicitly for purging "radical left" ideology from federal agencies. Schedule F is not administrative reform — it converts the nonpartisan civil service into a political patronage system. Trump's campaign rhetoric describing immigrants as "vermin" and political opponents as "the enemy within," combined with explicit statements about deploying the U.S. military against domestic protesters (invocation of the Insurrection Act), represents a documented drift toward authoritarian governance structures. The Heritage Foundation's 2025/2026 Priorities repackages these ambitions as a multi-year governing blueprint — including plans to "counter CCP" as a pretext for civil liberties restrictions and "protect women and children" as a vehicle for anti-LGBTQ+ policy.</p>
+    </div>
+    <div class="wrong-card">
+      <h3>Tariffs as a Regressive Consumer Tax</h3>
+      <p>Tariffs are not paid by foreign governments — they are paid by American importers and passed through directly to consumers. Amiti, Redding &amp; Weinstein (<em>American Economic Review</em>, 2019) found near-complete pass-through of 2018 tariff costs to U.S. purchasers, amounting to approximately $4.4 billion per month in additional consumer burden. The Tax Foundation estimated the 2018–2019 tariffs reduced long-run GDP by 0.2% and wages by 0.1%. Working families buying appliances, cars, groceries, and building materials bear the cost, while incumbent domestic producers who already captured the market receive protection. Tariffs do not rebuild closed factories. Identifying deindustrialization as a problem and prescribing tariffs without industrial policy is a diagnostic hit and a treatment miss.</p>
+    </div>
+    <div class="wrong-card">
+      <h3>Trickle-Down Tax Policy</h3>
+      <p>The 2017 Tax Cuts and Jobs Act delivered its largest benefits to corporations and high-income households. The Congressional Budget Office projected the TCJA would add approximately $1.9 trillion to the federal deficit over ten years. Corporate profits rose sharply; median wage growth remained modest and was outpaced by inflation. The promised investment surge ("repatriation boom") did not materialize at the projected scale — the Federal Reserve Bank of Boston found that most repatriated funds went to stock buybacks rather than domestic capital investment. Supply-side fiscal policy has been tested for 40 years; the evidence that its benefits flow structurally to working people is absent.</p>
+    </div>
+    <div class="wrong-card">
+      <h3>Deregulation Costs — SVB &amp; East Palestine</h3>
+      <p>The 2018 rollback of Dodd-Frank's enhanced prudential supervision thresholds (S. 2155) removed oversight requirements from mid-size banks including Silicon Valley Bank. SVB collapsed in March 2023 with $209 billion in assets — the second-largest bank failure in U.S. history. The Federal Reserve's own April 2023 post-mortem found that reduced supervisory intensity contributed directly to its failure. In February 2023, a Norfolk Southern freight train derailed at East Palestine, Ohio, spilling vinyl chloride and other toxic chemicals; the 2019 withdrawal of enhanced braking standards (HM-251) for high-hazard freight trains had removed safety requirements that would have applied to that consist. The EPA designated the site a federal Superfund emergency. These are not hypothetical risks — they are the documented costs of removing public protections without distinguishing between captured rules and useful ones.</p>
+    </div>
+    <div class="wrong-card">
+      <h3>Mass Deportation Economics</h3>
+      <p>The American Immigration Council estimated the cost of a mass deportation program at $315 billion to $967 billion over a decade — one of the largest domestic spending programs in U.S. history, paid by taxpayers. Approximately half of U.S. crop farmworkers are unauthorized immigrants (USDA Economic Research Service); mass deportation would collapse agricultural supply chains, construction, food processing, hospitality, and caregiving simultaneously. Multiple economic analyses project GDP contraction, food price spikes, and severe labor shortages in industries with no domestic substitute workforce. The fiscal and economic case for mass deportation does not survive contact with the data. The humanitarian case against it — family separation as deliberate deterrence, detention conditions, violation of asylum law under the 1951 Refugee Convention — is additionally damning.</p>
+    </div>
+    <div class="wrong-card">
+      <h3>Christian Nationalism &amp; Anti-Muslim Discrimination</h3>
+      <p>Republican officials increasingly invoke "religious freedom" while simultaneously working to impose Christian nationalist values through law — and openly targeting Muslims as unfit for American society. Project 2025 calls for embedding Judeo-Christian values into federal governance, removing civil servants who don't share those values, and dismantling legal frameworks (LGBTQ+ protections, reproductive rights, secular education) rooted in constitutional religious neutrality. Meanwhile, multiple Republican members of Congress have made openly Islamophobic statements with no party consequences: Rep. Andy Ogles (R-TN) posted "Muslims don't belong in American society. Pluralism is a lie" and introduced legislation to ban immigration from Muslim-majority countries; Rep. Randy Fine (R-FL) posted "the choice between dogs and Muslims is not a difficult one"; Rep. Andrew Clyde (R-GA) called for "No more Islamic immigration. Denaturalize, deport, repeat"; Rep. Chip Roy (R-TX) introduced the "Mamdani Act" to denaturalize and deport Americans deemed "Islamic fundamentalists." The Center for Security and Human Rights (CSOHATE) documented 1,111 posts by 46 GOP elected officials targeting Muslim Americans between February 2025 and March 2026 — a 1,450% increase in monthly volume. True religious freedom requires protecting all faiths, not just the majority one. Enforcing Christianity through law while demanding the right to exclude Muslims from society is not religious freedom — it is state-sponsored religious discrimination.</p>
+    </div>
+    <div class="wrong-card">
+      <h3>Gerontocracy &amp; Governance by Grudge</h3>
+      <p>The party nominated Donald Trump as its 2024 presidential candidate — the oldest major-party nominee in U.S. history at 78. Senate Republican leader Mitch McConnell suffered repeated public neurological episodes during 2023–2024 before stepping down. The party's governance model has become defined by personal loyalty to a single figure, retribution against perceived enemies ("retribution" was explicitly stated as a governing goal), and policy improvisation driven by grievance rather than structural analysis. No Republican House or Senate majority during the Trump era produced a comprehensive healthcare, infrastructure, or economic reform bill that passed. The core deliverables of four years of unified government were a tax cut and judicial appointments.</p>
+    </div>
+  </div>
+</div>
+</section>
+
 <section class="bg-cream" id="cmp-sources">
   <div class="wrap">
     <p class="eyebrow">Sources</p>
@@ -232,6 +281,9 @@
       <li><strong>Regulatory capture — academic and intellectual foundation:</strong> George Stigler, "The Theory of Economic Regulation," <em>Bell Journal of Economics and Management Science</em> (Spring 1971) — foundational work on agency capture that Republican reform arguments draw from; CATO Institute regulatory reform analyses at <a href="https://www.cato.org/regulation" target="_blank" rel="noopener">cato.org/regulation</a></li>
       <li><strong>Voter access and election law:</strong> Brennan Center for Justice, <a href="https://www.brennancenter.org/issues/ensure-every-american-can-vote/voting-reform/state-voting-laws" target="_blank" rel="noopener">State Voting Laws database</a> — tracking of restrictive voting legislation; documented GOP-controlled state-level restrictions on early voting, mail voting, and registration access post-2010</li>
       <li><strong>Campaign finance and money in politics:</strong> OpenSecrets, <a href="https://www.opensecrets.org" target="_blank" rel="noopener">opensecrets.org</a> — public data on campaign contributions, dark money, PAC spending, and lobbying expenditures; Federal Election Commission public records</li>
+      <li><strong>Republican Islamophobia — elected officials:</strong> NPR, <a href="https://www.npr.org/2026/03/09/g-s1-113033/tennessee-gop-rep-says-muslims-dont-belong-in-american-society" target="_blank" rel="noopener">"Tennessee GOP rep says Muslims don't belong in American society"</a> (March 9, 2026) — Rep. Andy Ogles (R-TN) post and proposed Muslim immigration ban; Rep. Randy Fine (R-FL) "dogs and Muslims" post; Rep. Andrew Clyde (R-GA) "denaturalize, deport, repeat" post; Rep. Chip Roy (R-TX), "Mamdani Act" to denaturalize citizens deemed "Islamic fundamentalists" (TRT World, April 2026)</li>
+      <li><strong>Systematic anti-Muslim campaign by GOP officials:</strong> Center for Security and Human Rights (CSOHATE), <a href="https://www.csohate.org/2026/04/21/manufacturing-muslim-threat-in-america/" target="_blank" rel="noopener">"Manufacturing Muslim Threat in America"</a> (April 21, 2026) — analysis of 1,111 posts by 46 Republican elected officials targeting Muslim Americans between February 2025 and March 2026; 1,450% increase in monthly volume; campaign originated with Texas Governor Greg Abbott amplifying a "Sharia city" conspiracy theory in February 2025; five members of Congress produced 73% of all posts</li>
+      <li><strong>Christian nationalism in Republican policy:</strong> Project 2025 (Heritage Foundation, 2023), Chapter 2 and passim — explicit calls to embed "Judeo-Christian" values in federal governance, remove civil servants who don't share those values, and restructure federal agencies around a religiously-informed governing philosophy; <em>Dobbs v. Jackson Women's Health Organization</em>, 597 U.S. 215 (2022) — reversal of <em>Roe v. Wade</em> enabled state-level abortion bans rooted in religious doctrine; state-level battles over "Don't Say Gay" legislation, removal of LGBTQ+ content from schools, and mandatory school prayer reflect a pattern of using law to enforce religious majority preferences</li>
     </ul>
   </div>
 </section>
@@ -252,7 +304,7 @@
 <script>
 (function(){
   var links = document.querySelectorAll('.cmp-snav a');
-  var ids = ['cmp-overview','cmp-align','cmp-diff','cmp-gaps','cmp-strengths','cmp-sources'];
+  var ids = ['cmp-overview','cmp-align','cmp-diff','cmp-gaps','cmp-strengths','cmp-wrongs','cmp-sources'];
   var sections = ids.map(function(id){ return document.getElementById(id); });
   function update(){
     var idx = 0;
