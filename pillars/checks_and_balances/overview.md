@@ -1,5 +1,7 @@
 # Checks and Balances
 
+**Foundation:** [Accountable Power](../../foundations/accountable_power/values.md)
+
 ## Purpose
 To restore and strengthen separation of powers, create enforceable accountability mechanisms across all branches of government, establish independent oversight capacity, protect against institutional abuse and capture, ensure that AI and algorithmic systems in government serve fairness rather than creating new forms of discrimination, and maintain the constitutional balance between federal and state authority.
 

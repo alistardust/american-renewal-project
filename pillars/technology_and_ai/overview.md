@@ -1,5 +1,7 @@
 # Technology, AI, and Digital Rights
 
+**Foundation:** [Real Freedom](../../foundations/real_freedom/values.md)
+
 ## Purpose
 
 This pillar establishes comprehensive governance frameworks for artificial intelligence, data systems, algorithmic accountability, digital infrastructure, and emerging technology to protect rights, ensure transparency, prevent abuse, and align technological power with democratic values and human dignity.

@@ -1,5 +1,7 @@
 # Rights, Civil Liberties, and Equal Protection
 
+**Foundation:** [Equal Justice](../../foundations/equal_justice/values.md) *(also: [Real Freedom](../../foundations/real_freedom/values.md))*
+
 ## Purpose
 This pillar exists to make rights explicit, modern, durable, and harder to roll back. It reduces ambiguity where ambiguity enables abuse, clarifies intent where bad-faith interpretation is likely, and provides both technical legal protections and plain-language statements of purpose.
 

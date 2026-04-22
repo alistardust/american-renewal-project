@@ -1,5 +1,7 @@
 # Anti-Corruption, Political Influence, and Concentrated Power
 
+**Foundation:** [Clean Democracy](../../foundations/clean_democracy/values.md)
+
 ## Purpose
 Government must answer to the public, not wealthy donors, dark-money networks, monopolistic corporations, foreign influence operations, or shadow lobbying systems that undermine democratic legitimacy.
 

@@ -1,5 +1,7 @@
 # Term Limits and Fitness for Office
 
+**Foundation:** [Accountable Power](../../foundations/accountable_power/values.md)
+
 ## Purpose
 Ensure that public office is not held indefinitely or beyond reasonable capacity, preventing entrenchment of political power and maintaining effective, accountable leadership reflective of current society.
 

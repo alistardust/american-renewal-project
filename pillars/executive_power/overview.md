@@ -1,5 +1,7 @@
 # Executive Power
 
+**Foundation:** [Accountable Power](../../foundations/accountable_power/values.md)
+
 ## Purpose
 Prevent the presidency from becoming a quasi-monarchical office by limiting, constraining, and making transparent all executive power, ensuring presidents remain fully accountable to law and unable to use the office for personal, political, or financial gain.
 

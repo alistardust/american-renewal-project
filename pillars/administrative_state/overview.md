@@ -1,5 +1,7 @@
 # Administrative State and Bureaucratic Power
 
+**Foundation:** [Accountable Power](../../foundations/accountable_power/values.md)
+
 ## Purpose
 Define the constitutional foundation, accountability mechanisms, and operational boundaries of federal administrative agencies to prevent both regulatory capture and executive overreach while preserving effective governance.
 

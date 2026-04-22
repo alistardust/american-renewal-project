@@ -1,5 +1,7 @@
 # Equal Justice and Policing
 
+**Foundation:** [Equal Justice](../../foundations/equal_justice/values.md)
+
 ## Purpose
 This pillar governs how state force, punishment, detention, policing, and legal accountability operate to protect public safety while applying the law fairly, consistently, and equally to all people.
 

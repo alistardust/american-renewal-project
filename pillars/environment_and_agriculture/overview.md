@@ -1,5 +1,7 @@
 # Environment and Agriculture
 
+**Foundation:** [Freedom to Thrive](../../foundations/freedom_to_thrive/values.md)
+
 ## Purpose
 Establish comprehensive environmental protection, pollution control, biodiversity preservation, and sustainable agriculture frameworks that address climate change, corporate accountability, and the full scope of human environmental impact from terrestrial ecosystems to orbital space.
 

@@ -1,5 +1,7 @@
 # Elections and Democratic Representation
 
+**Foundation:** [Clean Democracy](../../foundations/clean_democracy/values.md)
+
 ## Purpose
 This pillar is the architecture of democratic legitimacy, ensuring that every eligible person has equal access to voting, equal weight in representation, and confidence in election outcomes that cannot be sabotaged by partisan actors.
 

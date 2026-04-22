@@ -1,5 +1,7 @@
 # Immigration Reform
 
+**Foundation:** [Equal Justice](../../foundations/equal_justice/values.md)
+
 ## Purpose
 
 To establish a humane, orderly, and rights-respecting immigration system that protects due process, family integrity, and equal dignity; provides realistic lawful pathways to status and citizenship; prevents systemic cruelty and exploitation; and resists political manipulation while maintaining transparent, accountable governance.

@@ -1,5 +1,7 @@
 # Healthcare System Reform
 
+**Foundation:** [Freedom to Thrive](../../foundations/freedom_to_thrive/values.md)
+
 ## Purpose
 
 Define a comprehensive healthcare system that treats healthcare as a guaranteed right, not a privilege—ensuring universal access to medically necessary care while protecting patients from denial, delay, fragmentation, and extractive insurance practices. This pillar establishes the structural, coverage, operational, and transition-state standards required to move toward single-payer universal healthcare while immediately improving care quality, access, and affordability.

@@ -1,5 +1,7 @@
 # Taxation and Wealth
 
+**Foundation:** [Freedom to Thrive](../../foundations/freedom_to_thrive/values.md)
+
 ## Purpose
 To establish progressive taxation, prevent wealth concentration from undermining democratic self-governance, support workers and small businesses, ensure economic opportunity regardless of class or circumstance, and structure the economy to distribute productivity gains broadly rather than concentrating them at the top.
 

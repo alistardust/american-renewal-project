@@ -2,14 +2,37 @@
 
 ## Core idea
 
-This project is building a complete system for restoring fairness, accountability, and human dignity in modern society. It is meant to function as more than a policy list: it is a system, a narrative, and an implementation path.
+This project is a **Third Bill of Rights** — completing Franklin Roosevelt's unfinished 1944 Second Bill of Rights and extending it into the 21st century.
+
+The First Bill of Rights (1791) told government what it could not do to you. FDR's Second Bill recognized that political freedom is meaningless without material security. This project completes that work and adds what a new century demands: digital rights, bodily autonomy, algorithmic accountability, climate rights, and immigration dignity.
+
+> *"You can't be free if you're sick, homeless, or in debt."*
+
+See [`overview/third-bill-of-rights.md`](third-bill-of-rights.md) for the full framing declaration.
+
+Beyond the rights framing, this project is building a complete system: a structured policy corpus, a narrative, and an implementation path organized from values to enforceable rules.
 
 ## Structural layers
 
-1. **Pillars** — domain-by-domain policy design (17 pillars, `pillars/` directory)
-2. **System rules** — cross-domain constraints and design invariants
-3. **Strategy** — communication, rollout, and coalition work
-4. **Catalog data** — structured IDs for policy items and rules (`data/policy_catalog.sqlite`)
+The project has two primary public layers, plus internal working infrastructure:
+
+1. **Foundations** (5 core values, `foundations/` directory) — The moral and political commitments that define what the project believes. Written to be public-facing, accessible, and resonant. Each foundation explains *why* the work matters before getting into *what* must change. See [`foundations/README.md`](../foundations/README.md) for the full index.
+2. **Pillars** — domain-by-domain policy design (17 pillars, `pillars/` directory). Each pillar is anchored to one of the five foundations and contains `overview.md` (purpose and design logic) and `policy.md` (all canonical rules).
+3. **System rules** — cross-domain constraints and design invariants
+4. **Strategy** — communication, rollout, and coalition work
+5. **Catalog data** — structured IDs for policy items and rules (`data/policy_catalog.sqlite`)
+
+### The Five Foundations
+
+The foundations layer sits above the pillars — it is the "why" that the pillars translate into "how." Each foundation is a short, plain-language statement of a core value, grounded in the reasoning developed across the source logs.
+
+| Foundation | Core Belief |
+|---|---|
+| [Accountable Power](../foundations/accountable_power/values.md) | No one is above the law or beyond accountability |
+| [Clean Democracy](../foundations/clean_democracy/values.md) | Government must answer to people, not money or corporations |
+| [Equal Justice](../foundations/equal_justice/values.md) | The law applies equally to everyone, fairly and humanely |
+| [Real Freedom](../foundations/real_freedom/values.md) | Rights must be explicit, enforceable, and protected |
+| [Freedom to Thrive](../foundations/freedom_to_thrive/values.md) | Material security is a prerequisite for real freedom |
 
 ## The 17 Pillars
 

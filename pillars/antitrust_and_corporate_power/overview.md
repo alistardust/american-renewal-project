@@ -1,5 +1,7 @@
 # Antitrust and Corporate Power
 
+**Foundation:** [Clean Democracy](../../foundations/clean_democracy/values.md)
+
 ## Purpose
 To prevent monopolistic control, restore competitive markets, limit corporate domination of essential services and supply chains, and ensure that no small group of corporations can control daily life, economic opportunity, or democratic governance.
 

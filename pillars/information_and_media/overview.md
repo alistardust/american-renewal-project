@@ -1,5 +1,7 @@
 # Information and Media
 
+**Foundation:** [Clean Democracy](../../foundations/clean_democracy/values.md)
+
 ## Purpose
 To protect the flow of truthful information from power to the public while preventing coordinated manipulation, foreign interference, and the weaponization of information systems against democratic self-governance. This pillar also encompasses the physical infrastructure—broadband, energy grids, rail, and transportation—that forms the material foundation of modern society and information access.
 

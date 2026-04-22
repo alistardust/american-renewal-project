@@ -1,5 +1,7 @@
 # Gun Policy and Armed Power
 
+**Foundation:** [Real Freedom](../../foundations/real_freedom/values.md)
+
 ## Purpose
 Clarify government authority to regulate firearms and armed groups while balancing individual rights with public safety, preventing private militarization, and establishing accountability frameworks for lawful armed activity.
 

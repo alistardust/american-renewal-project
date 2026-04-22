@@ -1,5 +1,7 @@
 # Courts and Judicial System
 
+**Foundation:** [Accountable Power](../../foundations/accountable_power/values.md)
+
 ## Purpose
 Define how courts operate, how judges are selected and constrained, and how interpretation of law and rights is governed, ensuring the judiciary remains independent, accountable, ethically bound, and structurally designed to uphold rights rather than undermine them.
 
