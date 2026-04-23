@@ -5,6 +5,12 @@
 
 const { test, expect } = require('@playwright/test');
 
+// ── SHARED CONSTANTS ──────────────────────────────────────────────────────────
+// Update PILLAR_COUNT when adding pillars to data.js.
+// All count assertions below derive from this constant.
+const PILLAR_COUNT = 23; // pillars in data.js
+const PILLAR_PILL_COUNT = PILLAR_COUNT + 1; // +1 for the shared rights card in fullview
+
 // ── HOMEPAGE ─────────────────────────────────────────────────────────────────
 
 test.describe('Homepage', () => {
@@ -37,8 +43,8 @@ test.describe('Homepage', () => {
     await expect(page.locator('.demand-list li')).toHaveCount(10);
   });
 
-  test('nav has 10 links (4 static + Mission, Constitution, Classification, About Us, Get Involved, About AI injected by app.js)', async ({ page }) => {
-    await expect(page.locator('.nav-links a')).toHaveCount(10);
+  test('nav has 11 links (4 static + Mission, Constitution, Classification, About Us, Get Involved, Roadmap, About AI injected by app.js)', async ({ page }) => {
+    await expect(page.locator('.nav-links a')).toHaveCount(11);
   });
 
   test('name notice banner is present and dismissible', async ({ page }) => {
@@ -91,8 +97,8 @@ test.describe('Foundations page', () => {
     await expect(page.locator('text=What Is a Foundation').first()).toBeVisible();
   });
 
-  test('has 23 total pillar cards across all foundations', async ({ page }) => {
-    await expect(page.locator('a.f-pillar-card')).toHaveCount(23);
+  test(`has ${PILLAR_COUNT} total pillar cards across all foundations`, async ({ page }) => {
+    await expect(page.locator('a.f-pillar-card')).toHaveCount(PILLAR_COUNT);
   });
 
   test('has 10 demand/reject blocks across 5 foundations', async ({ page }) => {
@@ -117,9 +123,9 @@ test.describe('Pillars index', () => {
     await expect(page.locator('.pi-fv-col')).toHaveCount(5);
   });
 
-  test('fullview contains all 23 pillar links (24 with shared rights pillar)', async ({ page }) => {
-    // 23 pillars + 1 shared rights card = 24
-    await expect(page.locator('a.pi-fv-pill')).toHaveCount(24);
+  test(`fullview contains all ${PILLAR_COUNT} pillar links (${PILLAR_PILL_COUNT} with shared rights pillar)`, async ({ page }) => {
+    // PILLAR_COUNT pillars + 1 shared rights card = PILLAR_PILL_COUNT
+    await expect(page.locator('a.pi-fv-pill')).toHaveCount(PILLAR_PILL_COUNT);
   });
 
   test('each fullview pillar pill links to a .html page', async ({ page }) => {
@@ -667,11 +673,12 @@ test.describe('Get Involved page', () => {
   });
 
   test('renders all 5 system rule examples', async ({ page }) => {
-    await expect(page.locator('.rule-example-list li')).toHaveCount(5);
+    // First rule-example-list is the System Rules examples section
+    await expect(page.locator('.rule-example-list').first().locator('li')).toHaveCount(5);
   });
 
   test('system rule list includes SYS-GEO-001', async ({ page }) => {
-    const text = await page.locator('.rule-example-list').textContent();
+    const text = await page.locator('.rule-example-list').first().textContent();
     expect(text).toMatch(/SYS-GEO-001/);
   });
 
@@ -679,8 +686,9 @@ test.describe('Get Involved page', () => {
     await expect(page.locator('.role-card')).toHaveCount(6);
   });
 
-  test('renders all 4 git guide steps', async ({ page }) => {
-    await expect(page.locator('.git-step')).toHaveCount(4);
+  test('renders all git guide steps', async ({ page }) => {
+    // 5 GitHub workflow steps + 5 local environment steps + 4 Copilot setup steps = 14
+    await expect(page.locator('.git-step')).toHaveCount(14);
   });
 
   test('GitHub repo link is present and correct', async ({ page }) => {

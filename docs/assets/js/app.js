@@ -245,6 +245,24 @@
     document.head.insertAdjacentHTML('beforeend', '<style>.visible{opacity:1!important;transform:none!important}</style>');
   }
 
+  /* ── PILLAR SECTION SCROLLSPY ───────────────────────── */
+  // Highlights the active section in the sticky pillar sub-nav.
+  // Replaces the inline <script> block that was repeated in every pillar HTML file.
+  (function () {
+    const nav = document.getElementById('pil-snav');
+    if (!nav) return;
+    const links    = nav.querySelectorAll('a[href^="#"]');
+    const sections = Array.from(links).map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    function onScroll() {
+      const y      = window.scrollY + 120;
+      let   active = sections[0];
+      sections.forEach(s => { if (s.offsetTop <= y) active = s; });
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + active.id));
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+
   /* ── WIP / PRE-1.0 BANNER ───────────────────────────── */
   (function () {
     if (document.getElementById('wip-banner')) return;
@@ -284,6 +302,36 @@
         case 'family-count':     if (familyCount) el.textContent = familyCount;  break;
       }
     });
+  })();
+
+  /* ── NAME / AFFILIATION NOTICE ─────────────────────── */
+  (function () {
+    if (sessionStorage.getItem('name-notice-dismissed')) return;
+    if (document.querySelector('.name-notice-banner')) return;
+    const wip = document.getElementById('wip-banner');
+    const banner = document.createElement('div');
+    banner.className = 'name-notice-banner';
+    banner.style.cssText =
+      'background:#1a2744;color:rgba(255,255,255,.82);font-family:"Libre Franklin",sans-serif;' +
+      'font-size:.8rem;padding:.6rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;' +
+      'border-top:1px solid rgba(255,255,255,.1);position:relative;z-index:199;';
+    banner.innerHTML =
+      '<span><strong style="color:#c9952a">Note:</strong> "Freedom and Dignity Project" is a working-title ' +
+      '<strong>placeholder</strong> — this platform has <strong>no affiliation</strong> with any political ' +
+      'party, candidate, or organization.</span>' +
+      '<button class="name-notice-dismiss" style="margin-left:auto;background:none;border:1px solid ' +
+      'rgba(255,255,255,.3);color:rgba(255,255,255,.6);border-radius:3px;padding:.2rem .7rem;' +
+      'cursor:pointer;font-size:.75rem;white-space:nowrap;">Dismiss</button>';
+    banner.querySelector('.name-notice-dismiss').addEventListener('click', function () {
+      sessionStorage.setItem('name-notice-dismissed', '1');
+      banner.remove();
+    });
+    if (wip) {
+      wip.insertAdjacentElement('afterend', banner);
+    } else {
+      const nav = document.querySelector('.site-nav');
+      if (nav) nav.insertAdjacentElement('afterend', banner);
+    }
   })();
 
 })();
