@@ -8,7 +8,7 @@ const { test, expect } = require('@playwright/test');
 // ── SHARED CONSTANTS ──────────────────────────────────────────────────────────
 // Update PILLAR_COUNT when adding pillars to data.js.
 // All count assertions below derive from this constant.
-const PILLAR_COUNT = 23; // pillars in data.js
+const PILLAR_COUNT = 24; // pillars in data.js
 const PILLAR_PILL_COUNT = PILLAR_COUNT + 1; // +1 for the shared rights card in fullview
 
 // ── HOMEPAGE ─────────────────────────────────────────────────────────────────
@@ -148,8 +148,8 @@ test.describe('Pillars index', () => {
     await expect(page.locator('.pillar-index-section')).toHaveCount(5);
   });
 
-  test('shows all 23 pillar index links', async ({ page }) => {
-    await expect(page.locator('a.pillar-index-link')).toHaveCount(23);
+  test(`shows all ${PILLAR_COUNT} pillar index links`, async ({ page }) => {
+    await expect(page.locator('a.pillar-index-link')).toHaveCount(PILLAR_COUNT);
   });
 
   test('each pillar index link points to a .html page', async ({ page }) => {
