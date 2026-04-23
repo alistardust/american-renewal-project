@@ -37,7 +37,7 @@ test.describe('Homepage', () => {
     await expect(page.locator('.demand-list li')).toHaveCount(10);
   });
 
-  test('nav has 10 links (4 static + Mission, Constitution, Classification, Adversarial Review, About Us, About AI injected by app.js)', async ({ page }) => {
+  test('nav has 10 links (4 static + Mission, Constitution, Classification, About Us, Get Involved, About AI injected by app.js)', async ({ page }) => {
     await expect(page.locator('.nav-links a')).toHaveCount(10);
   });
 
@@ -645,7 +645,56 @@ test.describe('Mission and Constitution nav links from all page types', () => {
   }
 });
 
-// ── ABOUT US PAGE ─────────────────────────────────────────────────────────────
+// ── GET INVOLVED PAGE ─────────────────────────────────────────────────────────
+
+test.describe('Get Involved page', () => {
+  test.beforeEach(async ({ page }) => { await page.goto('/get-involved.html'); });
+
+  test('has correct page title', async ({ page }) => {
+    await expect(page).toHaveTitle(/Get Involved.*Freedom and Dignity/i);
+  });
+
+  test('renders hero heading', async ({ page }) => {
+    await expect(page.locator('.gi-hero h1')).toBeVisible();
+    const text = await page.locator('.gi-hero h1').textContent();
+    expect(text).toMatch(/Get Involved/i);
+  });
+
+  test('renders all 12 value cards', async ({ page }) => {
+    // 12 core values: Love, Equality, Freedom, Dignity, Truth, Science,
+    // Transparency, Accountability, Justice, Stability, Solidarity, Durability
+    await expect(page.locator('.value-card')).toHaveCount(12);
+  });
+
+  test('renders all 5 system rule examples', async ({ page }) => {
+    await expect(page.locator('.rule-example-list li')).toHaveCount(5);
+  });
+
+  test('system rule list includes SYS-GEO-001', async ({ page }) => {
+    const text = await page.locator('.rule-example-list').textContent();
+    expect(text).toMatch(/SYS-GEO-001/);
+  });
+
+  test('renders all 6 contribution role cards', async ({ page }) => {
+    await expect(page.locator('.role-card')).toHaveCount(6);
+  });
+
+  test('renders all 4 git guide steps', async ({ page }) => {
+    await expect(page.locator('.git-step')).toHaveCount(4);
+  });
+
+  test('GitHub repo link is present and correct', async ({ page }) => {
+    const links = page.locator('a[href*="github.com/alistardust"]');
+    await expect(links.first()).toBeAttached();
+  });
+
+  test('nav has Get Involved as active link', async ({ page }) => {
+    const link = page.locator('.nav-links a[href*="get-involved"]');
+    await expect(link).toBeAttached();
+    await expect(link).toHaveClass(/active/);
+  });
+});
+
 
 test.describe('About Us page', () => {
   test.beforeEach(async ({ page }) => { await page.goto('/about-us.html'); });

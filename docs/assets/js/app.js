@@ -27,11 +27,13 @@
     const missionHref = base + 'mission.html';
     const constitutionHref = base + 'constitution.html';
     const classificationHref = base + 'classification.html';
+    const getInvolvedHref = base + 'get-involved.html';
     const isAiPage = pageName === 'about-ai';
     const isMissionPage = pageName === 'mission';
     const isConstitutionPage = pageName === 'constitution';
     const isAboutUsPage = pageName === 'about-us';
     const isClassificationPage = pageName === 'classification';
+    const isGetInvolvedPage = pageName === 'get-involved';
 
     if (navList && !navList.querySelector('a[href*="mission"]')) {
       const li = document.createElement('li');
@@ -54,6 +56,12 @@
     if (navList && !navList.querySelector('a[href*="about-us"]')) {
       const li = document.createElement('li');
       li.innerHTML = `<a href="${aboutUsHref}"${isAboutUsPage ? ' class="active"' : ''}>About Us</a>`;
+      navList.appendChild(li);
+    }
+
+    if (navList && !navList.querySelector('a[href*="get-involved"]')) {
+      const li = document.createElement('li');
+      li.innerHTML = `<a href="${getInvolvedHref}"${isGetInvolvedPage ? ' class="active"' : ''}>Get Involved</a>`;
       navList.appendChild(li);
     }
 
@@ -83,6 +91,11 @@
     if (footerLinks && !footerLinks.querySelector('a[href*="about-us"]')) {
       const fli = document.createElement('li');
       fli.innerHTML = `<a href="${aboutUsHref}">About Us</a>`;
+      footerLinks.appendChild(fli);
+    }
+    if (footerLinks && !footerLinks.querySelector('a[href*="get-involved"]')) {
+      const fli = document.createElement('li');
+      fli.innerHTML = `<a href="${getInvolvedHref}">Get Involved</a>`;
       footerLinks.appendChild(fli);
     }
     if (footerLinks && !footerLinks.querySelector('a[href*="about-ai"]')) {

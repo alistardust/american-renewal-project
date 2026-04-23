@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get Involved — Freedom and Dignity Project</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+<style>
+/* ── HERO ──────────────────────────────────────────────── */
+.gi-hero {
+  background: var(--navy);
+  padding: 4rem 2rem 3rem;
+  text-align: center;
+  border-bottom: 4px solid var(--gold);
+}
+.gi-hero-eyebrow {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: .7rem; letter-spacing: .22em; text-transform: uppercase;
+  color: rgba(255,255,255,.38); display: block; margin-bottom: 1rem;
+}
+.gi-hero h1 {
+  font-family: "Oswald", sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+  color: #fff; margin: 0 0 1.25rem;
+}
+.gi-hero h1 span { color: var(--gold); }
+.gi-hero-statement {
+  font-family: "Playfair Display", serif; font-style: italic;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  color: rgba(255,255,255,.72);
+  max-width: 640px; margin: 0 auto; line-height: 1.7;
+}
+
+/* ── SHARED BODY STRUCTURE ─────────────────────────────── */
+.gi-body { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem; }
+.gi-body h2 {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.3rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+  color: var(--navy); margin: 2.5rem 0 .75rem;
+  border-left: 3px solid var(--gold); padding-left: .9rem;
+}
+.gi-body h2:first-child { margin-top: 0; }
+.gi-body p {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: 1rem; line-height: 1.85; color: var(--ink); margin: 0 0 1.2rem;
+}
+.gi-body p strong { color: var(--navy); }
+
+/* ── VALUES GRID ───────────────────────────────────────── */
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem; margin: 1.5rem 0 2rem;
+}
+.value-card {
+  background: #fff;
+  border-top: 3px solid var(--gold);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--gold);
+  padding: 1.1rem 1.25rem 1rem;
+}
+.value-card-name {
+  font-family: "Oswald", sans-serif;
+  font-size: .9rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--navy); margin-bottom: .4rem;
+}
+.value-card-body {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: .88rem; line-height: 1.6; color: var(--ink);
+}
+
+/* ── SYSTEM RULES SECTION ──────────────────────────────── */
+.sys-rules-intro {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: 1rem; line-height: 1.85; color: var(--ink);
+}
+.sys-rules-intro strong { color: var(--hope); }
+
+.rule-example-list {
+  list-style: none; margin: 1.5rem 0 2rem; padding: 0;
+  display: flex; flex-direction: column; gap: .75rem;
+}
+.rule-example-list li {
+  display: flex; gap: 1rem; align-items: flex-start;
+  background: #fff;
+  border-left: 3px solid var(--hope);
+  padding: .85rem 1.1rem;
+}
+.rule-id {
+  font-family: "Oswald", sans-serif;
+  font-size: .72rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--hope); flex-shrink: 0;
+  min-width: 6.5rem; padding-top: .08rem;
+}
+.rule-text {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: .92rem; line-height: 1.65; color: var(--ink);
+}
+
+/* ── CONTRIBUTION ROLES ────────────────────────────────── */
+.role-grid {
+  display: flex; flex-direction: column; gap: 1.25rem;
+  margin: 1.5rem 0 2rem;
+}
+.role-card {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  border-left: 4px solid var(--gold);
+  padding: 1.25rem 1.5rem;
+}
+.role-card-header {
+  display: flex; align-items: baseline; gap: .85rem;
+  margin-bottom: .65rem;
+}
+.role-num {
+  font-family: "Oswald", sans-serif;
+  font-size: .75rem; font-weight: 700;
+  color: var(--gold); flex-shrink: 0;
+}
+.role-title {
+  font-family: "Oswald", sans-serif;
+  font-size: 1rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em;
+  color: #fff;
+}
+.role-desc {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: .92rem; line-height: 1.72;
+  color: rgba(255,255,255,.75); margin: 0 0 .85rem;
+}
+.role-needs {
+  list-style: none; padding: 0; margin: 0 0 .85rem;
+  display: flex; flex-direction: column; gap: .3rem;
+}
+.role-needs li {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: .87rem; line-height: 1.5;
+  color: rgba(255,255,255,.65);
+  padding-left: 1.1rem; position: relative;
+}
+.role-needs li::before {
+  content: '—'; color: var(--gold);
+  position: absolute; left: 0;
+}
+.role-cta {
+  display: inline-block;
+  font-family: "Oswald", sans-serif;
+  font-size: .72rem; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--gold); text-decoration: none;
+  border: 1.5px solid rgba(201,149,42,.4);
+  padding: .35rem .9rem;
+  transition: background .15s, border-color .15s;
+  margin-top: .1rem;
+}
+.role-cta:hover {
+  background: rgba(201,149,42,.12);
+  border-color: var(--gold);
+  text-decoration: none;
+}
+
+/* ── GIT GUIDE ─────────────────────────────────────────── */
+.git-steps {
+  display: flex; flex-direction: column; gap: .85rem;
+  margin: 1.5rem 0 2rem;
+}
+.git-step {
+  display: flex; gap: 1rem; align-items: flex-start;
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--navy);
+  padding: 1rem 1.25rem;
+}
+.git-step-num {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.15rem; font-weight: 700;
+  color: var(--gold); flex-shrink: 0; min-width: 1.5rem;
+  line-height: 1.4;
+}
+.git-step-content { flex: 1; }
+.git-step-label {
+  font-family: "Oswald", sans-serif;
+  font-size: .85rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em;
+  color: var(--navy); margin-bottom: .25rem;
+}
+.git-step-body {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: .9rem; line-height: 1.65; color: var(--ink);
+}
+.git-step-body a { color: var(--red); }
+
+.git-shortcut {
+  background: var(--parchment);
+  border-left: 4px solid var(--gold);
+  padding: 1rem 1.25rem; margin: 1.5rem 0 2rem;
+}
+.git-shortcut p {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: .95rem; line-height: 1.75; color: var(--ink); margin: 0;
+}
+.git-shortcut strong { color: var(--navy); }
+.git-shortcut a { color: var(--red); }
+
+/* ── CONTRIBUTION STANDARDS ────────────────────────────── */
+.standards-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem; margin: 1.5rem 0 2rem;
+}
+@media (max-width: 600px) { .standards-cols { grid-template-columns: 1fr; } }
+.standard-block {
+  background: var(--parchment);
+  border-top: 3px solid var(--navy);
+  padding: 1.1rem 1.25rem;
+}
+.standard-block-title {
+  font-family: "Oswald", sans-serif;
+  font-size: .85rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--navy); margin-bottom: .65rem;
+}
+.standard-block ul {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: .4rem;
+}
+.standard-block li {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: .87rem; line-height: 1.6; color: var(--ink);
+  padding-left: 1rem; position: relative;
+}
+.standard-block li::before {
+  content: '—'; color: var(--gold);
+  position: absolute; left: 0;
+}
+
+/* ── CTA CLOSE ─────────────────────────────────────────── */
+.gi-cta {
+  background: linear-gradient(175deg, #1a4060 0%, var(--navy) 45%, #0a1a2e 100%);
+  text-align: center; padding: 5rem 2rem 4.5rem;
+  position: relative; overflow: hidden;
+  border-top: 4px solid var(--gold);
+}
+.gi-cta::before {
+  content: ''; position: absolute;
+  bottom: -20%; left: 50%; transform: translateX(-50%);
+  width: 120%; height: 70%;
+  background: radial-gradient(ellipse at 50% 100%, rgba(201,149,42,.22) 0%, transparent 65%);
+  pointer-events: none;
+}
+.gi-cta-eyebrow {
+  font-family: "Oswald", sans-serif;
+  font-size: .65rem; font-weight: 600;
+  letter-spacing: .3em; text-transform: uppercase;
+  color: var(--gold); opacity: .8; margin-bottom: 1.5rem;
+  position: relative; z-index: 1;
+}
+.gi-cta-headline {
+  font-family: "Oswald", Impact, sans-serif;
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 700; text-transform: uppercase; letter-spacing: .02em;
+  color: #fff; line-height: 1.05;
+  position: relative; z-index: 1;
+  margin-bottom: 1rem;
+}
+.gi-cta-headline span { color: var(--gold); }
+.gi-cta-sub {
+  font-family: "Playfair Display", serif; font-style: italic;
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: rgba(255,255,255,.6);
+  max-width: 520px; margin: 0 auto 2.5rem;
+  line-height: 1.7; position: relative; z-index: 1;
+}
+.gi-cta-actions {
+  display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+  position: relative; z-index: 1;
+}
+
+@media (max-width: 580px) {
+  .values-grid { grid-template-columns: 1fr; }
+  .git-step { flex-direction: column; gap: .5rem; }
+}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="assets/img/logo.svg" alt="Freedom and Dignity Project" width="36" height="36">
+      <span class="nav-wordmark">Freedom and Dignity<span>Project</span></span>
+    </a>
+    <button class="nav-hamburger" aria-label="Menu">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="foundations.html">Foundations</a></li>
+      <li><a href="pillars/index.html">Pillars</a></li>
+      <li><a href="compare/index.html">Perspectives</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="gi-hero">
+  <span class="gi-hero-eyebrow">Join the Work</span>
+  <h1>Get <span>Involved</span></h1>
+  <p class="gi-hero-statement">This project exists because one person cared enough to start it. It only becomes real — truly real — when more people care enough to continue it.</p>
+</div>
+
+<!-- SECTION 1 — OPENING / INVITATION (bg-parchment) -->
+<section class="bg-parchment">
+<div class="gi-body">
+
+  <p>The Freedom and Dignity Project is an open effort to build something durable: a modern constitutional framework that protects human rights, limits the concentration of power, and guarantees the material conditions for every person to live with dignity. It is not a campaign. It is not a party. It is a framework — built in the open, available to anyone, meant to last.</p>
+
+  <p>At this moment, the project is early. That is not a caveat — it is an invitation. Early means the important decisions are still being made, the policy catalog is still being built, the research is still being gathered. Early means your contribution does not disappear into a bureaucracy. It shapes the thing itself.</p>
+
+  <p>There is work here for researchers, writers, policy experts, lawyers, designers, engineers, community organizers, and people who have simply read the platform and want to make it better. There is also work for people who have never used GitHub in their lives. Whatever your skills, there is a role for you.</p>
+
+  <div class="about-pullquote" style="margin: 2rem 0;">
+    <p>"To build a durable, modern democratic system that protects human rights, limits the concentration and abuse of power, ensures fair and equal representation, and guarantees the material conditions necessary for people to live with dignity and participate fully in society."</p>
+  </div>
+
+  <p>That is the mission. These pages are an attempt to make it real. None of it happens without people — people who read carefully, who push back honestly, who bring knowledge and perspective the founder does not have, and who are willing to do the unglamorous work that turns ideas into something the world can actually use.</p>
+
+</div>
+</section>
+
+<!-- SECTION 2 — VALUES (bg-cream) -->
+<section class="bg-cream">
+<div class="gi-body">
+
+  <h2>What This Project Is Built On</h2>
+
+  <p>These are not marketing values — they are the actual constraints the project holds itself to, derived from the source material and carried through every policy position, system rule, and editorial decision.</p>
+
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="value-card-name">Love</div>
+      <div class="value-card-body">This project is motivated by love — for people, for community, for what this country can actually be. Not sentiment. The kind of love that requires something of you.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-card-name">Equality</div>
+      <div class="value-card-body">Equal rights, equal treatment, equal dignity — regardless of identity, background, or circumstance. Not equality of outcome, but equality before the law and equality of opportunity.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-card-name">Freedom</div>
+      <div class="value-card-body">Real freedom requires stability, material security, and freedom from coercion. You cannot be free if you are sick, homeless, or so deep in debt that every choice is a trap.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-card-name">Dignity</div>
+      <div class="value-card-body">Every person has inherent worth that the law must protect. Not earned. Not contingent. The law is not doing its job if it allows people to be treated as if they do not matter.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-card-name">Truth</div>
+      <div class="value-card-body">A commitment to facts, evidence, and honest claims. Every factual assertion in this project must be verifiable. If it cannot be sourced, it does not belong here.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-card-name">Science</div>
+      <div class="value-card-body">Evidence-based policy, research-driven positions, openness to revision when facts change. Belief is not a substitute for evidence. Conviction is not a substitute for proof.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-card-name">Transparency</div>
+      <div class="value-card-body">In government, in this project, in how decisions are made. Every policy position is traceable to its source. The version history is public. Nothing is hidden.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-card-name">Accountability</div>
+      <div class="value-card-body">No one is above the law. Power must answer to people. This applies to governments, to institutions, and to this project itself — including when it gets things wrong.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-card-name">Justice</div>
+      <div class="value-card-body">Fair, consistent, humane. The law must apply equally. Justice delayed is justice denied. Justice applied selectively is not justice — it is power wearing a robe.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-card-name">Stability</div>
+      <div class="value-card-body">Freedom requires stability. People cannot exercise rights under constant economic crisis. The social floor is not charity; it is the precondition for everything else.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-card-name">Solidarity</div>
+      <div class="value-card-body">This isn't left vs. right. It's about whether the system works for people at all. The question is not which team wins — it's whether ordinary people can live with dignity.</div>
+    </div>
+    <div class="value-card">
+      <div class="value-card-name">Durability</div>
+      <div class="value-card-body">Build things that last. Rights that can't be eroded overnight. Policy designed for the long run. The point is not to score a moment — it's to build something that holds.</div>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- SECTION 3 — SYSTEM RULES (bg-sky on-sky) -->
+<section class="bg-sky on-sky">
+<div class="gi-body">
+
+  <h2>The System Rules</h2>
+
+  <p class="sys-rules-intro">The system rules are not policy positions. They are the foundational constraints — the <strong>operating system</strong> that all policy runs on top of. Just as an OS sets the rules under which all applications must operate, the system rules set the constraints under which all domain-specific policies must behave.</p>
+
+  <p class="sys-rules-intro">They exist for specific reasons: to ensure that policies across 23 different pillars do not contradict each other; to guarantee that no policy may degrade fundamental rights in order to achieve a policy goal; to require that every rule is traceable to its source; to prevent geography from determining access to rights; to distribute risk so no single point of failure can collapse the whole; and to require human judgment where it cannot be replaced by automation.</p>
+
+  <p class="sys-rules-intro">A few examples — representative, not exhaustive:</p>
+
+  <ul class="rule-example-list">
+    <li>
+      <span class="rule-id">SYS-AI-002</span>
+      <span class="rule-text">Human judgment is required for materially harmful decisions. The absence of an AI recommendation cannot justify denial of a right or benefit.</span>
+    </li>
+    <li>
+      <span class="rule-id">SYS-AI-003</span>
+      <span class="rule-text">A lack of AI recommendation must not be used as evidence of unfitness. Algorithmic silence is not a verdict.</span>
+    </li>
+    <li>
+      <span class="rule-id">SYS-FED-001</span>
+      <span class="rule-text">High-risk systems must not be fully centralized. Oversight must be distributed; no single point of failure is acceptable.</span>
+    </li>
+    <li>
+      <span class="rule-id">SYS-FND-004</span>
+      <span class="rule-text">Universal equal rights must be guaranteed as a baseline national standard. States may expand rights; they may not contract them below the floor.</span>
+    </li>
+    <li>
+      <span class="rule-id">SYS-GEO-001</span>
+      <span class="rule-text">Geography must not determine access to rights or care. Where you were born — or where you can afford to live — cannot decide what rights you have.</span>
+    </li>
+  </ul>
+
+  <p class="sys-rules-intro">New rules follow the existing ID schema: <strong>PREFIX-SUBFAM-NNN</strong>. Proposing a new system rule is a significant act — it requires discussion in a GitHub Issue before it can be formalized into the catalog.</p>
+
+</div>
+</section>
+
+<!-- SECTION 4 — WHAT WE NEED (bg-dark on-dark) -->
+<section class="bg-dark on-dark">
+<div class="gi-body">
+
+  <h2 style="color:#fff; border-left-color: var(--gold);">What We Need Right Now</h2>
+
+  <p>The project is early. That means every contribution matters more than it would at a later stage. Here is where the work is, and how to plug in.</p>
+
+  <div class="role-grid">
+
+    <div class="role-card">
+      <div class="role-card-header">
+        <span class="role-num">01</span>
+        <span class="role-title">Policy Reviewers</span>
+      </div>
+      <p class="role-desc">Read the platform pillars and give honest, detailed feedback. Accuracy, completeness, language, missed perspectives, internal consistency — all of it matters. Subject-matter expertise is especially valuable: healthcare policy, labor law, tax policy, immigration, criminal justice, technology, housing, environmental policy.</p>
+      <ul class="role-needs">
+        <li>Read the pillars at the project site</li>
+        <li>Flag inaccuracies, gaps, or language problems</li>
+        <li>Suggest better sources where you know them</li>
+        <li>Challenge positions that don't hold up to scrutiny</li>
+      </ul>
+      <a href="https://github.com/alistardust/freedom-and-dignity-project/issues/new" class="role-cta" target="_blank" rel="noopener">Open an Issue → label: policy-feedback</a>
+    </div>
+
+    <div class="role-card">
+      <div class="role-card-header">
+        <span class="role-num">02</span>
+        <span class="role-title">Website Testers</span>
+      </div>
+      <p class="role-desc">Test the site on different devices, browsers, and screen sizes. No coding required. If something looks broken, loads wrong, has a dead link, or is confusing to navigate — that is a bug report and it is genuinely useful.</p>
+      <ul class="role-needs">
+        <li>Test on mobile, tablet, and desktop</li>
+        <li>Try different browsers (Chrome, Firefox, Safari, Edge)</li>
+        <li>Report broken links or rendering issues</li>
+        <li>Flag any accessibility problems</li>
+      </ul>
+      <a href="https://github.com/alistardust/freedom-and-dignity-project/issues/new" class="role-cta" target="_blank" rel="noopener">Open an Issue → label: site-bug</a>
+    </div>
+
+    <div class="role-card">
+      <div class="role-card-header">
+        <span class="role-num">03</span>
+        <span class="role-title">Researchers &amp; Writers</span>
+      </div>
+      <p class="role-desc">Help verify citations and sources (APA 7th edition standard). Help expand policy sections with better research. Help write plain-language explanations of complex policy positions for audiences who are not specialists.</p>
+      <ul class="role-needs">
+        <li>Verify that cited sources exist and say what we claim</li>
+        <li>Find stronger primary sources where secondary ones are used</li>
+        <li>Expand underdeveloped sections with research</li>
+        <li>Translate policy into accessible language</li>
+      </ul>
+      <a href="https://github.com/alistardust/freedom-and-dignity-project" class="role-cta" target="_blank" rel="noopener">Fork the repo → open a pull request</a>
+    </div>
+
+    <div class="role-card">
+      <div class="role-card-header">
+        <span class="role-num">04</span>
+        <span class="role-title">Community Organizers</span>
+      </div>
+      <p class="role-desc">Help bring this framework to real communities. Translate policy positions into accessible conversation. Organize local discussion groups, feedback sessions, and town halls. The platform only matters if people can engage with it outside of GitHub.</p>
+      <ul class="role-needs">
+        <li>Facilitate local conversations about the platform</li>
+        <li>Gather feedback from communities not reached online</li>
+        <li>Translate into languages other than English</li>
+        <li>Connect the platform to existing organizing efforts</li>
+      </ul>
+      <a href="https://github.com/alistardust/freedom-and-dignity-project/issues/new" class="role-cta" target="_blank" rel="noopener">Open an Issue → label: organizing</a>
+    </div>
+
+    <div class="role-card">
+      <div class="role-card-header">
+        <span class="role-num">05</span>
+        <span class="role-title">Creatives</span>
+      </div>
+      <p class="role-desc">Visual identity, illustration, infographics, data visualization, video, animation, social media content. The platform has strong ideas — it needs strong visual communication to reach people who will not read a 4,000-word policy pillar on their own.</p>
+      <ul class="role-needs">
+        <li>Logo and visual identity work (direction in progress)</li>
+        <li>Infographics that make policy concrete and scannable</li>
+        <li>Data visualizations for research-heavy sections</li>
+        <li>Social-ready assets: cards, short video, shareable graphics</li>
+      </ul>
+      <a href="https://github.com/alistardust/freedom-and-dignity-project/issues/new" class="role-cta" target="_blank" rel="noopener">Open an Issue → label: creative</a>
+    </div>
+
+    <div class="role-card">
+      <div class="role-card-header">
+        <span class="role-num">06</span>
+        <span class="role-title">Legal &amp; Organizational</span>
+      </div>
+      <p class="role-desc">Help establish the Freedom and Dignity Project as a legal entity. The structure of the organization will determine what it can do, how it can raise money, and how it can engage in advocacy. Getting this right matters.</p>
+      <ul class="role-needs">
+        <li>501(c)(3) vs. 501(c)(4) analysis for this type of project</li>
+        <li>Bylaws, governance structure, and board composition</li>
+        <li>Campaign finance compliance if the project enters advocacy</li>
+        <li>Intellectual property and licensing questions</li>
+      </ul>
+      <a href="https://github.com/alistardust/freedom-and-dignity-project/issues/new" class="role-cta" target="_blank" rel="noopener">Open an Issue → label: legal-org</a>
+    </div>
+
+  </div>
+
+</div>
+</section>
+
+<!-- SECTION 5 — GIT GUIDE (bg-parchment) -->
+<section class="bg-parchment">
+<div class="gi-body">
+
+  <h2>Contributing via GitHub</h2>
+
+  <p>The project lives on GitHub. You do not need to be a developer to contribute — opening an Issue (a bug report, a question, a piece of feedback) requires no coding at all. But if you want to contribute content or code directly, here is how the process works.</p>
+
+  <div class="git-shortcut">
+    <p><strong>The easiest contribution path — no coding required:</strong> Go to the <a href="https://github.com/alistardust/freedom-and-dignity-project/issues" target="_blank" rel="noopener">Issues page</a> and open a new issue. Write what you found, what you think, or what you want to flag. That's it. That is a real contribution and it is read.</p>
+  </div>
+
+  <p>For those who want to go deeper, GitHub works like this:</p>
+
+  <div class="git-steps">
+    <div class="git-step">
+      <span class="git-step-num">1</span>
+      <div class="git-step-content">
+        <div class="git-step-label">Fork the repository</div>
+        <div class="git-step-body">A fork is your own personal copy of the project. On the <a href="https://github.com/alistardust/freedom-and-dignity-project" target="_blank" rel="noopener">project's GitHub page</a>, click the "Fork" button in the top right. GitHub creates a copy under your account. You can make changes to your fork without affecting the main project.</div>
+      </div>
+    </div>
+    <div class="git-step">
+      <span class="git-step-num">2</span>
+      <div class="git-step-content">
+        <div class="git-step-label">Clone it to your computer</div>
+        <div class="git-step-body">Cloning downloads your fork so you can edit files locally. If you are new to this, <a href="https://desktop.github.com/" target="_blank" rel="noopener">GitHub Desktop</a> is a free app that handles this visually — no command line required. For a broader introduction, GitHub's own <a href="https://docs.github.com/en/get-started/quickstart/hello-world" target="_blank" rel="noopener">Hello World guide</a> is a good starting point.</div>
+      </div>
+    </div>
+    <div class="git-step">
+      <span class="git-step-num">3</span>
+      <div class="git-step-content">
+        <div class="git-step-label">Make your changes</div>
+        <div class="git-step-body">Edit the files you want to improve. For content changes to policy pages, that means editing the HTML files in <code>docs/pillars/</code>. For research and citations, follow the APA 7th edition standard used throughout the project. Every factual claim needs a verifiable source.</div>
+      </div>
+    </div>
+    <div class="git-step">
+      <span class="git-step-num">4</span>
+      <div class="git-step-content">
+        <div class="git-step-label">Open a pull request</div>
+        <div class="git-step-body">A pull request is a formal proposal to merge your changes into the main project. GitHub walks you through this once your changes are committed to your fork. Include a clear description of what you changed and why. Policy changes should cite the source material — either from the project's chat logs or from external primary sources.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Contribution Guidelines</h2>
+
+  <div class="standards-cols">
+    <div class="standard-block">
+      <div class="standard-block-title">Content Standards</div>
+      <ul>
+        <li>Every factual claim must have a verifiable source in APA 7th edition format</li>
+        <li>Do not add policy positions without tracing them to the platform's values and system rules</li>
+        <li>Use precise, plain language — no weasel words, no unattributed statistics</li>
+        <li>New system rules must follow the existing ID schema: <code>PREFIX-SUBFAM-NNN</code></li>
+        <li>Do not reproduce substantial verbatim text from copyrighted sources</li>
+      </ul>
+    </div>
+    <div class="standard-block">
+      <div class="standard-block-title">Code Standards</div>
+      <ul>
+        <li>Study existing pages before adding new ones — follow conventions exactly</li>
+        <li>All pages must link to <code>assets/css/style.css</code> and <code>assets/js/app.js</code></li>
+        <li>Navigation must use the <code>.nav-links</code> pattern; app.js handles active state</li>
+        <li>Run <code>npm run test:unit</code> before any PR — all tests must pass</li>
+        <li>Run <code>npm run test:e2e</code> after any HTML, CSS, or JS change</li>
+      </ul>
+    </div>
+    <div class="standard-block">
+      <div class="standard-block-title">Review Process</div>
+      <ul>
+        <li>All PRs are reviewed by project maintainers</li>
+        <li>Policy changes require citing source material from the chat logs or external primary sources</li>
+        <li>Structural changes — new pillars, new rule families — require discussion in an Issue first</li>
+        <li>Adversarial review is applied: we actively try to disprove claims before accepting them</li>
+      </ul>
+    </div>
+    <div class="standard-block">
+      <div class="standard-block-title">Source Quality</div>
+      <ul>
+        <li>Primary sources first: federal statutes, court opinions, official government data</li>
+        <li>Then: peer-reviewed academic research</li>
+        <li>Then: established non-partisan research institutions (Pew, CBO, KFF, Brookings)</li>
+        <li>Advocacy sources: cite only for attribution, never as neutral fact</li>
+        <li>Verify every URL before submitting — AI hallucinated citations are not acceptable</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- SECTION 6 — CTA CLOSE (bg-dark) -->
+<div class="gi-cta">
+  <div class="gi-cta-eyebrow">This only works if you're in it</div>
+  <div class="gi-cta-headline">The Work Is <span>Now</span></div>
+  <p class="gi-cta-sub">The platform is public. The repository is open. The door is not locked. What happens next depends on who shows up.</p>
+  <div class="gi-cta-actions">
+    <a href="https://github.com/alistardust/freedom-and-dignity-project" class="btn-primary" target="_blank" rel="noopener" style="background: var(--red);">View on GitHub →</a>
+    <a href="https://github.com/alistardust/freedom-and-dignity-project/issues/new" class="btn-outline" target="_blank" rel="noopener">Open an Issue</a>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span class="footer-brand">Freedom and Dignity Project</span>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="foundations.html">Foundations</a></li>
+      <li><a href="pillars/index.html">Pillars</a></li>
+      <li><a href="compare/index.html">Perspectives</a></li>
+    </ul>
+    <span class="footer-note">A Third Bill of Rights for the 21st Century.</span>
+  </div>
+</footer>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
