@@ -1,94 +1,124 @@
 # Current State
 
+_Last updated: April 2026_
+
 ## Source-of-truth order
 
 1. Formal structured IDs in `sources/branch_political_project_brainstorm.txt` and `sources/branch_branch_political_project_main.txt` (primary sources)
 2. Later contextual summary blocks in those chats when earlier mappings conflict
 3. `data/policy_catalog.sqlite`
-4. Pillar markdown under `pillars/` (initial build July 2025; expanded to 22 pillars April 2026 — 5 new pillars have markdown content not yet reimported to DB)
+4. Pillar HTML under `docs/pillars/` (live site source — this is the current canonical policy text)
+5. Pillar markdown under `pillars/` (legacy research source; may be outdated relative to site HTML)
 
-## Pillar structure
+## Site structure (live)
 
-The `pillars/` directory was initially built in July 2025 and expanded to 22 pillars in April 2026. Each pillar has two files:
+The site (`docs/`) serves the published platform at https://alistardust.github.io/american-renewal-project/.
 
-- `overview.md` — purpose, core principle, design logic, research synthesis
-- `policy.md` — all canonical rules from the DB for that pillar's scope codes
+**Current pillar count: 24** across 5 foundations. All live at `docs/pillars/<slug>.html`.
 
-**Note:** The five new pillars (Education, Labor & Workers' Rights, Housing, Consumer Rights, Legislative Reform) have full `overview.md` and `policy.md` files, but their content has not yet been reimported to the DB. The DB reflects the pre-expansion state. Rule counts for these pillars show the current DB count; the markdown contains significantly more rules pending a DB rebuild.
+Each pillar page uses:
+- `<style>:root { --accent-color: #...; }</style>` — per-pillar accent color only
+- All other styles from `docs/assets/css/style.css` (shared, DRY)
+- `docs/assets/js/data.js` — `window.ARP` — source of truth for foundations + pillar registry
+- `docs/assets/js/app.js` — injects nav links, WIP banner, Roadmap link, scrollspy, dynamic counts
 
-### The 22 pillars
+## Pillar registry (data.js)
 
-| # | Directory | Scope Codes | Rule Count |
-|---|-----------|-------------|-----------|
-| 1 | `executive_power/` | GOV, EXE | 13 (GOV in DB; EXE rules in markdown pending reimport) |
-| 2 | `elections_and_representation/` | ELE | 22 |
-| 3 | `anti_corruption/` | COR | 15 |
-| 4 | `equal_justice_and_policing/` | JUS | 136 |
-| 5 | `rights_and_civil_liberties/` | RGT | 26 |
-| 6 | `courts_and_judicial_system/` | JUD | 8 |
-| 7 | `checks_and_balances/` | SYS, OVR | 52 |
-| 8 | `taxation_and_wealth/` | ECO, TAX | 10 (ECO in DB; TAX rules in markdown pending reimport) |
-| 9 | `healthcare/` | HLT | 184 |
-| 10 | `antitrust_and_corporate_power/` | COR-FIN, MED (prose + cross-scope) | 4+ |
-| 11 | `information_and_media/` | MED, INF | 20 |
-| 12 | `gun_policy/` | (prose; JUS-POL-006, JUS-POL-007) | 2+ |
-| 13 | `term_limits_and_fitness/` | TRM | 8 |
-| 14 | `administrative_state/` | ADM | 3 |
-| 15 | `technology_and_ai/` | TEC, PAT | 361 (TEC in DB; PAT rules in markdown pending reimport) |
-| 16 | `immigration/` | IMM | 222 |
-| 17 | `environment_and_agriculture/` | ENV, AGR, EWT | 10 (ENV+AGR in DB; EWT pending reimport) |
-| 18 | `education/` | EDU | 2 (DB pre-expansion; markdown has significantly more pending reimport) |
-| 19 | `labor_and_workers_rights/` | LAB | 3 (DB pre-expansion; markdown has significantly more pending reimport) |
-| 20 | `housing/` | HOU | 0 (markdown content pending DB reimport) |
-| 21 | `consumer_rights/` | CON, RPR | 0 (markdown content pending DB reimport) |
-| 22 | `legislative_reform/` | LEG | 0 (markdown content pending DB reimport) |
+| # | ID | Title | Foundation | Scope codes |
+|---|----|-------|------------|-------------|
+| 1 | `executive_power` | Executive Power | Accountable Power (I) | GOV, EXE |
+| 2 | `elections_and_representation` | Elections & Representation | Accountable Power (I) | ELE |
+| 3 | `anti_corruption` | Anti-Corruption | Accountable Power (I) | COR |
+| 4 | `checks_and_balances` | Checks & Balances | Accountable Power (I) | SYS, OVR |
+| 5 | `courts_and_judicial_system` | Courts & Judicial System | Accountable Power (I) | JUD |
+| 6 | `term_limits_and_fitness` | Term Limits & Fitness | Accountable Power (I) | TRM |
+| 7 | `administrative_state` | Administrative State | Accountable Power (I) | ADM |
+| 8 | `antitrust_and_corporate_power` | Antitrust & Corporate Power | We the People (II) | COR-FIN, MED |
+| 9 | `information_and_media` | Information & Media | We the People (II) | MED, INF |
+| 10 | `equal_justice_and_policing` | Equal Justice & Policing | Equal Justice (III) | JUS |
+| 11 | `immigration` | Immigration | Equal Justice (III) | IMM |
+| 12 | `rights_and_civil_liberties` | Rights & Civil Liberties | Equal Justice (III) | RGT |
+| 13 | `foreign_policy` | Foreign Policy | Equal Justice (III) | FPL |
+| 14 | `gun_policy` | Gun Policy | Real Freedom (IV) | GUN (cross-scope) |
+| 15 | `technology_and_ai` | Technology & AI | Real Freedom (IV) | TEC, PAT |
+| 16 | `consumer_rights` | Consumer Rights | Real Freedom (IV) | CON, RPR |
+| 17 | `healthcare` | Healthcare | Freedom to Thrive (V) | HLT |
+| 18 | `taxation_and_wealth` | Taxation & Wealth | Freedom to Thrive (V) | ECO, TAX |
+| 19 | `environment_and_agriculture` | Environment & Agriculture | Freedom to Thrive (V) | ENV, AGR, EWT |
+| 20 | `infrastructure_and_public_goods` | Infrastructure & Public Goods | Freedom to Thrive (V) | INF |
+| 21 | `education` | Education | Freedom to Thrive (V) | EDU |
+| 22 | `labor_and_workers_rights` | Labor & Workers' Rights | Freedom to Thrive (V) | LAB |
+| 23 | `housing` | Housing | Freedom to Thrive (V) | HOU |
+| 24 | `legislative_reform` | Legislative Reform | Accountable Power (I) | LEG |
 
-**Total (DB):** 1,095 rules across 20 scope codes — pre-expansion state. New pillar markdown content pending DB reimport.
+**Pillars in progress / stub stage:**
+- `foreign_policy` (FPL) — 50 rules, 9 families, added April 2026. Compare page coverage rows added; narrative "strengths/weaknesses" sections not yet expanded.
+- Science, Technology & Space (STS) — in development; agent in progress.
 
-## Catalog state
+## Site page inventory
 
-The current importer reconstructs four layers from the main and brainstorm chats:
+```
+docs/
+  index.html              — Homepage (foundations + pillar cards)
+  foundations.html        — 5-foundation deep dive
+  mission.html            — Platform mission statement
+  constitution.html       — Framework & governing principles
+  classification.html     — Rule ID system explanation
+  about-ai.html           — AI use transparency page
+  about-us.html           — About the project
+  get-involved.html       — Contribution guidelines
+  roadmap.html            — Project roadmap (tracks, pillar status)
+  adversarial-review.html — Adversarial policy review
+  pillars/index.html      — Full pillar index (fullview grid)
+  pillars/*.html          — 24 pillar pages
+  compare/index.html      — Party comparison index
+  compare/*.html          — 6 party comparison pages (DSA, Green, Libertarian, Democrat, Republican, Working Families)
+```
 
-1. **Canonical numeric checkpoint items** in `policy_items`
-2. **Canonical structured rules** in `rule_items`
-3. **Legacy-to-structured conversions** in `record_links`
-4. **Contextual/prose-only ID mentions** in `prose_rule_mentions`
+## Frontend architecture
 
-### Current totals (as of July 2025 DB build — pre-expansion)
+### JavaScript
+- `app.js` — central injection hub: nav/footer links, WIP banner, Roadmap link, section-reveal IntersectionObserver, pil-snav scrollspy, `[data-dynamic]` count fills
+- `data.js` — `window.ARP` object: foundations array, pillars array, helper methods
+- No frameworks. Vanilla ES5-compatible JS.
 
-- 101 `policy_items`
-- 1,095 `rule_items` (across 20 scope codes)
+### CSS
+- `style.css` — all shared styles (no inline CSS in HTML except `--accent-color` per pillar)
+- `--accent-color` CSS variable used throughout for per-pillar theming of rule cards, nav pills, research headings
+
+### Dynamic values
+- `[data-dynamic="pillar-count"]` — filled from `ARP.pillars.length`
+- `[data-dynamic="foundation-count"]` — filled from `ARP.foundations.length`
+- `[data-dynamic="rule-count"]` — counts `.rule-card` elements on current page
+- `[data-dynamic="family-count"]` — counts unique family prefixes on current page
+
+## Catalog state (data/policy_catalog.sqlite)
+
+The DB was last rebuilt from chat logs in July 2025. It is **pre-expansion** — it does not reflect rules added to the site HTML after that point.
+
+### Pre-expansion totals
+- 101 `policy_items` (legacy numeric checkpoint items)
+- 1,095 `rule_items` (structured IDs, 20 scope codes)
 - 138 `record_links`
 - 888 `prose_rule_mentions`
 
-### IDs promoted from context
+**Note:** Significant new rules added after July 2025 (HLT-COV, HLT-RTT, FPL-*, STS-* pending) are in site HTML but not yet in the DB. Rebuild with `scripts/import_policy_catalog.py` once the chat logs are updated to include these additions.
 
-These structured IDs were identified in the chats but had been missed by the first importer because they never appeared as canonical pipe-delimited rows:
+## Known issues for human review
 
-- `ECO-TAX-001`
-- `ADM-CHV-001`
-- `ADM-AGY-001`
-- `HLT-TRL-001`
+- **Orphan footnotes** — several pillar pages have footnotes defined in the reference list but never cited inline. Pages: `immigration.html` (fn1, fn3), `technology-and-ai.html` (fn1–fn3), `consumer-rights.html` (fn3), `courts-and-judicial-system.html` (fn5–fn6), `elections-and-representation.html` (fn4–fn7), `environment-and-agriculture.html` (fn3), `gun-policy.html` (fn4–fn5), `legislative-reform.html` (fn4), `term-limits-and-fitness.html` (fn3–fn4). These may represent content that was removed without updating the reference list, or inline citations that were accidentally omitted.
+- **Rule ID audit** — a systematic scan of all `.rule-card` IDs for duplicates or format violations has not been done. Spot checks pass; a full audit is warranted before v1.0.
+- **Foreign policy in related pillars** — `foreign-policy.html` is not yet referenced in "Related Pillars" sections of other pillar pages.
+- **Compare page narratives** — the strengths/weaknesses narrative sections in compare pages do not yet discuss the foreign policy pillar.
+- **Science/Technology/Space** — pending `science-space` agent; once complete, register in `data.js`, add to pillars index, update E2E counts.
 
-### Why contextual mentions matter
+## Test suite
 
-Some IDs appear only in prose or summary sections. Context shows they are not all equally authoritative:
+- **Unit (Vitest):** `npm run test:unit` — 41 tests, all passing
+- **E2E (Playwright/Firefox):** `npm run test:e2e` — 222 tests, all passing
+- `PILLAR_COUNT` constant in both test files — update when adding pillars
 
-- some are **future split placeholders** like `ADM-CON-001A` / `ADM-CON-001B`
-- some are **optional/procedural variants** like `ADM-OVR-001`
-- some are **older families later replaced or reframed** like `SYS-STR-*` or `HLT-DRG-*`
-- some may be **real but still-unformalized candidates** such as `RGT-LAB-001`, `ECO-WRK-001`, `JUS-CRJ-001`, `JUS-CRJ-002`, and `RGT-DET-003`
+## Scaffolding tools
 
-Those are intentionally preserved in `unresolved_prose_rule_mentions` instead of being silently promoted into the canonical rule corpus.
-
-### Pillars with prose-only or partially formalized rules
-
-- **gun_policy**: No GUN- scope code yet. Two cross-scope rules (JUS-POL-006, JUS-POL-007) are the only formalized entries. The policy.md lists proposed GUN- rules as placeholders pending formal DB seeding.
-- **antitrust_and_corporate_power**: No dedicated scope code. Rules cross-reference COR-FIN and MED families. The policy.md documents the formal rules plus prose-level reform descriptions.
-
-## Important context from the chats
-
-- The migration map embedded in the chats is useful, but not always final. Later summary blocks and later formal rule rows sometimes supersede earlier ID assignments.
-- The main and brainstorm branches currently contain the same structured corpus, but the brainstorm branch includes important contextual explanations about duplication, provisional IDs, and when not to split an item yet.
-- Some policy areas are much more developed in the database than in the pillar markdown, especially healthcare governance (184 HLT rules), AI/tech (361 TEC rules), immigration (222 IMM rules), and justice/drug policy (136 JUS rules).
-- If chat-log sources change, rebuild the catalog with `scripts/import_policy_catalog.py`, then the pillar docs should be reviewed against the new DB state.
+- `scripts/new-pillar.js` — generate a new pillar HTML page from CLI args
+- `scripts/import_policy_catalog.py` — rebuild `data/policy_catalog.sqlite` from chat logs
