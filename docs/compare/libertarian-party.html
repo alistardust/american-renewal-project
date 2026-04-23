@@ -33,7 +33,25 @@
 
     .wrong-card { background:rgba(255,255,255,.07); border-radius:6px; padding:1.2rem 1.4rem; border-left:4px solid #bf0a30; }
     .wrong-card h3 { font-size:.95rem; color:#e8c060; text-transform:uppercase; letter-spacing:.05em; margin:0 0 .5rem; }
-    .wrong-card p { font-size:.9rem; line-height:1.65; color:rgba(255,255,255,.82); margin:0; }
+    .cmp-dl { margin: 1.5rem 0; }
+    .cmp-dl-row { display: grid; grid-template-columns: 220px 1fr; gap: 0 1.5rem; padding: .75rem 0; border-bottom: 1px solid var(--rule); align-items: start; }
+    .cmp-dl-row:last-child { border-bottom: none; }
+    .cmp-dl dt { font-family: 'Oswald', sans-serif; font-size: .85rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--navy); padding-top: .05rem; }
+    .cmp-dl dd { font-size: .9rem; line-height: 1.6; color: var(--ink); margin: 0; }
+    .on-sky .cmp-dl dt { color: var(--navy); }
+    .on-dark .cmp-dl dt { color: var(--gold-light, var(--gold)); }
+    .on-dark .cmp-dl dd { color: rgba(255,255,255,.75); }
+    @media (max-width: 640px) { .cmp-dl-row { grid-template-columns: 1fr; gap: .25rem; } }
+    .focus-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.25rem 0 0; list-style: none; padding: 0; }
+    .focus-tags li { font-family: 'Oswald', sans-serif; font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; background: var(--navy); color: var(--gold); padding: .3rem .8rem; border: 1px solid rgba(201,149,42,.3); }
+    .cmp-scorecard { padding: 1.25rem 0; border-bottom: 1px solid rgba(255,255,255,.1); }
+    .cmp-scorecard .wrap { display: flex; gap: 0; }
+    .cmp-score { flex: 1; text-align: center; padding: .75rem 1rem; border-right: 1px solid rgba(255,255,255,.1); }
+    .cmp-score:last-child { border-right: none; }
+    .cmp-score-n { font-family: 'Oswald', sans-serif; font-size: 2.2rem; font-weight: 700; color: var(--gold); line-height: 1; }
+    .cmp-score-label { font-family: 'Oswald', sans-serif; font-size: .62rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-top: .3rem; }
+    @media (max-width: 640px) { .cmp-scorecard .wrap { flex-wrap: wrap; } .cmp-score { flex: 1 1 50%; border-bottom: 1px solid rgba(255,255,255,.1); } }
+    @media (min-width: 1024px) { section { padding: 2.5rem 0; } }
   </style>
 </head>
 <body>
@@ -63,6 +81,15 @@
   </div>
 </div>
 
+<div class="cmp-scorecard bg-dark on-dark">
+  <div class="wrap">
+    <div class="cmp-score"><div class="cmp-score-n">8</div><div class="cmp-score-label">Pillars Aligned</div></div>
+    <div class="cmp-score"><div class="cmp-score-n">10</div><div class="cmp-score-label">Key Divergences</div></div>
+    <div class="cmp-score"><div class="cmp-score-n">2</div><div class="cmp-score-label">Where They Exceed Us</div></div>
+    <div class="cmp-score"><div class="cmp-score-n">5</div><div class="cmp-score-label">Coverage Gaps</div></div>
+  </div>
+</div>
+
 <nav class="cmp-snav" aria-label="Jump to section">
   <div class="cmp-snav-inner">
     <a href="#cmp-overview">Overview</a>
@@ -81,7 +108,7 @@
     <h2>Platform at a Glance</h2>
     <p>The Libertarian Party is America's largest third party, organized around a consistent philosophical core: individual liberty, limited government, free markets, and personal responsibility. Its platform defines freedom as the absence of coercion — particularly government coercion — and proposes dramatically reducing the scope of federal power across nearly every domain.<sup><a href="#fn1" id="ref1">[1]</a></sup> The party is philosophically coherent in a way most major parties are not, making it a useful comparative reference for any structural reform framework.</p>
     <h3>Key Focus Areas</h3>
-    <ul class="item-list">
+    <ul class="focus-tags">
       <li>Civil liberties — free speech, privacy, personal autonomy</li>
       <li>Reduction of government size, scope, and spending</li>
       <li>Free market economics with minimal regulatory interference</li>
@@ -98,15 +125,36 @@
     <p class="eyebrow">Common Ground</p>
     <h2>Where We Agree</h2>
     <p>Libertarians and Freedom and Dignity share significant structural concern about concentrated power, executive overreach, and the importance of durable civil liberties — though they diverge fundamentally on whether private power requires the same structural limits as public power. This comparison is offered in good faith: the civil liberties overlap is substantive and genuine, and Libertarian frameworks provide some of the most rigorous arguments against state overreach that Freedom and Dignity takes seriously.</p>
-    <ul class="item-list">
-      <li><strong>Executive power limits:</strong> Strong alignment on the need for structural constraints on presidential authority — Libertarians oppose executive overreach as a core principle, not a partisan tactic</li>
-      <li><strong>Checks and balances:</strong> Shared conviction that power must be structurally limited and that norm-dependent restraint is insufficient — Libertarians provide a philosophically grounded framework for this argument</li>
-      <li><strong>Civil liberties:</strong> Deep alignment on free speech, freedom of association, privacy rights, and protections against surveillance and state intrusion</li>
-      <li><strong>Equal justice and civil liberties in policing:</strong> Strong alignment on Fourth Amendment protections, drug decriminalization, ending mass incarceration, and police accountability</li>
-      <li><strong>Administrative state skepticism:</strong> Shared concern about unaccountable bureaucratic power, regulatory capture, and the concentration of discretionary authority in unelected agencies</li>
-      <li><strong>Anti-corruption as anti-government-capture:</strong> Strong alignment on eliminating government as an instrument of private capture — crony capitalism, regulatory favoritism, and political rent-seeking</li>
-      <li><strong>Term limits:</strong> Meaningful support for term limits and career incumbent power as a structural problem</li>
-    </ul>
+    <dl class="cmp-dl">
+      <div class="cmp-dl-row">
+        <dt>Executive power limits</dt>
+        <dd>Strong alignment on the need for structural constraints on presidential authority — Libertarians oppose executive overreach as a core principle, not a partisan tactic</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Checks and balances</dt>
+        <dd>Shared conviction that power must be structurally limited and that norm-dependent restraint is insufficient — Libertarians provide a philosophically grounded framework for this argument</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Civil liberties</dt>
+        <dd>Deep alignment on free speech, freedom of association, privacy rights, and protections against surveillance and state intrusion</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Equal justice and civil liberties in policing</dt>
+        <dd>Strong alignment on Fourth Amendment protections, drug decriminalization, ending mass incarceration, and police accountability</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Administrative state skepticism</dt>
+        <dd>Shared concern about unaccountable bureaucratic power, regulatory capture, and the concentration of discretionary authority in unelected agencies</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Anti-corruption as anti-government-capture</dt>
+        <dd>Strong alignment on eliminating government as an instrument of private capture — crony capitalism, regulatory favoritism, and political rent-seeking</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Term limits</dt>
+        <dd>Meaningful support for term limits and career incumbent power as a structural problem</dd>
+      </div>
+    </dl>
   </div>
 </section>
 
@@ -115,15 +163,36 @@
     <p class="eyebrow">Key Differences</p>
     <h2>Where We Differ</h2>
     <p>The central divergence is Freedom and Dignity's definition of freedom. Libertarians define freedom as absence of government coercion. Freedom and Dignity defines freedom as requiring both limits on government power AND limits on concentrated private power — and as requiring real-world conditions (healthcare, economic stability, protection from private coercion) to be meaningful.</p>
-    <ul class="item-list">
-      <li><strong>Private power concentration:</strong> Libertarians reject antitrust enforcement as government interference; Freedom and Dignity treats concentrated private corporate power as structurally equivalent to concentrated government power in its threat to individual freedom and democratic self-governance</li>
-      <li><strong>Positive rights vs negative rights:</strong> Libertarians recognize only "negative" rights — freedom from interference; Freedom and Dignity integrates positive guarantees (healthcare, economic conditions) as necessary for freedom to be real rather than theoretical</li>
-      <li><strong>Healthcare:</strong> Libertarians oppose any public healthcare guarantee; Freedom and Dignity treats healthcare access as a structural precondition for meaningful freedom — a right whose absence makes all other freedoms conditional on economic circumstance</li>
-      <li><strong>Taxation and wealth concentration:</strong> Libertarians oppose redistribution and accept unlimited wealth accumulation; Freedom and Dignity treats extreme wealth concentration as a structural threat to democratic self-governance, not merely an inequality problem</li>
-      <li><strong>Environment:</strong> Libertarians rely on market mechanisms and property rights to address environmental problems; Freedom and Dignity treats certain environmental thresholds as collective structural requirements that markets cannot address alone</li>
-      <li><strong>Equal justice system:</strong> Libertarians would reduce the justice system's scope; Freedom and Dignity proposes redesigning it with structural accountability — not reducing it to a minimalist framework that leaves private power to fill the gap</li>
-      <li><strong>Elections:</strong> Libertarians oppose standardization and government regulation of elections; Freedom and Dignity treats representational equality and non-discriminatory access as structural requirements, not optional features</li>
-    </ul>
+    <dl class="cmp-dl">
+      <div class="cmp-dl-row">
+        <dt>Private power concentration</dt>
+        <dd>Libertarians reject antitrust enforcement as government interference; Freedom and Dignity treats concentrated private corporate power as structurally equivalent to concentrated government power in its threat to individual freedom and democratic self-governance</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Positive rights vs negative rights</dt>
+        <dd>Libertarians recognize only "negative" rights — freedom from interference; Freedom and Dignity integrates positive guarantees (healthcare, economic conditions) as necessary for freedom to be real rather than theoretical</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Healthcare</dt>
+        <dd>Libertarians oppose any public healthcare guarantee; Freedom and Dignity treats healthcare access as a structural precondition for meaningful freedom — a right whose absence makes all other freedoms conditional on economic circumstance</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Taxation and wealth concentration</dt>
+        <dd>Libertarians oppose redistribution and accept unlimited wealth accumulation; Freedom and Dignity treats extreme wealth concentration as a structural threat to democratic self-governance, not merely an inequality problem</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Environment</dt>
+        <dd>Libertarians rely on market mechanisms and property rights to address environmental problems; Freedom and Dignity treats certain environmental thresholds as collective structural requirements that markets cannot address alone</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Equal justice system</dt>
+        <dd>Libertarians would reduce the justice system's scope; Freedom and Dignity proposes redesigning it with structural accountability — not reducing it to a minimalist framework that leaves private power to fill the gap</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Elections</dt>
+        <dd>Libertarians oppose standardization and government regulation of elections; Freedom and Dignity treats representational equality and non-discriminatory access as structural requirements, not optional features</dd>
+      </div>
+    </dl>
   </div>
 </section>
 

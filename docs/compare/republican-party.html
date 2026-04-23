@@ -33,7 +33,25 @@
 
     .wrong-card { background:rgba(255,255,255,.07); border-radius:6px; padding:1.2rem 1.4rem; border-left:4px solid #bf0a30; }
     .wrong-card h3 { font-size:.95rem; color:#e8c060; text-transform:uppercase; letter-spacing:.05em; margin:0 0 .5rem; }
-    .wrong-card p { font-size:.9rem; line-height:1.65; color:rgba(255,255,255,.82); margin:0; }
+    .cmp-dl { margin: 1.5rem 0; }
+    .cmp-dl-row { display: grid; grid-template-columns: 220px 1fr; gap: 0 1.5rem; padding: .75rem 0; border-bottom: 1px solid var(--rule); align-items: start; }
+    .cmp-dl-row:last-child { border-bottom: none; }
+    .cmp-dl dt { font-family: 'Oswald', sans-serif; font-size: .85rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--navy); padding-top: .05rem; }
+    .cmp-dl dd { font-size: .9rem; line-height: 1.6; color: var(--ink); margin: 0; }
+    .on-sky .cmp-dl dt { color: var(--navy); }
+    .on-dark .cmp-dl dt { color: var(--gold-light, var(--gold)); }
+    .on-dark .cmp-dl dd { color: rgba(255,255,255,.75); }
+    @media (max-width: 640px) { .cmp-dl-row { grid-template-columns: 1fr; gap: .25rem; } }
+    .focus-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.25rem 0 0; list-style: none; padding: 0; }
+    .focus-tags li { font-family: 'Oswald', sans-serif; font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; background: var(--navy); color: var(--gold); padding: .3rem .8rem; border: 1px solid rgba(201,149,42,.3); }
+    .cmp-scorecard { padding: 1.25rem 0; border-bottom: 1px solid rgba(255,255,255,.1); }
+    .cmp-scorecard .wrap { display: flex; gap: 0; }
+    .cmp-score { flex: 1; text-align: center; padding: .75rem 1rem; border-right: 1px solid rgba(255,255,255,.1); }
+    .cmp-score:last-child { border-right: none; }
+    .cmp-score-n { font-family: 'Oswald', sans-serif; font-size: 2.2rem; font-weight: 700; color: var(--gold); line-height: 1; }
+    .cmp-score-label { font-family: 'Oswald', sans-serif; font-size: .62rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-top: .3rem; }
+    @media (max-width: 640px) { .cmp-scorecard .wrap { flex-wrap: wrap; } .cmp-score { flex: 1 1 50%; border-bottom: 1px solid rgba(255,255,255,.1); } }
+    @media (min-width: 1024px) { section { padding: 2.5rem 0; } }
   </style>
 </head>
 <body>
@@ -63,6 +81,15 @@
   </div>
 </div>
 
+<div class="cmp-scorecard bg-dark on-dark">
+  <div class="wrap">
+    <div class="cmp-score"><div class="cmp-score-n">3</div><div class="cmp-score-label">Pillars Aligned</div></div>
+    <div class="cmp-score"><div class="cmp-score-n">15</div><div class="cmp-score-label">Key Divergences</div></div>
+    <div class="cmp-score"><div class="cmp-score-n">0</div><div class="cmp-score-label">Where They Exceed Us</div></div>
+    <div class="cmp-score"><div class="cmp-score-n">8</div><div class="cmp-score-label">Coverage Gaps</div></div>
+  </div>
+</div>
+
 <nav class="cmp-snav" aria-label="Jump to section">
   <div class="cmp-snav-inner">
     <a href="#cmp-overview">Overview</a>
@@ -82,7 +109,7 @@
     <p>The Republican Party is one of America's two dominant political parties. In its current form, it blends traditional conservative priorities — tax reduction, deregulation, judicial appointments, and limited government — with a populist-nationalist strand emphasizing border enforcement, economic nationalism, and skepticism of established institutions.<sup><a href="#fn1" id="ref1">[1]</a></sup> The party effectively channels voter frustration with government dysfunction and cultural change, but its structural proposals tend toward dismantling existing systems rather than replacing them with coherent alternatives.</p>
     <p><strong>Note on Project 2025:</strong> While not the official party platform, Project 2025 — a ~900-page governance blueprint produced by the Heritage Foundation and former Trump administration officials — represents the most operationally detailed expression of where current Republican governance ideology points. It explicitly plans to restructure the executive branch, eliminate independent agency status, replace career civil servants with political appointees (Schedule F), and concentrate authority in the presidency. It functions, in practice, as the administrative implementation guide for the party's ideological commitments.</p>
     <h3>Key Focus Areas</h3>
-    <ul class="item-list">
+    <ul class="focus-tags">
       <li>Deregulation and reduction of the federal administrative apparatus</li>
       <li>Tax reduction and market-based economic policy</li>
       <li>Border security and immigration enforcement</li>
@@ -99,13 +126,28 @@
     <p class="eyebrow">Common Ground</p>
     <h2>Where We Agree</h2>
     <p>Despite broad divergence, the GOP and Freedom and Dignity share genuine common ground on a narrow but significant set of structural concerns — particularly around government overreach, bureaucratic dysfunction, and institutional skepticism. This comparison is offered in good faith: identifying where real common ground exists is more useful than treating every difference as disqualifying.</p>
-    <ul class="item-list">
-      <li><strong>Unaccountable agency action:</strong> Both Freedom and Dignity and the GOP identify regulatory capture and insufficient oversight of executive agencies as genuine structural problems. Freedom and Dignity addresses this through structural accountability mechanisms and transparency requirements — not through blanket dismantlement of regulatory capacity.</li>
-      <li><strong>Institutional failure diagnosis:</strong> Both recognize that existing institutions have failed large segments of the population — though the diagnoses and prescriptions differ fundamentally.</li>
-      <li><strong>Checks on federal power:</strong> Shared rhetorical concern about concentrated federal authority, though the GOP's practice has been selective enforcement based on who holds power</li>
-      <li><strong>Immigration system dysfunction:</strong> Both acknowledge the current immigration system is broken and requires comprehensive reform — though the direction and scope of that reform differ sharply</li>
-      <li><strong>Trade and economic sovereignty:</strong> Shared concern that economic globalization has created structural vulnerabilities in domestic industry — Freedom and Dignity treats this through anti-concentration and strategic independence; the GOP through tariffs and protectionism</li>
-    </ul>
+    <dl class="cmp-dl">
+      <div class="cmp-dl-row">
+        <dt>Unaccountable agency action</dt>
+        <dd>Both Freedom and Dignity and the GOP identify regulatory capture and insufficient oversight of executive agencies as genuine structural problems. Freedom and Dignity addresses this through structural accountability mechanisms and transparency requirements — not through blanket dismantlement of regulatory capacity.</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Institutional failure diagnosis</dt>
+        <dd>Both recognize that existing institutions have failed large segments of the population — though the diagnoses and prescriptions differ fundamentally.</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Checks on federal power</dt>
+        <dd>Shared rhetorical concern about concentrated federal authority, though the GOP's practice has been selective enforcement based on who holds power</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Immigration system dysfunction</dt>
+        <dd>Both acknowledge the current immigration system is broken and requires comprehensive reform — though the direction and scope of that reform differ sharply</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Trade and economic sovereignty</dt>
+        <dd>Shared concern that economic globalization has created structural vulnerabilities in domestic industry — Freedom and Dignity treats this through anti-concentration and strategic independence; the GOP through tariffs and protectionism</dd>
+      </div>
+    </dl>
   </div>
 </section>
 
@@ -114,16 +156,40 @@
     <p class="eyebrow">Key Differences</p>
     <h2>Where We Differ</h2>
     <p>The divergences are fundamental and structural. The GOP channels systemic frustration without solving structural root causes. Freedom and Dignity proposes to solve those root causes — with accountability mechanisms, institutional limits, and universal rights expansion that the GOP actively opposes.</p>
-    <ul class="item-list">
-      <li><strong>Executive power:</strong> The GOP supports strong, largely unconstrained executive authority; Freedom and Dignity treats unconstrained executive power as one of the primary structural dangers requiring explicit constitutional remedy</li>
-      <li><strong>Rights framework:</strong> The GOP applies rights selectively and inconsistently; Freedom and Dignity requires rights to be structural, durable, and universally applied regardless of political majority</li>
-      <li><strong>Healthcare:</strong> The GOP rejects healthcare as a public right; Freedom and Dignity treats healthcare access as a precondition for meaningful freedom — a structural guarantee, not a market outcome</li>
-      <li><strong>Anti-corruption:</strong> The GOP has not prioritized structural anti-corruption mechanisms; Freedom and Dignity treats the structural elimination of pay-to-play systems as foundational</li>
-      <li><strong>Elections and representation:</strong> GOP policies have restricted voting access and accepted malapportioned systems; Freedom and Dignity requires equal and non-discriminatory democratic participation as a structural right</li>
-      <li><strong>Equal justice:</strong> The GOP emphasizes enforcement-first policing with minimal structural reform; Freedom and Dignity proposes a comprehensive redesign of the justice system with structural accountability</li>
-      <li><strong>Administrative state:</strong> The GOP favors dismantling agencies without replacement; Freedom and Dignity favors restructuring with accountability safeguards — not dismantling the public capacity to govern</li>
-      <li><strong>Environment:</strong> The GOP prioritizes fossil fuel production; Freedom and Dignity treats environmental sustainability as a structural long-term requirement, not a competing economic interest</li>
-    </ul>
+    <dl class="cmp-dl">
+      <div class="cmp-dl-row">
+        <dt>Executive power</dt>
+        <dd>The GOP supports strong, largely unconstrained executive authority; Freedom and Dignity treats unconstrained executive power as one of the primary structural dangers requiring explicit constitutional remedy</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Rights framework</dt>
+        <dd>The GOP applies rights selectively and inconsistently; Freedom and Dignity requires rights to be structural, durable, and universally applied regardless of political majority</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Healthcare</dt>
+        <dd>The GOP rejects healthcare as a public right; Freedom and Dignity treats healthcare access as a precondition for meaningful freedom — a structural guarantee, not a market outcome</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Anti-corruption</dt>
+        <dd>The GOP has not prioritized structural anti-corruption mechanisms; Freedom and Dignity treats the structural elimination of pay-to-play systems as foundational</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Elections and representation</dt>
+        <dd>GOP policies have restricted voting access and accepted malapportioned systems; Freedom and Dignity requires equal and non-discriminatory democratic participation as a structural right</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Equal justice</dt>
+        <dd>The GOP emphasizes enforcement-first policing with minimal structural reform; Freedom and Dignity proposes a comprehensive redesign of the justice system with structural accountability</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Administrative state</dt>
+        <dd>The GOP favors dismantling agencies without replacement; Freedom and Dignity favors restructuring with accountability safeguards — not dismantling the public capacity to govern</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Environment</dt>
+        <dd>The GOP prioritizes fossil fuel production; Freedom and Dignity treats environmental sustainability as a structural long-term requirement, not a competing economic interest</dd>
+      </div>
+    </dl>
   </div>
 </section>
 

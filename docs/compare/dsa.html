@@ -33,7 +33,25 @@
 
     .wrong-card { background:rgba(255,255,255,.07); border-radius:6px; padding:1.2rem 1.4rem; border-left:4px solid #bf0a30; }
     .wrong-card h3 { font-size:.95rem; color:#e8c060; text-transform:uppercase; letter-spacing:.05em; margin:0 0 .5rem; }
-    .wrong-card p { font-size:.9rem; line-height:1.65; color:rgba(255,255,255,.82); margin:0; }
+    .cmp-dl { margin: 1.5rem 0; }
+    .cmp-dl-row { display: grid; grid-template-columns: 220px 1fr; gap: 0 1.5rem; padding: .75rem 0; border-bottom: 1px solid var(--rule); align-items: start; }
+    .cmp-dl-row:last-child { border-bottom: none; }
+    .cmp-dl dt { font-family: 'Oswald', sans-serif; font-size: .85rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--navy); padding-top: .05rem; }
+    .cmp-dl dd { font-size: .9rem; line-height: 1.6; color: var(--ink); margin: 0; }
+    .on-sky .cmp-dl dt { color: var(--navy); }
+    .on-dark .cmp-dl dt { color: var(--gold-light, var(--gold)); }
+    .on-dark .cmp-dl dd { color: rgba(255,255,255,.75); }
+    @media (max-width: 640px) { .cmp-dl-row { grid-template-columns: 1fr; gap: .25rem; } }
+    .focus-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.25rem 0 0; list-style: none; padding: 0; }
+    .focus-tags li { font-family: 'Oswald', sans-serif; font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; background: var(--navy); color: var(--gold); padding: .3rem .8rem; border: 1px solid rgba(201,149,42,.3); }
+    .cmp-scorecard { padding: 1.25rem 0; border-bottom: 1px solid rgba(255,255,255,.1); }
+    .cmp-scorecard .wrap { display: flex; gap: 0; }
+    .cmp-score { flex: 1; text-align: center; padding: .75rem 1rem; border-right: 1px solid rgba(255,255,255,.1); }
+    .cmp-score:last-child { border-right: none; }
+    .cmp-score-n { font-family: 'Oswald', sans-serif; font-size: 2.2rem; font-weight: 700; color: var(--gold); line-height: 1; }
+    .cmp-score-label { font-family: 'Oswald', sans-serif; font-size: .62rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-top: .3rem; }
+    @media (max-width: 640px) { .cmp-scorecard .wrap { flex-wrap: wrap; } .cmp-score { flex: 1 1 50%; border-bottom: 1px solid rgba(255,255,255,.1); } }
+    @media (min-width: 1024px) { section { padding: 2.5rem 0; } }
   </style>
 </head>
 <body>
@@ -63,6 +81,15 @@
   </div>
 </div>
 
+<div class="cmp-scorecard bg-dark on-dark">
+  <div class="wrap">
+    <div class="cmp-score"><div class="cmp-score-n">14</div><div class="cmp-score-label">Pillars Aligned</div></div>
+    <div class="cmp-score"><div class="cmp-score-n">6</div><div class="cmp-score-label">Key Divergences</div></div>
+    <div class="cmp-score"><div class="cmp-score-n">4</div><div class="cmp-score-label">Where They Exceed Us</div></div>
+    <div class="cmp-score"><div class="cmp-score-n">3</div><div class="cmp-score-label">Coverage Gaps</div></div>
+  </div>
+</div>
+
 <nav class="cmp-snav" aria-label="Jump to section">
   <div class="cmp-snav-inner">
     <a href="#cmp-overview">Overview</a>
@@ -81,7 +108,7 @@
     <h2>Platform at a Glance</h2>
     <p>The Democratic Socialists of America is a political organization that frames capitalism as the root cause of inequality, instability, and exploitation. Its platform centers on economic democracy: restructuring ownership and control of the economy toward workers and the public, while expanding universal social guarantees across healthcare, housing, education, and labor.<sup><a href="#fn1" id="ref1">[1]</a></sup> The DSA operates through chapter-based organizing, electoral endorsements, and movement building rather than running its own candidates under a party ballot line.</p>
     <h3>Key Focus Areas</h3>
-    <ul class="item-list">
+    <ul class="focus-tags">
       <li>Worker power and labor organizing — sectoral bargaining, unionization, workplace democracy</li>
       <li>Universal social guarantees — healthcare, housing, education, income support</li>
       <li>Anti-corporate and anti-monopoly structural reform</li>
@@ -98,15 +125,36 @@
     <p class="eyebrow">Common Ground</p>
     <h2>Where We Agree</h2>
     <p>The DSA and Freedom and Dignity share significant terrain on democratic reform, anti-concentration of power, and universal access to essential services — though they often reach similar conclusions from different starting premises. This comparison is offered in good faith: the substantial overlap here is genuine and worth acknowledging clearly before turning to where the platforms diverge.</p>
-    <ul class="item-list">
-      <li><strong>Anti-monopoly and corporate power:</strong> Both treat concentrated private power as a systemic threat; DSA favors public ownership while Freedom and Dignity emphasizes competitive, non-dominant market structures</li>
-      <li><strong>Elections and democratic access:</strong> Shared commitment to expanded voter access, proportional representation, and reducing barriers to participation</li>
-      <li><strong>Universal healthcare:</strong> Strong alignment on healthcare as a right, not a market commodity<sup><a href="#fn2" id="ref2">[2]</a></sup></li>
-      <li><strong>Taxation and wealth concentration:</strong> Both reject extreme wealth accumulation as structurally corrosive, though Freedom and Dignity does not prescribe a single taxation model</li>
-      <li><strong>Equal justice and policing:</strong> Shared concern about structural inequity in policing and the criminal justice system</li>
-      <li><strong>Anti-corruption:</strong> Both identify entrenched corporate and donor influence as a core democratic failure</li>
-      <li><strong>Civil and collective rights:</strong> Broad alignment on rights protections and enforcement</li>
-    </ul>
+    <dl class="cmp-dl">
+      <div class="cmp-dl-row">
+        <dt>Anti-monopoly and corporate power</dt>
+        <dd>Both treat concentrated private power as a systemic threat; DSA favors public ownership while Freedom and Dignity emphasizes competitive, non-dominant market structures</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Elections and democratic access</dt>
+        <dd>Shared commitment to expanded voter access, proportional representation, and reducing barriers to participation</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Universal healthcare</dt>
+        <dd>Strong alignment on healthcare as a right, not a market commodity<sup><a href="#fn2" id="ref2">[2]</a></sup></dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Taxation and wealth concentration</dt>
+        <dd>Both reject extreme wealth accumulation as structurally corrosive, though Freedom and Dignity does not prescribe a single taxation model</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Equal justice and policing</dt>
+        <dd>Shared concern about structural inequity in policing and the criminal justice system</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Anti-corruption</dt>
+        <dd>Both identify entrenched corporate and donor influence as a core democratic failure</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Civil and collective rights</dt>
+        <dd>Broad alignment on rights protections and enforcement</dd>
+      </div>
+    </dl>
   </div>
 </section>
 
@@ -115,15 +163,36 @@
     <p class="eyebrow">Key Differences</p>
     <h2>Where We Differ</h2>
     <p>The deepest divergences are structural and philosophical: the DSA's central framework is economic system transformation, while Freedom and Dignity's framework is governance and institutional system repair — treating structural accountability, not economic ownership, as the root reform.</p>
-    <ul class="item-list">
-      <li><strong>Root cause framing:</strong> Both frameworks recognize that the status quo represents systemic failure — we share that diagnosis. The difference is in causal attribution: DSA locates the root cause specifically in capitalism; Freedom and Dignity treats unaccountable power — in any economic system, public or private — as the root cause. This is a genuine philosophical difference, not a dismissal of DSA's critique of capitalist concentration</li>
-      <li><strong>Governance reform depth:</strong> Freedom and Dignity's Accountable Power and Clean Democracy pillars address executive limits, judicial reform, term limits, and administrative accountability in structural detail; these are secondary concerns for the DSA</li>
-      <li><strong>Checks and balances:</strong> DSA focuses on democratizing institutions; Freedom and Dignity focuses on constraining and enforcing limits on power within them — a different mechanism</li>
-      <li><strong>Rights framework:</strong> DSA emphasizes collective rights and economic guarantees; Freedom and Dignity integrates both individual structural rights and collective guarantees as inseparable, without subordinating one to the other</li>
-      <li><strong>Policing reform:</strong> Some DSA factions support abolition; Freedom and Dignity's framework calls for structured redesign with accountability — not abolition and not the status quo</li>
-      <li><strong>Anti-corruption mechanisms:</strong> We agree with the DSA's observation that unchecked capitalism is a primary driver of political corruption — the capture of government by concentrated private wealth is well-documented and real. The difference is scope: Freedom and Dignity also treats corruption as inherent in any system of concentrated power, public or private, requiring structural enforcement mechanisms that don't depend on economic system transformation to function</li>
-      <li><strong>Technology and AI:</strong> Freedom and Dignity treats AI and technology governance as a standalone structural issue; DSA has limited engagement with this domain</li>
-    </ul>
+    <dl class="cmp-dl">
+      <div class="cmp-dl-row">
+        <dt>Root cause framing</dt>
+        <dd>Both frameworks recognize that the status quo represents systemic failure — we share that diagnosis. The difference is in causal attribution: DSA locates the root cause specifically in capitalism; Freedom and Dignity treats unaccountable power — in any economic system, public or private — as the root cause. This is a genuine philosophical difference, not a dismissal of DSA's critique of capitalist concentration</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Governance reform depth</dt>
+        <dd>Freedom and Dignity's Accountable Power and Clean Democracy pillars address executive limits, judicial reform, term limits, and administrative accountability in structural detail; these are secondary concerns for the DSA</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Checks and balances</dt>
+        <dd>DSA focuses on democratizing institutions; Freedom and Dignity focuses on constraining and enforcing limits on power within them — a different mechanism</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Rights framework</dt>
+        <dd>DSA emphasizes collective rights and economic guarantees; Freedom and Dignity integrates both individual structural rights and collective guarantees as inseparable, without subordinating one to the other</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Policing reform</dt>
+        <dd>Some DSA factions support abolition; Freedom and Dignity's framework calls for structured redesign with accountability — not abolition and not the status quo</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Anti-corruption mechanisms</dt>
+        <dd>We agree with the DSA's observation that unchecked capitalism is a primary driver of political corruption — the capture of government by concentrated private wealth is well-documented and real. The difference is scope: Freedom and Dignity also treats corruption as inherent in any system of concentrated power, public or private, requiring structural enforcement mechanisms that don't depend on economic system transformation to function</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Technology and AI</dt>
+        <dd>Freedom and Dignity treats AI and technology governance as a standalone structural issue; DSA has limited engagement with this domain</dd>
+      </div>
+    </dl>
   </div>
 </section>
 

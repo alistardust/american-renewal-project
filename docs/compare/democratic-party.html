@@ -33,7 +33,25 @@
 
     .wrong-card { background:rgba(255,255,255,.07); border-radius:6px; padding:1.2rem 1.4rem; border-left:4px solid #bf0a30; }
     .wrong-card h3 { font-size:.95rem; color:#e8c060; text-transform:uppercase; letter-spacing:.05em; margin:0 0 .5rem; }
-    .wrong-card p { font-size:.9rem; line-height:1.65; color:rgba(255,255,255,.82); margin:0; }
+    .cmp-dl { margin: 1.5rem 0; }
+    .cmp-dl-row { display: grid; grid-template-columns: 220px 1fr; gap: 0 1.5rem; padding: .75rem 0; border-bottom: 1px solid var(--rule); align-items: start; }
+    .cmp-dl-row:last-child { border-bottom: none; }
+    .cmp-dl dt { font-family: 'Oswald', sans-serif; font-size: .85rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--navy); padding-top: .05rem; }
+    .cmp-dl dd { font-size: .9rem; line-height: 1.6; color: var(--ink); margin: 0; }
+    .on-sky .cmp-dl dt { color: var(--navy); }
+    .on-dark .cmp-dl dt { color: var(--gold-light, var(--gold)); }
+    .on-dark .cmp-dl dd { color: rgba(255,255,255,.75); }
+    @media (max-width: 640px) { .cmp-dl-row { grid-template-columns: 1fr; gap: .25rem; } }
+    .focus-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.25rem 0 0; list-style: none; padding: 0; }
+    .focus-tags li { font-family: 'Oswald', sans-serif; font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; background: var(--navy); color: var(--gold); padding: .3rem .8rem; border: 1px solid rgba(201,149,42,.3); }
+    .cmp-scorecard { padding: 1.25rem 0; border-bottom: 1px solid rgba(255,255,255,.1); }
+    .cmp-scorecard .wrap { display: flex; gap: 0; }
+    .cmp-score { flex: 1; text-align: center; padding: .75rem 1rem; border-right: 1px solid rgba(255,255,255,.1); }
+    .cmp-score:last-child { border-right: none; }
+    .cmp-score-n { font-family: 'Oswald', sans-serif; font-size: 2.2rem; font-weight: 700; color: var(--gold); line-height: 1; }
+    .cmp-score-label { font-family: 'Oswald', sans-serif; font-size: .62rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-top: .3rem; }
+    @media (max-width: 640px) { .cmp-scorecard .wrap { flex-wrap: wrap; } .cmp-score { flex: 1 1 50%; border-bottom: 1px solid rgba(255,255,255,.1); } }
+    @media (min-width: 1024px) { section { padding: 2.5rem 0; } }
   </style>
 </head>
 <body>
@@ -63,6 +81,15 @@
   </div>
 </div>
 
+<div class="cmp-scorecard bg-dark on-dark">
+  <div class="wrap">
+    <div class="cmp-score"><div class="cmp-score-n">12</div><div class="cmp-score-label">Pillars Aligned</div></div>
+    <div class="cmp-score"><div class="cmp-score-n">8</div><div class="cmp-score-label">Key Divergences</div></div>
+    <div class="cmp-score"><div class="cmp-score-n">2</div><div class="cmp-score-label">Where They Exceed Us</div></div>
+    <div class="cmp-score"><div class="cmp-score-n">4</div><div class="cmp-score-label">Coverage Gaps</div></div>
+  </div>
+</div>
+
 <nav class="cmp-snav" aria-label="Jump to section">
   <div class="cmp-snav-inner">
     <a href="#cmp-overview">Overview</a>
@@ -81,7 +108,7 @@
     <h2>Platform at a Glance</h2>
     <p>The Democratic Party is one of America's two dominant political parties, operating within the current institutional framework and pursuing reform through electoral victories, legislative action, and administrative policy. Its platform emphasizes protecting civil rights, expanding healthcare access, reducing economic inequality, addressing climate change, and defending democratic institutions against erosion.<sup><a href="#fn1" id="ref1">[1]</a></sup> The party's approach is predominantly incremental: it works with existing agencies, courts, and constitutional structures rather than proposing systemic redesign.</p>
     <h3>Key Focus Areas</h3>
-    <ul class="item-list">
+    <ul class="focus-tags">
       <li>Voting rights protection and election security</li>
       <li>Healthcare access — ACA expansion, drug pricing reform</li>
       <li>Climate investment — Inflation Reduction Act framework</li>
@@ -98,15 +125,36 @@
     <p class="eyebrow">Common Ground</p>
     <h2>Where We Agree</h2>
     <p>The Democratic Party and Freedom and Dignity share significant concern about threats to democratic institutions, civil rights, and economic access — though they differ sharply on how deep the structural response needs to go.<sup><a href="#fn3" id="ref3">[3]</a></sup> This comparison is offered in good faith: genuine common ground with Democratic voters and many Democratic positions is real, and naming it honestly matters as much as naming where the platforms diverge.</p>
-    <ul class="item-list">
-      <li><strong>Elections and representation:</strong> Shared commitment to voting rights expansion, election security, and reducing discriminatory barriers to participation</li>
-      <li><strong>Civil rights and liberties:</strong> Broad alignment on anti-discrimination protections, reproductive rights, and LGBTQ+ rights as durable legal guarantees</li>
-      <li><strong>Healthcare access:</strong> Shared recognition that healthcare access is a necessary condition for meaningful freedom, not just a market transaction</li>
-      <li><strong>Climate and environment:</strong> Acknowledgment that environmental degradation requires federal action and structural investment</li>
-      <li><strong>Equal justice:</strong> Shared concern about structural inequity in the criminal justice system, even when specific reforms differ</li>
-      <li><strong>Immigration reform:</strong> Support for legal pathways, DACA protections, and humane immigration policy</li>
-      <li><strong>Checks and balances:</strong> Rhetorical commitment to oversight, congressional authority, and resisting executive overreach</li>
-    </ul>
+    <dl class="cmp-dl">
+      <div class="cmp-dl-row">
+        <dt>Elections and representation</dt>
+        <dd>Shared commitment to voting rights expansion, election security, and reducing discriminatory barriers to participation</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Civil rights and liberties</dt>
+        <dd>Broad alignment on anti-discrimination protections, reproductive rights, and LGBTQ+ rights as durable legal guarantees</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Healthcare access</dt>
+        <dd>Shared recognition that healthcare access is a necessary condition for meaningful freedom, not just a market transaction</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Climate and environment</dt>
+        <dd>Acknowledgment that environmental degradation requires federal action and structural investment</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Equal justice</dt>
+        <dd>Shared concern about structural inequity in the criminal justice system, even when specific reforms differ</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Immigration reform</dt>
+        <dd>Support for legal pathways, DACA protections, and humane immigration policy</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Checks and balances</dt>
+        <dd>Rhetorical commitment to oversight, congressional authority, and resisting executive overreach</dd>
+      </div>
+    </dl>
   </div>
 </section>
 
@@ -115,15 +163,36 @@
     <p class="eyebrow">Key Differences</p>
     <h2>Where We Differ</h2>
     <p>The central divergence is strategic and structural: the Democratic Party pursues incremental reform within existing systems. Freedom and Dignity proposes system redesign that treats structural root causes — corruption, power concentration, institutional instability — as the primary problem, not a secondary concern.</p>
-    <ul class="item-list">
-      <li><strong>Corruption and money in politics:</strong> Democrats accept donor-financed politics as an operational constraint; Freedom and Dignity treats the structural elimination of pay-to-play corruption mechanisms as non-negotiable</li>
-      <li><strong>Executive power:</strong> Democrats rhetorically support limits on executive authority but have repeatedly expanded it in practice; Freedom and Dignity proposes enforceable structural constraints, not norm-dependent restraint</li>
-      <li><strong>Antitrust and corporate power:</strong> Democratic rhetoric on antitrust has historically been weak in practice; Freedom and Dignity treats the structural dominance of monopoly power as a direct threat to democracy requiring systematic enforcement</li>
-      <li><strong>Rights durability:</strong> Democratic rights protections fluctuate with electoral outcomes; Freedom and Dignity frames rights as requiring structural constitutional guarantees not subject to electoral reversal</li>
-      <li><strong>Electoral system design:</strong> Democrats accept the Electoral College, malapportioned Senate, and unequal vote-weight systems; Freedom and Dignity treats representative equality as a structural requirement</li>
-      <li><strong>Checks and balances enforcement:</strong> Democrats rely on norms and political pressure; Freedom and Dignity proposes enforcement mechanisms, not just oversight authority</li>
-      <li><strong>Healthcare system:</strong> Democrats support incremental ACA expansion; Freedom and Dignity defines healthcare as a durable right requiring structural delivery — not a hybrid market dependent on political majorities to maintain</li>
-    </ul>
+    <dl class="cmp-dl">
+      <div class="cmp-dl-row">
+        <dt>Corruption and money in politics</dt>
+        <dd>Democrats accept donor-financed politics as an operational constraint; Freedom and Dignity treats the structural elimination of pay-to-play corruption mechanisms as non-negotiable</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Executive power</dt>
+        <dd>Democrats rhetorically support limits on executive authority but have repeatedly expanded it in practice; Freedom and Dignity proposes enforceable structural constraints, not norm-dependent restraint</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Antitrust and corporate power</dt>
+        <dd>Democratic rhetoric on antitrust has historically been weak in practice; Freedom and Dignity treats the structural dominance of monopoly power as a direct threat to democracy requiring systematic enforcement</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Rights durability</dt>
+        <dd>Democratic rights protections fluctuate with electoral outcomes; Freedom and Dignity frames rights as requiring structural constitutional guarantees not subject to electoral reversal</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Electoral system design</dt>
+        <dd>Democrats accept the Electoral College, malapportioned Senate, and unequal vote-weight systems; Freedom and Dignity treats representative equality as a structural requirement</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Checks and balances enforcement</dt>
+        <dd>Democrats rely on norms and political pressure; Freedom and Dignity proposes enforcement mechanisms, not just oversight authority</dd>
+      </div>
+      <div class="cmp-dl-row">
+        <dt>Healthcare system</dt>
+        <dd>Democrats support incremental ACA expansion; Freedom and Dignity defines healthcare as a durable right requiring structural delivery — not a hybrid market dependent on political majorities to maintain</dd>
+      </div>
+    </dl>
   </div>
 </section>
 
