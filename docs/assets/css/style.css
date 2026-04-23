@@ -59,6 +59,16 @@ strong { font-weight: 700; }
 .wrap      { max-width: 820px;  margin: 0 auto; padding: 0 2rem; }
 .wrap-wide { max-width: 1060px; margin: 0 auto; padding: 0 2rem; }
 section { padding: 4.5rem 0; }
+
+/* Wider containers on large/ultrawide screens */
+@media (min-width: 1400px) {
+  .wrap      { max-width: 1020px; }
+  .wrap-wide { max-width: 1320px; }
+}
+@media (min-width: 2000px) {
+  .wrap      { max-width: 1200px; }
+  .wrap-wide { max-width: 1560px; }
+}
 .ruled  { border-bottom: 1px solid var(--rule); }
 
 /* ── EYEBROW ──────────────────────────────────────────── */

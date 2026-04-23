@@ -53,12 +53,6 @@
       navList.appendChild(li);
     }
 
-    if (navList && !navList.querySelector('a[href*="adversarial-review"]')) {
-      const li = document.createElement('li');
-      li.innerHTML = `<a href="${adversarialHref}"${isAdversarialPage ? ' class="active"' : ''}>Adversarial Review</a>`;
-      navList.appendChild(li);
-    }
-
     if (navList && !navList.querySelector('a[href*="about-us"]')) {
       const li = document.createElement('li');
       li.innerHTML = `<a href="${aboutUsHref}"${isAboutUsPage ? ' class="active"' : ''}>About Us</a>`;
