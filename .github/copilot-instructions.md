@@ -307,11 +307,11 @@ Any number or count derived from `data.js` must be rendered dynamically, not har
 # New pillar page:
 node scripts/new-pillar.js --id my-pillar --title "My Pillar" --foundation freedom-to-thrive --color "#1a6b8a" --prefix "MPL"
 
-# New compare page (coming soon — see scripts/new-compare.js):
-node scripts/new-compare.js --id my-party --party "Party Name" --color "#336699"
+# New compare page:
+node scripts/new-compare.js --id my-party --party "Party Name" --color "#336699" --tagline "One-sentence description of this platform."
 ```
 
-These scripts produce a correctly structured, minimal HTML scaffold. Add content inside the generated placeholders. The script also prints the exact `data.js` update and test count changes required.
+These scripts produce a correctly structured, minimal HTML scaffold. Add content inside the generated placeholders. The new-pillar script also prints the exact `data.js` update and test count changes required.
 
 ### Adding a new pillar — complete checklist
 
