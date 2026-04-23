@@ -16,7 +16,7 @@ const ARP = (() => {
 
 // Single source of truth for expected counts.
 // Update these when intentionally adding pillars or foundations to data.js.
-const PILLAR_COUNT     = ARP.pillars.length;      // currently 24
+const PILLAR_COUNT     = ARP.pillars.length;      // currently 25
 const FOUNDATION_COUNT = ARP.foundations.length;  // currently 5
 
 // ── FOUNDATIONS ──────────────────────────────────────────────────────────────
