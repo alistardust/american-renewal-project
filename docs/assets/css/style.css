@@ -535,7 +535,7 @@ section { padding: 4.5rem 0; }
   transition: border-top-color .15s, box-shadow .15s;
 }
 .related-card:hover { border-top-color: var(--red); box-shadow: 0 3px 10px rgba(0,0,0,.1); }
-.related-card strong { display: block; font-size: .8rem; font-family: 'Oswald', sans-serif; letter-spacing: .04em; text-transform: uppercase; margin-bottom: .3rem; color: var(--navy); }
+.related-card strong { display: block; font-size: .8rem; font-family: 'Oswald', sans-serif; letter-spacing: .04em; text-transform: uppercase; margin-bottom: .3rem; color: var(--navy); word-break: break-word; line-height: 1.2; }
 .related-card span   { font-size: .8rem; color: rgba(10,34,64,.65); line-height: 1.45; }
 
 /* Compare pages */
@@ -600,6 +600,50 @@ section { padding: 4.5rem 0; }
 .page-hero.compact { padding: 3.5rem 1.5rem 3rem; }
 .btn-primary { display: inline-block; font-family: 'Oswald', sans-serif; font-size: .85rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--cream); background: var(--red); padding: .7em 1.8em; text-decoration: none; transition: background .18s, color .18s; }
 .btn-primary:hover { background: var(--red-deep); }
+
+/* ── CTA PIN (FDR-style campaign button) ─────────────── */
+.hero-cta-group {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 1.25rem; margin-top: 2.5rem; position: relative; z-index: 1;
+}
+.cta-pin {
+  display: flex; align-items: center; justify-content: center;
+  width: 140px; height: 140px; border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 6px 24px rgba(0,0,0,.4), 0 0 0 5px rgba(255,255,255,.15), inset 0 1px 0 rgba(255,255,255,.2);
+  text-decoration: none;
+  transition: transform .2s, box-shadow .2s;
+  flex-shrink: 0;
+}
+.cta-pin:hover {
+  transform: scale(1.07);
+  box-shadow: 0 12px 36px rgba(0,0,0,.5), 0 0 0 5px rgba(255,255,255,.25), inset 0 1px 0 rgba(255,255,255,.2);
+}
+.cta-pin-inner {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 112px; height: 112px; border-radius: 50%;
+  background: var(--cream);
+  text-align: center; padding: .75rem;
+  border: 2px solid rgba(191,10,48,.18);
+}
+.cta-pin-primary {
+  display: block;
+  font-family: 'Oswald', sans-serif; font-size: .95rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em;
+  color: var(--navy); line-height: 1.1; margin-bottom: .3rem;
+}
+.cta-pin-secondary {
+  display: block;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: .7rem; font-style: italic;
+  color: var(--red); line-height: 1.3;
+}
+@media (max-width: 640px) {
+  .cta-pin { width: 110px; height: 110px; }
+  .cta-pin-inner { width: 86px; height: 86px; }
+  .cta-pin-primary { font-size: .82rem; }
+  .cta-pin-secondary { font-size: .62rem; }
+}
 .btn-outline { display: inline-block; font-family: 'Oswald', sans-serif; font-size: .85rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; padding: .7em 1.8em; text-decoration: none; transition: background .18s, color .18s, border-color .18s; color: #fff; border: 2px solid rgba(255,255,255,.5); }
 .btn-outline:hover { background: rgba(255,255,255,.12); border-color: #fff; color: #fff; }
 
@@ -703,6 +747,29 @@ section { padding: 4.5rem 0; }
 .rule-title { font-weight: 600; margin: .2rem 0 .2rem; color: var(--ink); }
 .rule-stmt  { font-size: .85rem; color: #444; margin: .15rem 0 0; }
 .rule-notes { font-size: .8rem; color: #666; font-style: italic; margin: .25rem 0 0; }
+
+/* Policy card body truncation (progressive enhancement — JS adds .card-clamped-active) */
+.policy-card.card-clamped-active .rule-body {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+}
+.policy-card.expanded .rule-body {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+.card-expand-toggle {
+  display: block; width: 100%; margin-top: .6rem;
+  background: none; border: none; border-top: 1px solid #e0d8c8;
+  padding: .45rem 0 0; text-align: left; cursor: pointer;
+  font-family: 'Libre Franklin', sans-serif; font-size: .78rem;
+  font-weight: 600; color: var(--accent-color, var(--red));
+  letter-spacing: .02em; transition: color .15s;
+}
+.card-expand-toggle:hover { color: var(--navy); }
+.card-expand-toggle::after { content: ' ›'; }
 
 /* Design logic accordion */
 details.design-logic { margin: 1rem 0; }

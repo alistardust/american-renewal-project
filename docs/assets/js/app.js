@@ -323,6 +323,46 @@
     });
   })();
 
+  /* ── POLICY CARD EXPAND / TRUNCATE ─────────────────── */
+  (function () {
+    document.querySelectorAll('.policy-card').forEach(function (card) {
+      const bodies = card.querySelectorAll('.rule-body');
+      if (!bodies.length) return;
+      const lastBody = bodies[bodies.length - 1];
+
+      // Enable truncation via CSS class, then measure clamping.
+      card.classList.add('card-clamped-active');
+      const isClamped = lastBody.scrollHeight > lastBody.clientHeight;
+
+      if (!isClamped) {
+        // Text fits within 4 lines — no toggle needed.
+        card.classList.remove('card-clamped-active');
+        return;
+      }
+
+      const toggle = document.createElement('button');
+      toggle.className = 'card-expand-toggle';
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.textContent = 'Read more';
+      lastBody.insertAdjacentElement('afterend', toggle);
+
+      toggle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const expanded = card.classList.toggle('expanded');
+        toggle.setAttribute('aria-expanded', String(expanded));
+        toggle.textContent = expanded ? 'Show less' : 'Read more';
+      });
+
+      // Clicking anywhere on the card (except the toggle itself) also toggles.
+      card.addEventListener('click', function (e) {
+        if (e.target === toggle) return;
+        const expanded = card.classList.toggle('expanded');
+        toggle.setAttribute('aria-expanded', String(expanded));
+        toggle.textContent = expanded ? 'Show less' : 'Read more';
+      });
+    });
+  })();
+
   /* ── NAME / AFFILIATION NOTICE ─────────────────────── */
   (function () {
     if (sessionStorage.getItem('name-notice-dismissed')) return;
