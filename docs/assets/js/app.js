@@ -279,6 +279,7 @@
   /* ── WIP / PRE-1.0 BANNER ───────────────────────────── */
   (function () {
     if (document.getElementById('wip-banner')) return;
+    if (sessionStorage.getItem('wip-banner-dismissed')) return;
     const nav = document.querySelector('.site-nav');
     if (!nav) return;
     const _base = /\/(pillars|compare)\//.test(location.pathname) ? '../' : '';
@@ -289,7 +290,12 @@
       '<strong>Pre-1.0 — Work in Progress</strong> &nbsp;·&nbsp; ' +
       'This platform is a living document, intentionally updated as policy develops. ' +
       'We have not yet reached our 1.0 release — language, structure, and positions will evolve.' +
-      ' &nbsp;<a href="' + _base + 'roadmap.html">View Roadmap →</a>';
+      ' &nbsp;<a href="' + _base + 'roadmap.html">View Roadmap →</a>' +
+      '<button class="wip-banner-dismiss" aria-label="Dismiss banner">✕</button>';
+    banner.querySelector('.wip-banner-dismiss').addEventListener('click', function () {
+      sessionStorage.setItem('wip-banner-dismissed', '1');
+      banner.remove();
+    });
     nav.insertAdjacentElement('afterend', banner);
   })();
 

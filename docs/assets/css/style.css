@@ -145,6 +145,14 @@ section { padding: 4.5rem 0; }
 }
 .wip-banner a:hover { opacity: 1; }
 .wip-banner strong { font-weight: 700; }
+.wip-banner-dismiss {
+  background: none; border: none; cursor: pointer;
+  color: var(--navy); opacity: .5; font-size: 1rem; line-height: 1;
+  padding: .1rem .35rem; margin-left: .75rem;
+  transition: opacity .15s; flex-shrink: 0;
+  vertical-align: middle;
+}
+.wip-banner-dismiss:hover { opacity: 1; }
 
 .site-nav {
   position: sticky; top: 0; z-index: 200;
