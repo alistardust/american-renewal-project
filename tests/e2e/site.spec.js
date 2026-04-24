@@ -43,8 +43,8 @@ test.describe('Homepage', () => {
     await expect(page.locator('.demand-list li')).toHaveCount(10);
   });
 
-  test('nav has 11 links (4 static + Mission, Constitution, Classification, About Us, Get Involved, Roadmap, About AI injected by app.js)', async ({ page }) => {
-    await expect(page.locator('.nav-links a')).toHaveCount(11);
+  test('nav has 12 links (4 static + Mission, Constitution, Classification, About Us, Letter from the Founder, Get Involved, Roadmap, About AI injected by app.js)', async ({ page }) => {
+    await expect(page.locator('.nav-links a')).toHaveCount(12);
   });
 
   test('name notice banner is present and dismissible', async ({ page }) => {
@@ -757,5 +757,85 @@ test.describe('About Us page', () => {
     const aboutUsLink = page.locator('.nav-links a[href*="about-us"]');
     await expect(aboutUsLink).toBeAttached();
     await expect(aboutUsLink).toHaveClass(/active/);
+  });
+
+  test('funding disclosure is present', async ({ page }) => {
+    const text = await page.locator('.contrib-notice').textContent();
+    expect(text).toMatch(/no outside funding|no.*funding/i);
+    expect(text).toMatch(/volunteer|compensation/i);
+  });
+});
+
+// ── LETTER FROM THE FOUNDER PAGE ──────────────────────────────────────────────
+
+test.describe('Letter from the Founder page', () => {
+  test.beforeEach(async ({ page }) => { await page.goto('/letter-from-the-founder.html'); });
+
+  test('has correct page title', async ({ page }) => {
+    await expect(page).toHaveTitle(/Letter.*Founder.*Freedom and Dignity/i);
+  });
+
+  test('renders the hero heading', async ({ page }) => {
+    const h1 = page.locator('.lf-hero h1');
+    await expect(h1).toBeVisible();
+    const text = await h1.textContent();
+    expect(text).toMatch(/Letter from the Founder/i);
+  });
+
+  test('letter body opens with verbatim first paragraph', async ({ page }) => {
+    const first = page.locator('.lf-letter p').first();
+    await expect(first).toContainText('Hi,');
+  });
+
+  test('letter body contains key verbatim content', async ({ page }) => {
+    const body = await page.locator('.lf-letter').textContent();
+    expect(body).toMatch(/Alice Thomas/);
+    expect(body).toMatch(/Hank Aaron/);
+    expect(body).toMatch(/Dalton/i);
+  });
+
+  test('all 17 footnote anchors are present', async ({ page }) => {
+    // fn1 through fn17 — in-text citation anchors
+    for (let i = 1; i <= 17; i++) {
+      await expect(page.locator(`#ref${i}`)).toBeAttached();
+    }
+  });
+
+  test('references section is present with at least 17 entries', async ({ page }) => {
+    const refs = page.locator('.lf-references');
+    await expect(refs).toBeAttached();
+    const items = page.locator('.lf-ref-list > li');
+    const count = await items.count();
+    expect(count).toBeGreaterThanOrEqual(17);
+  });
+
+  test('nav has Letter from the Founder as active link', async ({ page }) => {
+    const link = page.locator('.nav-links a[href*="letter-from-the-founder"]');
+    await expect(link).toBeAttached();
+    await expect(link).toHaveClass(/active/);
+  });
+
+  test('nav and footer are injected', async ({ page }) => {
+    // app.js injects nav links and footer — verify both are present
+    await expect(page.locator('.nav-links a[href*="mission"]')).toBeAttached();
+    await expect(page.locator('.site-footer')).toBeVisible();
+  });
+
+  test('letter page link appears in nav on other pages', async ({ page }) => {
+    // Verify the link is injected sitewide, not just on the letter page
+    await page.goto('/');
+    const link = page.locator('.nav-links a[href*="letter-from-the-founder"]');
+    await expect(link).toBeAttached();
+    const text = await link.textContent();
+    expect(text).toMatch(/Letter/i);
+  });
+
+  test('letter page link appears in nav on pillar subdir pages', async ({ page }) => {
+    await page.goto('/pillars/healthcare.html');
+    const link = page.locator('.nav-links a[href*="letter-from-the-founder"]');
+    await expect(link).toBeAttached();
+    // href should resolve correctly from a subdir (../ prefix)
+    const href = await link.getAttribute('href');
+    expect(href).toMatch(/letter-from-the-founder/);
   });
 });
