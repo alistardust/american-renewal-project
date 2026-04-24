@@ -29,7 +29,9 @@
     const classificationHref = base + 'classification.html';
     const getInvolvedHref = base + 'get-involved.html';
     const roadmapHref    = base + 'roadmap.html';
+    const letterHref     = base + 'letter-from-the-founder.html';
     const isAiPage = pageName === 'about-ai';
+    const isLetterPage = pageName === 'letter-from-the-founder';
     const isRoadmapPage = pageName === 'roadmap';
     const isMissionPage = pageName === 'mission';
     const isConstitutionPage = pageName === 'constitution';
@@ -58,6 +60,12 @@
     if (navList && !navList.querySelector('a[href*="about-us"]')) {
       const li = document.createElement('li');
       li.innerHTML = `<a href="${aboutUsHref}"${isAboutUsPage ? ' class="active"' : ''}>About Us</a>`;
+      navList.appendChild(li);
+    }
+
+    if (navList && !navList.querySelector('a[href*="letter-from-the-founder"]')) {
+      const li = document.createElement('li');
+      li.innerHTML = `<a href="${letterHref}"${isLetterPage ? ' class="active"' : ''}>Letter from the Founder</a>`;
       navList.appendChild(li);
     }
 
@@ -99,6 +107,11 @@
     if (footerLinks && !footerLinks.querySelector('a[href*="about-us"]')) {
       const fli = document.createElement('li');
       fli.innerHTML = `<a href="${aboutUsHref}">About Us</a>`;
+      footerLinks.appendChild(fli);
+    }
+    if (footerLinks && !footerLinks.querySelector('a[href*="letter-from-the-founder"]')) {
+      const fli = document.createElement('li');
+      fli.innerHTML = `<a href="${letterHref}">Letter from the Founder</a>`;
       footerLinks.appendChild(fli);
     }
     if (footerLinks && !footerLinks.querySelector('a[href*="get-involved"]')) {

@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Letter from the Founder — Freedom and Dignity Project</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+<style>
+.lf-hero {
+  background: var(--navy);
+  padding: 4rem 2rem 3rem;
+  text-align: center;
+  border-bottom: 4px solid var(--gold);
+}
+.lf-eyebrow {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: .7rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.38);
+  display: block;
+  margin-bottom: 1rem;
+}
+.lf-hero h1 {
+  font-family: "Oswald", sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: #fff;
+  margin: 0;
+}
+.lf-hero h1 span { color: var(--gold); }
+
+.lf-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+}
+
+/* ── LETTER TYPOGRAPHY ───────────────────────────────── */
+.lf-letter p {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: var(--ink);
+  margin: 0 0 1.4rem;
+}
+.lf-letter p.lf-indent { text-indent: 1.5em; margin-bottom: 0; }
+.lf-letter p.lf-tight { margin-bottom: .4rem; }
+
+.lf-divider {
+  width: 3rem;
+  height: 3px;
+  background: linear-gradient(90deg, var(--red), var(--gold));
+  margin: 2.5rem 0;
+  border: none;
+}
+
+.lf-signature {
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--navy);
+  margin-top: 2.5rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 1.5rem;
+}
+
+/* ── FOOTNOTE MARKERS ────────────────────────────────── */
+.lf-letter sup a {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: .72rem;
+  color: var(--red);
+  text-decoration: none;
+  font-weight: 600;
+}
+.lf-letter sup a:hover { text-decoration: underline; }
+
+/* ── REFERENCES SECTION ──────────────────────────────── */
+.lf-references {
+  border-top: 2px solid var(--navy);
+  margin-top: 3.5rem;
+  padding-top: 2rem;
+}
+.lf-references h2 {
+  font-family: "Oswald", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--navy);
+  margin: 0 0 1.5rem;
+}
+.lf-ref-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: ref-counter;
+}
+.lf-ref-list li {
+  counter-increment: ref-counter;
+  font-family: "Libre Franklin", sans-serif;
+  font-size: .84rem;
+  line-height: 1.75;
+  color: var(--mid);
+  margin-bottom: 1.2rem;
+  padding-left: 2.4rem;
+  position: relative;
+}
+.lf-ref-list li::before {
+  content: "[" counter(ref-counter) "]";
+  position: absolute;
+  left: 0;
+  color: var(--red);
+  font-weight: 700;
+  font-size: .78rem;
+}
+.lf-ref-list li a {
+  color: var(--sky);
+  word-break: break-all;
+}
+.lf-ref-list li a:hover { text-decoration: underline; }
+.lf-ref-list li em { font-style: italic; }
+.lf-ref-list .ref-back {
+  font-size: .72rem;
+  color: var(--mid);
+  margin-left: .3rem;
+  text-decoration: none;
+  opacity: .6;
+}
+.lf-ref-list .ref-back:hover { opacity: 1; }
+
+/* ── MULTI-SOURCE CLUSTER ────────────────────────────── */
+.lf-ref-list li ul {
+  list-style: none;
+  padding: 0;
+  margin: .4rem 0 0 0;
+}
+.lf-ref-list li ul li {
+  counter-increment: none;
+  padding-left: 0;
+  margin-bottom: .5rem;
+  font-size: .82rem;
+}
+.lf-ref-list li ul li::before { content: none; }
+
+@media (max-width: 640px) {
+  .lf-wrap { padding: 2rem 1.1rem 3rem; }
+  .lf-letter p { font-size: .97rem; }
+}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="assets/img/logo.svg" alt="Freedom and Dignity Project" width="36" height="36">
+      <span class="nav-wordmark">Freedom and Dignity<span>Project</span></span>
+    </a>
+    <button class="nav-hamburger" aria-label="Menu">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="foundations.html">Foundations</a></li>
+      <li><a href="pillars/index.html">Pillars</a></li>
+      <li><a href="compare/index.html">Perspectives</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="lf-hero">
+  <span class="lf-eyebrow">Freedom and Dignity Project</span>
+  <h1>A Letter from the <span>Founder</span></h1>
+</div>
+
+<div class="lf-wrap">
+  <div class="lf-letter">
+
+    <p>Hi,</p>
+
+    <p>My name is Alice Thomas. I'm a Georgia native residing near Atlanta. I've lived in Georgia my whole life. If you want to know more about me, I encourage you to read the "About Us" page. </p>
+
+    <p>This letter isn't about me. This project is not about me.</p>
+
+    <p>This explains why I created this project.</p>
+
+    <p>Simply put, I have several core values: truth, honesty, respect, dignity. But the main one is love. And it's because of that love that I find myself writing this letter today.</p>
+
+    <p>I love this country. I love the people here. Even if it, and they, do not always love me back. Even at times when it is hard to see and I may feel and say differently. That love is still there.</p>
+
+    <p>I grew up hearing about how the U.S.A. was the "Land of the Free" and the "Home of the Brave." I was taught that the U.S. was different because we didn't just talk about freedom, we lived it. We lived it because we fought for it, bled for it, and so many Americans died for that  freedom.</p>
+
+    <p>My grandfather was a WWII veteran who served under Eisenhower in France and Germany. He never spoke of the war to me, but I grew up listening to my grandmother proudly tell us that he was part of a force that liberated Jews and other people from one of the concentration camps in Germany.</p>
+
+    <p>I also grew up, as a proud Atlantan and fan of the Braves, who were America's team in the 90s. I grew up listening to my dad and the announcers on TBS talk about greats like Dale Murphy, and we celebrated and loved our team and our heroes like Greg Maddux, Tom Glavine, John Smoltz, Fred McGriff, Andruw Jones, and of course Chipper! But one name was revered above all: Henry Hammerin' Hank Aaron. The home run king, and in my opinion the greatest player to ever play in the bigs. To this day I have a display with one of his cards that I bought when I was in elementary school in a small shop in Gatlinbug, TN, and a Hank Aaron Hallmark ornament that goes on my Christmas tree every single year that my mother bought for me in 1997. </p>
+
+    <p>In the 4th grade, our class all had to write papers for an essay contest about a moment in time. I chose mine to write about my hero, Hank, the true Home Run King, and when he broke Babe Ruth's home run record. Until that point in time, I was aware, but not fully aware of what he had to overcome. In my research for that paper, I learned about the Negro Leagues, and Jackie Robinson, and what barriers a little Black boy from Alabama had to overcome in order to be a true American hero. I learned that leading up to his breaking the record, that people sent him death threats. I learned that people urged the team to force him to retire so that a black man would not break a white man's record. I read that some people lobbied politicians to force the Braves to stop him.</p>
+
+    <p>Hank wasn't flashy. By all accounts, he was a quiet, humble man who remained that way his whole life. Friendly and unassuming, but also a fierce competitor who never backed down.</p>
+
+    <p>But on April 8, 1974, Henry Louis Aaron stood in Fulton County Stadium in Atlanta, with nerves of steel and quiet resolve and intensity and did the same thing he had done 714 times before, and one more time than any person in the history of Major League Baseball. He hit a home run.</p>
+
+    <p>The stadium erupted in excitement and cheers and applause. People hugged each other. Two white college students jumped out of the stands and ran with him as he rounded third on his way to home plate. </p>
+
+    <p>In that moment, he united a city and became a legend.</p>
+
+    <p>That moment mattered.</p>
+
+    <p>What shouldn't have mattered was that he was a black man.</p>
+
+    <p>What should have mattered was that he was great. That he was a symbol of the American dream. A boy born into poverty, the son of a shipyard riveter from Mobile, Alabama, who was able to overcome every hurdle set in front of him to become a hero. Not just for his achievements on the field, but as a pillar of the Atlanta community, a great humanitarian, and an incredible person in general.</p>
+
+    <p>But because of the color of his skin and the social and political tensions and history of this country, he had so much more to overcome.</p>
+
+    <p>Learning about that, and about him, has shaped the way I view life forever. He should be a hero either way. But he shouldn't have had the extra burden on his back simply because of the color of his skin, and if not for Jackie Robinson and Branch Rickey, a man whose moral convictions were shaped by watching a young black college player trying to "rub the color off his skin" after being denied a hotel room, we would probably have never known the name Hank Aaron.</p>
+
+    <p>So many of us grew up knowing the names of Babe Ruth, Lou Gehrig, Ty Cobb, and Cy Young, but fewer of us knew the names of Satchel Paige, Josh Gibson, or Cool Papa Bell. Segregation didn't just separate players, it decided whose greatness would be remembered, and whose would be lost to time or never be given the chance to exist in the first place.</p>
+
+    <p>I grew up in Dalton, Georgia, a town known for its carpet manufacturing. A town that at one point had a reputation as having the most millionaires per capita in the country. A town where people were made rich by the carpet industry boom of the 1970s and 80s.<sup id="ref1"><a href="#fn1">[1]</a></sup></p>
+
+    <p>At the same time, I saw immigrants who came there looking for a better life and ended up living in poverty and inhumane conditions.</p>
+
+    <p>In the early 2000s, when the first wave of the modern anti-immigrant attitudes were becoming prominent, I was part of a group of teens from my church who would go once a week after school to work with kids in one of Whitfield County's largest, poorest, and roughest trailer parks. Almost all of the kids we worked with were either immigrants or first-generation Americans. They were all elementary school age.</p>
+
+    <p>Some of them were already tied to gangs. Not because they were bad kids, but because they needed protection, and when they got older, to help earn extra money to help their families survive.</p>
+
+    <p>I learned something there.</p>
+
+    <p>Crime and gangs in impoverished areas don't come from those communities being inherently bad.</p>
+
+    <p>They are a result of the social and economic conditions around them. </p>
+
+    <p>They came to the U.S. because we used to be known as a beacon of hope and freedom and the land of opportunity. But we failed them. As a country, we failed them.</p>
+
+    <p>It broke my heart. It still breaks my heart.</p>
+
+    <p>But that's what makes this country what it is.</p>
+
+    <p>We are not one culture.</p>
+
+    <p>We are all of them.</p>
+
+    <p>This country didn't start in 1776. Indigenous people were here long before that, and their history didn't end when ours began. They're part of us.</p>
+
+    <p>Black Americans helped build this country and shaped so much of what we think of as American culture, even while being excluded from it, or hidden away.</p>
+
+    <p>Asian Americans helped build the railroads that connected this country from sea to shining Sea, one of the greatest infrastructure achievements of its time, often under brutal and dangerous conditions. Sadly, like so many things in this country, we've neglected what they built.</p>
+
+    <p>Hawaiians and Pacific Islanders have made substantial contributions to our culture and built systems for navigating entire oceans and managing land sustainably long before modern technology, even while they're often ignored and their land is stolen from them.</p>
+
+    <p>I could go on forever. Hispanic and Latino communities are the backbone of so much of our labor force today, building our roads and bridges. Muslim Americans, Indian Americans, and so many others. This letter would never end if I listed them all.</p>
+
+    <p>We aren't several peoples. We are one people. Every race. Every religion. Every background.</p>
+
+    <p>That's what America is.</p>
+
+    <p>Not one thing. All of it.</p>
+
+    <p>America is greatest when it is all of us living up to those ideals of equality, life, liberty, and the pursuit of happiness that were our foundation. Coming together for a greater cause bigger than any one of us.</p>
+
+    <p>When I was little, in the 90s, I didn't just love baseball, hot dogs, and the Beach Boys. I fell in love with NASA and space and felt pride in our history of scientific exploration. I remember the excitement of the launch of the Hubble Space Telescope and the new views of our universe that we had no idea was so large and beautiful before that. I went to Kennedy Space Center at Cape Canaveral, Florida, and the U.S. Space and Rocket Center in Huntsville, Alabama. I saw parts of the International Space Station as they were being built.</p>
+
+    <p>Then recently Artemis II took four astronauts back to the moon for the first time since the 70s.<sup id="ref2"><a href="#fn2">[2]</a></sup></p>
+
+    <p>It didn't just make me proud to be an American.</p>
+
+    <p>It made me proud to be a human.</p>
+
+    <p>But that pride is harder to hold onto today.</p>
+
+    <p>That same week that Artemis II splashed down President Trump announced more budget cuts at NASA.<sup id="ref3"><a href="#fn3">[3]</a></sup></p>
+
+    <p>We're told we can't afford healthcare, or to support the poor, or to invest in science.</p>
+
+    <p>Meanwhile we're spending nearly 2 billion dollars per day on an illegal war, killing innocent civilians, with dubious justification at best.<sup id="ref4"><a href="#fn4">[4]</a></sup> Trump and Hegseth are committing war crimes.<sup id="ref5"><a href="#fn5">[5]</a></sup> Insiders are gaming the system to enrich themselves while people die.<sup id="ref6"><a href="#fn6">[6]</a></sup></p>
+
+    <p>Elon Musk and DOGE illegally gutted programs that helped people calling it "waste, fraud, and abuse." Meanwhile, he's increased his personal wealth by nearly 300 billion dollars since the beginning of the Trump administration<sup id="ref7"><a href="#fn7">[7]</a></sup> and his companies have received several billion dollars in contracts and tax subsidies.<sup id="ref8"><a href="#fn8">[8]</a></sup> Some estimates say he's personally worth over 800 billion dollars and on track to become the world's first trillionaire.</p>
+
+    <p>At whose expense?</p>
+
+    <p>Billionaires like Leonard Leo and Harlan Crow cozy up to Supreme Court justices and spend money to stack the courts and influence decisions only so they can continue to gut our rights and freedoms to further line their pockets.<sup id="ref9"><a href="#fn9">[9]</a></sup> They've destroyed the regulatory frameworks that were designed to protect us and our environment from abuse and negligence.<sup id="ref10"><a href="#fn10">[10]</a></sup></p>
+
+    <p>Corruption is at an all-time high.</p>
+
+    <p>Meanwhile, our communities are being destroyed. Housing costs continue to rise. Corporate ownership expands.</p>
+
+    <p>The dream of home ownership is out of reach for most people. </p>
+
+    <p>Historic and long-standing neighborhoods, especially Black communities, are pushed out through gentrification.<sup id="ref11"><a href="#fn11">[11]</a></sup></p>
+
+    <p>And as that happens, the character of those places changes.</p>
+
+    <p>The local, the historic, the unique, the things that made those places feel alive get replaced with standardized, profit-driven development. Built to maximize returns. Not to serve the people who live there.</p>
+
+    <p>We are losing the soul of our cities.</p>
+
+    <p>It's not all economic, either. </p>
+
+    <p>It's environmental.</p>
+
+    <p>Our parks and our green spaces are being destroyed by urban sprawl.</p>
+
+    <p>The water level at Hoover Dam has dropped over 140 feet and Lake Mead has lost about two-thirds of its water since its peak in the 80s.<sup id="ref12"><a href="#fn12">[12]</a></sup></p>
+
+    <p>Water is getting scarce in most of the West, and our cities are sinking as we drain our aquifers.</p>
+
+    <p>Meanwhile, on the east coast, hurricanes are getting more frequent and stronger. Flood insurance prices in places like Florida have skyrocketed and many insurers have pulled out of places like Florida because it's too costly to keep rebuilding after hurricane after hurricane pounds our coasts.</p>
+
+    <p>Our infrastructure is decaying.<sup id="ref13"><a href="#fn13">[13]</a></sup></p>
+
+    <p>The great rail system that Chinese Americans sacrificed so much to build is outdated.<sup id="ref14"><a href="#fn14">[14]</a></sup></p>
+
+    <p>Our great interstate system that helped connect Americans and drive the optimism and economic growth of the 1950s, is falling into disrepair.</p>
+
+    <p>Bridges. Tunnels.</p>
+
+    <p>Our power grid.</p>
+
+    <p>Our national parks.</p>
+
+    <p>Their funding is being slashed so billionaires can get a tax cut.</p>
+
+    <p>We're told the economy is great while every day it becomes harder to make ends meet. People struggle to pay rent and put food on the table, while Donald Trump hosts Great Gatsby theme parties in Mar-a-Lago.<sup id="ref15"><a href="#fn15">[15]</a></sup></p>
+
+    <p>The president builds a corporate-funded ball room<sup id="ref16"><a href="#fn16">[16]</a></sup> while children are afraid to go to school, and people are afraid to go to work because poorly trained masked people with automatic rifles might come and take them away.<sup id="ref17"><a href="#fn17">[17]</a></sup></p>
+
+    <p>I'm not saying any of this out of hate. I'm saying it because I love this country and the people in it.</p>
+
+    <p>People are angry, and they are right to be.</p>
+
+    <p>It's easy to look at all of this and say "Well, that's just the way it is" or "There's nothing I can do about it."</p>
+
+    <p>That's only true if we don't try. </p>
+
+    <p>I'm not naive.</p>
+
+    <p>I know this project may go nowhere.</p>
+
+    <p>I know how big it is.</p>
+
+    <p>JFK stood up in 1962 and said we were going to the Moon. Not because it was easy, but because it was hard.</p>
+
+    <p>Because it would force us to be better.</p>
+
+    <p>We chose to do something that seemed impossible.</p>
+
+    <p>That's what this is.</p>
+
+    <p>I'm doing this because I love this country.</p>
+
+    <p>Not just what it is today, but what it is supposed to be.</p>
+
+    <p>The idea that all people are created equal.</p>
+
+    <p>That everyone deserves a real shot at life, liberty, and happiness.</p>
+
+    <p>I believe we can be better than this.</p>
+
+    <p>I believe we have been better than this.</p>
+
+    <p>And I believe we can get there again.</p>
+
+    <p>But only if we decide to.</p>
+
+    <p>Only if we stop accepting that this is just how things are.</p>
+
+    <p>Only if we actually try.</p>
+
+    <p>That is why I started this project.</p>
+
+    <p>Because I love this country enough to believe it can be better than this.</p>
+
+    <p>This project is my love letter to this country and its people.</p>
+
+    <p>I'm not ready to give up on it.</p>
+
+    <p>I'm not ready to give up on you.</p>
+
+    <p>I wish you all the most love and peace and prosperity.</p>
+
+    <p class="lf-signature">Alice L. Thomas</p>
+
+  </div><!-- /.lf-letter -->
+
+  <hr class="lf-divider">
+
+  <section class="lf-references" id="references">
+    <h2>References</h2>
+    <ol class="lf-ref-list">
+
+      <li id="fn1">
+        New Georgia Encyclopedia. (n.d.). Dalton. <em>New Georgia Encyclopedia</em>.
+        <a href="https://www.georgiaencyclopedia.org/articles/counties-cities-neighborhoods/dalton/" target="_blank" rel="noopener">https://www.georgiaencyclopedia.org/articles/counties-cities-neighborhoods/dalton/</a>
+        <a href="#ref1" class="ref-back" aria-label="Return to citation 1">↩</a>
+      </li>
+
+      <li id="fn2">
+        Ravisetti, M., Tingley, B., Dinner, J., Wall, M., Dobrijevic, D., &amp; Malik, T. (2026, April 11). Artemis 2 splashdown: NASA hails Orion astronauts' return from moon. <em>Space.com</em>.
+        <a href="https://www.space.com/news/live/artemis-2-nasa-moon-mission-updates-april-5-2026" target="_blank" rel="noopener">https://www.space.com/news/live/artemis-2-nasa-moon-mission-updates-april-5-2026</a>
+        <a href="#ref2" class="ref-back" aria-label="Return to citation 2">↩</a>
+      </li>
+
+      <li id="fn3">
+        Luscombe, R. (2026, April 7). Trump tells Artemis II crew he saved NASA despite trying to slash agency's budget. <em>The Guardian</em>.
+        <a href="https://www.theguardian.com/science/2026/apr/07/trump-artemis-ii-crew-call-nasa-cuts" target="_blank" rel="noopener">https://www.theguardian.com/science/2026/apr/07/trump-artemis-ii-crew-call-nasa-cuts</a>
+        <a href="#ref3" class="ref-back" aria-label="Return to citation 3">↩</a>
+      </li>
+
+      <li id="fn4">
+        Bilmes, L. (2024). <em>The financial legacy of war</em>. Harvard Kennedy School.
+        <a href="https://www.hks.harvard.edu/publications/financial-legacy-war" target="_blank" rel="noopener">https://www.hks.harvard.edu/publications/financial-legacy-war</a>
+        <a href="#ref4" class="ref-back" aria-label="Return to citation 4">↩</a>
+      </li>
+
+      <li id="fn5">
+        Associated Press. (2026, April 6). Trump brushes off war crime concerns as he repeats threat to Iran's infrastructure. <em>The Washington Post</em>.
+        <a href="https://www.washingtonpost.com/national/2026/04/06/iran-israel-us-lebanon-latest-april-6-2026/ba41c2b8-3178-11f1-b85b-2cd751275c1d_story.html" target="_blank" rel="noopener">https://www.washingtonpost.com/national/2026/04/06/iran-israel-us-lebanon-latest-april-6-2026/</a>
+        <ul>
+          <li>
+            Shivaram, D. (2026, April 6). Trump reiterates threats to bomb Iran's power plants and bridges. <em>NPR</em>.
+            <a href="https://www.kedt.org/2026-04-06/trump-holds-s-press-conference-after-profanity-laced-post-on-iran" target="_blank" rel="noopener">https://www.kedt.org/2026-04-06/trump-holds-s-press-conference-after-profanity-laced-post-on-iran</a>
+          </li>
+          <li>
+            U.S. Senate Democratic Caucus. (2026, April 12). Transcript: President Trump speaks with Maria Bartiromo of Fox Sunday Morning Futures, 4.12.26. <em>U.S. Senate Democrats</em>.
+            <a href="https://www.democrats.senate.gov/newsroom/trump-transcripts/transcript-president-trump-speaks-with-maria-bartiromo-of-fox-sunday-morning-futures-41226" target="_blank" rel="noopener">https://www.democrats.senate.gov/newsroom/trump-transcripts/</a>
+          </li>
+          <li>
+            Mordowanec, N. (2025, December 8). Denial, defiance: Hegseth and the fallout of the Venezuelan boat double-tap. <em>Military.com</em>.
+            <a href="https://www.military.com/feature/2025/12/08/denial-defiance-hegseth-and-fallout-of-venezuelan-boat-double-tap.html" target="_blank" rel="noopener">https://www.military.com/feature/2025/12/08/denial-defiance-hegseth-and-fallout-of-venezuelan-boat-double-tap.html</a>
+          </li>
+        </ul>
+        <a href="#ref5" class="ref-back" aria-label="Return to citation 5">↩</a>
+      </li>
+
+      <li id="fn6">
+        Basu, Z. (2026, March 25). Mysterious trading patterns follow Trump into war. <em>Axios</em>.
+        <a href="https://www.axios.com/2026/03/25/trump-iran-oil-insider-trading/" target="_blank" rel="noopener">https://www.axios.com/2026/03/25/trump-iran-oil-insider-trading/</a>
+        <ul>
+          <li>
+            Subramanian, C. (2026, April 9). White House warns staff on insider trading amid Iran war bets. <em>Bloomberg / Yahoo Finance</em>.
+            <a href="https://finance.yahoo.com/economy/policy/articles/white-house-warns-staff-insider-002016289.html" target="_blank" rel="noopener">https://finance.yahoo.com/economy/policy/articles/white-house-warns-staff-insider-002016289.html</a>
+          </li>
+        </ul>
+        <a href="#ref6" class="ref-back" aria-label="Return to citation 6">↩</a>
+      </li>
+
+      <li id="fn7">
+        Forbes. (2026). Elon Musk. <em>Forbes Real-Time Billionaires</em>.
+        <a href="https://www.forbes.com/profile/elon-musk/" target="_blank" rel="noopener">https://www.forbes.com/profile/elon-musk/</a>
+        <a href="#ref7" class="ref-back" aria-label="Return to citation 7">↩</a>
+      </li>
+
+      <li id="fn8">
+        NASA. (n.d.). <em>Commercial Crew Program</em>.
+        <a href="https://www.nasa.gov/humans-in-space/commercial-space/commercial-crew-program/" target="_blank" rel="noopener">https://www.nasa.gov/humans-in-space/commercial-space/commercial-crew-program/</a>
+        <ul>
+          <li>
+            Good Jobs First. (n.d.). Subsidy Tracker. <em>Good Jobs First</em>.
+            <a href="https://subsidytracker.goodjobsfirst.org/" target="_blank" rel="noopener">https://subsidytracker.goodjobsfirst.org/</a>
+          </li>
+        </ul>
+        <a href="#ref8" class="ref-back" aria-label="Return to citation 8">↩</a>
+      </li>
+
+      <li id="fn9">
+        <strong>Harlan Crow / Clarence Thomas — ProPublica investigation:</strong>
+        <ul>
+          <li>
+            Kaplan, J., Elliott, J., &amp; Mierjeski, A. (2023, April 6). Clarence Thomas and the billionaire. <em>ProPublica</em>.
+            <a href="https://www.propublica.org/article/clarence-thomas-scotus-undisclosed-luxury-travel-gifts-crow" target="_blank" rel="noopener">https://www.propublica.org/article/clarence-thomas-scotus-undisclosed-luxury-travel-gifts-crow</a>
+          </li>
+          <li>
+            Kaplan, J., &amp; Elliott, J. (2023, April 13). Billionaire Harlan Crow bought property from Clarence Thomas. The justice didn't disclose the deal. <em>ProPublica</em>.
+            <a href="https://www.propublica.org/article/clarence-thomas-harlan-crow-real-estate-scotus" target="_blank" rel="noopener">https://www.propublica.org/article/clarence-thomas-harlan-crow-real-estate-scotus</a>
+          </li>
+          <li>
+            Kaplan, J., Mierjeski, A., &amp; Reicher, L. (2023, May 4). Clarence Thomas's friend acknowledges that Harlan Crow paid tuition for the child Thomas was raising as a son. <em>ProPublica</em>.
+            <a href="https://www.propublica.org/article/clarence-thomas-harlan-crow-tuition-martin-school" target="_blank" rel="noopener">https://www.propublica.org/article/clarence-thomas-harlan-crow-tuition-martin-school</a>
+          </li>
+          <li>
+            Kaplan, J., Elliott, J., &amp; Mierjeski, A. (2023, May 11). How the Clarence Thomas and Harlan Crow investigation began. <em>ProPublica</em>.
+            <a href="https://www.propublica.org/article/clarence-thomas-harlan-crow-investigation-origins" target="_blank" rel="noopener">https://www.propublica.org/article/clarence-thomas-harlan-crow-investigation-origins</a>
+          </li>
+          <li>
+            Kiel, P. (2023, July 17). How Harlan Crow slashed his tax bill by taking Clarence Thomas on superyacht cruises. <em>ProPublica</em>.
+            <a href="https://www.propublica.org/article/harlan-crow-slashed-tax-bill-clarence-thomas-superyacht" target="_blank" rel="noopener">https://www.propublica.org/article/harlan-crow-slashed-tax-bill-clarence-thomas-superyacht</a>
+          </li>
+          <li>
+            Kaplan, J., Elliott, J., &amp; Mierjeski, A. (2023, August 23). Clarence Thomas acknowledges undisclosed real estate deal with Harlan Crow and discloses private jet flights. <em>ProPublica</em>.
+            <a href="https://www.propublica.org/article/clarence-thomas-disclosure-filing-harlan-crow-real-estate-travel-scotus" target="_blank" rel="noopener">https://www.propublica.org/article/clarence-thomas-disclosure-filing-harlan-crow-real-estate-travel-scotus</a>
+          </li>
+          <li>
+            Kaplan, J., &amp; Mierjeski, A. (2024). Justice Clarence Thomas acknowledges he should have disclosed free trips from billionaire donor. <em>ProPublica</em>.
+            <a href="https://www.propublica.org/article/clarence-thomas-gift-disclosures-harlan-crow" target="_blank" rel="noopener">https://www.propublica.org/article/clarence-thomas-gift-disclosures-harlan-crow</a>
+          </li>
+          <li>
+            Kaplan, J., Elliott, J., &amp; Mierjeski, A. (2024). Harlan Crow provided Clarence Thomas at least 3 previously undisclosed private jet trips, Senate probe finds. <em>ProPublica</em>.
+            <a href="https://www.propublica.org/article/clarence-thomas-harlan-crow-private-jet-flights-senate-investigation-scotus" target="_blank" rel="noopener">https://www.propublica.org/article/clarence-thomas-harlan-crow-private-jet-flights-senate-investigation-scotus</a>
+          </li>
+        </ul>
+        <strong>Leonard Leo / Federalist Society — investigations and reporting:</strong>
+        <ul>
+          <li>
+            Goldstein, A., &amp; Bandler, J. (2022, August 22). Barre Seid donated $1.6 billion to conservative group run by Leonard Leo. <em>ProPublica</em>.
+            <a href="https://www.propublica.org/article/dark-money-leonard-leo-barre-seid" target="_blank" rel="noopener">https://www.propublica.org/article/dark-money-leonard-leo-barre-seid</a>
+          </li>
+          <li>
+            Kroll, A., &amp; Howard, J. (2023, October 11). We don't talk about Leonard: The man behind the right's Supreme Court supermajority. <em>ProPublica</em>.
+            <a href="https://www.propublica.org/article/we-dont-talk-about-leonard-leo-supreme-court-supermajority" target="_blank" rel="noopener">https://www.propublica.org/article/we-dont-talk-about-leonard-leo-supreme-court-supermajority</a>
+          </li>
+          <li>
+            Bandler, J., &amp; Kroll, A. (2023, October 31). Private, conservative Teneo seeks political, cultural influence with millions from Leonard Leo. <em>ProPublica</em>.
+            <a href="https://www.propublica.org/article/leonard-leo-teneo-videos-documents" target="_blank" rel="noopener">https://www.propublica.org/article/leonard-leo-teneo-videos-documents</a>
+          </li>
+          <li>
+            Kaplan, J., et al. (2023). Subpoenas for Harlan Crow, Leonard Leo approved by Senate Judiciary Committee. <em>ProPublica</em>.
+            <a href="https://www.propublica.org/article/senate-judiciary-harlan-crow-leonard-leo-subpoenas-scotus-thomas-alito" target="_blank" rel="noopener">https://www.propublica.org/article/senate-judiciary-harlan-crow-leonard-leo-subpoenas-scotus-thomas-alito</a>
+          </li>
+          <li>
+            Kroll, A., et al. (2024). Leonard Leo gave millions trying to influence Supreme Court on elections and discrimination. <em>ProPublica</em>.
+            <a href="https://www.propublica.org/article/leonard-leo-scotus-elections-nonprofits-discrimination" target="_blank" rel="noopener">https://www.propublica.org/article/leonard-leo-scotus-elections-nonprofits-discrimination</a>
+          </li>
+          <li>
+            Federalist Society. (n.d.). Leonard Leo. <em>Federalist Society</em>.
+            <a href="https://fedsoc.org/bio/leonard-leo" target="_blank" rel="noopener">https://fedsoc.org/bio/leonard-leo</a>
+          </li>
+          <li>
+            Guttenplan, D. D. (2023, March 3). The Federalist Society corruption investigation. <em>The Nation</em>.
+            <a href="https://www.thenation.com/article/politics/federalist-society-corruption-investigation/" target="_blank" rel="noopener">https://www.thenation.com/article/politics/federalist-society-corruption-investigation/</a>
+          </li>
+          <li>
+            Common Cause. (2013, December 5). Federalist Society big donors land very special place at Justice Thomas's table. <em>Common Cause</em>.
+            <a href="https://www.commoncause.org/articles/federalist-society-big-donors-land-very-special-place-at-justice-thomas-table/" target="_blank" rel="noopener">https://www.commoncause.org/articles/federalist-society-big-donors-land-very-special-place-at-justice-thomas-table/</a>
+          </li>
+          <li>
+            Sirota, D. (2023, May 9). Here's the real goal of Supreme Court corruption. <em>The Lever</em>.
+            <a href="https://www.levernews.com/heres-the-real-goal-of-supreme-court-corruption/" target="_blank" rel="noopener">https://www.levernews.com/heres-the-real-goal-of-supreme-court-corruption/</a>
+          </li>
+          <li>
+            Citizens for Responsibility and Ethics in Washington. (2024, November 1). $90 million in six years: Leonard Leo–tied nonprofits and businesses. <em>CREW</em>.
+            <a href="https://www.citizensforethics.org/reports-investigations/crew-investigations/leonard-leo-tied-nonprofits-businesses-88-million/" target="_blank" rel="noopener">https://www.citizensforethics.org/reports-investigations/crew-investigations/leonard-leo-tied-nonprofits-businesses-88-million/</a>
+          </li>
+          <li>
+            Zhang, S. (2023, July 12). Democrats demand full account of gifts to SCOTUS from Leonard Leo billionaires. <em>Truthout</em>.
+            <a href="https://truthout.org/articles/democrats-demand-full-account-of-gifts-to-scotus-from-leonard-leo-billionaires/" target="_blank" rel="noopener">https://truthout.org/articles/democrats-demand-full-account-of-gifts-to-scotus-from-leonard-leo-billionaires/</a>
+          </li>
+          <li>
+            Monitoring Influence. (n.d.). The Federalist Society. <em>Monitoring Influence</em>.
+            <a href="https://www.monitoringinfluence.org/org/federalist-society/" target="_blank" rel="noopener">https://www.monitoringinfluence.org/org/federalist-society/</a>
+          </li>
+        </ul>
+        <a href="#ref9" class="ref-back" aria-label="Return to citation 9">↩</a>
+      </li>
+
+      <li id="fn10">
+        Federal Election Commission. (n.d.). <em>Citizens United v. FEC</em>.
+        <a href="https://www.fec.gov/legal-resources/court-cases/citizens-united-v-fec/" target="_blank" rel="noopener">https://www.fec.gov/legal-resources/court-cases/citizens-united-v-fec/</a>
+        <ul>
+          <li>
+            Justia. (2024). <em>Loper Bright Enterprises v. Raimondo</em>, 603 U.S. ___ (2024).
+            <a href="https://supreme.justia.com/cases/federal/us/2023/22-451/" target="_blank" rel="noopener">https://supreme.justia.com/cases/federal/us/2023/22-451/</a>
+          </li>
+          <li>
+            Congressional Research Service. (2022). <em>Supreme Court addresses major questions doctrine and EPA's regulation of greenhouse gas emissions</em> (LSB10791).
+            <a href="https://www.congress.gov/crs-product/LSB10791" target="_blank" rel="noopener">https://www.congress.gov/crs-product/LSB10791</a>
+          </li>
+          <li>
+            Justia. (2023). <em>Sackett v. Environmental Protection Agency</em>, 598 U.S. 651 (2023).
+            <a href="https://supreme.justia.com/cases/federal/us/598/21-454/" target="_blank" rel="noopener">https://supreme.justia.com/cases/federal/us/598/21-454/</a>
+          </li>
+          <li>
+            Justia. (2024). <em>SEC v. Jarkesy</em>, 603 U.S. ___ (2024).
+            <a href="https://supreme.justia.com/cases/federal/us/2023/22-859/" target="_blank" rel="noopener">https://supreme.justia.com/cases/federal/us/2023/22-859/</a>
+          </li>
+        </ul>
+        <a href="#ref10" class="ref-back" aria-label="Return to citation 10">↩</a>
+      </li>
+
+      <li id="fn11">
+        Richardson, J., Mitchell, B., &amp; Franco, J. (2019). <em>Shifting neighborhoods: Gentrification and cultural displacement in American cities</em>. National Community Reinvestment Coalition.
+        <a href="https://ncrc.org/gentrification/" target="_blank" rel="noopener">https://ncrc.org/gentrification/</a>
+        <a href="#ref11" class="ref-back" aria-label="Return to citation 11">↩</a>
+      </li>
+
+      <li id="fn12">
+        NASA Earth Observatory. (2020). <em>Water level changes in Lake Mead</em>. NASA.
+        <a href="https://earthobservatory.nasa.gov/images/146459/water-level-changes-in-lake-mead" target="_blank" rel="noopener">https://earthobservatory.nasa.gov/images/146459/water-level-changes-in-lake-mead</a>
+        <a href="#ref12" class="ref-back" aria-label="Return to citation 12">↩</a>
+      </li>
+
+      <li id="fn13">
+        American Society of Civil Engineers. (2025). <em>2025 Report Card for America's Infrastructure</em>.
+        <a href="https://infrastructurereportcard.org/" target="_blank" rel="noopener">https://infrastructurereportcard.org/</a>
+        <a href="#ref13" class="ref-back" aria-label="Return to citation 13">↩</a>
+      </li>
+
+      <li id="fn14">
+        Amtrak Office of Inspector General. (2026, April 14). <em>Incomplete governance framework and data weaknesses limit Amtrak's ability to manage its state-of-good-repair backlog</em>. Amtrak OIG.
+        <a href="https://amtrakoig.gov/news/audits-press-release/oig-report-incomplete-governance-framework-and-data-weaknesses-limit" target="_blank" rel="noopener">https://amtrakoig.gov/news/audits-press-release/oig-report-incomplete-governance-framework-and-data-weaknesses-limit</a>
+        <ul>
+          <li>
+            Pew Charitable Trusts. (2025, June 25). Cost for repairs to U.S. transit assets estimated at $140.2 billion. <em>Pew Charitable Trusts</em>.
+            <a href="https://www.pew.org/en/research-and-analysis/articles/2025/06/25/cost-for-repairs-to-us-transit-assets-estimated-at-140-2-billion" target="_blank" rel="noopener">https://www.pew.org/en/research-and-analysis/articles/2025/06/25/cost-for-repairs-to-us-transit-assets-estimated-at-140-2-billion</a>
+          </li>
+        </ul>
+        <a href="#ref14" class="ref-back" aria-label="Return to citation 14">↩</a>
+      </li>
+
+      <li id="fn15">
+        Stewart, J., Colbert, S., Kimmel, J., &amp; Meyers, S. (2025, November 4). Late night hosts on Trump's Great Gatsby party. <em>The Guardian</em>.
+        <a href="https://www.theguardian.com/culture/2025/nov/04/late-night-hosts-jon-stewart-stephen-colbert-jimmy-kimmel-seth-meyers" target="_blank" rel="noopener">https://www.theguardian.com/culture/2025/nov/04/late-night-hosts-jon-stewart-stephen-colbert-jimmy-kimmel-seth-meyers</a>
+        <a href="#ref15" class="ref-back" aria-label="Return to citation 15">↩</a>
+      </li>
+
+      <li id="fn16">
+        Stewart, J., et al. (2025, November 4). Late night hosts on Trump's $300 million gilded ballroom. <em>The Guardian</em>.
+        <a href="https://www.theguardian.com/culture/2025/nov/04/late-night-hosts-jon-stewart-stephen-colbert-jimmy-kimmel-seth-meyers" target="_blank" rel="noopener">https://www.theguardian.com/culture/2025/nov/04/late-night-hosts-jon-stewart-stephen-colbert-jimmy-kimmel-seth-meyers</a>
+        <ul>
+          <li>
+            FactCheck.org. (2025, October 22). Trump's White House ballroom sparks questions about funding and ethics. <em>FactCheck.org</em>.
+            <a href="https://www.factcheck.org/2025/10/trumps-white-house-ballroom-sparks-questions-about-funding-and-ethics/" target="_blank" rel="noopener">https://www.factcheck.org/2025/10/trumps-white-house-ballroom-sparks-questions-about-funding-and-ethics/</a>
+          </li>
+          <li>
+            Public Citizen. (2025, November 3). Corporate donors to Trump's White House ballroom beset by conflicts, received $279 billion in government contracts in the past five years. <em>Public Citizen</em>.
+            <a href="https://www.citizen.org/news/corporate-donors-to-trumps-white-house-ballroom-beset-by-conflicts-received-279-billion-in-government-contracts-in-the-past-five-years/" target="_blank" rel="noopener">https://www.citizen.org/news/corporate-donors-to-trumps-white-house-ballroom-beset-by-conflicts-received-279-billion-in-government-contracts-in-the-past-five-years/</a>
+          </li>
+        </ul>
+        <a href="#ref16" class="ref-back" aria-label="Return to citation 16">↩</a>
+      </li>
+
+      <li id="fn17">
+        Villarreal, A. (2026, January 23). "There are kids not going to school": Fear of ICE is keeping children from classes in Connecticut. <em>The Guardian</em>.
+        <a href="https://www.theguardian.com/us-news/2026/jan/23/ice-kids-conneticut-schools" target="_blank" rel="noopener">https://www.theguardian.com/us-news/2026/jan/23/ice-kids-conneticut-schools</a>
+        <ul>
+          <li>
+            Brown, A. (2026, February 7). Federal agents near schools are changing the landscape of learning. <em>NOTUS / Santa Barbara News-Press</em>.
+            <a href="https://www.newspress.com/2026/02/07/federal-agents-near-schools-changing-learning-landscape/" target="_blank" rel="noopener">https://www.newspress.com/2026/02/07/federal-agents-near-schools-changing-learning-landscape/</a>
+          </li>
+          <li>
+            Corrado, M. (2025). 'The impact has been real': ICE raid fears keep students out of classrooms. <em>NBC News</em>.
+            <a href="https://www.nbcnews.com/politics/national-security/-impact-real-ice-raid-fears-keep-students-classrooms-rcna194562" target="_blank" rel="noopener">https://www.nbcnews.com/politics/national-security/-impact-real-ice-raid-fears-keep-students-classrooms-rcna194562</a>
+          </li>
+          <li>
+            Dee, T. (2025). <em>ICE enforcement and school absenteeism in California's Central Valley</em>. Stanford Institute for Economic Policy Research (SIEPR). [Peer-reviewed study documenting 22% absenteeism increase and 81,000 lost school days following January 2025 ICE raids.]
+          </li>
+          <li>
+            The 74 Million. (2025). As ICE actions ramp up, study cites 81K lost school days after California raids. <em>The 74 Million</em>.
+            <a href="https://www.the74million.org/article/as-ice-actions-ramp-up-study-cites-81k-lost-school-days-after-california-raids/" target="_blank" rel="noopener">https://www.the74million.org/article/as-ice-actions-ramp-up-study-cites-81k-lost-school-days-after-california-raids/</a>
+          </li>
+        </ul>
+        <a href="#ref17" class="ref-back" aria-label="Return to citation 17">↩</a>
+      </li>
+
+    </ol>
+  </section>
+
+</div><!-- /.lf-wrap -->
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span class="footer-brand">Freedom and Dignity Project</span>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="foundations.html">Foundations</a></li>
+      <li><a href="pillars/index.html">Pillars</a></li>
+      <li><a href="compare/index.html">Perspectives</a></li>
+    </ul>
+    <span class="footer-note">A Third Bill of Rights for the 21st Century.</span>
+  </div>
+</footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
