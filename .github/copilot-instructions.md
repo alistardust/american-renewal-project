@@ -314,6 +314,94 @@ npm run test:e2e -- --headed  # Run with browser visible for debugging
 ```
 ---
 
+## General coding standards
+
+The full coding standards document lives at `CODING_STANDARDS.md` in the repo root. It is the authoritative reference. The rules below are the non-negotiable subset enforced in every commit.
+
+### Naming — the first and most important rule
+
+Variable, function, and class names must describe **what the thing is**, not what content it relates to or what project it belongs to.
+
+| ✓ Good | ✗ Bad | Why |
+|---|---|---|
+| `const siteData = {...}` | `const ARP = {...}` | `ARP` is a project acronym, not a description |
+| `user_count` | `n` | Single letters reveal nothing |
+| `is_active` | `flag` | Vague; a flag for what? |
+| `get_user()` | `doThing()` | Functions are verb phrases |
+| `MAX_RETRIES` | `3` | No magic numbers |
+| `PaymentProcessor` | `Processor` | Noun phrases, as specific as possible |
+
+**Never:**
+- Single-letter names except `i`/`j` loop counters
+- Shadow built-ins (`list`, `id`, `type`, `input`, `filter`)
+- Invent new abbreviations — only well-known ones (`id`, `url`, `db`)
+- Negative booleans (`is_not_valid`) — use `is_invalid` or flip the logic
+
+### Error handling
+
+- **Fail fast and loudly.** A crash immediately is better than silent data corruption.
+- **Never swallow exceptions silently.** A bare `except: pass` or `catch (e) {}` is almost always a bug. If you must suppress, log and document *why*.
+- **Always chain exceptions** in Python: `raise AppError("context") from original_error`. Bare re-raise loses context.
+- Handle errors at the layer that can meaningfully respond — don't catch what you can't handle.
+
+### Security — absolute blockers (CI failures)
+
+These are never acceptable under any circumstances:
+
+- ❌ `eval()`, `exec()`, or equivalent with any external/user input
+- ❌ `subprocess(..., shell=True)` with any variable content — always pass argument lists
+- ❌ SQL built by string concatenation — always use parameterized queries
+- ❌ `pickle.loads()` / `pickle.load()` on any external data — it is arbitrary code execution
+- ❌ `yaml.load()` — always `yaml.safe_load()`
+- ❌ Hardcoded API keys, passwords, tokens, or credentials anywhere in source
+- ❌ Secrets in `.env` files committed to the repo (`.env` in `.gitignore`; `.env.example` with placeholders is allowed)
+- ❌ PII, passwords, or tokens logged at any log level
+- ❌ `random` module for security purposes — use `secrets` (Python) or `crypto.randomBytes` (Node)
+- ❌ MD5 or SHA-1 for any security purpose — use SHA-256+
+- ❌ `innerHTML` with any unsanitized content in JavaScript
+
+### Logging
+
+- Use structured logging (JSON/key-value). Do not build log strings with f-strings in production code.
+- **Never log** passwords, tokens, secrets, or PII at any level.
+- Log levels have strict meaning: `DEBUG` (development only), `INFO` (normal ops), `WARNING` (unexpected but handled), `ERROR` (request failed), `CRITICAL` (service impaired).
+- Every log line in a request context must include a correlation/request ID.
+
+### Functions and design
+
+- One function does one thing. If you can't see the whole function at once (target ≤40 lines), it's likely doing too much.
+- Max 3–4 arguments; group related args into a config/data object beyond that.
+- Prefer pure functions (same input → same output, no external mutation) where possible.
+- Command–Query Separation: a function either returns a value OR changes state. Functions that do both are the hardest to reason about. Violations must be documented.
+
+### Architecture
+
+- Business logic never lives in API handlers or DB queries — it lives in a service/domain layer.
+- DB queries never live in business logic — use a repository pattern.
+- Import direction flows inward only: presentation → service → domain → infrastructure. Inner layers must not import outer layers.
+- Fail-secure defaults: new features/endpoints default to off/denied, not on/public.
+- YAGNI: don't build abstractions for requirements you don't have yet. Add generality when the second case arrives.
+
+### Python-specific
+
+- Formatter: **Black** (line-length=88). Non-negotiable. Run in pre-commit and CI.
+- Linter: **Ruff** with `E/W/F/I/N/B/C4/UP/S/ANN/D` rulesets. Run in pre-commit and CI.
+- Type checking: **mypy --strict**. All public functions/methods/class attributes must have type annotations.
+- Testing: **pytest**. Test names must be sentences: `test_create_user_with_duplicate_email_raises_conflict_error`.
+- Dependency management: **uv**. Pin versions in lockfiles. Run `pip-audit` in CI.
+- Use `secrets` module for any cryptographic randomness. Use `pathlib.Path`, not `os.path`. Use f-strings, not `%`-formatting or `.format()`.
+- See `CODING_STANDARDS.md` §2 for the full Python reference.
+
+### Git
+
+- Commit messages follow **Conventional Commits** format: `<type>[scope]: <description>` (imperative mood, ≤72 chars)
+- Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`, `ci`, `revert`
+- Every commit must be atomic (one logical change) and must pass tests independently.
+- Never force-push to `main` or shared branches.
+- PRs target ≤400 lines changed. Larger PRs must be split.
+
+---
+
 ## Frontend architecture & professional coding standards
 
 ### The DRY rule — no copy-pasted structure
