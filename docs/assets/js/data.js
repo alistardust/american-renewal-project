@@ -1,5 +1,5 @@
 /* Freedom and Dignity Project — site data */
-const ARP = {
+const siteData = {
   foundations: [
     {
       id: 'accountable-power',
@@ -88,8 +88,8 @@ const ARP = {
 };
 
 /* Lookup helpers */
-ARP.getFoundation = id => ARP.foundations.find(f => f.id === id);
-ARP.getPillarsByFoundation = id => ARP.pillars.filter(p => p.foundation === id);
+siteData.getFoundation = id => siteData.foundations.find(f => f.id === id);
+siteData.getPillarsByFoundation = id => siteData.pillars.filter(p => p.foundation === id);
 
-/* Expose on window so app.js guard (window.ARP) works — const doesn't auto-attach */
-window.ARP = ARP;
+/* Expose on window so app.js guard (window.siteData) works — const doesn't auto-attach */
+window.siteData = siteData;

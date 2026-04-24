@@ -143,14 +143,14 @@
 
   /* ── PILLAR FILTER + RENDER ───────────────────────── */
   const pillarGrid = document.getElementById('pillar-grid');
-  if (pillarGrid && window.ARP) {
+  if (pillarGrid && window.siteData) {
     const filterBar = document.getElementById('pillar-filters');
 
     /* Build filter buttons */
     const allBtn = makeBtn('all', 'All Pillars', null);
     allBtn.classList.add('active');
     filterBar.appendChild(allBtn);
-    ARP.foundations.forEach(f => filterBar.appendChild(makeBtn(f.id, f.title, f.color)));
+    siteData.foundations.forEach(f => filterBar.appendChild(makeBtn(f.id, f.title, f.color)));
 
     /* Render all cards initially */
     renderPillars('all');
@@ -170,10 +170,10 @@
     }
 
     function renderPillars(filterId) {
-      const list = filterId === 'all' ? ARP.pillars : ARP.pillars.filter(p => p.foundation === filterId);
+      const list = filterId === 'all' ? siteData.pillars : siteData.pillars.filter(p => p.foundation === filterId);
       pillarGrid.innerHTML = '';
       list.forEach(p => {
-        const f = ARP.getFoundation(p.foundation);
+        const f = siteData.getFoundation(p.foundation);
         const card = document.createElement('article');
         card.className = 'pillar-card';
         card.style.borderTopColor = f ? f.color : 'var(--red)';
@@ -300,12 +300,12 @@
   })();
 
   /* ── DYNAMIC COUNTS ─────────────────────────────────── */
-  // Fills [data-dynamic] elements from live ARP data and DOM.
+  // Fills [data-dynamic] elements from live siteData and DOM.
   // Usage: <span data-dynamic="pillar-count">23</span>  ← fallback shown if JS disabled
   (function () {
-    if (!window.ARP) return;
-    const pillarCount     = ARP.pillars.length;
-    const foundationCount = ARP.foundations.length;
+    if (!window.siteData) return;
+    const pillarCount     = siteData.pillars.length;
+    const foundationCount = siteData.foundations.length;
     const ruleCount       = document.querySelectorAll('.policy-card').length;
     const families        = new Set();
     document.querySelectorAll('.policy-card[id]').forEach(card => {
