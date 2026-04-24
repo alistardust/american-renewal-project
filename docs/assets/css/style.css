@@ -864,6 +864,25 @@ details.design-logic .design-body li { font-size: .93rem; line-height: 1.65; mar
   .roadmap-pillar-table td, .roadmap-pillar-table th { padding: .4rem .5rem; font-size: .8rem; }
   .roadmap-track-body { padding: 1rem; }
 }
+.badge-done { background: #d4edda; color: #155724; }
+.roadmap-item.inprogress { background: rgba(201,149,42,.06); }
+.roadmap-item.inprogress .ri-icon { color: var(--gold); }
+.roadmap-item.blocked { background: rgba(191,10,48,.04); }
+.roadmap-item.blocked .ri-icon { color: var(--red); }
+.roadmap-note { background: rgba(191,10,48,.04); border-left: 3px solid var(--red); padding: .6rem .9rem; font-size: .87rem; line-height: 1.65; color: var(--ink); margin-bottom: .75rem; }
+.roadmap-status-key { font-family: 'Libre Franklin', sans-serif; font-size: .8rem; color: var(--mid); margin-top: .5rem; }
+.roadmap-status-key .pillar-status-pill { margin: 0 .25rem; }
+.roadmap-milestones { margin-bottom: 2.5rem; }
+.roadmap-milestone-intro { font-size: .9rem; line-height: 1.75; color: var(--mid); margin-bottom: 1rem; font-style: italic; }
+.ms-done    { background: #d4edda; color: #155724; }
+.ms-current { background: #fff3cd; color: #856404; }
+.ms-planned { background: #e8e8e8; color: #555; }
+.ms-future  { background: #e8e0f5; color: #4a2e8f; }
+.roadmap-future-block { background: var(--cream); border: 1px solid var(--rule); border-left: 5px solid var(--gold); padding: 1.75rem 1.5rem; margin-top: 2.5rem; }
+.roadmap-future-block h2 { font-family: "Oswald", sans-serif; font-size: 1.05rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--navy); margin: 0 0 .75rem; }
+.roadmap-future-block > p { font-size: .9rem; line-height: 1.7; color: var(--mid); margin-bottom: 1rem; }
+.roadmap-future-block ul { margin: 0; padding-left: 1.25rem; }
+.roadmap-future-block li { font-size: .9rem; line-height: 1.65; color: var(--ink); margin-bottom: .35rem; }
 
 /* ═══════════════════════════════════════════════════════════════
    PILLARS INDEX PAGE

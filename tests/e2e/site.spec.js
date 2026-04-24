@@ -587,7 +587,8 @@ test.describe('Roadmap page', () => {
 
   test('renders 6 roadmap tracks', async ({ page }) => {
     // 6 tracks: Policy Dev, Organization, Outreach, Fundraising, Content & Branding, Technical
-    await expect(page.locator('.roadmap-track')).toHaveCount(6);
+    // 6 original tracks + Track 07 (QA/Human Review) + Track 08 (Research) = 8
+    await expect(page.locator('.roadmap-track')).toHaveCount(8);
   });
 
   test('nav has Mission and Constitution links', async ({ page }) => {
