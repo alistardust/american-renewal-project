@@ -566,6 +566,26 @@
 <p class="rule-title">Oversight of classified systems</p>
 <p class="rule-stmt">Classified or sensitive AI systems must still be subject to independent review under secure oversight procedures</p>
 </div>
+<div class="policy-card proposal" id="TECH-AUDT-0006">
+<div class="rule-header">
+<code class="rule-id">TECH-AUDT-0006</code>
+<span class="rule-badge">Proposal</span>
+</div>
+<div class="rule-status">🔵 Proposal — Under Review</div>
+<p class="rule-title">Mandatory pre-deployment algorithmic audit for high-risk sectors</p>
+<p class="rule-stmt">All AI systems used in criminal justice, consumer credit, employment screening, housing, healthcare, and education must undergo independent third-party algorithmic auditing before deployment and on a recurring basis at least every two years thereafter; audit results must be published in full; systems that produce statistically significant disparate impact across race, sex, disability, or national origin must be presumptively treated as violating applicable civil rights and anti-discrimination law, with the burden shifting to the deployer to rebut; and individuals harmed by a non-audited system in a covered sector have a private right of action for injunctive relief, actual damages, and attorney's fees.</p>
+<p class="rule-notes">Independent pre-deployment auditing is the essential enforcement mechanism for algorithmic anti-discrimination law. Without it, deployers self-certify compliance, and the burden falls on individual victims to prove discrimination in systems they cannot access or understand. The EEOC's 2023 AI guidance, <!-- [VERIFY] --> the FTC's algorithmic accountability work, and the New York City Local Law 144 (automated employment decision tool audits) all recognize that mandatory independent auditing is necessary to make non-discrimination obligations enforceable in algorithmic contexts. The disparate impact presumption aligns with Title VII's disparate impact framework (Griggs v. Duke Power Co.) but extends it explicitly to algorithmic decision systems, closing the gap created when algorithms operate as proxies for protected characteristics. Private right of action is essential because agency enforcement resources are inadequate to cover the volume of deployed systems.</p>
+</div>
+<div class="policy-card proposal" id="TECH-AUDT-0007">
+<div class="rule-header">
+<code class="rule-id">TECH-AUDT-0007</code>
+<span class="rule-badge">Proposal</span>
+</div>
+<div class="rule-status">🔵 Proposal — Under Review</div>
+<p class="rule-title">Algorithmic systems that produce disparate impact trigger a private civil right of action</p>
+<p class="rule-stmt">Any individual or class of individuals subject to a material adverse decision by an algorithmic system in a covered sector — and who can demonstrate, using publicly disclosed audit data or expert analysis, that the system produced statistically significant disparate impact against a protected class — must have a private civil right of action against the deploying entity for injunctive relief, compensatory damages, statutory damages of not less than $1,000 per violation, and attorney's fees; and class actions aggregating disparate impact claims must be permitted notwithstanding that individual damages may be small.</p>
+<p class="rule-notes">Disparate impact law is only as effective as its enforcement mechanisms. Current doctrine requires individual plaintiffs to obtain discovery of proprietary algorithmic systems, bear expert witness costs, and meet a causation burden that is nearly impossible to satisfy without the very data the defendant controls. This card creates a direct private enforcement mechanism keyed to published audit data, converting the transparency obligations of AUDT-0006 into actionable rights. The statutory minimum damages provision ensures that small-dollar harms — a rejected rental application, a denied credit extension — are economically viable to litigate. Class action permission is essential because algorithmic harms are inherently systemic: a biased system injures thousands of similarly situated people through the same mechanism, making class treatment the only efficient enforcement vehicle. This approach mirrors the structure of consumer protection and civil rights statutes where individual harm may be small but systemic injury is large.</p>
+</div>
 </div>
 </div>
 <div class="policy-family" id="fam-aut">
@@ -655,6 +675,26 @@
 </div>
 <p class="rule-title">Heightened data protection</p>
 <p class="rule-stmt">Biometric data must be treated as highly sensitive protected data with stronger consent and retention rules than ordinary personal data</p>
+</div>
+<div class="policy-card proposal" id="TECH-BIOS-0006">
+<div class="rule-header">
+<code class="rule-id">TECH-BIOS-0006</code>
+<span class="rule-badge">Proposal</span>
+</div>
+<div class="rule-status">🔵 Proposal — Under Review</div>
+<p class="rule-title">Facial recognition in targeted criminal investigations requires an individualized warrant and independent expert review</p>
+<p class="rule-stmt">Law enforcement use of facial recognition technology to identify a specific individual in connection with a criminal investigation must be authorized by an individualized judicial warrant supported by probable cause; must be reviewed by an independent technical expert who is not employed by or contracted with the investigating agency before any identification is treated as accurate; must not be used as the sole basis for arrest, charging, or prosecution; and must be disclosed to defense counsel in any criminal proceeding where facial recognition output was a contributing factor in the investigation.</p>
+<p class="rule-notes">Facial recognition technology misidentifies Black, Brown, and female faces at dramatically higher rates than white male faces — documented error differentials of up to 100x in NIST testing. <!-- [VERIFY] --> Multiple wrongful arrests of Black men in Detroit, New Orleans, and Atlanta resulted directly from facial recognition misidentification. The existing BIOS-0001 card bans mass facial recognition in public spaces; this card addresses the distinct scenario of targeted investigative use, which requires heightened procedural protections rather than a blanket ban. The warrant requirement addresses the Fourth Amendment dimension; the independent expert requirement addresses the reliability dimension (courts have no basis to evaluate facial recognition accuracy without independent technical review); the disclosure requirement addresses the due process dimension. Brady v. Maryland and its progeny require disclosure of material evidence, but law enforcement has concealed facial recognition's role in investigations, depriving defendants of the ability to challenge its reliability.</p>
+</div>
+<div class="policy-card proposal" id="TECH-BIOS-0007">
+<div class="rule-header">
+<code class="rule-id">TECH-BIOS-0007</code>
+<span class="rule-badge">Proposal</span>
+</div>
+<div class="rule-status">🔵 Proposal — Under Review</div>
+<p class="rule-title">Genetic data is the most sensitive protected data category; it may not be sold to insurers, employers, or law enforcement without a warrant</p>
+<p class="rule-stmt">Genetic data — including raw genomic sequences, genetic variants, family relationship inferences, disease predisposition predictions, and data derived from consumer DNA testing — must be classified as the most sensitive protected category of personal data under federal law; may not be collected, processed, or shared without explicit written consent for each specified use; may not be sold, licensed, or transferred to insurers, employers, or commercial data brokers for any purpose; may not be accessed by law enforcement without a warrant issued by a judge based on individualized probable cause; and any entity holding genetic data of U.S. persons must report any data breach affecting genetic data to affected individuals within 30 days; with violations enforceable through criminal penalties for knowing violations and a private right of action for individuals whose genetic data is unlawfully disclosed.</p>
+<p class="rule-notes">Genetic data is uniquely sensitive because it is immutable, inherited, and predictive of conditions the individual may not yet have — making genetic discrimination a permanent threat unlike most other forms of data misuse. The Genetic Information Nondiscrimination Act (GINA, 2008) prohibits genetic discrimination in employment and health insurance but excludes life insurance, disability insurance, and long-term care insurance — gaps that leave millions exposed. <!-- [VERIFY] --> Consumer DNA testing companies (23andMe, AncestryDNA) have collected data from tens of millions of Americans; 23andMe's 2023 bankruptcy raised alarm about the fate of that data under asset-sale scenarios. Law enforcement has used genealogical databases — including without consent from law enforcement databases and voluntary consumer DNA databases — to identify criminal suspects. This card expands GINA's protections across all genetic data holders, closes the insurance gap, requires a warrant for law enforcement access, and creates private enforcement rights.</p>
 </div>
 </div>
 </div>
@@ -3241,6 +3281,26 @@
 <p class="rule-title">Protect anonymous use</p>
 <p class="rule-stmt">Anonymous and pseudonymous use of the internet must be protected as a component of free expression and privacy</p>
 </div>
+<div class="policy-card proposal" id="TECH-PRIV-0003">
+<div class="rule-header">
+<code class="rule-id">TECH-PRIV-0003</code>
+<span class="rule-badge">Proposal</span>
+</div>
+<div class="rule-status">🔵 Proposal — Under Review</div>
+<p class="rule-title">Federal comprehensive consumer data privacy law must establish a floor of rights without preempting stronger state laws</p>
+<p class="rule-stmt">Congress must enact a comprehensive federal consumer data privacy law that establishes: data minimization (collection limited to what is necessary for the stated purpose); purpose limitation (data may not be used for purposes incompatible with those disclosed at collection); a right to deletion; a right to portability in machine-readable format; meaningful consent for sensitive data categories including health, financial, biometric, genetic, location, and communications content; opt-in consent before sharing data with third parties; a private right of action for violations; and enforcement by the Federal Trade Commission with civil penalty authority — provided that the law must not preempt state privacy laws that provide stronger protections, preserving the California Consumer Privacy Act, the Colorado Privacy Act, and equivalent state frameworks as a floor above which federal law may not reduce rights.</p>
+<p class="rule-notes">The United States is alone among peer democracies in lacking a comprehensive federal consumer data privacy law. The EU's GDPR (2018), the UK Data Protection Act, Canada's PIPEDA, and Brazil's LGPD all establish baseline privacy rights for consumers. In the U.S., data privacy law is a patchwork of sector-specific federal laws (HIPAA for health, FERPA for education, FCRA for credit), none of which covers the vast majority of personal data collected by commercial entities. Congress has repeatedly failed to enact comprehensive privacy legislation despite broad bipartisan public support for privacy rights. <!-- [VERIFY] --> The non-preemption clause is essential: prior federal privacy proposals would have preempted state laws like the CPRA, eliminating stronger protections already enacted by California and other states in exchange for weaker federal standards. Federal law must set a floor, not a ceiling. The private right of action is necessary because FTC enforcement resources are wholly inadequate to address the volume of violations in a trillion-dollar data economy.</p>
+</div>
+<div class="policy-card proposal" id="TECH-PRIV-0004">
+<div class="rule-header">
+<code class="rule-id">TECH-PRIV-0004</code>
+<span class="rule-badge">Proposal</span>
+</div>
+<div class="rule-status">🔵 Proposal — Under Review</div>
+<p class="rule-title">Health, financial, and biometric data on U.S. persons may not be stored or processed in foreign adversary jurisdictions</p>
+<p class="rule-stmt">Health records, financial account data, biometric identifiers, and genetic data pertaining to U.S. persons may not be stored on infrastructure located in, or processed by entities subject to the data access laws of, jurisdictions designated as foreign adversaries under U.S. law, currently including China, Russia, Iran, and North Korea; entities that knowingly violate this requirement are subject to criminal penalties of not less than five years and civil penalties of not less than $100,000 per violation; and federal contracting officers must certify that vendors handling covered data categories comply with this requirement as a condition of contract award.</p>
+<p class="rule-notes">Foreign adversary governments have demonstrated both capability and intent to access personal data on U.S. persons stored within their jurisdictions: China's National Intelligence Law (2017) requires Chinese companies to cooperate with state intelligence operations. The theft of 21 million OPM security clearance records, the Marriott hack (attributed to Chinese intelligence), and multiple healthcare data breaches demonstrate the national security dimension of sensitive personal data exposure. <!-- [VERIFY] --> The Biden administration's Executive Order 14117 (2024) restricted certain bulk data transfers to foreign adversaries, establishing the principle this card codifies in statutory form. Data localization for sensitive categories is a structural protection: it is more effective than after-the-fact breach notification because it prevents the underlying access rather than responding to it.</p>
+</div>
 </div>
 </div>
 <div class="policy-family" id="fam-sur">
@@ -3881,6 +3941,16 @@
 <p class="rule-stmt">Dominant platforms may not use AI systems to preference their own content products, suppress lawful rivals, or distort media competition.</p>
 <p class="rule-notes">Core rule in the TEC-MED family establishing: Dominant platforms may not use AI systems to preference their own content products, suppress lawful rivals, or distort media competition.</p>
 </div>
+<div class="policy-card proposal" id="TECH-MEDA-0007">
+<div class="rule-header">
+<code class="rule-id">TECH-MEDA-0007</code>
+<span class="rule-badge">Proposal</span>
+</div>
+<div class="rule-status">🔵 Proposal — Under Review</div>
+<p class="rule-title">Dominant platforms must publish quarterly content moderation transparency reports including error rates, appeal outcomes, and demographic impact</p>
+<p class="rule-stmt">Digital platforms with more than 50 million monthly active U.S. users must publish quarterly content moderation transparency reports disclosing: total content actioned by category of violation; estimated false positive rate by content category; appeal volume, overturn rate, and median resolution time; demographic breakdown of accounts actioned where available or estimable; rate of algorithmic amplification applied to political content, news, and civic information; methodology and criteria used in automated moderation systems; and significant changes to moderation policies or algorithmic ranking criteria during the reporting period; reports must be submitted to a designated federal body and made publicly available; independent auditors designated by the federal body must have access to platform data sufficient to verify the accuracy of reported metrics.</p>
+<p class="rule-notes">Platform content moderation affects what hundreds of millions of Americans see, believe, and act on — yet platforms currently self-report moderation data with no independent verification, no standardized methodology, and no demographic transparency. Meta, YouTube, TikTok, and X publish voluntary transparency reports, but these are self-selected, incomparable across platforms, and not subject to independent audit. Research by academic and civil society organizations has documented that content moderation disproportionately affects speech by Black users, LGBTQ+ content creators, and political minorities — but platforms have resisted independent access needed to verify or quantify these patterns. <!-- [VERIFY] --> The EU's Digital Services Act (2024) requires large platforms to submit to independent audits and publish standardized transparency reports; the United States has no equivalent. Democratic accountability for systems that shape public discourse requires independent verification, not corporate self-certification.</p>
+</div>
 <div class="policy-card status-included" id="TECH-SCIS-0001">
 <div class="rule-header">
 <code class="rule-id">TECH-SCIS-0001</code>
@@ -4341,6 +4411,16 @@
 <p class="rule-stmt">Entities deploying foundation AI models in high-risk applications — including healthcare decision support, legal advice, educational assessment, financial services, law enforcement, or government benefits administration — must conduct application-specific risk assessments identifying potential harms in the deployment context; implement monitoring and incident detection systems; report significant harms, failures, or misuse events to the federal AI oversight body and to affected persons; and maintain documentation sufficient for post-incident investigation and liability determination.</p>
 <p class="rule-notes">Foundation model developers and downstream operators have distinct but related obligations. A model developer cannot anticipate every downstream deployment context; an operator deploying a general-purpose model in a specific high-risk application must assess the risks specific to that context. The EU AI Act's tiered system — with obligations on both providers (developers) and deployers (operators) — reflects this dual accountability structure. Current U.S. law provides essentially no requirements for either. Application-level risk assessment, monitoring, and incident reporting for high-risk deployments create the accountability infrastructure that enables regulatory oversight, independent auditing, and meaningful liability when AI systems cause harm. Incident reporting is particularly important: it creates a database of actual harms that enables pattern recognition, identifies systemic risks that individual incidents might obscure, and provides the evidentiary foundation for regulatory action and civil litigation.</p>
 </div>
+<div class="policy-card proposal" id="TECH-FMDS-0005">
+<div class="rule-header">
+<code class="rule-id">TECH-FMDS-0005</code>
+<span class="rule-badge">Proposal</span>
+</div>
+<div class="rule-status">🔵 Proposal — Under Review</div>
+<p class="rule-title">Foundation models above 10<sup>25</sup> FLOP training compute must register with NIST; training data provenance, known limitations, and red-team results must be publicly disclosed</p>
+<p class="rule-stmt">Developers of foundation AI models trained using compute above 10<sup>25</sup> floating-point operations must: register the model with the National Institute of Standards and Technology (NIST) before any public release or commercial deployment; publicly disclose the provenance, categories, and sources of training data; publicly disclose all known significant limitations, failure modes, and evaluation results; make the results of red-team adversarial safety testing publicly available in a form sufficient for independent researchers to assess safety; and provide NIST with API access or equivalent technical access sufficient for independent verification of disclosed capabilities and limitations — with civil penalties of not less than $1 million per day for deploying a non-registered covered model.</p>
+<p class="rule-notes">FMDS-0001 establishes pre-deployment registration and safety evaluation with a designated federal oversight body; this card specifies that the oversight body must be NIST (which has the technical mandate and existing AI Risk Management Framework infrastructure), establishes the 10<sup>25</sup> FLOP compute threshold as the coverage criterion (consistent with the threshold used in the Biden Executive Order on Safe, Secure, and Trustworthy AI), and critically requires that red-team results and known limitations be made public rather than merely submitted to the federal body. Public disclosure is essential: independent researchers, civil society, and adversely affected communities cannot assess or respond to safety risks they cannot see. The EU AI Act (2024) establishes transparency obligations for general-purpose AI models and requires red-team evaluations; the Biden EO required similar reporting to the government. This card goes further by requiring public disclosure, consistent with a democratic accountability framework. NIST's AI Risk Management Framework and its Generative AI Profile provide the technical infrastructure for this registry. <!-- [VERIFY] --></p>
+</div>
 </div>
 </div>
 <div class="policy-family" id="fam-tec-neu">
@@ -4448,6 +4528,74 @@
 <p class="rule-title">AI developers and deployers must maintain incident logs, preserve decision records for a defined period, and disclose aggregate harm data to federal oversight bodies annually</p>
 <p class="rule-stmt">Developers and deployers of AI systems in high-risk applications must maintain incident logs documenting all known harms, failures, complaints, and significant errors attributable to or potentially attributable to their AI systems; must preserve decision records — including inputs, outputs, and confidence scores — for a minimum of three years or until any pending claims are resolved, whichever is longer; must disclose aggregate incident data, including categories of harm and affected populations, to federal AI oversight bodies annually; and may not destroy decision records after becoming aware of a potential legal claim arising from those decisions.</p>
 <p class="rule-notes">Incident logging and record preservation are the evidentiary infrastructure of accountability. Without preserved records of AI decisions, there is no basis for retrospective review of discriminatory patterns, no evidence for individual claimants, and no data for regulators seeking to identify systemic risks. Aviation, pharmaceutical, medical device, and financial services industries are all subject to mandatory incident reporting and record retention requirements because regulators recognized that accountability without records is illusory. AI systems making high-stakes decisions about people's lives, benefits, employment, and freedom deserve at minimum the same accountability infrastructure. Annual aggregate reporting enables regulators to identify patterns — systems with high error rates in specific demographic groups, recurring failure modes, concentrations of harm in particular applications — that individual incident reports would not reveal. This rule creates the data foundation that makes meaningful regulatory oversight possible.</p>
+</div>
+</div>
+</div>
+<div class="policy-family" id="fam-cyb">
+<div class="family-header">
+<span class="family-code">CYB</span>
+<span class="family-title">CYB — Cybersecurity Requirements and Software Liability</span>
+<span class="family-count">0/3 active</span>
+</div>
+<div class="rule-grid">
+<div class="policy-card proposal" id="TECH-CYBS-0001">
+<div class="rule-header">
+<code class="rule-id">TECH-CYBS-0001</code>
+<span class="rule-badge">Proposal</span>
+</div>
+<div class="rule-status">🔵 Proposal — Under Review</div>
+<p class="rule-title">All critical infrastructure operators must meet CISA minimum cybersecurity standards and report incidents within 24 hours</p>
+<p class="rule-stmt">All operators of critical infrastructure — including energy, water, finance, healthcare, transportation, and communications — must implement the Cybersecurity and Infrastructure Security Agency (CISA) minimum cybersecurity performance goals as mandatory compliance requirements, not voluntary guidance; must report all significant cybersecurity incidents to CISA within 24 hours of detection; must obtain an independent third-party cybersecurity assessment annually and submit results to CISA; may not receive federal contracts, grants, or regulatory approvals without a current CISA compliance certification; and must notify affected individuals and entities of any breach involving personal, financial, or operational data within 72 hours of determining the scope of exposure; with civil penalties enforceable by CISA of not less than $500,000 per day of non-compliance and a private right of action for individuals harmed by a breach attributable to non-compliance with these requirements.</p>
+<p class="rule-notes">Critical infrastructure cybersecurity is currently governed by a patchwork of sector-specific voluntary frameworks and a handful of mandatory standards. CISA's Cross-Sector Cybersecurity Performance Goals, published in 2022, represent the agency's best technical judgment about minimum security baselines, but compliance is voluntary for most sectors. The 2021 Colonial Pipeline ransomware attack (shutting down fuel supply to the Eastern Seaboard), the 2021 Florida water treatment plant attack (attempt to poison drinking water), and the SolarWinds supply chain compromise of multiple federal agencies all demonstrate that voluntary frameworks leave critical infrastructure dangerously exposed. <!-- [VERIFY] --> The Cyber Incident Reporting for Critical Infrastructure Act of 2022 (CIRCIA) established mandatory incident reporting requirements that CISA is still finalizing as of 2024. This card codifies and extends CIRCIA, adds mandatory minimum standards compliance, and creates private enforcement rights for individuals harmed by non-compliant operators.</p>
+</div>
+<div class="policy-card proposal" id="TECH-CYBS-0002">
+<div class="rule-header">
+<code class="rule-id">TECH-CYBS-0002</code>
+<span class="rule-badge">Proposal</span>
+</div>
+<div class="rule-status">🔵 Proposal — Under Review</div>
+<p class="rule-title">Software vendors whose products are used in critical infrastructure bear strict liability for known unpatched vulnerabilities; vendors must provide security patches for at least five years</p>
+<p class="rule-stmt">Software vendors whose products are deployed in critical infrastructure systems bear strict liability for physical, operational, and data security harms caused by known, unpatched security vulnerabilities where the vendor had actual or constructive notice of the vulnerability and failed to issue a patch within 30 days for critical severity vulnerabilities; disclaimers of warranty and limitations of liability in software license agreements are void as against public policy with respect to known vulnerabilities in critical infrastructure deployments; software vendors must provide security patches and vulnerability disclosure for a minimum of five years after the release date of any software product used in a critical infrastructure context; and operators of critical infrastructure who deploy software past its vendor security support end-of-life assume liability for resulting harms.</p>
+<p class="rule-notes">The current legal framework for software security creates perverse incentives: software vendors face no liability for known vulnerabilities under the "as-is" disclaimers standard in virtually all software licenses, even when their products are deployed in hospitals, power plants, and water systems. The Office of the National Cyber Director's National Cybersecurity Strategy (2023) explicitly called for shifting liability to software manufacturers who bring vulnerable products to market, recognizing that individual operators cannot assess and remediate vulnerabilities in every software component they deploy. <!-- [VERIFY] --> Legacy software with expired security support is endemic in critical infrastructure: hospitals run Windows XP on medical devices, utilities use SCADA systems with no patch support, and nuclear facilities operate software built decades ago. The five-year minimum patch obligation and strict liability for known vulnerabilities creates a structural incentive for vendors to build security into products rather than treating it as an optional service tier.</p>
+</div>
+<div class="policy-card proposal" id="TECH-CYBS-0003">
+<div class="rule-header">
+<code class="rule-id">TECH-CYBS-0003</code>
+<span class="rule-badge">Proposal</span>
+</div>
+<div class="rule-status">🔵 Proposal — Under Review</div>
+<p class="rule-title">Ransom payments to sanctioned entities are prohibited; all ransomware incidents above $10,000 must be reported to the FBI</p>
+<p class="rule-stmt">Payment of ransom to any entity designated as a foreign terrorist organization, a specially designated global terrorist, or a subject of OFAC economic sanctions is prohibited and subject to criminal prosecution; all ransomware incidents involving demands or payments above $10,000 must be reported to the FBI within 72 hours of discovery; CISA must notify individuals whose personal data was compromised in a ransomware attack within 72 hours of the operator determining the scope of the breach; entities that pay ransoms to non-sanctioned entities must disclose the payment, amount, and receiving entity to the FBI; and the Treasury Department must publish an annual report on ransomware payment flows and their relationship to sanctioned entities and foreign adversary governments.</p>
+<p class="rule-notes">Ransomware attacks against U.S. critical infrastructure, healthcare systems, schools, and local governments have grown dramatically: the FBI reported over 2,800 ransomware complaints in 2023 with over $59 million in losses from critical infrastructure attacks alone, figures experts believe substantially undercount actual incidents. <!-- [VERIFY] --> Ransom payments fund the criminal and state-sponsored organizations conducting attacks and directly incentivize further attacks. Multiple U.S. government agencies and the Institute for Security and Technology's Ransomware Task Force have recommended mandatory reporting requirements to give law enforcement visibility into the full scope of attacks and payment flows. The ban on payments to sanctioned entities implements OFAC guidance that already warns such payments may violate sanctions law, converting guidance into a clear prohibition. Mandatory reporting enables the FBI to track the ecosystem, identify patterns, and pursue threat actors rather than responding only to the incidents it happens to learn about.</p>
+</div>
+</div>
+</div>
+<div class="policy-family" id="fam-brd">
+<div class="family-header">
+<span class="family-code">BRD</span>
+<span class="family-title">BRD — Broadband Access and Digital Divide</span>
+<span class="family-count">0/2 active</span>
+</div>
+<div class="rule-grid">
+<div class="policy-card proposal" id="TECH-BRDS-0001">
+<div class="rule-header">
+<code class="rule-id">TECH-BRDS-0001</code>
+<span class="rule-badge">Proposal</span>
+</div>
+<div class="rule-status">🔵 Proposal — Under Review</div>
+<p class="rule-title">Broadband internet access is a statutory right; the Affordable Connectivity Program must be made permanent; service may not be terminated without 30-day notice and referral to assistance programs</p>
+<p class="rule-stmt">Congress must establish broadband internet access as a statutory right for all U.S. residents; must make the Affordable Connectivity Program (ACP) permanent and fully funded, expanding eligibility to all households at or below 200% of the federal poverty level; must prohibit termination of broadband service for non-payment without at least 30 days' written notice and documented referral to all available federal, state, and provider-sponsored assistance programs; must prohibit deployment of data caps that restrict access below thresholds sufficient for full participation in work, education, healthcare, and civic life; and must establish a federal broadband ombudsman empowered to receive and investigate complaints and issue binding remediation orders against providers.</p>
+<p class="rule-notes">Broadband internet access has become a prerequisite for full participation in economic, educational, civic, and healthcare life. The COVID-19 pandemic exposed the devastating consequences of the digital divide: students without home internet could not attend school, workers without connectivity could not work remotely, and patients could not access telehealth. Approximately 21 million Americans lack access to broadband, and millions more have access but cannot afford it. <!-- [VERIFY] --> The FCC's Affordable Connectivity Program, which provided up to $30/month subsidy for low-income households, served 23 million households before Congress allowed its funding to lapse in 2024. Establishing broadband as a statutory right — analogous to the statutory framework for telephone service under the Communications Act — creates the legal foundation for universal service obligations and enforceable non-discrimination requirements. The 30-day notice and assistance referral requirement prevents abrupt service terminations that trap households in a digital void at critical moments.</p>
+</div>
+<div class="policy-card proposal" id="TECH-BRDS-0002">
+<div class="rule-header">
+<code class="rule-id">TECH-BRDS-0002</code>
+<span class="rule-badge">Proposal</span>
+</div>
+<div class="rule-status">🔵 Proposal — Under Review</div>
+<p class="rule-title">All K–12 schools must have minimum 1 Gbps symmetric connectivity; devices and home internet access must be provided to all students as a condition of federal education funding</p>
+<p class="rule-stmt">As a condition of receiving federal education funding, all K–12 public schools must maintain minimum symmetric broadband connectivity of 1 Gbps per 1,000 students by 2028; the E-Rate program must be expanded, fully funded, and simplified to eliminate barriers that prevent eligible schools from receiving support; every student enrolled in a public K–12 school must be provided with a personal device adequate for all school assignments and home internet access sufficient for homework, learning management systems, and educational video — with devices and connectivity funded through the E-Rate program, federal education funding, and provider universal service obligations; and no school or district may condition digital access on household income, immigration status, or any characteristic other than enrollment.</p>
+<p class="rule-notes">Educational technology is now integral to K–12 learning, but the benefits of digital learning are distributed unequally along lines of race and income. Approximately 9 million K–12 students lack adequate home internet access, and millions more use smartphones as their primary devices — inadequate for complex assignments, sustained learning, and standardized assessments. <!-- [VERIFY] --> The 1 Gbps target is the FCC's long-standing E-Rate connectivity goal, established in the ConnectED initiative; progress has been uneven and many schools, particularly in rural and low-income districts, remain far below this threshold. Device provision is incomplete: many school-issued devices are inadequate, and families bear the cost of data plans. E-Rate funding, while valuable, is complicated by bureaucratic requirements that disadvantage under-resourced districts. Making device and connectivity provision a condition of federal education funding creates a universal floor — eliminating the structural disadvantage that students without adequate home technology face in every aspect of their education.</p>
 </div>
 </div>
 </div>
