@@ -331,7 +331,7 @@ The migration was performed during the Phase 1 → Phase 2 transition of the Fre
 
 - `data/policy_catalog.sqlite` — 1,554 v1 positions
 - `docs/pillars/*.html` — 2,935 policy cards (2,759 unique IDs)
-- Total after merge and deduplication: **2,760 canonical positions**
+- Total after merge and deduplication: **2,783 canonical positions**
 
 ### Idempotency
 

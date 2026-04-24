@@ -12,14 +12,14 @@ Key design goals
 - Maintain provenance: every canonical rule must be traceable to source artifacts (chat logs, imports, and explicit approvals).
 
 Authoritative sources and counts
-- Canonical DB: data/policy_catalog.sqlite
-- Current counts (snapshot): policy_items=1,554; record_links=36; prose_rule_mentions=629
+- Canonical DB: data/policy_catalog_v2.sqlite
+- Current counts (snapshot): positions=2,783; domains=26; subdomains=506; legacy_id_map=2,783
 - Human reports: data/human_report.md, data/full_db_dump.json
 - Per-pillar exports and mapping: data/pillar_reports/by_mapping/
 
 Source-of-truth model (phased)
-- Phase 1 (current, pre-reconciliation): The site HTML (docs/pillars/*.html, 2,935 policy cards) and the DB (1,554 policy_items) have both been edited since last reconciliation. Neither blindly overrides the other. Divergences are flagged for human review. A full 3-way reconciliation audit is in progress.
-- Phase 2 (post-reconciliation): data/policy_catalog.sqlite becomes the single canonical source of truth. Site HTML is generated output. All new positions are authored in the DB first.
+- Phase 1 (current, pre-reconciliation): The site HTML (docs/pillars/*.html, 2,935 policy cards) and the DB (data/policy_catalog_v2.sqlite, 2,783 positions) have both been edited since last reconciliation. Neither blindly overrides the other. Divergences are flagged for human review. A full reconciliation audit is in progress.
+- Phase 2 (post-reconciliation): data/policy_catalog_v2.sqlite becomes the single canonical source of truth. Site HTML is generated output. All new positions are authored in the DB first.
 
 How system rules are used
 - As constraints during rule import and deduplication: importer uses these concepts to prefer canonical phrasings and avoid contradictory rule sets.
@@ -38,10 +38,10 @@ System rules dump
 A machine-readable extraction of system-level rules is available: data/pillar_reports/by_mapping/system_rules_dump.csv and a human-readable version at data/pillar_reports/by_mapping/system_rules_dump.md. These represent the set of SYS-* canonical policy_items the project treats as foundational. Review and suggest edits by tagging entries in the prose export or filing a small proposal describing intended change and provenance.
 
 Representative system rules (selected highlights)
-- SYS-AI-002: Human judgment required for materially harmful decisions; AI absence cannot justify denial.
-- SYS-AI-003: Lack of an AI recommendation must not be used as evidence of unfitness.
-- SYS-FED-001: High-risk systems must not be fully centralized; distribute oversight.
-- SYS-FND-004: Guarantee universal equal rights (baseline national standard).
-- SYS-GEO-001: Geography must not determine access to rights or care.
+- CHKS-AINL-0002: Human judgment required for materially harmful decisions; AI absence cannot justify denial.
+- CHKS-AINL-0003: Lack of an AI recommendation must not be used as evidence of unfitness.
+- CHKS-FEDS-0005: High-risk systems must not be fully centralized; distribute oversight.
+- CHKS-FNDS-0009: Guarantee universal equal rights (baseline national standard).
+- CHKS-GEOS-0001: Geography must not determine access to rights or care.
 
 (For operational details, see scripts/import_policy_catalog.py and overview/current-state.md.)

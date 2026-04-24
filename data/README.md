@@ -1,6 +1,6 @@
 # Data catalog
 
-The initial structured catalog is stored in SQLite so it can support both editorial work now and a website-backed data model later.
+The structured policy catalog is stored in SQLite so it can support both editorial work now and a website-backed data model later.
 
 ## Why SQLite
 
@@ -9,60 +9,48 @@ The initial structured catalog is stored in SQLite so it can support both editor
 - simple to migrate into a future web application
 - good fit for preserving source provenance and imported IDs
 
-## Planned contents
+## Database files
 
-- source files and file hashes
-- canonical policy items with numeric IDs
-- canonical policy position records with prefixed IDs
-- per-source occurrences so duplicates and conflicts stay traceable
+| File | Purpose |
+|------|---------|
+| `data/policy_catalog_v2.sqlite` | **Active catalog** — 2,783 positions in the v2 ID format |
+| `data/policy_catalog.sqlite` | **Provenance only** — the original v1 catalog (1,554 entries); retained for audit history; not read by any active script |
 
-## Current schema
+## Current schema (`policy_catalog_v2.sqlite`)
 
-- `source_files`
-- `legacy_policy_items` — old numeric checkpoint items (preserved for provenance; not the primary table)
-- `legacy_policy_item_occurrences`
-- `policy_items` — structured policy position records with prefixed IDs (e.g., `HLT-COV-003`); the canonical policy position table
-- `rule_occurrences`
-- `record_links` — legacy-to-structured ID conversions
-- `record_link_occurrences`
-- `prose_rule_mentions` — IDs identified in prose/context that are not yet promoted to canonical position rows
-- `catalog_entries` view for unified browsing
-- `deduped_catalog_entries` view for the canonical structured corpus after legacy-item conversion
-- `unresolved_prose_rule_mentions` view for identified IDs that appear only in context/prose and are not yet canonical policy position rows
+### v2 ID format
 
-### policy_items status values
+Policy position IDs follow the pattern `XXXX-XXXX-0000` (regex: `^[A-Z]{4}-[A-Z]{4}-[0-9]{4}$`), e.g. `HLTH-COVR-0001`. See `overview/policy-id-schema.md` for the full specification.
 
-Each `policy_items` row carries a `status` field. Valid values:
+### Tables
+
+- `domains` — 26 rows; one per policy pillar (4-char code, name, `pillar_id`, `html_file`, `is_cross_domain`). `XDOM` is reserved for future cross-domain positions and has no HTML file.
+- `subdomains` — 506 rows; policy families within a domain (`code` + `domain` FK, `name`). The same 4-char code may appear in multiple domains.
+- `positions` — 2,783 rows; one per canonical policy stance (`id`, `domain`, `subdomain`, `seq`, `short_title`, `full_statement`, `is_cross_domain`, `status`)
+- `position_pillar_appearances` — 2,845 rows; maps each position to the pillar page(s) where it appears (`position_id`, `pillar_domain`, `section_name`, `display_order`)
+- `legacy_id_map` — 2,783 rows; tracks old-to-new ID relationships (`old_id`, `new_id`, `source` \[`db`/`html`/`both`\], `notes`)
+
+### `positions` status values
+
+Each `positions` row carries a `status` field. Valid values:
 
 | Status | Meaning |
 |--------|---------|
-| `INCLUDED` | Position is live on the site and confirmed in the DB |
-| `MISSING` | In DB but not yet reflected in site HTML (pre-reconciliation: may actually be on the site under a different ID) |
-| `PROPOSED` | Authored in DB but not yet reviewed or added to the site |
-| `PARTIAL` | Partially implemented on the site; content incomplete |
-| `UPDATED` | DB entry updated since last HTML regeneration |
-| `UNDEVELOPED` | Placeholder ID; position text not yet written |
-
-> **Note (Phase 1):** Status values were set during initial catalog construction and have not been fully reconciled with the current site HTML. `MISSING` does **not** reliably indicate a position is absent from the site. Do not use status fields as authoritative until after the 3-way reconciliation audit is complete.
+| `CANONICAL` | Adopted, active policy position — the default for all migrated records |
+| `PROPOSED` | Under consideration; not yet adopted |
+| `DEPRECATED` | Superseded or withdrawn; retained for provenance only |
+| `REVIEW` | Flagged during migration for human review — may have ambiguous domain mapping or other anomaly |
 
 ## Reconciliation status
 
-The catalog was last rebuilt from source logs in 2025. Since then, policy cards have been added directly to the site HTML. A full reconciliation audit (HTML ↔ DB ↔ source logs) is in progress. Until it completes:
+The v2 catalog was built by migrating and deduplicating positions from the v1 DB and all tagged HTML policy cards. A full reconciliation audit (HTML ↔ DB) is in progress. Until it completes:
 
 - HTML additions must be backfilled into the DB in the same commit.
 - DB additions should include a corresponding HTML card in the same commit.
 - Treat both sources as valid; flag divergences for human review rather than auto-resolving them.
 
-## Current import behavior
+## Build behavior
 
-When the same ID appears multiple times, the database keeps every occurrence and promotes a deterministic canonical record:
+`policy_catalog_v2.sqlite` is generated by `scripts/build-catalog-v2.py`. Re-running the script drops and recreates the DB from source data — it is idempotent. Do not hand-edit the DB directly; make changes to source data and regenerate.
 
-1. prefer `main-branch.txt`
-2. then prefer `brainstorm-branch.txt`
-3. within a source, prefer the latest occurrence
-
-## Dedupe behavior
-
-- current numeric checkpoint items are converted to the structured ID system through `record_links`
-- draft migration-map rows from the chats are preserved, but current numeric items are re-mapped against later canonical chat context where early mappings became stale
-- prose-only ID mentions are preserved separately so provisional, superseded, or still-unresolved IDs are visible instead of silently dropped
+Provenance for every position is preserved in `legacy_id_map`: each row records the `old_id`, `new_id`, and `source` (`db`, `html`, or `both`), so the origin of every v2 position is traceable.

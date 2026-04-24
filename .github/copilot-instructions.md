@@ -7,7 +7,7 @@ This repository is an active U.S. policy platform in development. It is organize
 The policy corpus is primarily maintained in:
 
 - `docs/pillars/*.html` — live policy card HTML (2,935 `.policy-card` elements)
-- `data/policy_catalog.sqlite` — structured policy position catalog (1,554 entries, pre-reconciliation)
+- `data/policy_catalog_v2.sqlite` — structured policy position catalog (2,783 positions, v2 ID format)
 - `pillars/` — narrative prose markdown (overview and policy sections per pillar)
 
 The following files are historical source material, retained for provenance, and still referenced during catalog rebuilds:
@@ -24,7 +24,7 @@ The markdown under `pillars/` may lag behind the site HTML. Read `overview/curre
 The site HTML and the DB have both been edited since last reconciliation. Neither auto-overrides the other.
 
 - **Site HTML** (`docs/pillars/*.html`, 2,935 policy cards) — the most recently edited content
-- **DB** (`data/policy_catalog.sqlite`, 1,554 `policy_items`) — structured catalog; some entries not yet on site; some site cards not yet in DB
+- **DB** (`data/policy_catalog_v2.sqlite`, 2,783 `positions`) — structured catalog; some entries not yet on site; some site cards not yet in DB
 - **Divergences are flagged for human review.** Do not auto-resolve them.
 - `MISSING` in the DB does not reliably mean the position is absent from the site.
 
@@ -34,7 +34,7 @@ The site HTML and the DB have both been edited since last reconciliation. Neithe
 
 Once the reconciliation audit is complete:
 
-- `data/policy_catalog.sqlite` is the **canonical source of truth** for all policy positions
+- `data/policy_catalog_v2.sqlite` is the **canonical source of truth** for all policy positions
 - `pillars/*/overview.md` and `pillars/*/policy.md` are the source for narrative prose
 - `docs/pillars/*.html` is **generated output** — do not hand-edit policy cards
 - New positions are authored in the DB first, then the site is regenerated at build time
@@ -43,26 +43,26 @@ Do **not** assume the current pillar files are complete.
 
 ## Working with IDs and the catalog
 
-- The old numeric checkpoint items live in `legacy_policy_items`.
-- The structured policy position records live in `policy_items` (prefixed IDs, e.g., `HLT-COV-003`).
-- Legacy-to-structured conversions live in `record_links`.
-- Prose/context-only IDs live in `prose_rule_mentions`.
-- Use `deduped_catalog_entries` when you want the canonical structured corpus without the legacy numeric duplicates.
-- Use `unresolved_prose_rule_mentions` when auditing IDs that were mentioned in context but not promoted into the canonical position corpus.
+- Policy position IDs use the v2 format: `XXXX-XXXX-0000` (regex: `^[A-Z]{4}-[A-Z]{4}-[0-9]{4}$`), e.g. `HLTH-COVR-0001`.
+- The canonical position records live in the `positions` table in `data/policy_catalog_v2.sqlite`.
+- Domain codes (4 chars) and subdomain codes (4 chars) are defined in the `domains` and `subdomains` tables.
+- Cross-pillar appearances are tracked in `position_pillar_appearances` — not in a separate position record.
+- v1-to-v2 ID mappings live in `legacy_id_map` (`old_id` → `new_id`, with `source` = `db`/`html`/`both`).
+- The old v1 DB (`data/policy_catalog.sqlite`) is retained for provenance only — do not query it for current data.
 
-If chat-log sources change, rebuild the catalog with:
+To rebuild the v2 catalog from source data:
 
 ```bash
-scripts/import_policy_catalog.py
+scripts/build-catalog-v2.py
 ```
 
-Do not hand-edit `data/policy_catalog.sqlite`.
+Do not hand-edit `data/policy_catalog_v2.sqlite`.
 
 ## Known context-sensitive edge cases
 
 - Some migration-map rows in the chats are stale relative to later canonical IDs.
 - Some IDs appear only as future placeholders or optional variants and should not be promoted automatically.
-- Some structured IDs were identified only in prose and had to be seeded into the catalog from context (`ECO-TAX-001`, `ADM-CHV-001`, `ADM-AGY-001`, `HLT-TRL-001`).
+- Some structured IDs were identified only in prose and had to be seeded into the catalog from context (`TAXN-TAXS-0001`, `ADMN-CHVS-0001`, `ADMN-AGYS-0001`, `HLTH-TRLS-0001`).
 - Some unresolved prose-only IDs may represent future work rather than canon; check the surrounding chat context before formalizing them.
 
 ## Editing guidance
@@ -473,17 +473,16 @@ These scripts produce a correctly structured, minimal HTML scaffold. Add content
 
 ### Current state (Phase 1)
 
-The site is hand-authored HTML. Policy position cards in `docs/pillars/*.html` are the most recently edited content. The DB (`data/policy_catalog.sqlite`) was built from source log parsing and has not been fully reconciled with the HTML.
+The site is hand-authored HTML. Policy position cards in `docs/pillars/*.html` are the most recently edited content. The DB (`data/policy_catalog_v2.sqlite`) was built from the v1 catalog and all tagged HTML cards and has not been fully reconciled with the current HTML.
 
 **Until reconciliation is complete:**
 
 - HTML edits are valid; backfill any new positions into the DB in the same commit
-- Do not treat DB status fields as authoritative (many `MISSING` entries are actually on the site)
 - Run `scripts/tag-policy-cards.py` after any HTML structural changes to normalize IDs
 
 ### Target state (Phase 2, post-reconciliation)
 
-- `data/policy_catalog.sqlite` is the single source of truth for all policy positions
+- `data/policy_catalog_v2.sqlite` is the single source of truth for all policy positions
 - `pillars/*/overview.md` and `pillars/*/policy.md` are the source for narrative prose
 - `docs/pillars/*.html` is generated output — do not hand-edit policy cards
 - A build script (`scripts/generate-site.py`, TBD) will render HTML from DB + markdown
@@ -494,5 +493,5 @@ The site is hand-authored HTML. Policy position cards in `docs/pillars/*.html` a
 
 - All styles: `docs/assets/css/style.css` only. No inline styles except `--accent-color` per pillar.
 - All sitewide JS: `docs/assets/js/app.js` only. No inline scripts in HTML.
-- All policy positions: must have a SCOPE-FAM-NNN ID. Untagged cards are not canonical.
+- All policy positions: must have a `XXXX-XXXX-0000` ID. Untagged cards are not canonical.
 - All factual claims on the site: must have an APA 7th edition footnote.
