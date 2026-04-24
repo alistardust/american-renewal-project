@@ -390,6 +390,42 @@ def merge_sources(
 
 
 # ---------------------------------------------------------------------------
+# Domain force overrides
+# ---------------------------------------------------------------------------
+
+# Old antitrust-content subdomains that historically used "COR" domain code but
+# belong in ANTR, not CRPT. Force is applied after DOMAIN_MAP resolution so that
+# these positions land correctly even when the card appears in both HTML files
+# (in which case html_files[0] order could otherwise misdirect them).
+DOMAIN_FORCE_BY_OLD_SUB: dict[tuple[str, str], str] = {
+    ("COR", "AGF"): "ANTR",  # agricultural market concentration
+    ("COR", "ALG"): "ANTR",  # algorithmic price coordination
+    ("COR", "ANT"): "ANTR",  # antitrust law strengthening
+    ("COR", "CAP"): "ANTR",  # regulatory/competition-body capture
+    ("COR", "CON"): "ANTR",  # concentration of economic power; govt duty to break up
+    ("COR", "ENF"): "ANTR",  # antitrust/consumer-protection enforcement agencies
+    ("COR", "MKT"): "ANTR",  # market structure and competition policy
+    ("COR", "MPY"): "ANTR",  # labor market monopsony
+    ("COR", "NMD"): "ANTR",  # media consolidation (antitrust angle)
+    ("COR", "PEQ"): "ANTR",  # private equity / leveraged acquisition
+    ("COR", "PIS"): "ANTR",  # essential-sector heightened competition obligations
+    ("COR", "PLT"): "ANTR",  # dominant digital platform competition rules
+    ("COR", "TRN"): "ANTR",  # dominant-firm transparency / disclosure
+    # ("COR", "AUD") → stays CRPT: corporate audit/financial oversight standards
+    # ("COR", "FIN") → stays CRPT: campaign finance reform
+    # ("COR", "LAW") → stays CRPT: general corporate criminal liability
+}
+
+# Per-old-id domain force: a handful of ECO-domain cards that ended up in TAXN
+# via _BY_FILE_ resolution but belong elsewhere.
+OLD_ID_DOMAIN_FORCE: dict[str, str] = {
+    "ECO-ANT-001": "ANTR",  # "Strengthen federal antitrust enforcement" — antitrust, not tax
+    "ECO-ANT-003": "ANTR",  # "Algorithmic price coordination" — antitrust, not tax
+    "ECO-ANT-002": "CNSR",  # "Require consumer goods to be durable/repairable" — consumer rights
+}
+
+
+# ---------------------------------------------------------------------------
 # ID assignment
 # ---------------------------------------------------------------------------
 
@@ -442,6 +478,16 @@ def assign_new_ids(
             else:
                 review_log.append((old_id, f"Domain '{old_dom}' marked _BY_FILE_ but no html_files on record — falling back to XDOM"))
                 new_dom = "XDOM"
+
+        # Apply per-old-id override first (most specific, highest priority)
+        forced_by_id = OLD_ID_DOMAIN_FORCE.get(old_id)
+        if forced_by_id:
+            new_dom = forced_by_id
+
+        # Apply subdomain-level force second (catches all COR antitrust subdomains
+        # regardless of which HTML file the card appeared in first)
+        elif (sub_force := DOMAIN_FORCE_BY_OLD_SUB.get((old_dom, old_sub))) is not None:
+            new_dom = sub_force
 
         new_sub = expand_subdomain(old_sub)
 
