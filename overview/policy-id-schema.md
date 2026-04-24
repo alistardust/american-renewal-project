@@ -1,270 +1,352 @@
-# Policy ID Schema — Freedom and Dignity Project
+# Policy ID Schema — v2 Format
 
-**Version:** 2.0 (post full-renumber, April 2026)  
-**Status:** Canonical — all 2,862 policy cards tagged  
-**Maintainer:** Internal (do not hand-edit `data/policy_catalog.sqlite`)
+> **Status:** Active. This document supersedes all prior ID format descriptions.
+> The v2 format was introduced during the Phase 1 → Phase 2 catalog migration.
 
 ---
 
-## 1. ID Format
+## §1 ID Format
+
+### Regex
 
 ```
-SCOPE-FAMILY-NNN
+^[A-Z]{4}-[A-Z]{4}-[0-9]{4}$
 ```
 
-| Segment | Length | Description |
-|---------|--------|-------------|
-| `SCOPE` | 3 chars, uppercase | Pillar scope code (25 canonical values, see §2) |
-| `FAMILY` | 2–6 chars, uppercase | Policy family within the pillar (see §3) |
-| `NNN` | 3 digits, zero-padded | Sequential number within scope+family prefix |
-
-**Examples:**
-- `TEC-PRV-001` — Technology & AI pillar, Privacy family, first position
-- `HLT-ACC-012` — Healthcare pillar, Access family, twelfth position
-- `JUS-POL-003` — Equal Justice pillar, Policing family, third position
-- `TAX-PMT-007` — Taxation & Wealth pillar, Progressive Marginal Tax family, seventh position
-
----
-
-## 2. Scope Codes (25 canonical)
-
-These are permanent. New pillars require a formal scope code assignment.
-
-| Code | Pillar | HTML File |
-|------|--------|-----------|
-| `ADM` | Administrative State | `docs/pillars/administrative-state.html` |
-| `ANT` | Antitrust & Corporate Power | `docs/pillars/antitrust-and-corporate-power.html` |
-| `CHK` | Checks & Balances | `docs/pillars/checks-and-balances.html` |
-| `CON` | Consumer Rights | `docs/pillars/consumer-rights.html` |
-| `COR` | Anti-Corruption & Government Ethics | `docs/pillars/anti-corruption.html` |
-| `EDU` | Education | `docs/pillars/education.html` |
-| `ELE` | Elections & Representation | `docs/pillars/elections-and-representation.html` |
-| `ENV` | Environment & Agriculture | `docs/pillars/environment-and-agriculture.html` |
-| `EXP` | Executive Power | `docs/pillars/executive-power.html` |
-| `FPL` | Foreign Policy & International Relations | `docs/pillars/foreign-policy.html` |
-| `GUN` | Gun Policy | `docs/pillars/gun-policy.html` |
-| `HLT` | Healthcare | `docs/pillars/healthcare.html` |
-| `HOU` | Housing | `docs/pillars/housing.html` |
-| `IMM` | Immigration | `docs/pillars/immigration.html` |
-| `INF` | Infrastructure & Public Goods | `docs/pillars/infrastructure-and-public-goods.html` |
-| `JUD` | Courts & Judicial System | `docs/pillars/courts-and-judicial-system.html` |
-| `JUS` | Equal Justice & Policing | `docs/pillars/equal-justice-and-policing.html` |
-| `LAB` | Labor & Workers' Rights | `docs/pillars/labor-and-workers-rights.html` |
-| `LEG` | Legislative Reform | `docs/pillars/legislative-reform.html` |
-| `MED` | Information & Media | `docs/pillars/information-and-media.html` |
-| `RGT` | Rights & Civil Liberties | `docs/pillars/rights-and-civil-liberties.html` |
-| `STS` | Science, Technology & Space | `docs/pillars/science-technology-space.html` |
-| `TAX` | Taxation & Wealth | `docs/pillars/taxation-and-wealth.html` |
-| `TEC` | Technology & AI | `docs/pillars/technology-and-ai.html` |
-| `TRM` | Term Limits & Fitness for Office | `docs/pillars/term-limits-and-fitness.html` |
-
----
-
-## 3. Legacy / Cross-Scope Codes (DB only — do not use in new IDs)
-
-These codes appear in `data/policy_catalog.sqlite` from earlier drafts of the platform. They are preserved for provenance but all new IDs use canonical scope codes. Positions carrying these codes are migrated to the canonical pillar shown.
-
-| Legacy Code | Meaning | Migrates To |
-|-------------|---------|-------------|
-| `AGR` | Agriculture | `ENV` (Environment & Agriculture) |
-| `CIV` | Civil Rights (legacy) | `RGT` (Rights & Civil Liberties) |
-| `ECO` | Economic Policy (legacy) | `TAX`, `LAB`, or `ANT` depending on content |
-| `GOV` | Government Structure (legacy) | `CHK` (Checks & Balances) |
-| `OVR` | Overarching / International | `FPL` (Foreign Policy) |
-| `SYS` | System-Level Rules (legacy) | `CHK` or `EXP` depending on content |
-
----
-
-## 4. Family Codes
-
-Family codes are derived from the `id` attribute of `div.policy-family` containers in each pillar's HTML file, with the `fam-` prefix stripped.
-
-### Derivation algorithm
+### Structure
 
 ```
-fam-acc           → ACC            (single segment → use as-is)
-fam-hlt-acc       → ACC            (first segment = pillar scope → strip it)
-fam-cor-mpy       → MPY            (first segment = known scope but not this pillar → strip old scope)
-fam-agr-sub       → AGR-SUB        (first segment = not a known scope → keep full thing)
-(no id on div)    → GEN            (orphan cards outside any policy-family)
+HLTH-COVR-0001
+│    │    │
+│    │    └── Sequence number (0001–9999), zero-padded, scoped per domain + subdomain
+│    └──────── Subdomain code (exactly 4 uppercase letters)
+└───────────── Domain code (exactly 4 uppercase letters)
 ```
 
-### Family code registry
+### Examples
 
-Family codes are **defined by the HTML**, not centrally registered. Add new families by creating a new `<div class="policy-family" id="fam-XXX">` in the appropriate pillar file.
+| v2 ID | Domain | Subdomain | Meaning |
+|-------|--------|-----------|---------|
+| `HLTH-COVR-0001` | Healthcare | Coverage | Universal coverage for citizens |
+| `EDUC-STDS-0003` | Education | Standards | Academic standards policy |
+| `XDOM-GOVN-0001` | Cross-domain | Governance | Cross-pillar governance rule |
+| `TECH-AINL-0007` | Technology & AI | Artificial intelligence | AI liability framework |
+| `EXEC-AMND-0001` | Executive Power | 25th Amendment | Presidential succession |
 
-Family codes should be:
-- 2–6 uppercase ASCII letters
-- Descriptive abbreviations (e.g., `PRV` = Privacy, `ACC` = Access, `POL` = Policing)
-- Unique within a pillar (two families in the same pillar must not share a code)
+### Terminology
 
----
+- **Domain** — the policy pillar that owns this position (4-char uppercase)
+- **Subdomain** — the policy family or topic within the pillar (4-char uppercase)
+- **Sequence** — monotonically increasing integer within each (domain, subdomain) pair, starting at `0001`
+- **Position** — a single canonical policy stance, identified uniquely by its ID
 
-## 5. Numbering Rules
+### Format invariants
 
-- **Sequential within prefix:** `SCOPE-FAMILY-001`, `002`, `003`, …
-- **Zero-padded to 3 digits:** `001`–`999` (no leading zeros beyond padding)
-- **Shared counter across duplicate `fam-*` div ids:** if a pillar has two `<div class="policy-family" id="fam-acc">` sections (allowed for organizational grouping), they share a single counter — numbering is continuous, not restarted.
-- **Full clean-slate renumber:** when `tag-policy-cards.py` runs, it assigns IDs from `001` across all cards in order of DOM appearance. Existing IDs are replaced.
-- **IDs are permanent once status = `INCLUDED`:** do not renumber without updating `record_links`.
-
----
-
-## 6. Status Values
-
-Stored in `data/policy_catalog.sqlite` → `policy_items.status`.
-
-| Status | Meaning | Rendered as |
-|--------|---------|-------------|
-| `INCLUDED` | Position is in the HTML with a structured ID | Standard `policy-card` |
-| `PROPOSED` | Proposed for inclusion; not yet reviewed | `policy-card proposal` with 🔵 badge |
-| `MISSING` | In source logs / DB but not yet in HTML | `policy-card proposal` once added |
-| `PARTIAL` | Some sub-points present, others absent | Mixed — parent card included, sub-points as proposals |
-| `RETIRED` | Deprecated — do not delete, mark only | Not rendered (or marked `[RETIRED]`) |
+1. All three segments are always present and separated by hyphens.
+2. The domain and subdomain segments contain **only uppercase ASCII letters** (A–Z).
+3. The sequence segment contains **exactly 4 decimal digits**, zero-padded.
+4. IDs are case-sensitive; lowercase variants are invalid.
+5. Sequences are stable once assigned — a position's ID never changes unless explicitly deprecated and superseded.
 
 ---
 
-## 7. HTML Rendering
+## §2 Domain Codes
 
-### 7a. Standard position card
+There are **25 canonical domain codes**, one per policy pillar. The `XDOM` domain is defined in the schema but holds zero migrated positions — it is reserved for future positions that genuinely cannot be attributed to any single pillar after review. Every current position belongs to exactly one pillar domain.
 
-```html
-<div class="policy-card" id="SCOPE-FAM-NNN">
-  <div class="rule-header">
-    <code class="rule-id">SCOPE-FAM-NNN</code>
-    <span class="rule-badge">Core</span>
-  </div>
-  <p class="rule-title">Short title of the position</p>
-  <p class="rule-stmt">Full canonical statement of the position.</p>
-  <p class="rule-notes">Additional context, cross-references, implementation notes.</p>
-</div>
-```
+| Code | Pillar Name | `data.js` ID | HTML File |
+|------|------------|--------------|-----------|
+| `ADMN` | Administrative State | `administrative-state` | `pillars/administrative-state.html` |
+| `ANTR` | Antitrust & Corporate Power | `antitrust-and-corporate-power` | `pillars/antitrust-and-corporate-power.html` |
+| `CHKS` | Checks & Balances | `checks-and-balances` | `pillars/checks-and-balances.html` |
+| `CNSR` | Consumer Rights | `consumer-rights` | `pillars/consumer-rights.html` |
+| `CORT` | Courts & Judicial System | `courts-and-judicial-system` | `pillars/courts-and-judicial-system.html` |
+| `CRPT` | Anti-Corruption | `anti-corruption` | `pillars/anti-corruption.html` |
+| `EDUC` | Education | `education` | `pillars/education.html` |
+| `ELEC` | Elections & Representation | `elections-and-representation` | `pillars/elections-and-representation.html` |
+| `ENVR` | Environment & Agriculture | `environment-and-agriculture` | `pillars/environment-and-agriculture.html` |
+| `EXEC` | Executive Power | `executive-power` | `pillars/executive-power.html` |
+| `FPOL` | Foreign Policy | `foreign-policy` | `pillars/foreign-policy.html` |
+| `GUNS` | Gun Policy | `gun-policy` | `pillars/gun-policy.html` |
+| `HLTH` | Healthcare | `healthcare` | `pillars/healthcare.html` |
+| `HOUS` | Housing | `housing` | `pillars/housing.html` |
+| `IMMG` | Immigration | `immigration` | `pillars/immigration.html` |
+| `INFR` | Infrastructure & Public Goods | `infrastructure-and-public-goods` | `pillars/infrastructure-and-public-goods.html` |
+| `JUST` | Equal Justice & Policing | `equal-justice-and-policing` | `pillars/equal-justice-and-policing.html` |
+| `LABR` | Labor & Workers' Rights | `labor-and-workers-rights` | `pillars/labor-and-workers-rights.html` |
+| `LEGL` | Legislative Reform | `legislative-reform` | `pillars/legislative-reform.html` |
+| `MDIA` | Information & Media | `information-and-media` | `pillars/information-and-media.html` |
+| `RGHT` | Rights & Civil Liberties | `rights-and-civil-liberties` | `pillars/rights-and-civil-liberties.html` |
+| `SCIS` | Science, Technology & Space | `science-technology-space` | `pillars/science-technology-space.html` |
+| `TAXN` | Taxation & Wealth | `taxation-and-wealth` | `pillars/taxation-and-wealth.html` |
+| `TECH` | Technology & AI | `technology-and-ai` | `pillars/technology-and-ai.html` |
+| `TERM` | Term Limits & Fitness | `term-limits-and-fitness` | `pillars/term-limits-and-fitness.html` |
+| `XDOM` | Cross-Domain | _(reserved — no current positions)_ | _(none — not a pillar)_ |
 
-### 7b. Proposal card (PROPOSED or MISSING → added to site for review)
+> **Note:** `ANTR` (Antitrust & Corporate Power) and `SCIS` (Science, Technology & Space) are registered pillar domains with HTML pages but currently have **zero policy positions** in the catalog. Content for these pillars needs to be authored.
 
-```html
-<div class="policy-card proposal" id="SCOPE-FAM-NNN">
-  <div class="rule-header">
-    <code class="rule-id">SCOPE-FAM-NNN</code>
-    <span class="rule-badge">Proposal</span>
-  </div>
-  <div class="rule-status">🔵 Proposal — Under Review</div>
-  <p class="rule-title">Short title of the position</p>
-  <p class="rule-stmt">Full canonical statement of the position.</p>
-  <p class="rule-notes">Rationale, source reference, cross-references.</p>
-</div>
-```
+### v1 → v2 domain code mapping
 
-### 7c. Container structure (for reference)
+The v2 format consolidates 32 v1 HTML domain codes into 25 canonical pillar codes. Every position was assigned to its correct single pillar — no content was collapsed into `XDOM`. For codes that were ambiguous (appearing in multiple pillar files), the position was assigned to the domain of the HTML file it lives in.
 
-```html
-<section id="pil-policy"> <!-- the policy section of a pillar page -->
-  <div class="wrap">
-    <div class="policy-family" id="fam-FAMILY-CODE">
-      <h3>Family Name</h3>
-      <div class="rule-grid">
-        <div class="policy-card" id="SCOPE-FAM-001"> … </div>
-        <div class="policy-card" id="SCOPE-FAM-002"> … </div>
-        <div class="policy-card proposal" id="SCOPE-FAM-003"> … </div>
-      </div>
-    </div>
-  </div>
-</section>
-```
-
----
-
-## 8. Database Schema
-
-### Table: `policy_items` (canonical structured-ID table)
-
-| Column | Type | Description |
-|--------|------|-------------|
-| `rule_id` | TEXT PRIMARY KEY | Structured ID (e.g., `TEC-PRV-001`) |
-| `scope_code` | TEXT | 3-letter pillar scope |
-| `family_code` | TEXT | Family within scope |
-| `canonical_statement` | TEXT | Full policy statement |
-| `status` | TEXT | `INCLUDED` / `MISSING` / `PROPOSED` / `PARTIAL` / `RETIRED` |
-| `canonical_source_id` | INTEGER | FK → `source_files` |
-| `canonical_line_number` | INTEGER | Line in source where first found |
-| `occurrence_count` | INTEGER | Times seen in all source logs |
-| `source_count` | INTEGER | Number of distinct sources mentioning it |
-
-### Table: `legacy_policy_items` (old numeric checkpoint system)
-
-Pre-ID numeric items from the original policy catalog import. Preserved for provenance. Do not use for new work.
-
-### Table: `record_links`
-
-Maps legacy numeric IDs to structured IDs. Preserves continuity when renumbering occurs.
-
-| Column | Description |
-|--------|-------------|
-| `legacy_id` | Old numeric or pre-canonical ID |
-| `structured_id` | Canonical `SCOPE-FAM-NNN` |
-| `link_type` | `exact`, `partial`, `deprecated` |
-
-### Table: `prose_rule_mentions`
-
-IDs that appeared only in prose context in the source logs — not promoted to `policy_items` yet. Used for audit: these may represent future positions, stale references, or optional variants.
-
-### Views
-
-| View | Purpose |
-|------|---------|
-| `deduped_catalog_entries` | Canonical corpus without legacy numeric duplicates — use for most queries |
-| `catalog_entries` | All entries including legacy |
-| `unresolved_prose_rule_mentions` | Prose-only IDs not yet in `policy_items` — for gap auditing |
+| v1 Code | v2 Code | Decision |
+|---------|---------|----------|
+| `ADM` | `ADMN` | Direct rename |
+| `AGR` | `ENVR` | Agriculture is part of the environment/agriculture pillar |
+| `CIV` | `ADMN` | Vital records access — unambiguously administrative state |
+| `CON` | `CNSR` | Consumer rights rename |
+| `COR` | `CRPT` | Anti-corruption rename |
+| `ECO` | _(by file)_ | Each card assigned to its HTML-file pillar (`TAXN` or `LABR`) |
+| `EDU` | `EDUC` | Direct rename |
+| `ELE` | `ELEC` | Elections rename |
+| `ENV` | `ENVR` | Direct rename |
+| `EWT` | `ENVR` | Extended producer responsibility / lifecycle — part of environment |
+| `EXE` | `EXEC` | Executive power rename |
+| `FPL` | `FPOL` | Foreign policy rename |
+| `GOV` | _(by file)_ | Each card assigned to its HTML-file pillar (`CHKS` or `EXEC`) |
+| `GUN` | `GUNS` | Direct rename |
+| `HLT` | `HLTH` | Healthcare rename |
+| `HOU` | `HOUS` | Housing rename |
+| `IMM` | `IMMG` | Immigration rename |
+| `INF` | `INFR` | Infrastructure rename |
+| `JUD` | `CORT` | Courts/judicial rename |
+| `JUS` | `JUST` | Equal justice rename |
+| `LAB` | `LABR` | Labor rename |
+| `LEG` | `LEGL` | Legislative reform rename |
+| `MED` | `MDIA` | Information/media rename |
+| `OVR` | `CHKS` | Independent oversight boards — all in checks-and-balances |
+| `PAT` | `TECH` | Patent/IP reform — all cards are in technology-and-ai pillar |
+| `RGT` | `RGHT` | Rights rename |
+| `RPR` | `CNSR` | **Right to Repair** (not reparations) — all cards in consumer-rights |
+| `STS` | `SCIS` | Science/Technology/Space rename |
+| `SYS` | `CHKS` | Systemic/structural reform — all cards in checks-and-balances |
+| `TAX` | `TAXN` | Taxation rename |
+| `TEC` | `TECH` | Technology/AI rename |
+| `TRM` | `TERM` | Term limits rename |
 
 ---
 
-## 9. Tooling
+## §3 Subdomain Codes
 
-| Tool | Purpose |
-|------|---------|
-| `scripts/tag-policy-cards.py` | Assigns canonical IDs to all `div.policy-card` elements across all 25 pillar HTML files. Run after any HTML structural changes. Supports `--dry-run`. |
-| `scripts/import_policy_catalog.py` | Rebuilds `data/policy_catalog.sqlite` from source chat logs. Run after source log changes or after tagging to reconcile statuses. |
-| `scripts/new-pillar.js` | Generates a new pillar HTML scaffold with correct structure. Always use this; never copy-paste an existing pillar. |
+Subdomain codes are exactly 4 uppercase letters, scoped to their parent domain. The same 4-char code may appear in multiple domains if the conceptual family is analogous (e.g. `REGS` for "Regulations" in both `ADMN` and `ENVR`). The `subdomains` table stores the canonical name for each `(code, domain)` pair.
 
-### Running the tools
+### Expansion rules (v1 → v2)
 
-```bash
-# Dry-run tagging (validate only, no writes):
-python3 scripts/tag-policy-cards.py --dry-run
+| v1 Length | Rule | Example |
+|-----------|------|---------|
+| 2 chars | Explicit expansion map (see below) | `AI` → `AINL` |
+| 3 chars | Explicit map if listed; otherwise append `S` | `COV` → `COVR`; `AGY` → `AGYS` |
+| 4 chars | Kept as-is | `ANTI` → `ANTI` |
+| Non-alpha | Explicit semantic remap | `25A` → `AMND`; `S230` → `SECT` |
 
-# Full tagging run (assigns IDs to all untagged cards):
-python3 scripts/tag-policy-cards.py
+### 2-char explicit expansions
 
-# Rebuild catalog DB:
-python3 scripts/import_policy_catalog.py
+| v1 | v2 | Meaning |
+|----|----|---------|
+| `AI` | `AINL` | Artificial intelligence |
+| `DB` | `DBAS` | Database / data systems |
+| `IG` | `IGSP` | Inspector General / special oversight |
+| `RX` | `RXDG` | Prescription drugs |
+| `SS` | `SSCI` | Social Security / civil status |
+| `TR` | `TRDE` | Trade |
+| `VP` | `VPOF` | Vice President / office |
 
-# Create a new pillar:
-node scripts/new-pillar.js --id my-pillar --title "My Pillar" \
-  --foundation freedom-to-thrive --color "#1a6b8a" --prefix "MPL"
+### 3-char explicit expansions
+
+| v1 | v2 | Meaning |
+|----|----|---------|
+| `ACC` | `ACCS` | Access |
+| `ADM` | `ADML` | Administration |
+| `ALG` | `ALGO` | Algorithm |
+| `AUD` | `AUDT` | Audit |
+| `BEN` | `BENS` | Benefits |
+| `CIV` | `CIVL` | Civil |
+| `CLM` | `CLMS` | Claims |
+| `COV` | `COVR` | Coverage |
+| `CRT` | `CRTS` | Courts |
+| `DAT` | `DATA` | Data |
+| `ENF` | `ENFL` | Enforcement |
+| `ETH` | `ETHL` | Ethics |
+| `FIN` | `FINC` | Finance |
+| `GEN` | `GENL` | General |
+| `GOV` | `GOVN` | Governance |
+| `INT` | `INTL` | International |
+| `LAW` | `LAWS` | Law |
+| `MED` | `MEDA` | Media |
+| `NET` | `NETS` | Network |
+| `OVR` | `OVRG` | Oversight |
+| `POL` | `POLC` | Police / policy |
+| `PRV` | `PRIV` | Privacy |
+| `PUB` | `PUBL` | Public |
+| `REG` | `REGS` | Regulation |
+| `RGT` | `RGTS` | Rights |
+| `SEC` | `SECU` | Security |
+| `STD` | `STDS` | Standards |
+| `SUP` | `SUPR` | Supreme / support |
+| `SYS` | `SYSR` | Systems / reform |
+| `TAX` | `TAXS` | Taxes (subdomain of `TAXN`) |
+| `TRN` | `TRAN` | Transition |
+
+### Non-alpha remaps
+
+These v1 subdomain codes contained digits and were remapped to all-letter codes:
+
+| v1 | v2 | Domain | Meaning |
+|----|----|--------|---------|
+| `25A` | `AMND` | `EXEC` | 25th Amendment (presidential succession) |
+| `S230` | `SECT` | `MDIA` | Section 230 (platform liability) |
+
+### Querying subdomains
+
+```sql
+-- All subdomains for the healthcare pillar
+SELECT code, name FROM subdomains WHERE domain = 'HLTH' ORDER BY code;
+
+-- All positions in the AI subdomain of healthcare
+SELECT id, short_title FROM positions WHERE domain = 'HLTH' AND subdomain = 'AINL' ORDER BY seq;
 ```
 
 ---
 
-## 10. Governance
+## §4 Cross-Domain Positions
 
-- **IDs are permanent once `INCLUDED`.** Renaming a family code requires updating all affected IDs in HTML and `record_links`.
-- **Do not hand-edit `data/policy_catalog.sqlite`.** Use `import_policy_catalog.py` to rebuild from source.
-- **Proposals require review** before promotion to `INCLUDED`. The review process is manual: change `class="policy-card proposal"` → `class="policy-card"` and update status in DB.
-- **Do not delete deprecated positions.** Set status to `RETIRED` and leave in place for historical provenance.
-- **Cross-scope migrations** (legacy → canonical) must be recorded in `record_links` with `link_type = 'deprecated'`.
+`XDOM` is a **reserved domain** for policy positions that genuinely span multiple pillars and cannot be correctly attributed to any single one. As of the v2 migration, **no positions carry the `XDOM` domain** — every migrated position was assigned to its correct single pillar after careful review.
+
+### When to use XDOM
+
+Use `XDOM` only when a position:
+- Is substantively inseparable from 2 or more pillar areas (not merely *related* to them), **and**
+- Would require meaningful distortion to file under any single pillar
+
+A position appearing in multiple pillar HTML files is not automatically cross-domain. In most cases the correct fix is to pick the primary pillar and add a cross-reference, not to use `XDOM`.
+
+### The `position_pillar_appearances` table
+
+Every position has at least one row in `position_pillar_appearances` indicating which pillar it belongs to. A future `XDOM` position that genuinely appears in multiple pillars would have one row per pillar.
+
+```sql
+-- All positions that appear in 2 or more pillars
+SELECT p.id, p.short_title, COUNT(a.pillar_domain) AS pillar_count
+FROM positions p
+JOIN position_pillar_appearances a ON p.id = a.position_id
+GROUP BY p.id
+HAVING pillar_count > 1
+ORDER BY pillar_count DESC;
+```
+
+### Authoring an XDOM position (future use)
+
+1. Insert the position into `positions` with `domain = 'XDOM'` and `is_cross_domain = 1`.
+2. Insert one row into `position_pillar_appearances` for each pillar it belongs to.
+3. Insert one row into `subdomains` for `(new_sub_code, 'XDOM')` if the subdomain is new.
+4. Do **not** create duplicate positions in the individual pillar domains.
 
 ---
 
-## 11. Coverage Stats (as of April 2026 full renumber)
+## §5 Status Values
 
-| Metric | Count |
-|--------|-------|
-| Total policy cards in HTML | 2,862 |
-| Cards with structured IDs | 2,862 (100%) |
-| Status: INCLUDED | 293 |
-| Status: MISSING (in DB, not yet in HTML) | 1,045 |
-| Status: PROPOSED | 203 |
-| Status: PARTIAL | 9 |
-| Unresolved prose mentions | *see `unresolved_prose_rule_mentions` view* |
+Every position carries one of four status values:
 
-**Target:** All MISSING and PROPOSED positions added to the site as proposal cards, reviewed, and promoted to INCLUDED. Any policy position not on the website is a transparency violation.
+| Status | Meaning |
+|--------|---------|
+| `CANONICAL` | Adopted, active policy position — the default for all migrated records |
+| `PROPOSED` | Under consideration; not yet adopted |
+| `DEPRECATED` | Superseded or withdrawn; retained for provenance only |
+| `REVIEW` | Flagged during migration for human review — may have ambiguous domain mapping, unparseable ID, or other anomaly |
+
+### Lifecycle
+
+```
+PROPOSED → CANONICAL → DEPRECATED
+                ↑
+           REVIEW (during migration only)
+```
+
+Positions set to `REVIEW` during migration should be examined and moved to `CANONICAL`, `PROPOSED`, or `DEPRECATED` before Phase 2 goes live.
+
+---
+
+## §6 Legacy ID Cross-Reference
+
+Every v1 ID is tracked in the `legacy_id_map` table.
+
+```sql
+-- Look up the new ID for a known v1 ID
+SELECT new_id, source, notes FROM legacy_id_map WHERE old_id = 'HLT-COV-001';
+
+-- Find all v2 IDs that came from a specific v1 subdomain family
+SELECT l.old_id, l.new_id, p.short_title
+FROM legacy_id_map l
+JOIN positions p ON l.new_id = p.id
+WHERE l.old_id LIKE 'HLT-AI-%'
+ORDER BY l.old_id;
+```
+
+### Source field values
+
+| Value | Meaning |
+|-------|---------|
+| `db` | The v1 ID existed only in `policy_catalog.sqlite` |
+| `html` | The v1 ID existed only in `docs/pillars/*.html` |
+| `both` | The v1 ID existed in both the DB and the HTML |
+
+### Lettered suffix variants
+
+Eight v1 IDs carried letter suffixes to denote sub-positions of a parent rule (e.g. `HLT-AI-007A` through `HLT-AI-007G`). Each variant was treated as an independent canonical position and assigned its own sequential v2 ID. The parent-child relationship is preserved only in the `legacy_id_map` via the old-ID ordering.
+
+| v1 ID | v2 ID |
+|-------|-------|
+| `HLT-AI-007A` | `HLTH-AINL-0008` |
+| `HLT-AI-007B` | `HLTH-AINL-0009` |
+| `HLT-AI-007C` | `HLTH-AINL-0010` |
+| `HLT-AI-007D` | `HLTH-AINL-0011` |
+| `HLT-AI-007E` | `HLTH-AINL-0012` |
+| `HLT-AI-007F` | `HLTH-AINL-0013` |
+| `HLT-AI-007G` | `HLTH-AINL-0014` |
+| `TEC-MIL-005A` | `TECH-MILS-0006` |
+
+---
+
+## §7 Migration Notes
+
+### What changed
+
+| Area | v1 | v2 |
+|------|----|----|
+| Domain code length | 3 chars | 4 chars |
+| Subdomain code length | 2–5 chars (mixed) | Exactly 4 chars |
+| Sequence length | 3 digits (`001`) | 4 digits (`0001`) |
+| Number of canonical domains | 32 HTML codes | 26 codes (25 pillars + XDOM) |
+| Non-alpha subdomains | Present (`25A`, `S230`) | Remapped to all-letter codes |
+| Cross-domain tracking | Not formalized | `position_pillar_appearances` table |
+| Multi-source provenance | Not tracked | `legacy_id_map.source` field |
+
+### Why
+
+The v1 format grew organically: domain and subdomain codes were assigned ad hoc as new pillars were introduced, resulting in inconsistent lengths, digit-containing codes that broke regex validation, and multiple domain codes pointing at the same pillar. The v2 format enforces a uniform structure that can be validated with a single regex, accommodates up to 9,999 positions per subdomain (vs. 999 in v1), and formalizes cross-domain positions.
+
+### When
+
+The migration was performed during the Phase 1 → Phase 2 transition of the Freedom and Dignity Project policy platform. The source data was:
+
+- `data/policy_catalog.sqlite` — 1,554 v1 positions
+- `docs/pillars/*.html` — 2,935 policy cards (2,759 unique IDs)
+- Total after merge and deduplication: **2,760 canonical positions**
+
+### Idempotency
+
+`scripts/build-catalog-v2.py` is idempotent: re-running it drops and recreates `data/policy_catalog_v2.sqlite`. The output DB is generated, not hand-edited. All content changes must be made to the source data (`policy_catalog.sqlite` or the pillar HTML), then the v2 DB regenerated.
+
+### Lookup during transition
+
+While both v1 and v2 IDs are in use (Phase 1), use `legacy_id_map` to translate:
+
+```sql
+-- Translate any v1 ID to v2
+SELECT new_id FROM legacy_id_map WHERE old_id = ?;
+
+-- Reverse lookup: find the v1 ID(s) for a v2 position
+SELECT old_id, source FROM legacy_id_map WHERE new_id = ?;
+```
+
+After Phase 2 is complete and all HTML is regenerated from the DB, the v1 IDs will be retired. The `legacy_id_map` table will be retained permanently for provenance.
