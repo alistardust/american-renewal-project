@@ -1263,3 +1263,386 @@ details.design-logic .design-body li { font-size: .93rem; line-height: 1.65; mar
     text-decoration: underline;
   }
 }
+
+
+/* ── ABOUT US PAGE ─────────────────────────────────────────────────────── */
+/* ── HERO ──────────────────────────────────────────────── */
+.about-hero {
+  background: var(--navy);
+  padding: 4rem 2rem 3rem;
+  text-align: center;
+  border-bottom: 4px solid var(--gold);
+}
+.about-hero-eyebrow {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: .7rem; letter-spacing: .22em; text-transform: uppercase;
+  color: rgba(255,255,255,.38); display: block; margin-bottom: 1rem;
+}
+.about-hero h1 {
+  font-family: "Oswald", sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+  color: #fff; margin: 0 0 1.25rem;
+}
+.about-hero h1 span { color: var(--gold); }
+.about-hero-statement {
+  font-family: "Playfair Display", serif; font-style: italic;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  color: rgba(255,255,255,.72);
+  max-width: 640px; margin: 0 auto; line-height: 1.7;
+}
+/* ── BODY ──────────────────────────────────────────────── */
+.about-body { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem; }
+.about-body h2 {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.3rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+  color: var(--navy); margin: 2.5rem 0 .75rem;
+  border-left: 3px solid var(--gold); padding-left: .9rem;
+}
+.about-body p {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: 1rem; line-height: 1.85; color: var(--ink); margin: 0 0 1.2rem;
+}
+.about-body p strong { color: var(--navy); }
+/* ── PROFILE CARD ──────────────────────────────────────── */
+.profile-card {
+  display: flex; gap: 1.75rem; align-items: flex-start;
+  background: var(--parchment);
+  border-left: 4px solid var(--gold);
+  padding: 1.5rem 1.75rem; margin: 1.5rem 0 2rem;
+}
+.profile-avatar {
+  width: 80px; height: 80px; flex-shrink: 0;
+  background: var(--navy);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: "Oswald", sans-serif;
+  font-size: 2rem; font-weight: 700; color: var(--gold);
+  letter-spacing: .04em;
+}
+.profile-details { flex: 1; }
+.profile-name {
+  font-family: "Oswald", sans-serif;
+  font-size: 1.35rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .05em;
+  color: var(--navy); margin: 0 0 .3rem;
+}
+.profile-title {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: .88rem; color: var(--mid); margin: 0 0 .75rem;
+}
+.profile-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0; }
+.profile-tag {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: .75rem; letter-spacing: .06em; text-transform: uppercase;
+  background: var(--navy); color: var(--gold-light);
+  padding: .2rem .6rem; border-radius: 2px;
+}
+/* ── PULLQUOTE ─────────────────────────────────────────── */
+.about-pullquote {
+  border-left: 4px solid var(--red);
+  background: var(--parchment); padding: 1.2rem 1.5rem; margin: 2rem 0;
+}
+.about-pullquote p {
+  font-family: "Playfair Display", serif; font-style: italic;
+  font-size: 1.1rem; color: var(--navy); line-height: 1.7; margin: 0;
+}
+/* ── VALUES LIST ───────────────────────────────────────── */
+.values-list {
+  list-style: none; margin: 1.25rem 0 1.5rem; padding: 0;
+  display: flex; flex-direction: column; gap: .85rem;
+}
+.values-list li {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: .97rem; line-height: 1.75;
+  padding: .85rem 1.1rem;
+  background: var(--sky);
+  border-left: 3px solid var(--navy);
+  color: var(--ink);
+}
+.values-list li strong { color: var(--navy); }
+/* ── CONTRIB NOTICE ────────────────────────────────────── */
+.contrib-notice {
+  background: var(--navy); color: rgba(255,255,255,.85);
+  padding: 1.5rem 1.75rem; margin: 1.5rem 0 2rem;
+  border-top: 3px solid var(--gold);
+}
+.contrib-notice h3 {
+  font-family: "Oswald", sans-serif;
+  font-size: 1rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--gold); margin: 0 0 .75rem;
+}
+.contrib-notice p {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: .93rem; line-height: 1.8; color: rgba(255,255,255,.82); margin: 0 0 .75rem;
+}
+.contrib-notice p:last-child { margin: 0; }
+@media (max-width: 580px) {
+  .profile-card { flex-direction: column; }
+  .profile-avatar { width: 60px; height: 60px; font-size: 1.5rem; }
+}
+
+
+/* ── CONSTITUTION PAGE ─────────────────────────────────────────────────── */
+.const-hero { background: var(--navy); padding: 4rem 2rem 3rem; text-align: center; border-bottom: 4px solid var(--gold); }
+.const-hero-eyebrow { font-family: "Libre Franklin", sans-serif; font-size: .7rem; letter-spacing: .22em; text-transform: uppercase; color: rgba(255,255,255,.38); display: block; margin-bottom: 1rem; }
+.const-hero h1 { font-family: "Oswald", sans-serif; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: #fff; margin: 0 0 1.25rem; }
+.const-hero h1 span { color: var(--gold); }
+.const-hero-statement { font-family: "Playfair Display", serif; font-style: italic; font-size: clamp(1rem, 2vw, 1.3rem); color: rgba(255,255,255,.72); max-width: 640px; margin: 0 auto; line-height: 1.7; }
+.const-body { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem; }
+.const-body h2 { font-family: "Oswald", sans-serif; font-size: 1.3rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--navy); margin: 2.5rem 0 .75rem; border-left: 3px solid var(--gold); padding-left: .9rem; }
+.const-body h3 { font-family: "Oswald", sans-serif; font-size: 1.05rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--navy); margin: 1.5rem 0 .5rem; }
+.const-body p { font-family: "Libre Franklin", sans-serif; font-size: 1rem; line-height: 1.85; color: var(--ink); margin: 0 0 1.2rem; }
+.const-body ul, .const-body ol { padding-left: 1.5rem; margin: 0 0 1.4rem; }
+.const-body li { font-family: "Libre Franklin", sans-serif; font-size: .97rem; line-height: 1.8; color: var(--ink); margin-bottom: .4rem; }
+.const-pullquote { border-left: 4px solid var(--gold); background: var(--parchment); padding: 1.2rem 1.5rem; margin: 2rem 0; }
+.const-pullquote p { font-family: "Playfair Display", serif; font-style: italic; font-size: 1.1rem; color: var(--navy); line-height: 1.7; margin: 0; }
+.const-vuln-list { display: flex; flex-direction: column; gap: .85rem; margin: 1rem 0 1.5rem; }
+.const-vuln { padding: 1rem 1.25rem; background: var(--parchment); border-left: 3px solid var(--red); }
+.const-vuln h4 { font-family: "Oswald", sans-serif; font-size: .9rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--red); margin: 0 0 .4rem; }
+.const-vuln p { font-family: "Libre Franklin", sans-serif; font-size: .92rem; line-height: 1.7; color: var(--ink); margin: 0; }
+.const-amend-list { display: flex; flex-direction: column; gap: .85rem; margin: 1rem 0 1.5rem; }
+.const-amend { padding: 1rem 1.25rem; background: var(--parchment); border-left: 3px solid var(--gold); }
+.const-amend h4 { font-family: "Oswald", sans-serif; font-size: .9rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--navy); margin: 0 0 .4rem; }
+.const-amend p { font-family: "Libre Franklin", sans-serif; font-size: .92rem; line-height: 1.7; color: var(--ink); margin: 0; }
+.const-reform-box { background: var(--navy); color: #fff; padding: 2rem; margin: 2rem 0; border-top: 4px solid var(--gold); }
+.const-reform-box h3 { font-family: "Oswald", sans-serif; font-size: 1.15rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--gold); margin: 0 0 1rem; }
+.const-reform-box h4 { font-family: "Oswald", sans-serif; font-size: .95rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--gold); margin: 1.25rem 0 .5rem; opacity: .8; }
+.const-reform-box p, .const-reform-box li { font-family: "Libre Franklin", sans-serif; font-size: .93rem; line-height: 1.75; color: rgba(255,255,255,.85); margin: 0 0 .6rem; }
+.const-reform-box ul { padding-left: 1.3rem; margin: .5rem 0 1rem; }
+.const-reform-note { font-size: .82rem; color: rgba(255,255,255,.55); font-style: italic; margin-top: 1rem; }
+.const-strategy-list { counter-reset: strategy; display: flex; flex-direction: column; gap: 1rem; margin: 1rem 0 1.5rem; }
+.const-strategy-item { display: flex; gap: 1rem; align-items: flex-start; padding: 1rem 1.25rem; background: var(--parchment); border: 1px solid var(--rule); }
+.const-strategy-num { font-family: "Oswald", sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--navy); opacity: .3; flex-shrink: 0; min-width: 1.5rem; }
+.const-strategy-item div { font-family: "Libre Franklin", sans-serif; font-size: .95rem; line-height: 1.75; color: var(--ink); }
+.const-strategy-item strong { color: var(--navy); }
+.page-refs { max-width: 760px; margin: 2rem auto; padding: 1.2rem 1.5rem; border-top: 1px solid var(--rule); }
+.refs-head { font-family: "Oswald", sans-serif; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--mid); margin-bottom: .75rem; }
+.refs-list { padding-left: 1.2rem; }
+.refs-list li { font-size: .82rem; color: var(--mid); line-height: 1.7; margin-bottom: .5rem; }
+
+
+/* ── ADVERSARIAL REVIEW PAGE ───────────────────────────────────────────── */
+/* ── HERO ──────────────────────────────────────────────── */
+.adv-hero {
+  background: var(--navy);
+  padding: 4rem 2rem 3rem;
+  text-align: center;
+  border-bottom: 4px solid var(--red);
+}
+.adv-hero-eyebrow {
+  font-family: "Libre Franklin", sans-serif;
+  font-size: .7rem; letter-spacing: .22em; text-transform: uppercase;
+  color: rgba(255,255,255,.38); display: block; margin-bottom: 1rem;
+}
+.adv-hero h1 {
+  font-family: "Oswald", sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+  color: #fff; margin: 0 0 1.25rem;
+}
+.adv-hero h1 span { color: var(--red); }
+.adv-hero-statement {
+  font-family: "Libre Franklin", sans-serif; font-style: italic;
+  font-size: clamp(.95rem, 2vw, 1.15rem);
+  color: rgba(255,255,255,.72);
+  max-width: 700px; margin: 0 auto 1.5rem; line-height: 1.75;
+}
+.adv-hero-note {
+  display: inline-block;
+  background: rgba(191,10,48,.18);
+  border: 1px solid rgba(191,10,48,.45);
+  color: rgba(255,255,255,.85);
+  font-family: "Libre Franklin", sans-serif;
+  font-size: .82rem; padding: .6rem 1.2rem; border-radius: 3px;
+  max-width: 600px; line-height: 1.6;
+}
+/* ── BODY WRAPPER ──────────────────────────────────────── */
+.adv-body { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+.adv-body h2 {
+  font-family: "Oswald", sans-serif; font-size: 1.35rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em; color: var(--navy);
+  margin: 3rem 0 .85rem; padding-left: .9rem; border-left: 4px solid var(--red);
+}
+.adv-body h3 {
+  font-family: "Oswald", sans-serif; font-size: 1.05rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .05em; color: var(--navy);
+  margin: 1.75rem 0 .6rem;
+}
+.adv-body p {
+  font-family: "Libre Franklin", sans-serif; font-size: .97rem;
+  line-height: 1.85; color: var(--ink); margin: 0 0 1rem;
+}
+.adv-body ul, .adv-body ol {
+  font-family: "Libre Franklin", sans-serif; font-size: .95rem;
+  line-height: 1.8; color: var(--ink); margin: .5rem 0 1rem 1.5rem;
+}
+.adv-body li { margin-bottom: .4rem; }
+/* ── SEVERITY STATS BAR ────────────────────────────────── */
+.adv-stats-bar { background: var(--parchment); border-bottom: 1px solid var(--rule); padding: 1.75rem 1.5rem; }
+.adv-stats-inner {
+  max-width: 900px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; text-align: center;
+}
+.adv-stat { padding: .85rem .5rem; background: #fff; border-left: 4px solid var(--gold); }
+.adv-stat.serious { border-color: #bf0a30; }
+.adv-stat.moderate { border-color: #c9952a; }
+.adv-stat.minor { border-color: #1e8449; }
+.adv-stat.strong { border-color: #2471a3; }
+.adv-stat-num {
+  font-family: "Oswald", sans-serif; font-size: 2rem;
+  font-weight: 700; line-height: 1; margin-bottom: .3rem;
+}
+.adv-stat.serious .adv-stat-num { color: #bf0a30; }
+.adv-stat.moderate .adv-stat-num { color: #c9952a; }
+.adv-stat.minor .adv-stat-num { color: #1e8449; }
+.adv-stat.strong .adv-stat-num { color: #2471a3; }
+.adv-stat-label {
+  font-family: "Libre Franklin", sans-serif; font-size: .72rem;
+  letter-spacing: .09em; text-transform: uppercase; color: var(--mid);
+}
+/* ── PILLAR SECTIONS ───────────────────────────────────── */
+.adv-pillar { border: 1px solid var(--rule); border-radius: 4px; margin: 2rem 0; overflow: hidden; }
+.adv-pillar-header {
+  background: var(--navy); color: #fff; padding: 1rem 1.4rem;
+  display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap;
+}
+.adv-pillar-title {
+  font-family: "Oswald", sans-serif; font-size: 1.15rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .05em;
+}
+.adv-pillar-badge {
+  font-family: "Libre Franklin", sans-serif; font-size: .72rem;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: .2rem .6rem; border-radius: 2px; font-weight: 600;
+}
+.badge-serious { background: #bf0a30; color: #fff; }
+.badge-moderate { background: #c9952a; color: #fff; }
+.badge-minor { background: #1e8449; color: #fff; }
+.adv-pillar-body { padding: 1.4rem; }
+.adv-pillar-body h4 {
+  font-family: "Libre Franklin", sans-serif; font-size: .8rem; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--mid);
+  margin: 1.3rem 0 .4rem; padding-top: .7rem; border-top: 1px solid var(--rule);
+}
+.adv-pillar-body h4:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+.adv-pillar-body ul {
+  font-family: "Libre Franklin", sans-serif; font-size: .93rem;
+  line-height: 1.75; margin: .4rem 0 .8rem 1.4rem; color: var(--ink);
+}
+.adv-pillar-body p {
+  font-family: "Libre Franklin", sans-serif; font-size: .93rem;
+  line-height: 1.8; color: var(--ink); margin: 0 0 .6rem;
+}
+/* ── FINDING ITEMS ─────────────────────────────────────── */
+.adv-finding { display: flex; gap: .75rem; margin-bottom: .8rem; align-items: flex-start; }
+.adv-finding-icon { flex-shrink: 0; font-size: 1rem; line-height: 1.75; }
+.adv-finding-text { font-family: "Libre Franklin", sans-serif; font-size: .93rem; line-height: 1.78; color: var(--ink); }
+.adv-finding-text strong { color: var(--navy); }
+/* ── SUMMARY TABLE ─────────────────────────────────────── */
+.adv-table-wrap { overflow-x: auto; margin: 1.5rem 0; border: 1px solid var(--rule); }
+.adv-table { width: 100%; border-collapse: collapse; font-family: "Libre Franklin", sans-serif; font-size: .88rem; }
+.adv-table th {
+  background: var(--navy); color: rgba(255,255,255,.85);
+  font-family: "Oswald", sans-serif; font-size: .8rem;
+  text-transform: uppercase; letter-spacing: .08em; padding: .7rem 1rem; text-align: left;
+}
+.adv-table td { padding: .65rem 1rem; border-bottom: 1px solid var(--rule); line-height: 1.55; vertical-align: top; }
+.adv-table tr:nth-child(even) td { background: var(--parchment); }
+.adv-table .sev-serious { color: #bf0a30; font-weight: 600; }
+.adv-table .sev-moderate { color: #9a6f1a; font-weight: 600; }
+.adv-table .sev-minor { color: #1e8449; font-weight: 600; }
+/* ── RECOMMENDATION BLOCKS ─────────────────────────────── */
+.adv-rec-list { display: flex; flex-direction: column; gap: .85rem; margin: 1rem 0 2rem; }
+.adv-rec {
+  display: flex; gap: 1rem; align-items: flex-start;
+  padding: .9rem 1.2rem; background: var(--parchment); border-left: 4px solid var(--gold);
+}
+.adv-rec.soften { border-color: #c9952a; }
+.adv-rec.disclaim { border-color: #bf0a30; }
+.adv-rec.strong-pos { border-color: #1e8449; }
+.adv-rec-num { font-family: "Oswald", sans-serif; font-size: 1rem; font-weight: 700; color: var(--gold); flex-shrink: 0; min-width: 2rem; }
+.adv-rec.soften .adv-rec-num { color: #c9952a; }
+.adv-rec.disclaim .adv-rec-num { color: #bf0a30; }
+.adv-rec.strong-pos .adv-rec-num { color: #1e8449; }
+.adv-rec-body { font-family: "Libre Franklin", sans-serif; font-size: .93rem; line-height: 1.75; color: var(--ink); }
+.adv-rec-body strong { color: var(--navy); }
+/* ── CALLOUT BOX ───────────────────────────────────────── */
+.adv-callout { border-left: 4px solid var(--mid); background: var(--parchment); padding: 1rem 1.4rem; margin: 1.5rem 0; }
+.adv-callout p { font-family: "Libre Franklin", sans-serif; font-size: .93rem; line-height: 1.8; color: var(--ink); margin: 0; }
+.adv-callout.warn { border-color: #c9952a; }
+.adv-callout.danger { border-color: #bf0a30; }
+.adv-callout.note { border-color: #2471a3; }
+/* ── ADV REFERENCES ────────────────────────────────────── */
+.page-refs.adv { max-width: 900px; }
+@media (max-width: 640px) {
+  .adv-stats-inner { grid-template-columns: 1fr 1fr; }
+  .adv-pillar-header { flex-direction: column; gap: .5rem; }
+}
+
+
+/* ── FOUNDATIONS PAGE ──────────────────────────────────────────────────── */
+.f-section { padding: 4rem 0; border-bottom: 2px solid var(--rule); }
+.f-section:last-of-type { border-bottom: none; }
+.f-section.alt { background: var(--parchment); }
+.f-accent-bar { width: 56px; height: 4px; margin-bottom: 1.5rem; }
+.f-section h2 { font-family: "Oswald", sans-serif; font-size: clamp(1.6rem, 4vw, 2.2rem); text-transform: uppercase; letter-spacing: .04em; margin-bottom: .4rem; }
+.f-section .eyebrow { font-size: .8rem; font-family: "Libre Franklin", sans-serif; letter-spacing: .18em; text-transform: uppercase; color: var(--mid); margin-bottom: .5rem; }
+.f-block-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 2rem 0; }
+.f-block { background: rgba(0,0,0,.04); border-radius: 4px; padding: 1.25rem 1.4rem; }
+.f-block.dark { background: rgba(255,255,255,.07); color: rgba(255,255,255,.88); }
+.f-block h4 { font-family: "Oswald", sans-serif; font-size: .9rem; text-transform: uppercase; letter-spacing: .1em; margin-bottom: .6rem; opacity: .7; }
+.f-block ul { list-style: disc; padding-left: 1.2rem; font-size: .93rem; }
+.f-block ul li { margin-bottom: .4rem; }
+.pillar-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; }
+.pillar-tag { font-family: "Libre Franklin", sans-serif; font-size: .76rem; letter-spacing: .08em; text-transform: uppercase; padding: .3em .8em; border-radius: 2px; border: 1.5px solid currentColor; opacity: .75; }
+.f-belief { font-family: "Playfair Display", serif; font-size: 1.1rem; font-style: italic; color: var(--navy); border-left: 3px solid var(--rule); padding: .5rem 0 .5rem 1.1rem; margin: 1.2rem 0 1.5rem; line-height: 1.6; }
+.f-pillars-header { font-family: "Libre Franklin",sans-serif; font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--mid); margin: 2.25rem 0 .75rem; }
+.f-pillar-card { display: flex; flex-direction: column; padding: .9rem 1.1rem 1rem; border: 1.5px solid; border-radius: 2px; text-decoration: none; transition: background .15s, box-shadow .15s; }
+.f-pillar-card:hover { box-shadow: 0 3px 10px rgba(0,0,0,.1); text-decoration: none; }
+.fpc-title { font-family: "Oswald",sans-serif; font-size: .88rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .3rem; }
+.fpc-summary { font-size: .8rem; line-height: 1.5; flex: 1; }
+.fpc-arrow { font-size: .74rem; margin-top: .6rem; font-family: "Libre Franklin",sans-serif; letter-spacing: .04em; opacity: .65; }
+.fo-fullview { background: var(--navy); display: flex; flex-direction: column; }
+.fo-fv-header { padding: .9rem 2rem .5rem; text-align: center; flex-shrink: 0; }
+.fo-fv-eyebrow { font-family: "Libre Franklin",sans-serif; font-size: .65rem; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.32); display: block; margin-bottom: .3rem; }
+.fo-fv-header h1 { font-family: "Oswald",sans-serif; font-size: clamp(1.4rem,2.5vw,2rem); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: #fff; margin: 0; line-height: 1.1; }
+.fo-fv-header h1 span { color: var(--gold); }
+.fo-fv-grid { display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid rgba(255,255,255,.08); }
+.fo-fv-card { display: flex; flex-direction: column; padding: 1.25rem 1.2rem; min-height: 200px; border-right: 1px solid rgba(255,255,255,.07); border-top: 4px solid; text-decoration: none; transition: background .18s; }
+.fo-fv-card:last-child { border-right: none; }
+.fo-fv-card:hover { background: rgba(255,255,255,.06); text-decoration: none; }
+.fo-fv-num { font-family: "Oswald",sans-serif; font-size: 1.9rem; font-weight: 700; line-height: 1; margin-bottom: .45rem; }
+.fo-fv-name { font-family: "Oswald",sans-serif; font-size: .95rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #fff; margin-bottom: .6rem; line-height: 1.25; }
+.fo-fv-belief { font-family: "Playfair Display",serif; font-size: .8rem; font-style: italic; color: rgba(255,255,255,.5); line-height: 1.6; flex: 1; }
+.fo-fv-cta { font-family: "Libre Franklin",sans-serif; font-size: .67rem; letter-spacing: .12em; text-transform: uppercase; margin-top: 1.1rem; opacity: .6; }
+.arch-intro { padding: 2rem 0; background: var(--parchment); border-bottom: 2px solid var(--rule); }
+.fo-snav { position: sticky; top: 63px; z-index: 150; background: var(--navy); border-bottom: 2px solid rgba(255,255,255,.1); overflow-x: auto; scrollbar-width: none; }
+.fo-snav::-webkit-scrollbar { display: none; }
+.fo-snav-inner { display: flex; min-width: max-content; }
+.fo-snav a { font-family: "Oswald",sans-serif; font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; padding: .6rem 1.1rem; white-space: nowrap; text-decoration: none; border-bottom: 3px solid transparent; transition: border-color .15s, opacity .15s; opacity: .6; }
+.fo-snav a:hover, .fo-snav a.active { opacity: 1; border-bottom-color: currentColor; }
+.arch-intro .wrap { max-width: 740px; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+.arch-item-label { font-family: "Oswald",sans-serif; font-size: .85rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--navy); margin-bottom: .4rem; }
+.arch-item p { font-size: .9rem; line-height: 1.72; color: var(--ink); margin: 0; }
+@media (max-width: 900px) and (min-width: 541px) {
+  .fo-fv-grid { grid-template-columns: repeat(3, 1fr); flex: none; }
+  .fo-fullview { min-height: auto; }
+  .fo-fv-card { min-height: 180px; }
+}
+@media (max-width: 640px) {
+  .f-block-grid { grid-template-columns: 1fr; }
+  .arch-intro .wrap { grid-template-columns: 1fr; }
+  .fo-snav a { font-size: .65rem; padding: .55rem .75rem; }
+}
+@media (max-width: 540px) {
+  .fo-fullview { min-height: auto; }
+  .fo-fv-header { padding: .75rem 1rem .4rem; }
+  .fo-fv-grid { grid-template-columns: 1fr; border-top: none; }
+  .fo-fv-card { flex-direction: row; align-items: center; padding: 0 1.1rem; min-height: 64px; border-top: none; border-right: none; border-left: 4px solid; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .fo-fv-num { font-size: 1.45rem; min-width: 2rem; text-align: center; margin: 0 .8rem 0 0; }
+  .fo-fv-name { font-size: .83rem; flex: 1; margin: 0; }
+  .fo-fv-belief { display: none; }
+  .fo-fv-cta { font-size: .63rem; margin: 0 0 0 .6rem; white-space: nowrap; }
+}
