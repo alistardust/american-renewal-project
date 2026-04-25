@@ -393,4 +393,41 @@
     }
   })();
 
+  /* ── HOMEPAGE SECTION ACCORDIONS ────────────────────── */
+  if (document.querySelector('.section-accordion')) {
+    document.querySelectorAll('.section-accordion').forEach(function (details) {
+      const summary = details.querySelector('summary');
+      const content = details.querySelector('section');
+      if (!content || !summary) return;
+
+      // Start collapsed — JS controls visibility from here
+      content.style.overflow = 'hidden';
+      content.style.transition = 'max-height .4s ease';
+      content.style.maxHeight = '0';
+
+      summary.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        if (details.open) {
+          // Animate close: capture current height, then transition to 0
+          content.style.maxHeight = content.scrollHeight + 'px';
+          void content.offsetHeight; // force reflow
+          content.style.maxHeight = '0';
+          content.addEventListener('transitionend', function handler() {
+            details.removeAttribute('open');
+            content.removeEventListener('transitionend', handler);
+          }, { once: true });
+        } else {
+          // Animate open: set open first so scrollHeight is measurable, then transition
+          details.setAttribute('open', '');
+          content.style.maxHeight = content.scrollHeight + 'px';
+          content.addEventListener('transitionend', function handler() {
+            content.style.maxHeight = 'none'; // allow dynamic resizing once fully open
+            content.removeEventListener('transitionend', handler);
+          }, { once: true });
+        }
+      });
+    });
+  }
+
 })();

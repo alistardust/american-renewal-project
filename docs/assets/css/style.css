@@ -1915,3 +1915,102 @@ details.design-logic .design-body li { font-size: .93rem; line-height: 1.65; mar
 @media (max-width: 480px) {
   .clf-stats-inner { grid-template-columns: 1fr; }
 }
+
+/* ══ HOMEPAGE SECTION ACCORDIONS ══════════════════════════════ */
+
+/* Remove default details/summary disclosure triangle */
+details.section-accordion > summary { list-style: none; }
+details.section-accordion > summary::-webkit-details-marker { display: none; }
+
+.section-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: var(--navy);
+  padding: 1rem 2rem;
+  min-height: 76px;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+
+.section-bar:hover {
+  background: rgba(26,42,74,.85);
+}
+
+.section-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+.section-bar-eyebrow {
+  font-family: 'Oswald', sans-serif;
+  font-size: .72rem;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.section-bar-text {
+  display: flex;
+  flex-direction: column;
+  gap: .15rem;
+  min-width: 0;
+}
+
+.section-bar-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  color: #fff;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.section-bar-teaser {
+  font-family: 'Libre Franklin', sans-serif;
+  font-size: .82rem;
+  color: rgba(255,255,255,.58);
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.section-bar-hint {
+  font-family: 'Libre Franklin', sans-serif;
+  font-size: .78rem;
+  color: rgba(255,255,255,.45);
+  font-variant: small-caps;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  flex-shrink: 0;
+  margin-left: 1.5rem;
+}
+
+.section-bar-chevron {
+  display: inline-block;
+  transition: transform .2s ease;
+  font-size: .9rem;
+}
+
+details.section-accordion[open] .section-bar-chevron {
+  transform: rotate(180deg);
+}
+
+/* Animated content panel */
+details.section-accordion > section,
+details.section-accordion > .ai-transparency-section {
+  overflow: hidden;
+}
+
+@media (max-width: 540px) {
+  .section-bar-teaser { display: none; }
+  .section-bar { padding: .85rem 1rem; min-height: 60px; }
+}
