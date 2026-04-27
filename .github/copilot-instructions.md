@@ -4,22 +4,17 @@
 
 This repository is an active U.S. policy platform in development. The live site is at https://alistardust.github.io/freedom-and-dignity-project/.
 
-For current pillar counts, foundation structure, and corpus inventory, read `overview/current-state.md` before making structural changes. Do not hardcode counts from this file — verify them from the repository.
+For current pillar counts, foundation structure, and corpus inventory, read `.github/current-state.md` before making structural changes. Do not hardcode counts from this file — verify them from the repository.
 
 The policy corpus is primarily maintained in:
 
 - `docs/pillars/*.html` — live policy card HTML
 - `data/policy_catalog_v2.sqlite` — structured policy position catalog (v2 ID format)
-- `pillars/` — narrative prose markdown (overview and policy sections per pillar)
+- `policy/foundations/pillars/` — narrative prose markdown (overview and policy sections per pillar)
 
-The following files are historical source material, retained for provenance and still referenced during catalog rebuilds:
+The markdown under `policy/foundations/pillars/` may lag behind the site HTML.
 
-- `sources/branch_branch_political_project_main.txt`
-- `sources/branch_political_project_brainstorm.txt`
-
-The markdown under `pillars/` may lag behind the site HTML.
-
-For shared repository context, provenance notes, and maintenance expectations, also read `overview/ai-repo-context.md`.
+For shared repository context, provenance notes, and maintenance expectations, also read `.github/ai-repo-context.md`.
 
 ---
 
@@ -41,9 +36,8 @@ The site HTML and the DB have both been edited since last reconciliation. Neithe
 Once the reconciliation audit is complete:
 
 - `data/policy_catalog_v2.sqlite` is the **canonical source of truth** for all policy positions
-- `pillars/*/overview.md` and `pillars/*/policy.md` are the source for narrative prose
+- `policy/foundations/pillars/*/overview.md` and `policy/foundations/pillars/*/policy.md` are the source for narrative prose
 - `docs/pillars/*.html` is **generated output** — do not hand-edit policy cards
-- New positions are authored in the DB first, then the site is regenerated at build time
 
 Do **not** assume the current pillar files are complete.
 
@@ -91,16 +85,16 @@ Do not hand-edit `data/policy_catalog_v2.sqlite`.
 PolicyOS is the cross-platform system-rules layer being developed in parallel with the pillar policy content. All PolicyOS research and drafts live in:
 
 ```
-policyos/
+policy/policyos/
 ```
 
 The current hierarchy (as of April 2026):
 
-1. **Platform values** — `policyos_platform_values_v1.md` — the moral/political anchor for all rules. Uses a `floor + duty` model (what policy must not violate vs. what it must actively secure). **Locked.**
-2. **System principles** — `policyos_1_0_rules_proposal.md` — cross-platform design rules (KERN/GEOG/FEDR/REGD/ENFA/AIGV families). Under review.
-3. **Authoring OS** — `policyos_authoring_os_v1.md` — how policy must be written, tested, scoped, enforced, and maintained (NORM/AUTH/TEST/ENFC/PLAC/MAINT families). Under review.
+1. **Platform values** — `policy/policyos/policyos_platform_values_v1.md` — the moral/political anchor for all rules. Uses a `floor + duty` model (what policy must not violate vs. what it must actively secure). **Locked.**
+2. **System principles** — `policy/policyos/policyos_1_0_rules_proposal.md` — cross-platform design rules (KERN/GEOG/FEDR/REGD/ENFA/AIGV families). Under review.
+3. **Authoring OS** — `policy/policyos/policyos_authoring_os_v1.md` — how policy must be written, tested, scoped, enforced, and maintained (NORM/AUTH/TEST/ENFC/PLAC/MAINT families). Under review.
 
-For the most current status and next steps, read the handoff file: `policyos/copilot_handoff_2026-04-26.md`.
+For the most current status and next steps, read the handoff file: `policy/policyos/copilot_handoff_2026-04-26.md`.
 
 PolicyOS rules use the ID prefix `PLOS-` and `PAOS-`. Do not conflate them with pillar policy positions (`XXXX-XXXX-0000`).
 
@@ -113,13 +107,13 @@ Do not canonicalize PolicyOS rules into `system_rules.md` or the DB until the st
 
 Any commit that changes the following **must** update the relevant repo documentation in the same commit:
 
-- Pillar count or structure → update `overview/current-state.md` pillar registry + `README.md`
-- Policy card count or schema → update `data/README.md` + `overview/current-state.md`
+- Pillar count or structure → update `.github/current-state.md` pillar registry + `README.md`
+- Policy card count or schema → update `data/README.md` + `.github/current-state.md`
 - DB schema changes → update `data/README.md` + `system_rules.md`
-- New architectural decisions → update `.github/copilot-instructions.md` + `overview/current-state.md`
+- New architectural decisions → update `.github/copilot-instructions.md` + `.github/current-state.md`
 - New scripts or tooling → update `README.md` "Scripts" section
 
-"Repo documentation" means: `README.md`, `system_rules.md`, `overview/*.md`, `data/README.md`, `.github/copilot-instructions.md`.
+"Repo documentation" means: `README.md`, `system_rules.md`, `.github/current-state.md`, `.github/ai-repo-context.md`, `data/README.md`, `.github/copilot-instructions.md`.
 "Docs" (without "repo") means the website in the `docs/` directory. Never confuse the two.
 
 ---
@@ -406,7 +400,7 @@ Until reconciliation is complete:
 ### Target state (Phase 2, post-reconciliation)
 
 - `data/policy_catalog_v2.sqlite` is the single source of truth for all policy positions
-- `pillars/*/overview.md` and `pillars/*/policy.md` are the source for narrative prose
+- `policy/foundations/pillars/*/overview.md` and `policy/foundations/pillars/*/policy.md` are the source for narrative prose
 - `docs/pillars/*.html` is generated output — do not hand-edit policy cards
 - A build script (`scripts/generate-site.py`, TBD) will render HTML from DB + markdown
 - Any content change must be made in the source (DB or markdown), then the site regenerated

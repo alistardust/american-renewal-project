@@ -44,4 +44,4 @@ Representative system rules (selected highlights)
 - CHKS-FNDS-0009: Guarantee universal equal rights (baseline national standard).
 - CHKS-GEOS-0001: Geography must not determine access to rights or care.
 
-(For operational details, see scripts/import_policy_catalog.py and overview/current-state.md.)
+(For operational details, see scripts/import_policy_catalog.py and .github/current-state.md.)

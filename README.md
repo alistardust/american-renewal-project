@@ -15,12 +15,14 @@ docs/               Website — served by GitHub Pages
   assets/           Shared CSS, JS, and images
   pillars/          25 pillar HTML pages
   compare/          Party comparison pages
-pillars/            Narrative markdown source (per-pillar prose, pre-generation)
-foundations/        Foundation values and framing documents
-overview/           Project framing, current state, roadmap, and AI context
+policy/             All policy content
+  foundations/      Foundation values, framing, and platform-statement
+    pillars/        Narrative markdown source (per-pillar prose, pre-generation)
+  policyos/         PolicyOS system rules layer
+  proposals/        Proposed foundational documents
+    rights/         New Bill of Rights, Workers' Rights, Declaration of Indigenous Rights
 data/               Policy catalog (SQLite), research reports, citation audit
   pillar_reports/   Per-pillar audits, PolicyOS research
-sources/            Historical source transcripts (provenance only)
 scripts/            Import, generation, and maintenance scripts
 tests/              Unit tests (Vitest) and E2E tests (Playwright/Firefox)
 AGENTS.md           Codex CLI instruction file
@@ -34,7 +36,7 @@ system_rules.md     Cross-domain system rule architecture
 - **Plain language:** All positions have plain-language summaries
 - **Citations:** Inline APA citations across all pillar pages
 
-For detailed status, see [`overview/current-state.md`](overview/current-state.md).
+For detailed status, see [`.github/current-state.md`](.github/current-state.md).
 
 ## Contributing
 

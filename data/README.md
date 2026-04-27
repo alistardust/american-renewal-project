@@ -66,7 +66,7 @@ Provenance for every position is preserved in `legacy_id_map`: each row records 
 
 This directory contains per-pillar policy audit reports, scope analysis CSVs,
 and reconciliation reports. It does not contain PolicyOS documents — those live
-in `policyos/` at the repo root.
+in `policy/policyos/` at the repo root.
 
 - `citation-audit.md` — full citation audit across all 25 pillar HTML files
 - `migration-report.md` — HTML ↔ DB reconciliation report (most recent build)

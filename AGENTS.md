@@ -5,8 +5,8 @@
 This repository is an active U.S. policy platform in development.
 
 For shared repository context, source-of-truth guidance, provenance notes, and maintenance expectations, read:
-- `overview/ai-repo-context.md`
-- `overview/current-state.md`
+- `.github/ai-repo-context.md`
+- `.github/current-state.md`
 
 Do not hardcode volatile counts from repo documentation into agent instructions. Verify current counts from the repository when they matter.
 
@@ -21,13 +21,12 @@ Until reconciliation is complete:
 - preserve provenance
 
 When auditing or editing policy content, use this general order:
-1. `overview/current-state.md`
+1. `.github/current-state.md`
 2. `docs/pillars/`
 3. `data/policy_catalog_v2.sqlite`
-4. `sources/`
-5. `pillars/`
+4. `policy/foundations/pillars/`
 
-Shared repository context belongs in `overview/ai-repo-context.md`. Do not duplicate volatile repo facts, counts, or inventories in this instruction file. When shared repository context changes, update `overview/ai-repo-context.md` in the same change.
+Shared repository context belongs in `.github/ai-repo-context.md`. Do not duplicate volatile repo facts, counts, or inventories in this instruction file. When shared repository context changes, update `.github/ai-repo-context.md` in the same change.
 
 ## Working with IDs and the catalog
 
@@ -51,9 +50,8 @@ Do not hand-edit `data/policy_catalog_v2.sqlite` unless the task is explicitly a
 Catalog, migration, and provenance edge cases in this repo are context-sensitive and may change over time.
 
 When they matter, check:
-- `overview/current-state.md`
-- `overview/ai-repo-context.md`
-- the relevant source logs in `sources/`
+- `.github/current-state.md`
+- `.github/ai-repo-context.md`
 - the current catalog data in `data/`
 
 ## Editing guidance
@@ -70,16 +68,16 @@ When they matter, check:
 PolicyOS is the cross-platform system-rules layer being developed in parallel with the pillar policy content. All PolicyOS research and drafts live in:
 
 ```
-policyos/
+policy/policyos/
 ```
 
 The current hierarchy (as of April 2026):
 
-1. **Platform values** — `policyos_platform_values_v1.md` — the moral/political anchor for all rules. Uses a `floor + duty` model (what policy must not violate vs. what it must actively secure). **Locked.**
-2. **System principles** — `policyos_1_0_rules_proposal.md` — cross-platform design rules (KERN/GEOG/FEDR/REGD/ENFA/AIGV families). Under review.
-3. **Authoring OS** — `policyos_authoring_os_v1.md` — how policy must be written, tested, scoped, enforced, and maintained (NORM/AUTH/TEST/ENFC/PLAC/MAINT families). Under review.
+1. **Platform values** — `policy/policyos/policyos_platform_values_v1.md` — the moral/political anchor for all rules. Uses a `floor + duty` model (what policy must not violate vs. what it must actively secure). **Locked.**
+2. **System principles** — `policy/policyos/policyos_1_0_rules_proposal.md` — cross-platform design rules (KERN/GEOG/FEDR/REGD/ENFA/AIGV families). Under review.
+3. **Authoring OS** — `policy/policyos/policyos_authoring_os_v1.md` — how policy must be written, tested, scoped, enforced, and maintained (NORM/AUTH/TEST/ENFC/PLAC/MAINT families). Under review.
 
-For the most current status and next steps, read the handoff file: `policyos/copilot_handoff_2026-04-26.md`.
+For the most current status and next steps, read the handoff file: `policy/policyos/copilot_handoff_2026-04-26.md`.
 
 PolicyOS rules use the ID prefix `PLOS-` and `PAOS-`. Do not conflate them with pillar policy positions (`XXXX-XXXX-0000`).
 
@@ -94,13 +92,13 @@ Any change that affects repository behavior, workflow, build steps, architecture
 
 This includes, when applicable:
 - `README.md`
-- `overview/current-state.md`
-- `overview/ai-repo-context.md`
+- `.github/current-state.md`
+- `.github/ai-repo-context.md`
 - `system_rules.md`
 - `data/README.md`
 - other affected repo documentation
 
-"Repo documentation" means repository documentation files such as `README.md`, `overview/*.md`, `system_rules.md`, `data/README.md`, and related project documentation files.
+"Repo documentation" means repository documentation files such as `README.md`, `.github/current-state.md`, `.github/ai-repo-context.md`, `system_rules.md`, `data/README.md`, and related project documentation files.
 
 "Docs" without "repo" means the website content in the `docs/` directory.
 
@@ -365,16 +363,16 @@ Accessibility and content requirements are non-negotiable:
 
 For changing implementation detail, frontend conventions, accessibility specifics, and content-pattern guidance, follow:
 - `CODING_STANDARDS.md`
-- `overview/ai-repo-context.md`
-- `overview/current-state.md`
+- `.github/ai-repo-context.md`
+- `.github/current-state.md`
 
 
 
 ## Build architecture
 
 For current build and source-of-truth context, follow:
-- `overview/ai-repo-context.md`
-- `overview/current-state.md`
+- `.github/ai-repo-context.md`
+- `.github/current-state.md`
 
 Current working rules:
 - treat the repo as pre-reconciliation unless current repo documentation says otherwise
