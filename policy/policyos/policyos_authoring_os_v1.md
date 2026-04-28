@@ -118,7 +118,7 @@ specifies the review process that substitutes for full independence at this stag
 
 - `PAOS-TEST-0001` Every proposed rule must be tested for loopholes, exploit paths, burden-shifting, selective enforcement risk, and foreseeable abuse patterns before acceptance.
 - `PAOS-TEST-0002` Every proposed rule affecting rights, access, or eligibility must be tested against practical barriers including cost, distance, disability, language, timing, digital access, and paperwork burden.
-- `PAOS-TEST-0003` Every proposed rule must be checked for conflict with existing rules in the same pillar, overlapping pillars, and applicable system overlays.
+- `PAOS-TEST-0003` Every proposed rule must be checked for conflict with existing rules in the same pillar, overlapping pillars, and applicable system overlays. This check must include a documented inheritance declaration identifying which KERN rules and overlay families apply to the pillar and how they interact. Where a pillar invokes multiple overlays with potentially conflicting obligations, the cross-layer conflict-resolution hierarchy in Layer 2 governs, and the conflict must be documented explicitly rather than left to interpretive discretion.
 - `PAOS-TEST-0004` Every proposed rule must be reviewed for whether it creates perverse incentives, hidden rationing, delay incentives, denial incentives, or extraction incentives.
 - `PAOS-TEST-0005` Every high-risk rule must be evaluated against bad-actor behavior, edge cases, noncompliance patterns, and likely institutional workarounds.
 - `PAOS-TEST-0006` Every rights-limiting or coercive rule must identify the least-abusive alternative considered and explain why the chosen design is justified.
@@ -147,6 +147,7 @@ specifies the review process that substitutes for full independence at this stag
 - `PAOS-MAINT-0003` Deprecated rules should be superseded with visible traceability rather than silently removed when provenance or interpretation history matters.
 - `PAOS-MAINT-0004` Every pillar must be reviewed for missing policy areas, stale assumptions, under-enforced rules, and newly visible system vulnerabilities at least every two years or upon major legislative, judicial, or technological change materially affecting the pillar's domain — whichever comes first. The pillar's designated maintainer is responsible for initiating review. A pillar overdue for review must be flagged as stale in the public-facing index until review is completed.
 - `PAOS-MAINT-0005` Where a system overlay applies to a pillar, the pillar should explicitly state how that overlay is implemented locally rather than assuming the inheritance is obvious.
+- `PAOS-MAINT-0006` PolicyOS itself must be reviewed under the same criteria as any pillar. Reviews must apply KERN compliance assessment, NORM-0002 value alignment, and TEST-0001 adversarial testing. Review results must be documented and publicly accessible. The process defined in `policyos_governance_v1.md` is the enforcement mechanism for this requirement.
 
 ## How this relates to the principles layer
 

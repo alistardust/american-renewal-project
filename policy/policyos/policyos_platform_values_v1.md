@@ -361,6 +361,26 @@ should be democratically revisable. Durability requirements should never be
 used to insulate policy from legitimate democratic revision — only to protect
 against bad-faith erosion, capture, or administrative neglect.
 
+## Commentary: jurisdictional scope
+
+The values in this document are stated as universal human values — grounded in
+the dignity, freedom, and standing of persons as persons, not as citizens of any
+particular state.
+
+The rules derived from these values in Layers 2 and 3 are scoped to United
+States jurisdiction. That is not a statement that these values apply only within
+the United States; it is a statement that this platform operates within U.S.
+legal and political structures.
+
+Where U.S. policy has foreseeable significant effects on persons outside U.S.
+jurisdiction — including through trade agreements, military action, sanctions,
+technology export, or climate policy — those extraterritorial effects fall within
+the scope of the platform's values even when they fall outside the formal scope
+of its rules. Pillars addressing such policy areas should acknowledge foreseeable
+extraterritorial effects and require harm minimization where practically
+available, consistent with Value 2 (Equal Standing) and Value 8 (Ecological
+Habitability).
+
 ## Amendment protocol
 
 This document is locked as the canonical PolicyOS values layer. "Locked" does

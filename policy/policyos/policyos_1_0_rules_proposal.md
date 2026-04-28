@@ -35,7 +35,7 @@ PolicyOS is built from the five foundations:
 
 ## Canonical structure
 
-PolicyOS 1.0 uses ten canonical families:
+PolicyOS 1.0 uses eleven canonical families:
 
 - `KERN` — the universal kernel, mandatory for all pillars
 - `GEOG` — the geography and practical-access overlay
@@ -47,6 +47,7 @@ PolicyOS 1.0 uses ten canonical families:
 - `THRV` — the material security overlay
 - `DEMO` — the democratic participation overlay
 - `PRIV` — the privacy and surveillance overlay
+- `ECON` — the economic domination overlay
 
 Only `KERN` is universal. `ENFA` is mandatory for all pillars with enforcement, penalty, or eligibility components. The remaining overlays apply where relevant to the design area.
 
@@ -91,13 +92,24 @@ This hierarchy is stated explicitly as a rule, not merely implied by document st
 
 ### `KERN` — universal kernel
 
+For purposes of KERN, automated decision systems — whether AI-based, algorithmic,
+rule-based, or otherwise automated — are treated equivalently to human
+decision-makers with respect to accountability, transparency, contestability, and
+rights-protection requirements. A system does not escape KERN obligations by not
+qualifying as artificial intelligence under any particular technical or regulatory
+definition.
+
 1. `PLOS-KERN-0001`
 Platform design must remain complete, internally consistent, and auditable
 across pillars, implementation rules, and enforcement design.
 
 2. `PLOS-KERN-0002`
 No person, office, agency, court, corporation, or contractor may be placed
-beyond the law or beyond accountability under the law.
+beyond the law or beyond accountability under the law. Delegation of a duty or
+authority does not release the delegating actor from accountability for that
+duty's fulfillment. All actors in a delegation chain bear co-responsibility for
+downstream KERN compliance; accountability does not terminate at any intermediate
+node.
 
 3. `PLOS-KERN-0003`
 Fundamental rights attach to all persons under United States jurisdiction and
@@ -123,7 +135,10 @@ accountability, transparency, due process, or rights protection.
 7. `PLOS-KERN-0007`
 Any system that affects rights, liberty, safety, access, or eligibility must be
 transparent, auditable, and explainable to affected people and to the public at
-the level appropriate to the risk.
+the level appropriate to the risk. Risk level must be assessed by an actor
+independent of the system's proponent or operator. Where independent assessment
+is unavailable, the default is the highest transparency and explainability
+standard.
 
 8. `PLOS-KERN-0008`
 No system may use hidden rules, inaccessible information, trade-secret shields,
@@ -137,10 +152,17 @@ masquerading as process.
 10. `PLOS-KERN-0010`
 No system may make or materially influence adverse decisions affecting rights,
 liberty, or essential access without meaningful human accountability and review.
+Meaningful review requires at minimum: (a) adequate time to evaluate the
+decision and the full information the system used; (b) access to that
+information; and (c) actual authority to override, modify, or reject the
+automated recommendation. Rubber-stamp review that lacks any of these elements
+does not satisfy this rule.
 
 11. `PLOS-KERN-0011`
 Systems may assist in analysis, triage, and efficiency, but they may not
-replace accountable human judgment in consequential decisions.
+replace accountable human judgment in consequential decisions. Human judgment
+is not satisfied by nominal human sign-off; it requires the conditions for
+meaningful review defined in KERN-0010.
 
 12. `PLOS-KERN-0012`
 Systems must be designed to prevent bias amplification, structural unfairness,
@@ -180,7 +202,11 @@ summary of purpose, design logic, and real-world effect.
 
 20. `PLOS-KERN-0020`
 Rules must be reviewed before enactment for conflicts, loopholes, exploit
-paths, contradictory incentives, and foreseeable abuse patterns.
+paths, contradictory incentives, and foreseeable abuse patterns. This review
+must complete within a defined maximum timeline established in the applicable
+governance process. Failure to complete pre-enactment review within that
+timeline is not a veto and must not prevent enactment; it triggers escalated
+post-enactment review instead.
 
 21. `PLOS-KERN-0021`
 Systems must be periodically reviewed for obsolescence, ambiguity,
@@ -276,6 +302,12 @@ profit.
 2. `PLOS-REGD-0002`
 Regulatory systems must distinguish between genuine protections and rules that
 mainly create delay, exclusion, arbitrary gatekeeping, or artificial scarcity.
+For purposes of this rule, a protective regulation is one whose primary purpose
+is preventing identifiable harm to persons or the public; rules whose primary
+purpose is excluding competition, creating administrative barriers, or capturing
+regulatory rents do not qualify. Where a regulation is identified as
+gatekeeping rather than protective, the reviewing authority must specify the
+corrective action required rather than only making the identification.
 
 3. `PLOS-REGD-0003`
 Removal or weakening of safeguards must be evidence-based and must preserve or
@@ -395,6 +427,11 @@ ordinary operation.
 Any override of AI safety controls must be narrowly defined, federally approved
 in advance, time-limited, risk-ranked, scope-limited, mitigation-bound, and
 publicly disclosed except for tightly justified security confidentiality.
+Security confidentiality claims may not be self-certified. Any invocation of
+security confidentiality must be reviewed by an independent oversight body
+empowered to assess whether the exception is narrowly justified; the actor
+asserting the security exception may not be the sole determiner of its
+validity.
 
 16. `PLOS-AIGV-0016`
 AI developers and deployers must actively design, test, and update safeguards
@@ -535,13 +572,49 @@ Individuals must have the right to access, contest, and require correction of
 personal data held by government or government-contracted systems. This right
 may not be defeated through complexity, cost, or administrative delay.
 
+### `ECON` — economic domination overlay
+
+Applies to pillars governing labor markets, housing, financial services, credit
+access, healthcare markets, platform economies, or any sector where concentrated
+private economic power can override the practical freedom, bargaining power, or
+essential access of persons. See `DEFN-DOMN-0001` for the project's operative
+definition of economic domination.
+
+1. `PLOS-ECON-0001`
+No private actor or coordinated group of actors may be permitted to achieve or
+maintain market concentration in essential sectors — including labor, housing,
+healthcare, food systems, credit, and essential platform infrastructure —
+sufficient to override the practical freedom, bargaining power, or essential
+access of persons subject to that sector.
+
+2. `PLOS-ECON-0002`
+Where a sector exhibits market concentration sufficient to deny workers,
+tenants, borrowers, or consumers the practical ability to refuse, negotiate, or
+exit, rule design must include structural remedies: market intervention, price
+regulation, public provision, or equivalent corrective mechanisms. Disclosure
+and transparency requirements alone are not structural remedies.
+
+3. `PLOS-ECON-0003`
+Labor market rules must be designed to correct the structural asymmetry between
+individual workers and organized employers. Rules that reduce collective
+bargaining rights, limit labor organizing, or suppress wage floor competition
+are design failures under this rule unless compelling evidence demonstrates that
+they improve worker outcomes in practice.
+
+4. `PLOS-ECON-0004`
+Credit, housing, and financial services rules must be designed to prevent
+predatory extraction from persons in conditions of material precarity. Rules
+that enable high-cost credit traps, discriminatory lending, speculative housing
+concentration, or eviction-by-default at scale are design failures under this
+rule.
+
 ## Closing statement
 
 PolicyOS 1.0 proposes:
 
 - one universal kernel (KERN, 27 rules)
 - one mandatory-for-enforcement overlay (ENFA)
-- eight targeted overlays (GEOG, FEDR, REGD, AIGV, ECOL, THRV, DEMO, PRIV)
+- nine targeted overlays (GEOG, FEDR, REGD, AIGV, ECOL, THRV, DEMO, PRIV, ECON)
 - pillar-level implementation where domain specifics are required
 - foundation and strategy prose where values, identity, or project history are the right layer
 
