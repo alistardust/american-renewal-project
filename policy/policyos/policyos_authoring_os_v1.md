@@ -45,9 +45,50 @@ This draft uses six authoring families:
 - `PLAC` — scope and placement rules
 - `MAINT` — maintenance, revision, and deprecation rules
 
-The `NORM` family should be read together with
-[policyos_platform_values_v1.md](/home/alice/git/freedom-and-dignity-project/data/pillar_reports/by_mapping/policyos_research/policyos_platform_values_v1.md:1),
+The `NORM` family should be read together with `policyos_platform_values_v1.md`,
 which serves as the current source text for the platform’s normative layer.
+
+## Self-application and the bootstrap problem
+
+The Authoring OS governs how policy rules must be written. The question then
+arises: do these authoring rules themselves comply with what they require?
+
+The honest answer is: partly, by design, and with a documented carve-out.
+
+**Self-application where possible:** These rules are designed to self-apply
+where the application is meaningful. For each Authoring OS rule, the following
+mapping holds:
+
+- *Responsible actor:* the policy author proposing a new rule
+- *Trigger condition:* proposal of a new rule for adoption
+- *Intended outcome:* a well-formed, values-aligned, enforceable rule
+- *Enforcement authority:* the PolicyOS governance process (see `policyos_governance_v1.md`)
+- *Remedy for non-compliance:* rejection or mandatory revision of the
+  non-compliant draft before adoption
+
+The TEST family (adversarial review before adoption) applies to these rules —
+as demonstrated by the adversarial review conducted on 2026-04-27. The MAINT
+family (periodic review, 2-year cadence) applies to these rules. NORM applies
+to these rules — they must align with platform values. PLAC applies — these
+rules belong here, not in KERN or in a pillar.
+
+**Formal carve-out with rationale:** PAOS-AUTH-0002 requires specifying an
+enforcement authority independent of the actor being regulated. For meta-rules
+that govern rule construction, fully independent external enforcement cannot
+currently be achieved: the same parties responsible for writing policy are also
+the ones subject to the authoring requirements. The carve-out is this: where a
+rule governs the construction of other rules rather than external conduct, the
+required independence is satisfied by the PolicyOS review gate — a structured
+deliberative process in which non-compliant drafts are identified and revised
+before adoption. True external independence (a separate institutional actor
+with authority to reject drafts and impose remedies) is a goal for future
+governance development but is not achievable at the current platform scale.
+
+This is not a loophole. It is an honest acknowledgment that rule-systems
+governing their own construction have structural limits that political
+constitutions, legal codes, and academic research institutions all share.
+The constraint is real; the carve-out is narrow; and the governance document
+specifies the review process that substitutes for full independence at this stage.
 
 ## `NORM` — normative alignment requirements
 
