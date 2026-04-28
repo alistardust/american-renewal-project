@@ -35,16 +35,20 @@ PolicyOS is built from the five foundations:
 
 ## Canonical structure
 
-PolicyOS 1.0 uses six canonical families:
+PolicyOS 1.0 uses ten canonical families:
 
 - `KERN` — the universal kernel, mandatory for all pillars
 - `GEOG` — the geography and practical-access overlay
 - `FEDR` — the federalism and anti-centralization overlay
 - `REGD` — the regulatory-design and anti-capture overlay
-- `ENFA` — the enforcement and audit architecture overlay
+- `ENFA` — the enforcement and audit architecture overlay (mandatory for pillars with enforcement components)
 - `AIGV` — the AI-governance overlay
+- `ECOL` — the ecological habitability overlay
+- `THRV` — the material security overlay
+- `DEMO` — the democratic participation overlay
+- `PRIV` — the privacy and surveillance overlay
 
-Only `KERN` is universal. The overlays apply where relevant to the design area.
+Only `KERN` is universal. `ENFA` is mandatory for all pillars with enforcement, penalty, or eligibility components. The remaining overlays apply where relevant to the design area.
 
 ## What does not belong in canonical PolicyOS
 
@@ -72,6 +76,17 @@ Pillars should inherit overlays only where the design area requires them:
 - `ENFA`
 - `AIGV`
 
+## Cross-layer conflict resolution
+
+PolicyOS operates in three layers: platform values (Layer 1), system principles (Layer 2), and authoring OS (Layer 3). Where rules in any layer conflict, the following hierarchy applies:
+
+- Where any Layer 2 or Layer 3 rule conflicts with a floor prohibition or positive duty in Layer 1, the Layer 1 obligation prevails.
+- Where a KERN rule and an overlay rule conflict on the same policy question, KERN prevails.
+- Where an authoring OS rule conflicts with a substantive outcome required by the values, the values prevail.
+- A rule in any layer that would, if applied as policy, violate the floor of any platform value is itself invalid regardless of which layer it appears in.
+
+This hierarchy is stated explicitly as a rule, not merely implied by document structure, so that practitioners encountering ambiguity have a canonical decision procedure rather than relying on interpretive discretion.
+
 ## Proposed rules
 
 ### `KERN` — universal kernel
@@ -86,8 +101,12 @@ beyond the law or beyond accountability under the law.
 
 3. `PLOS-KERN-0003`
 Fundamental rights attach to all persons under United States jurisdiction and
-may not be reduced except where a distinction is explicit, narrow, reviewable,
-and rights-preserving.
+may not be reduced except where a distinction is explicit, narrow, and
+reviewable, and (a) pursues a specific, articulable public-interest objective
+that cannot be achieved by less restrictive means, (b) imposes the minimum
+restriction necessary to achieve that objective, and (c) does not
+disproportionately burden persons who are already disadvantaged in the exercise
+of those rights.
 
 4. `PLOS-KERN-0004`
 No system may concentrate unchecked power in any public or private actor
@@ -134,7 +153,9 @@ appeal, correction, pause, and independent review.
 
 14. `PLOS-KERN-0014`
 Access to rights and essential public systems may not be defeated in practice
-through administrative burden, delay, opacity, cost, or procedural complexity.
+through administrative burden, delay, opacity, cost, procedural complexity, or
+systematic under-resourcing of the systems required to make the right
+practically available.
 
 15. `PLOS-KERN-0015`
 Systems must be designed to prevent foreseeable abuse, exploitation,
@@ -171,7 +192,13 @@ without requiring crisis-driven overhaul.
 
 23. `PLOS-KERN-0023`
 No system may persist in a known broken or harmful state due to political
-inertia, administrative convenience, or procedural barriers to repair.
+inertia, administrative convenience, or procedural barriers to repair. For
+purposes of this rule, a system is known broken when independent review,
+pattern data, audit findings, or recurring complaint data establishes with a
+preponderance of evidence — assessed by an actor independent of the system
+operator — that it is producing systematic harm, rights violations, or access
+failures. The regulated actor may not be the sole arbiter of whether its own
+system is broken.
 
 24. `PLOS-KERN-0024`
 Systems must be stress-tested against bad actors, misuse, edge cases, gaming,
@@ -183,7 +210,18 @@ exploitation.
 
 26. `PLOS-KERN-0026`
 When systemic failure patterns are identified, mandatory corrective action,
-public reporting, and independent review must be triggered.
+public reporting, and independent review must be triggered. Identification of
+systemic failure patterns may be triggered by independent audit findings,
+judicial findings, legislative findings, civil society reporting, or
+statistical analysis by an actor with no interest in the outcome, and may not
+depend solely on the reporting of the actor whose system is under review.
+
+27. `PLOS-KERN-0027`
+Systems must include enforceable protections for persons who report violations,
+systemic failures, fraud, or abuse from within institutions, including
+protection from retaliation by both public and private actors. Whistleblower
+protections must be available regardless of employment status and may not be
+waived by contract.
 
 ### `GEOG` — geography and practical-access overlay
 
@@ -198,7 +236,9 @@ equality, enforceable access, and rights protection.
 3. `PLOS-GEOG-0003`
 Practical access to healthcare, justice, education, voting, and other core
 public systems may not be undermined by distance, delay, administrative burden,
-or local noncompliance.
+local noncompliance, or digital access barriers including unavailable internet
+access, device requirements, digital literacy requirements, or language
+interface limitations.
 
 4. `PLOS-GEOG-0004`
 Where local access fails, cross-jurisdiction access and travel support must be
@@ -207,7 +247,7 @@ available when necessary to make the right usable in practice.
 ### `FEDR` — federalism and anti-centralization overlay
 
 1. `PLOS-FEDR-0001`
-High-risk systems should not create single-point centralization where
+High-risk systems must not create single-point centralization where
 distributed control and independent counterweights are needed to prevent abuse
 or systemic failure.
 
@@ -260,19 +300,21 @@ serve a legitimate public-interest function while strengthening those that do.
 
 ### `ENFA` — enforcement and audit architecture overlay
 
+`ENFA` is mandatory for all pillars with enforcement components, penalty systems, eligibility determinations, or consequential access decisions. It is not optional for those pillars.
+
 1. `PLOS-ENFA-0001`
 High-risk systems must maintain auditable records, standardized reporting, and
 evidence trails sufficient for investigation, challenge, appeal, and
 enforcement.
 
 2. `PLOS-ENFA-0002`
-Where risk, scale, or public harm warrants it, compliance systems may require
+Where risk, scale, or public harm warrants it, compliance systems must include
 both internal controls and independent third-party audit or review.
 
 3. `PLOS-ENFA-0003`
-Enforcement systems should monitor for fraud, concealment, recurring
-violations, and systemic abuse patterns rather than relying only on
-complaint-driven detection.
+Enforcement systems must monitor for fraud, concealment, recurring violations,
+and systemic abuse patterns rather than relying only on complaint-driven
+detection.
 
 4. `PLOS-ENFA-0004`
 Repeated or systemic violations must trigger escalating intervention, which may
@@ -297,8 +339,8 @@ clearly labeled where feasible, and unlabeled use in high-risk contexts is
 prohibited.
 
 3. `PLOS-AIGV-0003`
-AI may not silently replace legally or professionally required human judgment
-in medicine, law, education, public administration, or other protected domains.
+AI may not replace legally or professionally required human judgment in
+medicine, law, education, public administration, or other protected domains.
 
 4. `PLOS-AIGV-0004`
 High-impact AI systems must be subject to pre-deployment assessment, ongoing
@@ -359,7 +401,9 @@ AI developers and deployers must actively design, test, and update safeguards
 against misuse by bad actors and against newly identified failure patterns.
 
 17. `PLOS-AIGV-0017`
-A constitutionally established and funded public authority must regulate
+A public authority permanently chartered by Congress with independent funding,
+adjudicative authority, protection from removal without cause, and resistance
+to executive reorganization without legislative approval must regulate
 high-impact AI systems to prevent harm, misuse, and systemic risk.
 
 18. `PLOS-AIGV-0018`
@@ -379,12 +423,125 @@ minimum standards.
 AI enforcement must be continuous, adequately resourced, and strong enough to
 prevent systemic harm rather than merely reacting after harm becomes entrenched.
 
+### `ECOL` — ecological habitability overlay
+
+Applies to pillars with environmental, industrial, extractive, energy, land-use, agricultural, infrastructure, or public-health dimensions.
+
+1. `PLOS-ECOL-0001`
+No rule may treat ecological degradation — including harm to clean air, clean
+water, habitable land, safe food systems, or a livable climate — as an
+acceptable tradeoff where it forecloses the ecological conditions required for
+human freedom and health.
+
+2. `PLOS-ECOL-0002`
+Systems with significant environmental impact must undergo ecological impact
+review before adoption, with results publicly disclosed.
+
+3. `PLOS-ECOL-0003`
+Where ecological harms fall disproportionately on disadvantaged communities,
+the rule must also be reviewed under Value 2 (Equal Standing) as a question of
+environmental justice.
+
+4. `PLOS-ECOL-0004`
+Intergenerational harm — ecological degradation whose costs fall primarily on
+future generations who have no current voice in the process — must be within
+scope of ecological impact review and may not be treated as a deferred or
+off-balance-sheet cost.
+
+### `THRV` — material security overlay
+
+Applies to pillars governing access to healthcare, housing, food, education,
+income, or essential public goods.
+
+1. `PLOS-THRV-0001`
+No pillar governing access to an essential system may treat the absence of
+provision as a neutral baseline. Every such pillar must specify what
+affirmative obligation exists, what population is owed it, and how it is met.
+
+2. `PLOS-THRV-0002`
+Rules fulfilling the positive duty of material security must specify the
+minimum standard of provision that constitutes compliance, expressed in terms
+assessable against real outcomes rather than program-level inputs.
+
+3. `PLOS-THRV-0003`
+No policy may be proposed as fulfilling a material security obligation without
+specifying the funding mechanism, authorization path, and fiscal authority
+required to actually deliver the provision.
+
+4. `PLOS-THRV-0004`
+Rules fulfilling material security duties must be designed to expand real
+choices, not compel specific behaviors. Where provision includes conditionality
+on behavior, the conditions must themselves pass scrutiny under Value 3 (Real
+Liberty).
+
+### `DEMO` — democratic participation overlay
+
+Applies to pillars governing elections, voting, campaign finance, civic
+participation, legislative process, or other mechanisms of democratic
+self-government.
+
+1. `PLOS-DEMO-0001`
+No rule may create or permit structural barriers to electoral participation,
+including voter registration burdens, polling access barriers, document
+requirements disproportionate to fraud risk, or administrative processes
+designed to suppress participation.
+
+2. `PLOS-DEMO-0002`
+Policy processes for high-stakes rules must include meaningful public
+participation requirements accessible to non-expert affected populations, with
+documented evidence that public input was considered and a requirement to
+respond to material objections.
+
+3. `PLOS-DEMO-0003`
+Systems that affect civic participation must be designed to expand rather than
+contract it. Design choices that predictably reduce civic capacity — including
+electoral map manipulation, campaign finance structures that amplify private
+money, and administrative suppression of civic organizations — are design
+failures under this rule.
+
+4. `PLOS-DEMO-0004`
+No actor may use economic power, media control, information manipulation, or
+institutional position to systematically distort democratic deliberation or
+concentrate political outcomes in ways that override representative expression.
+
+### `PRIV` — privacy and surveillance overlay
+
+Applies to pillars involving criminal justice, immigration, healthcare,
+education, financial services, public administration, or any system that
+collects, analyzes, or shares personal data about individuals.
+
+1. `PLOS-PRIV-0001`
+Systems must be designed with privacy as a default. Data collection, retention,
+and sharing must be minimized to what is necessary for the stated purpose.
+
+2. `PLOS-PRIV-0002`
+Biometric identification, behavioral profiling, location tracking, and
+persistent surveillance may not be deployed without explicit legal authority,
+narrow scope, independent oversight, and accessible challenge mechanisms.
+
+3. `PLOS-PRIV-0003`
+Surveillance systems may not be used to identify, monitor, or chill the
+exercise of protected activities including association, assembly, expression,
+religious practice, or political participation.
+
+4. `PLOS-PRIV-0004`
+Commercial surveillance data — including data acquired through data broker
+markets, platform behavioral tracking, or financial profiling — may not be
+purchased or used by government actors to circumvent constitutional limitations
+on direct government surveillance.
+
+5. `PLOS-PRIV-0005`
+Individuals must have the right to access, contest, and require correction of
+personal data held by government or government-contracted systems. This right
+may not be defeated through complexity, cost, or administrative delay.
+
 ## Closing statement
 
 PolicyOS 1.0 proposes:
 
-- one universal kernel
-- five targeted overlays
+- one universal kernel (KERN, 27 rules)
+- one mandatory-for-enforcement overlay (ENFA)
+- eight targeted overlays (GEOG, FEDR, REGD, AIGV, ECOL, THRV, DEMO, PRIV)
 - pillar-level implementation where domain specifics are required
 - foundation and strategy prose where values, identity, or project history are the right layer
 

@@ -30,6 +30,15 @@ These are not a sliding scale. The floor is not a "minimum acceptable step"
 and the duty is not an "aspiration." Both are requirements. The floor is what
 policy may never fall beneath. The duty is what policy must affirmatively build.
 
+**On the duty side and fiscal authority:** The duty side of each value requires
+affirmative provision — material things that rules alone cannot deliver without
+resources, institutional capacity, and fiscal authority. This document declares
+the duty as an absolute requirement, but recognizes that fulfilling it requires
+more than rule design. Policy proposed under a duty obligation must therefore
+specify the funding mechanism, authorization path, and institutional structure
+required to actually deliver the provision. A duty that is declared but not
+resourced is hollow.
+
 PolicyOS should therefore be read not only as a system for preventing bad
 policy, but as a system for requiring policy to affirmatively realize the
 platform’s core commitments.
@@ -275,3 +284,108 @@ These values are the more precise bedrock underneath them.
 This document should be treated as the current source text for the PolicyOS
 normative layer until a shorter canonical site-facing values statement is
 written.
+
+## Commentary: value tensions
+
+These values work together most of the time. But they are not identical, and
+some produce genuine tension when applied to specific policy questions. This is
+not a flaw — tension between real values is a sign of a serious framework.
+PAOS-NORM-0008 requires that these tensions be surfaced explicitly and resolved
+in the drafting, rather than hidden. This section maps the major recurring
+tensions and provides resolution principles so that different pillars resolve
+them consistently.
+
+**Privacy vs. Transparency (Value 3 vs. Value 6)**
+
+Transparency requires that consequential public systems be visible, auditable,
+and legible to democratic oversight. Privacy requires that individuals be
+protected from surveillance, coercion, and exposure of personal information.
+
+Resolution principle: The default is privacy for individuals and transparency
+for institutions. An individual has a privacy interest in their own data,
+conduct, and personal decisions. An institution or public actor has no privacy
+interest in the exercise of public authority. Where the tension is between the
+state demanding individual transparency and the individual's right to privacy,
+the individual's privacy right prevails unless overridden by a specific,
+articulable public-interest justification narrow enough to pass scrutiny under
+Value 3.
+
+**Individual liberty vs. Material security (Value 3 vs. Value 7)**
+
+The duty of material security requires affirmative provision — healthcare,
+housing, food, education, income stability. Provision can shade into
+conditionality: "you receive this if you comply with that." Conditionality on
+behavior can itself be coercive.
+
+Resolution principle: Provision of material security must be designed to expand
+real choices, not compel specific behaviors. Conditionality is permissible only
+where the condition itself is non-coercive, passes scrutiny under Value 3, and
+is genuinely necessary to the provision's purpose — not a device for
+social control.
+
+**Ecological protection vs. Material security (Value 8 vs. Value 7)**
+
+Environmental policy sometimes requires restricting extractive industry or
+economic activity. Those restrictions can reduce employment and income in
+affected communities, working against material security for real people in the
+near term.
+
+Resolution principle: Environmental and labor interests are not opposed by
+default — ecological degradation itself undermines long-term material security.
+Where genuine short-term material hardship results from ecological protection,
+policy must include active transition mechanisms (Value 7 duty) rather than
+treating the tradeoff as acceptable collateral damage. Neither value may be
+used to permanently override the other.
+
+**Democratic majority vs. Minority equal standing (Value 4 vs. Value 2)**
+
+Democratic self-government can produce majority decisions that impose selective
+burdens on minority groups. Legitimate democratic process does not make the
+result fair.
+
+Resolution principle: Equal standing is not subject to majority override.
+Value 2's floor — no unequal classes, no selective burdens, no practical denial
+of equal access — applies regardless of the democratic legitimacy of the process
+that produced the outcome. Democratic legitimacy is necessary for policy; it is
+not sufficient.
+
+**Durability vs. Democratic self-government (Value 11 vs. Value 4)**
+
+Rules designed to resist capture, evasion, and drift are harder to change.
+Hard-to-change rules can entrench the preferences of a prior democratic
+majority over a current one.
+
+Resolution principle: Durability protects the floor, not the policy above it.
+Floors must be durable; the policies that fulfill the duty above the floor
+should be democratically revisable. Durability requirements should never be
+used to insulate policy from legitimate democratic revision — only to protect
+against bad-faith erosion, capture, or administrative neglect.
+
+## Amendment protocol
+
+This document is locked as the canonical PolicyOS values layer. "Locked" does
+not mean permanent. It means: no casual revision, no incremental drift, no
+amendments made without deliberate process.
+
+The following protocol governs amendment:
+
+- **Grounds for amendment:** A value may be amended where its content is
+  found to be materially incomplete (a significant dimension of the value is
+  unaddressed), internally inconsistent, or in irreconcilable conflict with
+  another value. Clarification of interpretation is not amendment.
+- **Proposal:** Any proposed amendment must be written as a specific tracked
+  change with a stated rationale, the tension or gap it resolves, and the
+  pillar or rule context in which the problem was identified.
+- **Review:** A proposed amendment must be reviewed against all eleven values,
+  the definitions document, and any existing pillar rules that rely on the
+  current formulation.
+- **Traceability:** Amendments must be versioned and traceable. Prior versions
+  are retained. The amendment record must show what changed, when, and why.
+- **Pillar update obligation:** Any amendment that changes the meaning of a
+  floor or duty must trigger a review of all existing pillar rules that
+  reference the affected value, with identified rules updated or formally
+  grandfathered.
+
+Until a formal governance body is established, the platform maintainer
+(currently the project originator) is the amendment authority. This is a
+placeholder pending establishment of the PolicyOS governance model.

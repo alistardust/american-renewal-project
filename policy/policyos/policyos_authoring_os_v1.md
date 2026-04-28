@@ -52,7 +52,7 @@ which serves as the current source text for the platform’s normative layer.
 ## `NORM` — normative alignment requirements
 
 - `PAOS-NORM-0001` Every proposed rule must identify which named platform values from `policyos_platform_values_v1.md` it advances, protects, constrains, or places into tension.
-- `PAOS-NORM-0002` No proposed rule may be accepted if it undermines human dignity, equal standing, real liberty, meaningful accountability, transparency, practical access, or enforceable fairness without an explicit, compelling, and reviewable justification.
+- `PAOS-NORM-0002` No proposed rule may be accepted if it undermines any of the eleven platform values defined in `policyos_platform_values_v1.md` — including human dignity, equal standing, real liberty, democratic self-government, meaningful accountability, transparency, material security, ecological habitability, practical access, enforceable fairness, or durability against capture and neglect — without an explicit, compelling, and reviewable justification.
 - `PAOS-NORM-0003` Every proposed rule must be reviewed for whether it creates unequal classes of people, selective burdens, arbitrary exclusions, or second-class access in practice.
 - `PAOS-NORM-0004` Every proposed rule involving enforcement, punishment, or state power must be reviewed for whether it preserves accountability, proportionality, due process, and meaningful review.
 - `PAOS-NORM-0005` Every proposed rule must be reviewed for whether it creates capture opportunities, unreviewable discretion, hidden power, or conditions under which any actor becomes functionally above the law.
@@ -104,7 +104,7 @@ which serves as the current source text for the platform’s normative layer.
 - `PAOS-MAINT-0001` Every major policy section must identify which rules are core, which are implementation-dependent, and which are expected to require future revision as conditions change.
 - `PAOS-MAINT-0002` When a rule is revised, the revision must state whether the change closes a loophole, updates a condition, resolves a conflict, improves enforceability, or narrows overbreadth.
 - `PAOS-MAINT-0003` Deprecated rules should be superseded with visible traceability rather than silently removed when provenance or interpretation history matters.
-- `PAOS-MAINT-0004` Every pillar must periodically review for missing policy areas, stale assumptions, under-enforced rules, and newly visible system vulnerabilities.
+- `PAOS-MAINT-0004` Every pillar must be reviewed for missing policy areas, stale assumptions, under-enforced rules, and newly visible system vulnerabilities at least every two years or upon major legislative, judicial, or technological change materially affecting the pillar's domain — whichever comes first. The pillar's designated maintainer is responsible for initiating review. A pillar overdue for review must be flagged as stale in the public-facing index until review is completed.
 - `PAOS-MAINT-0005` Where a system overlay applies to a pillar, the pillar should explicitly state how that overlay is implemented locally rather than assuming the inheritance is obvious.
 
 ## How this relates to the principles layer
