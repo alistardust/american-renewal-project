@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Systematic audit of 1,095 policy rules: implementation status, coverage gaps, and what a Third Bill of Rights still needs to address across 20 scope codes.">
-<meta property="og:title" content="Policy Classification & Gap Analysis — Freedom and Dignity Project">
-<meta property="og:description" content="Systematic audit of 1,095 policy rules: implementation status, coverage gaps, and what a Third Bill of Rights still needs to address across 20 scope codes.">
+<meta name="description" content="How this platform classifies policy positions — the catalog system, classification methodology, and the PolicyOS rules framework that governs how policy is structured.">
+<meta property="og:title" content="Policy Classification — Freedom and Dignity Project">
+<meta property="og:description" content="How this platform classifies policy positions — the catalog system, classification methodology, and the PolicyOS rules framework.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://alistardust.github.io/freedom-and-dignity-project/classification.html">
-<title>Policy Classification &amp; Gap Analysis — Freedom and Dignity Project</title>
+<title>Policy Classification — Freedom and Dignity Project</title>
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
 </head>
@@ -23,604 +23,144 @@
     <button class="nav-hamburger" aria-label="Menu">☰</button>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
-      <li><a href="foundations.html">Foundations</a></li>
-      <li><a href="pillars/index.html">Pillars</a></li>
-      <li><a href="compare/index.html">Perspectives</a></li>
+      <li><a href="mission.html">Problem</a></li>
+      <li><a href="approach.html">Approach</a></li>
+      <li><a href="foundations.html">Proposals</a></li>
+      <li><a href="get-involved.html">Get Involved</a></li>
+      <li><a href="roadmap.html">Roadmap</a></li>
     </ul>
   </div>
 </nav>
 
-<div class="clf-hero">
-  <span class="clf-hero-eyebrow">Adversarial Policy Audit — July 2025</span>
-  <h1>Policy <span>Classification</span> &amp; Gap Analysis</h1>
-  <p class="clf-hero-statement">A systematic audit of 1,095 canonical policy rules: how each is implemented, what the platform is missing, and what a genuine Third Bill of Rights still needs to address.</p>
-</div>
+<header class="page-hero-standard">
+  <span class="hero-eyebrow">How the Platform is Structured</span>
+  <h1>Policy <span>Classification</span></h1>
+  <p class="hero-statement">Every position in this catalog has an ID, a type, a pillar, and a legal grounding. None of that is accidental.</p>
+</header>
 
-<!-- ── SUMMARY STATS ───────────────────────────────────── -->
-<div class="clf-stats-bar" aria-label="Summary statistics">
-  <div class="clf-stats-inner">
-    <div class="clf-stat">
-      <div class="clf-stat-num">1,095</div>
-      <div class="clf-stat-label">Total Positions (DB)</div>
-    </div>
-    <div class="clf-stat">
-      <div class="clf-stat-num stat-amend">65</div>
-      <div class="clf-stat-label">Require Amendment</div>
-    </div>
-    <div class="clf-stat">
-      <div class="clf-stat-num stat-statute">800</div>
-      <div class="clf-stat-label">Federal Statute</div>
-    </div>
-    <div class="clf-stat">
-      <div class="clf-stat-num stat-policy">227</div>
-      <div class="clf-stat-label">Executive / Policy</div>
-    </div>
-    <div class="clf-stat">
-      <div class="clf-stat-num stat-state">3</div>
-      <div class="clf-stat-label">State-Level</div>
-    </div>
-  </div>
-</div>
+<div class="page-body" id="main-content">
 
-<div class="clf-body">
+  <h2>The Policy Catalog</h2>
 
-  <!-- ── METHODOLOGY ──────────────────────────────────── -->
-  <div class="clf-methodology">
-    <p><strong>Methodology.</strong> Every rule was classified by the minimum legal mechanism required to implement it under current U.S. constitutional law. <strong>Amendment</strong>: requires Article V ratification (2/3 Congress + 3/4 states). <strong>Statute</strong>: enacted by simple majority of Congress. <strong>Policy</strong>: executive order, agency rulemaking, or procurement requirement — no congressional vote required but reversible. <strong>State</strong>: primarily within state jurisdiction under the 10th Amendment.</p>
-    <p>Classifications are based on the canonical rule statement and represent the <em>minimum</em> mechanism; some statute-classified rules would benefit from constitutional grounding for durability. The DB reflects the pre-expansion state (July 2025). Three pillars (Housing, Consumer Rights, Legislative Reform) have content in markdown pending DB reimport and are not reflected in these counts.</p>
-  </div>
+  <p>This platform maintains a structured policy catalog — a database of every policy position, with its ID, pillar, foundation, classification type, plain-language summary, formal policy statement, and citation record. The catalog is version-controlled, publicly available, and the authoritative source for every position on this platform.</p>
 
-  <!-- ── CLASSIFICATION TABLE ───────────────────────────── -->
-  <h2>Classification by Scope Code</h2>
+  <p>The catalog is organized as a SQLite database with a public schema. Every policy position has a canonical ID in the format <code>DOMAIN-SUBDOMAIN-NNNN</code> (e.g., <code>HLTH-COVR-0001</code> for a healthcare coverage position). Positions are grouped by domain, subdomain, foundation, and pillar.</p>
 
-  <p>The table below shows the amendment/statute/policy breakdown for every scope code in the canonical rule corpus. Rules in <strong>red</strong> require constitutional amendment. Rules in <strong>green</strong> can be enacted by statute. Rules in <strong>amber</strong> can be implemented by executive or agency action.</p>
+  <p>The source files, schema documentation, and build scripts are all available in the project repository:</p>
 
-  <div class="clf-table-wrap">
-    <table class="clf-table" aria-label="Policy classification by scope code">
+  <p>
+    <a href="https://github.com/alistardust/freedom-and-dignity-project" class="btn-outline" target="_blank" rel="noopener" style="display:inline-block">View on GitHub →</a>
+    <a href="https://github.com/alistardust/freedom-and-dignity-project/tree/main/data" class="btn-outline" target="_blank" rel="noopener" style="display:inline-block;margin-left:1rem">View Data Directory →</a>
+  </p>
+
+  <h2>Classification Methodology</h2>
+
+  <p>Each policy position is classified by its implementation type. This classification determines the legal pathway for adoption, the level of government responsible for enforcement, and how the position is tracked in the policy review process.</p>
+
+  <div class="clf-method-table-wrap">
+    <table class="clf-method-table">
       <thead>
         <tr>
-          <th>Code</th>
-          <th>Domain / Pillar</th>
-          <th>Total</th>
-          <th>Amendment</th>
-          <th>Statute</th>
-          <th>Policy</th>
-          <th>State</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Examples</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td><span class="clf-prefix-code">ADM</span></td>
-          <td>Administrative State</td>
-          <td>3</td>
-          <td class="num-amend">1</td>
-          <td class="num-statute">2</td>
-          <td class="num-zero">—</td>
-          <td class="num-zero">—</td>
+          <td><span class="clf-badge clf-badge--amendment">Amendment</span></td>
+          <td>Requires a constitutional amendment to enact. These are structural changes to how government works — voting rights, term limits, anti-corruption rules.</td>
+          <td>Congressional term limits, independent redistricting mandate, public financing requirement</td>
         </tr>
         <tr>
-          <td><span class="clf-prefix-code">AGR</span></td>
-          <td>Environment &amp; Agriculture</td>
-          <td>1</td>
-          <td class="num-zero">—</td>
-          <td class="num-statute">1</td>
-          <td class="num-zero">—</td>
-          <td class="num-zero">—</td>
+          <td><span class="clf-badge clf-badge--statute">Statute</span></td>
+          <td>Requires federal legislation — an act of Congress. Most policy positions on this platform are statute-level.</td>
+          <td>Universal healthcare, minimum wage, labor rights, drug pricing, antitrust enforcement</td>
         </tr>
         <tr>
-          <td><span class="clf-prefix-code">COR</span></td>
-          <td>Anti-Corruption</td>
-          <td>15</td>
-          <td class="num-amend">4</td>
-          <td class="num-statute">11</td>
-          <td class="num-zero">—</td>
-          <td class="num-zero">—</td>
+          <td><span class="clf-badge clf-badge--policy">Policy</span></td>
+          <td>Can be implemented through executive action, agency rulemaking, or administrative policy change without new legislation.</td>
+          <td>Agency enforcement priorities, federal contractor requirements, regulatory guidance</td>
         </tr>
         <tr>
-          <td><span class="clf-prefix-code">ECO</span></td>
-          <td>Taxation &amp; Wealth</td>
-          <td>10</td>
-          <td class="num-zero">—</td>
-          <td class="num-statute">9</td>
-          <td class="num-policy">1</td>
-          <td class="num-zero">—</td>
-        </tr>
-        <tr>
-          <td><span class="clf-prefix-code">EDU</span></td>
-          <td>Education</td>
-          <td>2</td>
-          <td class="num-zero">—</td>
-          <td class="num-statute">2</td>
-          <td class="num-zero">—</td>
-          <td class="num-zero">—</td>
-        </tr>
-        <tr>
-          <td><span class="clf-prefix-code">ELE</span></td>
-          <td>Elections &amp; Representation</td>
-          <td>22</td>
-          <td class="num-amend">6</td>
-          <td class="num-statute">15</td>
-          <td class="num-policy">1</td>
-          <td class="num-zero">—</td>
-        </tr>
-        <tr>
-          <td><span class="clf-prefix-code">ENV</span></td>
-          <td>Environment &amp; Agriculture</td>
-          <td>9</td>
-          <td class="num-zero">—</td>
-          <td class="num-statute">7</td>
-          <td class="num-policy">2</td>
-          <td class="num-zero">—</td>
-        </tr>
-        <tr>
-          <td><span class="clf-prefix-code">GOV</span></td>
-          <td>Executive Power / Checks &amp; Balances</td>
-          <td>13</td>
-          <td class="num-amend">3</td>
-          <td class="num-statute">10</td>
-          <td class="num-zero">—</td>
-          <td class="num-zero">—</td>
-        </tr>
-        <tr>
-          <td><span class="clf-prefix-code">HLT</span></td>
-          <td>Healthcare</td>
-          <td>184</td>
-          <td class="num-zero">—</td>
-          <td class="num-statute">150</td>
-          <td class="num-policy">34</td>
-          <td class="num-zero">—</td>
-        </tr>
-        <tr>
-          <td><span class="clf-prefix-code">IMM</span></td>
-          <td>Immigration</td>
-          <td>222</td>
-          <td class="num-amend">20</td>
-          <td class="num-statute">190</td>
-          <td class="num-policy">12</td>
-          <td class="num-zero">—</td>
-        </tr>
-        <tr>
-          <td><span class="clf-prefix-code">INF</span></td>
-          <td>Information &amp; Media (Infrastructure)</td>
-          <td>11</td>
-          <td class="num-zero">—</td>
-          <td class="num-statute">10</td>
-          <td class="num-policy">1</td>
-          <td class="num-zero">—</td>
-        </tr>
-        <tr>
-          <td><span class="clf-prefix-code">JUD</span></td>
-          <td>Courts &amp; Judicial System</td>
-          <td>8</td>
-          <td class="num-amend">1</td>
-          <td class="num-statute">7</td>
-          <td class="num-zero">—</td>
-          <td class="num-zero">—</td>
-        </tr>
-        <tr>
-          <td><span class="clf-prefix-code">JUS</span></td>
-          <td>Equal Justice &amp; Policing</td>
-          <td>136</td>
-          <td class="num-zero">—</td>
-          <td class="num-statute">120</td>
-          <td class="num-policy">16</td>
-          <td class="num-zero">—</td>
-        </tr>
-        <tr>
-          <td><span class="clf-prefix-code">LAB</span></td>
-          <td>Labor &amp; Workers' Rights</td>
-          <td>3</td>
-          <td class="num-zero">—</td>
-          <td class="num-statute">3</td>
-          <td class="num-zero">—</td>
-          <td class="num-zero">—</td>
-        </tr>
-        <tr>
-          <td><span class="clf-prefix-code">MED</span></td>
-          <td>Information &amp; Media (Press)</td>
-          <td>9</td>
-          <td class="num-zero">—</td>
-          <td class="num-statute">7</td>
-          <td class="num-policy">2</td>
-          <td class="num-zero">—</td>
-        </tr>
-        <tr>
-          <td><span class="clf-prefix-code">OVR</span></td>
-          <td>Cross-Domain Oversight</td>
-          <td>16</td>
-          <td class="num-zero">—</td>
-          <td class="num-statute">13</td>
-          <td class="num-zero">—</td>
-          <td class="num-state">3</td>
-        </tr>
-        <tr>
-          <td><span class="clf-prefix-code">RGT</span></td>
-          <td>Rights &amp; Civil Liberties</td>
-          <td>26</td>
-          <td class="num-amend">8</td>
-          <td class="num-statute">18</td>
-          <td class="num-zero">—</td>
-          <td class="num-zero">—</td>
-        </tr>
-        <tr>
-          <td><span class="clf-prefix-code">SYS</span></td>
-          <td>Cross-Domain System Principles</td>
-          <td>36</td>
-          <td class="num-amend">8</td>
-          <td class="num-statute">20</td>
-          <td class="num-policy">8</td>
-          <td class="num-zero">—</td>
-        </tr>
-        <tr>
-          <td><span class="clf-prefix-code">TEC</span></td>
-          <td>Technology &amp; AI</td>
-          <td>361</td>
-          <td class="num-amend">11</td>
-          <td class="num-statute">200</td>
-          <td class="num-policy">150</td>
-          <td class="num-zero">—</td>
-        </tr>
-        <tr>
-          <td><span class="clf-prefix-code">TRM</span></td>
-          <td>Term Limits &amp; Fitness</td>
-          <td>8</td>
-          <td class="num-amend">3</td>
-          <td class="num-statute">5</td>
-          <td class="num-zero">—</td>
-          <td class="num-zero">—</td>
+          <td><span class="clf-badge clf-badge--state">State / Local</span></td>
+          <td>Primarily implemented at the state or local level, or requires federal-state coordination.</td>
+          <td>Tenant protection ordinances, local minimum wage laws, state Medicaid expansion</td>
         </tr>
       </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="2">TOTAL (20 scope codes)</td>
-          <td>1,095</td>
-          <td>65</td>
-          <td>800</td>
-          <td>227</td>
-          <td>3</td>
-        </tr>
-      </tfoot>
     </table>
   </div>
 
-  <h3>Amendment-Required Rules: Priority List</h3>
-  <p>Of the 65 rules requiring constitutional amendment, the highest-priority for near-term advocacy are those with the broadest public support and the most structural impact:</p>
-  <ul style="font-family:'Libre Franklin',sans-serif;font-size:.95rem;line-height:1.85;color:var(--ink);padding-left:1.4rem;margin:0 0 1.5rem;">
-    <li><strong>ELE-REP-001</strong> — Abolish the Electoral College (popular vote for President)</li>
-    <li><strong>ELE-VOT-001</strong> — Explicit constitutional right to vote (currently implied, not guaranteed)</li>
-    <li><strong>TRM-LIM-001/002/003</strong> — Congressional term limits (high public support across party lines)</li>
-    <li><strong>RGT-PRV-001</strong> — Explicit right to privacy (foundation of digital rights agenda)</li>
-    <li><strong>RGT-EQT-001</strong> — Expanded equality protections (complete the 14th Amendment)</li>
-    <li><strong>JUD-ETH-001</strong> — Supreme Court term limits (Art. III "good behaviour" requires amendment)</li>
-    <li><strong>COR-FIN-001/002</strong> — Campaign finance reform (requires overturning <em>Citizens United</em> via amendment or a reconstituted Court — tracked as "amendment or statute, Court-dependent")</li>
+  <h2>The Two-Field Requirement</h2>
+
+  <p>Every policy position in the catalog must have two text representations:</p>
+
+  <ul style="color:var(--ink);line-height:1.75;padding-left:1.5rem;margin-bottom:1.5rem">
+    <li style="margin-bottom:.6rem"><strong>Plain language</strong> — 1–3 sentences at approximately an 8th-grade reading level. What does this position do, and why does it matter? No jargon.</li>
+    <li style="margin-bottom:.6rem"><strong>Policy statement</strong> — The full technical/legal statement with precise language, thresholds, enforcement mechanisms, and regulatory detail.</li>
   </ul>
 
-  <!-- ── FDR SECOND BILL OF RIGHTS ────────────────────── -->
-  <h2>FDR's Second Bill of Rights: Fulfillment Audit</h2>
+  <p>Both fields are required. The plain-language field is not a summary of the policy statement — it is an independent, accessible explanation. This is not an accessibility accommodation. It is a substantive requirement: if a policy position cannot be explained to a person without legal training in two or three sentences, that is a sign the position itself needs more work.</p>
 
-  <p>This platform explicitly positions itself as completing FDR's unfinished 1944 agenda.<sup><a href="#fn1" id="ref1">[1]</a></sup> The eight rights FDR proposed, and how the current DB covers them:</p>
+  <h2>PolicyOS Rule Families</h2>
 
-  <table class="clf-fdr-table" aria-label="FDR Second Bill of Rights fulfillment audit">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>FDR's Proposed Right (1944)</th>
-        <th>Current Coverage</th>
-        <th>Assessment</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>1</td>
-        <td>Right to a useful and remunerative job</td>
-        <td><code>ECO-LAB-004</code>, <code>LAB-WRK</code> (4 rules total)</td>
-        <td class="fdr-status-weak">⚠ Weak</td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>Right to earn enough for adequate food and clothing</td>
-        <td><code>ECO-EQT-001</code> (equal pay); no living wage rule</td>
-        <td class="fdr-status-weak">⚠ Weak</td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td>Right of every family to a decent home</td>
-        <td>HOU pillar — 0 DB rules (markdown pending reimport)</td>
-        <td class="fdr-status-gap">✗ Gap</td>
-      </tr>
-      <tr>
-        <td>4</td>
-        <td>Right to adequate medical care</td>
-        <td><code>HLT</code> — 184 rules across full healthcare spectrum</td>
-        <td class="fdr-status-strong">✓ Strong</td>
-      </tr>
-      <tr>
-        <td>5</td>
-        <td>Right to a good education</td>
-        <td><code>EDU</code> — 2 DB rules (markdown has ~40+ pending reimport)</td>
-        <td class="fdr-status-weak">⚠ Weak (DB)</td>
-      </tr>
-      <tr>
-        <td>6</td>
-        <td>Right of every businessman to trade free from unfair competition</td>
-        <td><code>COR-FIN</code> (4 rules); no dedicated antitrust scope</td>
-        <td class="fdr-status-partial">~ Partial</td>
-      </tr>
-      <tr>
-        <td>7</td>
-        <td>Right of every family to protection from monopolistic practices</td>
-        <td>Same as above; no ATR- scope code formalized</td>
-        <td class="fdr-status-partial">~ Partial</td>
-      </tr>
-      <tr>
-        <td>8</td>
-        <td>Right to protection from economic fear of old age, sickness, accident, unemployment</td>
-        <td>Partial in <code>HLT-COV</code>, <code>ECO-AUT</code>; no Social Security reform pillar</td>
-        <td class="fdr-status-partial">~ Partial</td>
-      </tr>
-    </tbody>
-  </table>
+  <p>PolicyOS is the cross-platform rules layer being developed in parallel with the policy content. It governs how policy is designed, scoped, enforced, and maintained across the platform. PolicyOS rules have their own ID space (prefixed <code>PLOS-</code> and <code>PAOS-</code>) and are not the same as policy positions.</p>
 
-  <p><strong>Verdict:</strong> The platform fully covers one of FDR's eight rights (medical care), partially covers three, is weak on two, and has a critical gap in one (housing). As a "Third Bill of Rights," the platform needs to address housing and economic security at the same level of rigor as healthcare and immigration.</p>
+  <p>The current PolicyOS architecture has three layers:</p>
 
-  <!-- ── GAP ANALYSIS ──────────────────────────────────── -->
-  <h2>Gap Analysis</h2>
-
-  <p>The following gaps were identified through adversarial review: reading the platform as a critic would, looking for what is absent, what is claimed but underdeveloped, and what a working-class or rural voter would find missing.</p>
-
-  <h3>Critical Gaps — Policy areas missing or near-absent</h3>
-  <div class="clf-gaps">
-
-    <div class="clf-gap gap-critical">
-      <span class="clf-gap-sev">Critical</span>
-      <div class="clf-gap-title">Foreign Policy &amp; National Security</div>
-      <div class="clf-gap-body">No dedicated pillar, no scope code, zero rules. <code>GOV-WAR</code> (3 rules) touches war powers but does not address diplomatic strategy, alliance obligations (NATO), intelligence oversight, sanctions, arms control, or America's role in international institutions. A "Third Bill of Rights" platform that is silent on foreign policy is structurally incomplete.</div>
-    </div>
-
-    <div class="clf-gap gap-critical">
-      <span class="clf-gap-sev">Critical</span>
-      <div class="clf-gap-title">Veterans &amp; Military Families</div>
-      <div class="clf-gap-body">No dedicated pillar, no scope code, zero rules. <code>TEC-MIL</code> (58 rules) covers AI in military systems but not veteran healthcare, VA reform, PTSD treatment, toxic exposure coverage (burn pits), GI Bill modernization, or military family support. The platform speaks to TEC but not to the humans who serve.</div>
-    </div>
-
-    <div class="clf-gap gap-critical">
-      <span class="clf-gap-sev">Critical</span>
-      <div class="clf-gap-title">Gun Policy — Pillar Exists, Rules Don't</div>
-      <div class="clf-gap-body">A dedicated <em>gun_policy</em> pillar exists in HTML but has only 2 cross-scope rules in the DB (<code>JUS-POL-006</code>, <code>JUS-POL-007</code>). No GUN- scope code. No background check standards, no assault weapons policy, no red flag law framework, no safe storage mandates. The platform claims this ground but has not formalized it. This is the most visible credibility gap.</div>
-    </div>
-
-    <div class="clf-gap gap-critical">
-      <span class="clf-gap-sev">Critical</span>
-      <div class="clf-gap-title">Housing — Pillar With Zero DB Rules</div>
-      <div class="clf-gap-body">The HOU pillar has zero DB rules. Markdown content exists in <code>pillars/housing/policy.md</code> but has not been reimported to the database. This is FDR's Third Right — the right to a decent home — and it is the largest gap between the platform's stated ambition and its formalized policy corpus. The DB reimport must be a top priority.</div>
-    </div>
-
-    <div class="clf-gap gap-critical">
-      <span class="clf-gap-sev">Critical</span>
-      <div class="clf-gap-title">Consumer Rights — Pillar With Zero DB Rules</div>
-      <div class="clf-gap-body">The CON/RPR pillar has zero DB rules. No formalized policy on financial consumer protection, predatory lending, debt collection, product liability, food safety, or data broker regulation. Markdown content exists pending reimport.</div>
-    </div>
-
-    <div class="clf-gap gap-critical">
-      <span class="clf-gap-sev">Critical</span>
-      <div class="clf-gap-title">Agricultural Policy — 1 Rule for a Nation of Farmers</div>
-      <div class="clf-gap-body">Only <code>AGR-REG-001</code> (promote regenerative agriculture) exists in the DB. No rules on farm subsidy reform, food security, rural economic development, SNAP/food assistance, agricultural labor, agribusiness concentration, or rural broadband. The platform's rural credibility depends on expanding this scope significantly.</div>
-    </div>
-
+  <div class="clf-policyos-table-wrap">
+    <table class="clf-method-table">
+      <thead>
+        <tr>
+          <th>Layer</th>
+          <th>Rule Families</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Platform Values</td>
+          <td>The moral and political anchor for all rules. <code>floor + duty</code> model — what policy must not violate vs. what it must actively secure.</td>
+          <td><span class="clf-badge clf-badge--statute">Locked</span></td>
+        </tr>
+        <tr>
+          <td>System Principles</td>
+          <td>Cross-platform design rules. Families: <code>KERN</code> (core principles), <code>GEOG</code> (jurisdiction), <code>FEDR</code> (federalism), <code>REGD</code> (regulatory design), <code>ENFA</code> (enforcement architecture), <code>AIGV</code> (AI governance).</td>
+          <td><span class="clf-badge clf-badge--policy">Under review</span></td>
+        </tr>
+        <tr>
+          <td>Authoring OS</td>
+          <td>How policy must be written, tested, scoped, enforced, and maintained. Families: <code>NORM</code> (normative framing), <code>AUTH</code> (authoring), <code>TEST</code> (testing), <code>ENFC</code> (enforcement), <code>PLAC</code> (placement), <code>MAINT</code> (maintenance).</td>
+          <td><span class="clf-badge clf-badge--policy">Under review</span></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
-  <h3>Major Gaps — Present but seriously underdeveloped</h3>
-  <div class="clf-gaps">
+  <p>PolicyOS rules will not be canonicalized into the main platform until the structural review is complete. For the current status and working files, see the <code>policyos/</code> directory in the project repository.</p>
 
-    <div class="clf-gap gap-major">
-      <span class="clf-gap-sev">Major</span>
-      <div class="clf-gap-title">Antitrust &amp; Corporate Power</div>
-      <div class="clf-gap-body">Dedicated pillar exists but no ATR- scope code. Only 4 cross-scope rules (<code>COR-FIN</code>) address corporate power, and these focus on campaign finance, not market competition. No rules on monopoly breakup authority, merger review standards, Big Tech platform antitrust, pharmaceutical market concentration, or Amazon/Google/Meta-scale market power.</div>
-    </div>
+  <h2>ID Format Reference</h2>
 
-    <div class="clf-gap gap-major">
-      <span class="clf-gap-sev">Major</span>
-      <div class="clf-gap-title">Disability Rights</div>
-      <div class="clf-gap-body">Only 3 rules tangentially related (<code>RGT-IDN</code>) and some <code>HLT-ACC</code> coverage. No ADA modernization, no accessibility mandates for digital services, no disability income support, no voting accessibility framework, no independent living support policy. Disability rights are the largest unaddressed civil rights domain in the platform.</div>
-    </div>
+  <p>Policy position IDs follow the v2 format:</p>
 
-    <div class="clf-gap gap-major">
-      <span class="clf-gap-sev">Major</span>
-      <div class="clf-gap-title">Tribal &amp; Indigenous Rights</div>
-      <div class="clf-gap-body">Zero identifiable rules for sovereign tribal nations, treaty obligations, Missing and Murdered Indigenous Women (MMIW), BIA reform, water rights, or tribal land sovereignty. A platform claiming comprehensive rights coverage while ignoring the First Peoples is a credibility failure, not a minor omission.</div>
-    </div>
+  <pre style="background:var(--parchment);border:1px solid var(--rule);border-radius:6px;padding:1rem 1.25rem;font-size:.9rem;overflow-x:auto;color:var(--navy)">DOMAIN-SUBDOMAIN-NNNN
 
-    <div class="clf-gap gap-major">
-      <span class="clf-gap-sev">Major</span>
-      <div class="clf-gap-title">Reparations</div>
-      <div class="clf-gap-body">No rules, no pillar, no explicit policy position. Whether or not the platform endorses reparations for slavery and Jim Crow, the complete absence of any engagement with the question is conspicuous for a platform positioning itself as addressing structural racial inequality and completing FDR's unfinished agenda.</div>
-    </div>
+Examples:
+  HLTH-COVR-0001   Healthcare / Coverage
+  LBOR-WAGE-0001   Labor / Wage
+  CLMT-EMSS-0001   Climate / Emissions
+  ADMN-CHVS-0001   Administration / Checks and Balances
+  TAXN-TAXS-0001   Taxation / Tax Structure</pre>
 
-    <div class="clf-gap gap-major">
-      <span class="clf-gap-sev">Major</span>
-      <div class="clf-gap-title">Financial Regulation &amp; Banking</div>
-      <div class="clf-gap-body"><code>ECO</code> covers automation taxation and some insurance rules. No rules on banking regulation, CFPB authority and independence, predatory lending, payday loans, credit reporting reform, student loan servicer accountability, or systemic financial risk. The 2008 financial crisis was the largest economic event of the past generation; it has no policy response in this platform.</div>
-    </div>
-
-    <div class="clf-gap gap-major">
-      <span class="clf-gap-sev">Major</span>
-      <div class="clf-gap-title">DC Statehood &amp; Territories</div>
-      <div class="clf-gap-body">Only <code>ELE-REP-003</code> (territories get House representation). No rules on DC statehood, full voting rights for Puerto Rico, Guam, USVI, or American Samoa, or territorial self-determination. Approximately 3.6 million Americans in U.S. territories have no voting representation in Congress.<sup><a href="#fn2" id="ref2">[2]</a></sup></div>
-    </div>
-
-    <div class="clf-gap gap-major">
-      <span class="clf-gap-sev">Major</span>
-      <div class="clf-gap-title">International Agreements &amp; Treaties</div>
-      <div class="clf-gap-body">No rules on treaty obligations, multilateral agreements, trade policy, climate treaty compliance, WHO/WTO/UN participation, or international human rights law. The platform's silence on America's role in international governance is a structural gap for a document designed to modernize democratic governance.</div>
-    </div>
-
-    <div class="clf-gap gap-major">
-      <span class="clf-gap-sev">Major</span>
-      <div class="clf-gap-title">Drug Policy Reform</div>
-      <div class="clf-gap-body"><code>JUS-DRG</code> has only 5 rules. No comprehensive decriminalization framework, no marijuana legalization or regulation policy, no harm reduction mandate, no safe injection site policy, no drug court expansion framework, no treatment-over-incarceration mandate. The War on Drugs has been the single largest driver of mass incarceration; 5 rules is not a serious response.</div>
-    </div>
-
-  </div>
-
-  <h3>Minor Gaps — Covered but could be expanded</h3>
-  <div class="clf-gaps">
-
-    <div class="clf-gap gap-minor">
-      <span class="clf-gap-sev">Minor</span>
-      <div class="clf-gap-title">Social Security &amp; Retirement Security</div>
-      <div class="clf-gap-body">Partial coverage in <code>HLT-COV</code> and <code>ECO-AUT</code>. No dedicated framework for Social Security solvency, pension protection, elder care, or retirement security reform. The original FDR agenda centered on protection from economic fear of old age.</div>
-    </div>
-
-    <div class="clf-gap gap-minor">
-      <span class="clf-gap-sev">Minor</span>
-      <div class="clf-gap-title">Climate Change</div>
-      <div class="clf-gap-body"><code>ENV</code> (9 rules) covers pollution and biodiversity. No dedicated climate framework: no carbon pricing mechanism, no net-zero mandate, no climate adaptation or resilience policy, no just transition program for fossil fuel workers. The climate section is significantly outweighed by the AI/tech section (361 rules vs. 9).</div>
-    </div>
-
-    <div class="clf-gap gap-minor">
-      <span class="clf-gap-sev">Minor</span>
-      <div class="clf-gap-title">Reproductive Rights Depth</div>
-      <div class="clf-gap-body"><code>RGT-BOD</code> (8 rules) covers bodily autonomy, abortion, and contraception — a meaningful foundation. Gaps: IVF access and embryo rights, maternal mortality (the U.S. has the highest rate among high-income nations<sup><a href="#fn3" id="ref3">[3]</a></sup>), pregnancy discrimination, and parental leave beyond <code>ECO-LAB-004</code>.</div>
-    </div>
-
-    <div class="clf-gap gap-minor">
-      <span class="clf-gap-sev">Minor</span>
-      <div class="clf-gap-title">Childcare &amp; Early Education</div>
-      <div class="clf-gap-body"><code>EDU</code> (in DB) focuses on K-12 and higher ed. No pre-K universal access rules, no childcare subsidy framework, no Head Start expansion policy. Childcare access is one of the largest barriers to women's workforce participation.</div>
-    </div>
-
-    <div class="clf-gap gap-minor">
-      <span class="clf-gap-sev">Minor</span>
-      <div class="clf-gap-title">Legislative Reform — Pillar With Zero DB Rules</div>
-      <div class="clf-gap-body">LEG pillar has 0 DB rules. Markdown pending. No rules on filibuster reform, unanimous consent abuse, congressional capacity (staff resources, CBO independence), or congressional ethics. The body that is supposed to pass most of this platform has no reform framework in the current DB.</div>
-    </div>
-
-  </div>
-
-  <!-- ── UNDERDEVELOPED PILLARS ─────────────────────────── -->
-  <h2>Underdeveloped Pillars</h2>
-
-  <p>The following pillars are critically thin by DB position count. Note that some have content in markdown pending DB reimport — the gap is in the canonical record, not necessarily in the research.</p>
-
-  <div class="clf-under-grid">
-    <div class="clf-under-card uc-critical">
-      <div class="clf-under-title">Housing</div>
-      <div class="clf-under-meta"><span class="clf-badge-count clf-badge-zero">0 DB rules</span> HOU scope</div>
-      <div class="clf-under-note">Full pillar claimed; markdown exists. DB reimport is Priority 1. FDR's Third Right.</div>
-    </div>
-    <div class="clf-under-card uc-critical">
-      <div class="clf-under-title">Consumer Rights</div>
-      <div class="clf-under-meta"><span class="clf-badge-count clf-badge-zero">0 DB rules</span> CON, RPR scope</div>
-      <div class="clf-under-note">Full pillar claimed; markdown exists. DB reimport is Priority 1. No financial consumer protection in DB.</div>
-    </div>
-    <div class="clf-under-card uc-critical">
-      <div class="clf-under-title">Legislative Reform</div>
-      <div class="clf-under-meta"><span class="clf-badge-count clf-badge-zero">0 DB rules</span> LEG scope</div>
-      <div class="clf-under-note">Full pillar claimed; markdown exists. DB reimport Priority 1. No filibuster or congressional capacity rules in DB.</div>
-    </div>
-    <div class="clf-under-card uc-critical">
-      <div class="clf-under-title">Gun Policy</div>
-      <div class="clf-under-meta"><span class="clf-badge-count clf-badge-zero">2 cross-scope rules</span> JUS-POL</div>
-      <div class="clf-under-note">Dedicated pillar in HTML; no GUN- scope code. Largest credibility gap: pillar claimed, rules absent.</div>
-    </div>
-    <div class="clf-under-card uc-critical">
-      <div class="clf-under-title">Antitrust &amp; Corp. Power</div>
-      <div class="clf-under-meta"><span class="clf-badge-count clf-badge-few">4 cross-scope rules</span> COR-FIN</div>
-      <div class="clf-under-note">Dedicated pillar in HTML; no ATR- scope code. Campaign finance rules only; no market competition rules.</div>
-    </div>
-    <div class="clf-under-card uc-critical">
-      <div class="clf-under-title">Agriculture</div>
-      <div class="clf-under-meta"><span class="clf-badge-count clf-badge-few">1 DB rule</span> AGR scope</div>
-      <div class="clf-under-note">One rule on regenerative agriculture. No farm policy, food security, rural economy, or ag labor rules.</div>
-    </div>
-    <div class="clf-under-card uc-warn">
-      <div class="clf-under-title">Education</div>
-      <div class="clf-under-meta"><span class="clf-badge-count clf-badge-few">2 DB rules</span> EDU scope</div>
-      <div class="clf-under-note">Markdown has ~40+ rules pending DB reimport. Reimport will substantially improve this.</div>
-    </div>
-    <div class="clf-under-card uc-warn">
-      <div class="clf-under-title">Labor &amp; Workers' Rights</div>
-      <div class="clf-under-meta"><span class="clf-badge-count clf-badge-few">3 DB rules</span> LAB scope</div>
-      <div class="clf-under-note">Markdown has significantly more rules pending DB reimport. FDR's First and Second rights.</div>
-    </div>
-    <div class="clf-under-card uc-warn">
-      <div class="clf-under-title">Administrative State</div>
-      <div class="clf-under-meta"><span class="clf-badge-count clf-badge-few">3 DB rules</span> ADM scope</div>
-      <div class="clf-under-note">Small pillar by design; the 3 rules address the core Chevron/agency structure questions adequately.</div>
-    </div>
-    <div class="clf-under-card uc-warn">
-      <div class="clf-under-title">Term Limits &amp; Fitness</div>
-      <div class="clf-under-meta"><span class="clf-badge-count clf-badge-few">8 DB rules</span> TRM scope</div>
-      <div class="clf-under-note">Adequate for its scope. All 3 term limit rules require constitutional amendment — strategically important despite limited count.</div>
-    </div>
-  </div>
-
-  <!-- ── RECOMMENDATIONS ──────────────────────────────── -->
-  <h2>Recommendations</h2>
-
-  <div class="clf-rec-list">
-
-    <div class="clf-rec">
-      <div class="clf-rec-num">P1</div>
-      <div class="clf-rec-body"><strong>DB Reimport — immediate.</strong> Run <code>scripts/import_policy_catalog.py</code> to import Housing, Consumer Rights, Legislative Reform, Education (expanded), and Labor (expanded) from markdown. This will bring the DB into alignment with the actual state of the platform and close three zero-rule pillars.</div>
-    </div>
-
-    <div class="clf-rec">
-      <div class="clf-rec-num">P2</div>
-      <div class="clf-rec-body"><strong>Formalize Gun Policy.</strong> Create a <code>GUN-</code> scope code. The gun_policy markdown already exists; it needs a formal import pass. Minimum viable DB content: background checks, assault weapons/high-capacity magazines, red flag laws, safe storage. This is the most visible credibility gap for a platform claiming 22 pillars.</div>
-    </div>
-
-    <div class="clf-rec">
-      <div class="clf-rec-num">P3</div>
-      <div class="clf-rec-body"><strong>Formalize Antitrust.</strong> Create an <code>ATR-</code> scope code. The antitrust_and_corporate_power markdown exists; import with at minimum: platform monopoly regulation, merger review standards, pharmaceutical market concentration, and media ownership concentration rules.</div>
-    </div>
-
-    <div class="clf-rec">
-      <div class="clf-rec-num">P4</div>
-      <div class="clf-rec-body"><strong>Add Foreign Policy &amp; National Security pillar.</strong> Create a <code>FPS-</code> scope code. Minimum viable content: war powers reform (building on GOV-WAR), intelligence oversight, multilateral treaty obligations, NATO/alliance commitments, arms control. The platform's silence on foreign policy is a structural gap for a governing framework.</div>
-    </div>
-
-    <div class="clf-rec">
-      <div class="clf-rec-num">P5</div>
-      <div class="clf-rec-body"><strong>Add Veterans &amp; Military Families pillar.</strong> Create a <code>VET-</code> scope code. Minimum: VA healthcare reform, burn pit/toxic exposure coverage, PTSD treatment mandates, GI Bill modernization, military family economic support. This closes a major gap and broadens the platform's appeal to veterans communities.</div>
-    </div>
-
-    <div class="clf-rec">
-      <div class="clf-rec-num">P6</div>
-      <div class="clf-rec-body"><strong>Add Tribal &amp; Indigenous Rights.</strong> Create a <code>TRB-</code> scope code. Minimum: treaty enforcement, tribal sovereignty, BIA reform, MMIW response, water rights, land rights. The platform cannot credibly claim comprehensive rights coverage while ignoring the rights of sovereign Indigenous nations.</div>
-    </div>
-
-    <div class="clf-rec">
-      <div class="clf-rec-num">P7</div>
-      <div class="clf-rec-body"><strong>Expand Agricultural Policy.</strong> Expand <code>AGR</code> from 1 to at least 15 rules. Priority areas: farm subsidy reform, food security guarantees, rural economic development, agribusiness concentration, agricultural labor protections, rural broadband access. This is essential for rural political credibility.</div>
-    </div>
-
-    <div class="clf-rec">
-      <div class="clf-rec-num">P8</div>
-      <div class="clf-rec-body"><strong>Add Financial Regulation framework.</strong> Create <code>ECO-FIN</code> or a new <code>FIN-</code> scope. Minimum: CFPB authority and independence, banking regulation, predatory lending prohibition, consumer credit reform, systemic financial risk oversight. The 2008 financial crisis was not a minor event.</div>
-    </div>
-
-    <div class="clf-rec">
-      <div class="clf-rec-num">P9</div>
-      <div class="clf-rec-body"><strong>Expand Drug Policy.</strong> Expand <code>JUS-DRG</code> from 5 to at minimum 15 rules: decriminalization framework, marijuana regulation, harm reduction mandates, drug court expansion, addiction treatment as healthcare. The War on Drugs has been the primary engine of mass incarceration for 50 years.</div>
-    </div>
-
-    <div class="clf-rec">
-      <div class="clf-rec-num">P10</div>
-      <div class="clf-rec-body"><strong>Prioritize amendment campaign strategy.</strong> Of the 65 amendment-required rules, focus early organizing on Electoral College abolition (ELE-REP-001), explicit right to vote (ELE-VOT-001), congressional term limits (TRM-LIM), and right to privacy (RGT-PRV-001) — these have the broadest bipartisan public support and the clearest structural impact.</div>
-    </div>
-
-  </div>
+  <p>Domain and subdomain codes are defined in the <code>domains</code> and <code>subdomains</code> tables of the policy catalog database. Cross-pillar appearances (where a position is relevant to more than one pillar) are tracked in the <code>position_pillar_appearances</code> table rather than as separate position records.</p>
 
 </div>
 
-<div class="page-refs" id="page-refs">
-  <p class="refs-head">References</p>
-  <ol class="refs-list">
-    <li id="fn1">Roosevelt, F. D. (1944, January 11). <em>Annual message to Congress (State of the Union address).</em> The American Presidency Project. <a href="https://www.presidency.ucsb.edu/documents/annual-message-congress-the-state-the-union-1" target="_blank" rel="noopener">https://www.presidency.ucsb.edu/documents/annual-message-congress-the-state-the-union-1</a> <a href="#ref1">↩</a></li>
-    <li id="fn2">U.S. Census Bureau. (2023). <em>Island areas of the United States: 2020 census.</em> U.S. Department of Commerce. <a href="https://www.census.gov/library/stories/state-by-state/island-areas-united-states.html" target="_blank" rel="noopener">https://www.census.gov/library/stories/state-by-state/island-areas-united-states.html</a> <a href="#ref2">↩</a></li>
-    <li id="fn3">Hoyert, D. L. (2024). <em>Maternal mortality rates in the United States, 2022</em> (NCHS Data Brief No. 514). National Center for Health Statistics. <a href="https://www.cdc.gov/nchs/data/databriefs/db514.htm" target="_blank" rel="noopener">https://www.cdc.gov/nchs/data/databriefs/db514.htm</a> <a href="#ref3">↩</a></li>
-  </ol>
+<div class="page-nav-cta">
+  <div class="wrap">
+    <p>Want to help build and maintain this catalog? Start here.</p>
+    <a href="get-involved.html" class="btn-primary">Get Involved →</a>
+  </div>
 </div>
 
 <footer class="site-footer">
@@ -628,7 +168,6 @@
     <span class="footer-brand">Freedom and Dignity Project</span>
     <ul class="footer-links">
       <li><a href="index.html">Home</a></li>
-      <li><a href="foundations.html">Foundations</a></li>
       <li><a href="pillars/index.html">Pillars</a></li>
       <li><a href="compare/index.html">Perspectives</a></li>
     </ul>

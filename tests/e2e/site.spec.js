@@ -42,8 +42,9 @@ test.describe('Homepage', () => {
     await expect(page.locator('.demand-list li')).toHaveCount(10);
   });
 
-  test('nav has 12 links (4 static + Mission, Constitution, Classification, About Us, Letter from the Founder, Get Involved, Roadmap, About AI injected by app.js)', async ({ page }) => {
-    await expect(page.locator('.nav-links a')).toHaveCount(12);
+  test('nav has 7 links (6 static + About AI injected by app.js)', async ({ page }) => {
+    // 6 static: Home, Problem, Approach, Proposals, Get Involved, Roadmap + 1 injected: About AI
+    await expect(page.locator('.nav-links a')).toHaveCount(7);
   });
 
   test('name notice banner is present and dismissible', async ({ page }) => {
@@ -206,7 +207,7 @@ test.describe('Compare index', () => {
   test.beforeEach(async ({ page }) => { await page.goto('/compare/index.html'); });
 
   test('has correct page title', async ({ page }) => {
-    await expect(page).toHaveTitle(/Comparison|Compare/i);
+    await expect(page).toHaveTitle(/Comparison|Compare|Perspectives|Why This Project/i);
   });
 
   test('shows all 6 parties', async ({ page }) => {
@@ -405,6 +406,10 @@ test.describe('Homepage AI transparency section', () => {
   test.beforeEach(async ({ page }) => { await page.goto('/'); });
 
   test('renders AI transparency section', async ({ page }) => {
+    // Section is inside a <details> accordion — check it is attached, then open it
+    await expect(page.locator('.ai-transparency-section')).toBeAttached();
+    const accordion = page.locator('details.section-accordion[data-bg="ai-transparency"]');
+    await accordion.evaluate(el => el.setAttribute('open', ''));
     await expect(page.locator('.ai-transparency-section')).toBeVisible();
   });
 
@@ -414,8 +419,9 @@ test.describe('Homepage AI transparency section', () => {
 
   test('CTA button links to about-ai.html', async ({ page }) => {
     const cta = page.locator('.ai-transparency-section a[href*="about-ai"]');
-    await expect(cta).toBeVisible();
-    await cta.click();
+    await expect(cta).toBeAttached();
+    const href = await cta.getAttribute('href');
+    await page.goto(href.startsWith('http') ? href : new URL(href, page.url()).toString());
     await expect(page).toHaveTitle(/AI|Artificial/i);
   });
 });
@@ -454,26 +460,25 @@ test.describe('Mission page', () => {
   test.beforeEach(async ({ page }) => { await page.goto('/mission.html'); });
 
   test('has correct page title', async ({ page }) => {
-    await expect(page).toHaveTitle(/Mission.*Freedom and Dignity/i);
+    await expect(page).toHaveTitle(/Problem|Mission.*Freedom and Dignity/i);
   });
 
   test('renders hero heading', async ({ page }) => {
-    await expect(page.locator('.mission-hero h1')).toBeVisible();
+    await expect(page.locator('.page-hero-standard h1')).toBeVisible();
   });
 
-  test('hero contains "Mission" text', async ({ page }) => {
-    const text = await page.locator('.mission-hero h1').textContent();
-    expect(text).toMatch(/Mission/i);
+  test('hero contains "Problem" text', async ({ page }) => {
+    const text = await page.locator('.page-hero-standard h1').textContent();
+    expect(text).toMatch(/Problem/i);
   });
 
   test('nav Mission link is present', async ({ page }) => {
-    // Mission link is injected by app.js — test presence and correct href
+    // Mission link is baked into the HTML nav as "Problem"
     const link = page.locator('.nav-links a[href*="mission"]');
     await expect(link).toBeAttached();
   });
 
   test('nav Mission link is marked active on mission page', async ({ page }) => {
-    // Injected links get class="active" from pageName detection in app.js
     const link = page.locator('.nav-links a[href*="mission"].active');
     await expect(link).toBeAttached();
   });
@@ -500,58 +505,39 @@ test.describe('Mission page', () => {
   });
 });
 
-// ── CONSTITUTION PAGE ─────────────────────────────────────────────────────────
+// ── CONSTITUTION PAGE (NEW BILL OF RIGHTS) ───────────────────────────────────
 
 test.describe('Constitution page', () => {
   test.beforeEach(async ({ page }) => { await page.goto('/constitution.html'); });
 
   test('has correct page title', async ({ page }) => {
-    await expect(page).toHaveTitle(/Constitution.*Freedom and Dignity/i);
+    await expect(page).toHaveTitle(/Rights|Constitution.*Freedom and Dignity/i);
   });
 
   test('renders hero heading', async ({ page }) => {
-    await expect(page.locator('.const-hero h1')).toBeVisible();
+    await expect(page.locator('.page-hero-standard h1')).toBeVisible();
   });
 
-  test('hero contains "Constitution" text', async ({ page }) => {
-    const text = await page.locator('.const-hero h1').textContent();
-    expect(text).toMatch(/Constitution/i);
-  });
-
-  test('nav Constitution link is present', async ({ page }) => {
-    // Constitution link is injected by app.js — test presence and correct href
-    const link = page.locator('.nav-links a[href*="constitution"]');
-    await expect(link).toBeAttached();
+  test('hero contains "Rights" text', async ({ page }) => {
+    const text = await page.locator('.page-hero-standard h1').textContent();
+    expect(text).toMatch(/Rights/i);
   });
 
   test('footer Constitution link is present', async ({ page }) => {
     await expect(page.locator('.footer-links a[href*="constitution"]')).toBeAttached();
   });
 
-  test('referendum and recall section is present', async ({ page }) => {
-    await expect(page.locator('.const-reform-box')).toBeAttached();
+  test('FDR block is present', async ({ page }) => {
+    await expect(page.locator('.fdr-block')).toBeAttached();
   });
 
-  test('referendum and recall section mentions National Referendum', async ({ page }) => {
-    const text = await page.locator('.const-reform-box').textContent();
-    expect(text).toMatch(/National Referendum/i);
-  });
-
-  test('recall section mentions Recall', async ({ page }) => {
-    const text = await page.locator('.const-reform-box').textContent();
-    expect(text).toMatch(/Recall/i);
+  test('rights sections render', async ({ page }) => {
+    // 5 rights groups: Economic, Civil/Political, Digital/Privacy, Environmental, Bodily
+    await expect(page.locator('.rights-section')).toHaveCount(5);
   });
 
   test('references section is present', async ({ page }) => {
-    await expect(page.locator('#page-refs')).toBeAttached();
-  });
-
-  test('vulnerabilities list renders', async ({ page }) => {
-    await expect(page.locator('.const-vuln')).toHaveCount(6);
-  });
-
-  test('amendment list renders', async ({ page }) => {
-    await expect(page.locator('.const-amend')).toHaveCount(6);
+    await expect(page.locator('.footnotes-block')).toBeAttached();
   });
 });
 
@@ -574,15 +560,13 @@ test.describe('Roadmap page', () => {
   });
 
   test('renders 6 roadmap tracks', async ({ page }) => {
-    // 6 tracks: Policy Dev, Organization, Outreach, Fundraising, Content & Branding, Technical
-    // 6 original tracks + Track 07 (QA/Human Review) + Track 08 (Research) = 8
-    await expect(page.locator('.roadmap-track')).toHaveCount(8);
+    // Track 00 (Strategic Direction) + Track 01–06 = 7 total
+    await expect(page.locator('.roadmap-track')).toHaveCount(7);
   });
 
-  test('nav has Mission and Constitution links', async ({ page }) => {
+  test('nav has Mission and Roadmap links', async ({ page }) => {
     await expect(page.locator('.nav-links a[href*="mission"]')).toBeAttached();
-    await expect(page.locator('.nav-links a[href*="constitution"]')).toBeAttached();
-    await expect(page.locator('.nav-links a[href*="about-us"]')).toBeAttached();
+    await expect(page.locator('.nav-links a[href*="roadmap"]')).toBeAttached();
   });
 });
 
@@ -610,9 +594,9 @@ test.describe('Elections pillar — Referendum and Recall section', () => {
   });
 });
 
-// ── MISSION/CONSTITUTION REACHABLE FROM ALL PAGE TYPES ───────────────────────
+// ── MISSION NAV LINK REACHABLE FROM ALL PAGE TYPES ───────────────────────────
 
-test.describe('Mission and Constitution nav links from all page types', () => {
+test.describe('Mission nav link from all page types', () => {
   const pages = [
     { url: '/',                               label: 'Homepage' },
     { url: '/foundations.html',              label: 'Foundations' },
@@ -622,22 +606,13 @@ test.describe('Mission and Constitution nav links from all page types', () => {
   ];
 
   for (const { url, label } of pages) {
-    test(`${label} has Mission in nav`, async ({ page }) => {
+    test(`${label} has Mission/Problem in nav`, async ({ page }) => {
       await page.goto(url);
       const link = page.locator('.nav-links a[href*="mission"]');
       await expect(link).toBeAttached();
       const href = await link.getAttribute('href');
       await page.goto(href.startsWith('http') ? href : new URL(href, page.url()).toString());
-      await expect(page).toHaveTitle(/Mission.*Freedom and Dignity/i);
-    });
-
-    test(`${label} has Constitution in nav`, async ({ page }) => {
-      await page.goto(url);
-      const link = page.locator('.nav-links a[href*="constitution"]');
-      await expect(link).toBeAttached();
-      const href = await link.getAttribute('href');
-      await page.goto(href.startsWith('http') ? href : new URL(href, page.url()).toString());
-      await expect(page).toHaveTitle(/Constitution.*Freedom and Dignity/i);
+      await expect(page).toHaveTitle(/Problem|Mission.*Freedom and Dignity/i);
     });
   }
 });
@@ -652,39 +627,28 @@ test.describe('Get Involved page', () => {
   });
 
   test('renders hero heading', async ({ page }) => {
-    await expect(page.locator('.gi-hero h1')).toBeVisible();
-    const text = await page.locator('.gi-hero h1').textContent();
+    await expect(page.locator('.page-hero-standard h1')).toBeVisible();
+    const text = await page.locator('.page-hero-standard h1').textContent();
     expect(text).toMatch(/Get Involved/i);
   });
 
-  test('renders all 12 value cards', async ({ page }) => {
-    // 12 core values: Love, Equality, Freedom, Dignity, Truth, Science,
-    // Transparency, Accountability, Justice, Stability, Solidarity, Durability
-    await expect(page.locator('.value-card')).toHaveCount(12);
+  test('renders 4 entry cards', async ({ page }) => {
+    // Discord, GitHub, Policy Review, Research/Writing
+    await expect(page.locator('.entry-card')).toHaveCount(4);
   });
 
-  test('renders all 5 system rule examples', async ({ page }) => {
-    // First rule-example-list is the System Rules examples section
-    await expect(page.locator('.rule-example-list').first().locator('li')).toHaveCount(5);
-  });
-
-  test('system rule list includes SYS-GEO-001', async ({ page }) => {
-    const text = await page.locator('.rule-example-list').first().textContent();
-    expect(text).toMatch(/SYS-GEO-001/);
-  });
-
-  test('renders all 6 contribution role cards', async ({ page }) => {
-    await expect(page.locator('.role-card')).toHaveCount(6);
-  });
-
-  test('renders all git guide steps', async ({ page }) => {
-    // 5 GitHub workflow steps + 5 local environment steps + 4 Copilot setup steps = 14
-    await expect(page.locator('.git-step')).toHaveCount(14);
+  test('renders community need items', async ({ page }) => {
+    // 8 gi-need-items in the main connect section
+    await expect(page.locator('.gi-need-item')).toHaveCount(12);
   });
 
   test('GitHub repo link is present and correct', async ({ page }) => {
     const links = page.locator('a[href*="github.com/alistardust"]');
     await expect(links.first()).toBeAttached();
+  });
+
+  test('Discord link is present', async ({ page }) => {
+    await expect(page.locator('a[href*="discord"]').first()).toBeAttached();
   });
 
   test('nav has Get Involved as active link', async ({ page }) => {
@@ -742,10 +706,9 @@ test.describe('About Us page', () => {
     await expect(page.locator('.contrib-notice a[href*="about-ai"]')).toBeAttached();
   });
 
-  test('nav has About Us as active link', async ({ page }) => {
-    const aboutUsLink = page.locator('.nav-links a[href*="about-us"]');
-    await expect(aboutUsLink).toBeAttached();
-    await expect(aboutUsLink).toHaveClass(/active/);
+  test('nav has get-involved link visible', async ({ page }) => {
+    // about-us is no longer a nav item; verify core nav links still present
+    await expect(page.locator('.nav-links a[href*="get-involved"]')).toBeAttached();
   });
 
   test('funding disclosure is present', async ({ page }) => {
@@ -798,33 +761,14 @@ test.describe('Letter from the Founder page', () => {
     expect(count).toBeGreaterThanOrEqual(17);
   });
 
-  test('nav has Letter from the Founder as active link', async ({ page }) => {
-    const link = page.locator('.nav-links a[href*="letter-from-the-founder"]');
-    await expect(link).toBeAttached();
-    await expect(link).toHaveClass(/active/);
+  test('nav has mission link visible', async ({ page }) => {
+    // letter-from-the-founder is no longer a nav item; verify core nav links still present
+    await expect(page.locator('.nav-links a[href*="mission"]')).toBeAttached();
   });
 
   test('nav and footer are injected', async ({ page }) => {
     // app.js injects nav links and footer — verify both are present
     await expect(page.locator('.nav-links a[href*="mission"]')).toBeAttached();
     await expect(page.locator('.site-footer')).toBeVisible();
-  });
-
-  test('letter page link appears in nav on other pages', async ({ page }) => {
-    // Verify the link is injected sitewide, not just on the letter page
-    await page.goto('/');
-    const link = page.locator('.nav-links a[href*="letter-from-the-founder"]');
-    await expect(link).toBeAttached();
-    const text = await link.textContent();
-    expect(text).toMatch(/Letter/i);
-  });
-
-  test('letter page link appears in nav on pillar subdir pages', async ({ page }) => {
-    await page.goto('/pillars/healthcare.html');
-    const link = page.locator('.nav-links a[href*="letter-from-the-founder"]');
-    await expect(link).toBeAttached();
-    // href should resolve correctly from a subdir (../ prefix)
-    const href = await link.getAttribute('href');
-    expect(href).toMatch(/letter-from-the-founder/);
   });
 });
