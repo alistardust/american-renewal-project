@@ -10,7 +10,7 @@ Reconciliation between HTML and DB is complete (HTML→DB gap = 0, DB→HTML gap
 
 1. Site HTML (`docs/pillars/*.html`) — rendered policy cards; most recently edited content
 2. `policy/catalog/policy_catalog_v2.sqlite` — 3,810 positions in v2 ID format; canonical structured catalog
-3. `policy/foundations/pillars/` narrative markdown — prose source; may lag behind site HTML
+3. `policy/foundations/<foundation>/<pillar>/` narrative markdown — prose source; may lag behind site HTML
 
 **Any new position added to HTML must be backfilled into the DB in the same commit.**
 
@@ -19,7 +19,7 @@ Reconciliation between HTML and DB is complete (HTML→DB gap = 0, DB→HTML gap
 Once PolicyOS and the generation pipeline are complete:
 
 1. `policy/catalog/policy_catalog_v2.sqlite` — canonical source of truth for all policy positions
-2. `policy/foundations/pillars/*/overview.md` and `policy/foundations/pillars/*/policy.md` — source for narrative prose
+2. `policy/foundations/<foundation>/<pillar>/overview.md` and `policy/foundations/<foundation>/<pillar>/policy.md` — source for narrative prose
 3. `docs/pillars/*.html` — generated output; do not hand-edit policy cards
 
 ## Site structure (live)

@@ -10,9 +10,9 @@ The policy corpus is primarily maintained in:
 
 - `docs/pillars/*.html` — live policy card HTML
 - `policy/catalog/policy_catalog_v2.sqlite` — structured policy position catalog (v2 ID format)
-- `policy/foundations/pillars/` — narrative prose markdown (overview and policy sections per pillar)
+- `policy/foundations/<foundation>/<pillar>/` — narrative prose markdown (overview and policy sections per pillar)
 
-The markdown under `policy/foundations/pillars/` may lag behind the site HTML.
+The markdown under `policy/foundations/<foundation>/<pillar>/` may lag behind the site HTML.
 
 For shared repository context, provenance notes, and maintenance expectations, also read `.github/ai-repo-context.md`.
 
@@ -36,7 +36,7 @@ The site HTML and the DB have both been edited since last reconciliation. Neithe
 Once the reconciliation audit is complete:
 
 - `policy/catalog/policy_catalog_v2.sqlite` is the **canonical source of truth** for all policy positions
-- `policy/foundations/pillars/*/overview.md` and `policy/foundations/pillars/*/policy.md` are the source for narrative prose
+- `policy/foundations/<foundation>/<pillar>/overview.md` and `policy/foundations/<foundation>/<pillar>/policy.md` are the source for narrative prose
 - `docs/pillars/*.html` is **generated output** — do not hand-edit policy cards
 
 Do **not** assume the current pillar files are complete.
@@ -400,7 +400,7 @@ Until reconciliation is complete:
 ### Target state (Phase 2, post-reconciliation)
 
 - `policy/catalog/policy_catalog_v2.sqlite` is the single source of truth for all policy positions
-- `policy/foundations/pillars/*/overview.md` and `policy/foundations/pillars/*/policy.md` are the source for narrative prose
+- `policy/foundations/<foundation>/<pillar>/overview.md` and `policy/foundations/<foundation>/<pillar>/policy.md` are the source for narrative prose
 - `docs/pillars/*.html` is generated output — do not hand-edit policy cards
 - A build script (`scripts/generate-site.py`, TBD) will render HTML from DB + markdown
 - Any content change must be made in the source (DB or markdown), then the site regenerated
