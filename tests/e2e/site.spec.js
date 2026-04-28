@@ -482,7 +482,7 @@ test.describe('Proposals page', () => {
   });
 
   test('renders 5 foundation cards', async ({ page }) => {
-    await expect(page.locator('.proposals-foundation-card')).toHaveCount(5);
+    await expect(page.locator('.fo-fv-card')).toHaveCount(5);
   });
 
   test('renders 3 rights framework cards', async ({ page }) => {
