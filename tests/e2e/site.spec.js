@@ -554,6 +554,14 @@ test.describe('Platform page', () => {
   test('footer Platform link is present', async ({ page }) => {
     await expect(page.locator('.footer-links a[href*="platform"]')).toBeAttached();
   });
+
+  test('footer About link is present', async ({ page }) => {
+    await expect(page.locator('.footer-links a[href*="about-us"]')).toBeAttached();
+  });
+
+  test('footer Perspectives link is present', async ({ page }) => {
+    await expect(page.locator('.footer-links a[href*="compare"]')).toBeAttached();
+  });
 });
 
 // ── ROADMAP PAGE ──────────────────────────────────────────────────────────────
@@ -730,6 +738,10 @@ test.describe('About Us page', () => {
     const text = await page.locator('.contrib-notice').textContent();
     expect(text).toMatch(/no outside funding|no.*funding/i);
     expect(text).toMatch(/volunteer|compensation/i);
+  });
+
+  test('letter from the founder link is present', async ({ page }) => {
+    await expect(page.locator('a[href*="letter-from-the-founder"]')).toBeAttached();
   });
 });
 
