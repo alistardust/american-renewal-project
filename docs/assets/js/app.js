@@ -44,8 +44,6 @@
     const isProposalsPage = pageName === 'proposals';
     const platformHref = base + 'platform.html';
     const isPlatformPage = pageName === 'platform';
-    const pillarsHref = base + 'pillars/index.html';
-
     if (navList && !navList.querySelector('a[href*="mission"]')) {
       const li = document.createElement('li');
       li.innerHTML = `<a href="${missionHref}"${isMissionPage ? ' class="active"' : ''}>Problem</a>`;
@@ -97,11 +95,6 @@
     if (footerLinks && !footerLinks.querySelector('a[href*="proposals"]')) {
       const fli = document.createElement('li');
       fli.innerHTML = `<a href="${proposalsHref}">Proposals</a>`;
-      footerLinks.appendChild(fli);
-    }
-    if (footerLinks && !footerLinks.querySelector('a[href*="pillars/index"]')) {
-      const fli = document.createElement('li');
-      fli.innerHTML = `<a href="${pillarsHref}">All Pillars</a>`;
       footerLinks.appendChild(fli);
     }
     if (footerLinks && !footerLinks.querySelector('a[href*="mission"]')) {
