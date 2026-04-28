@@ -119,15 +119,16 @@ To rebuild: `python3 scripts/build-catalog-v2.py`
 System-rules layer in development. Three-layer hierarchy:
 
 1. **Platform values** — `policy/policyos/policyos_platform_values_v1.md`
-2. **System principles** — `policy/policyos/policyos_1_0_rules_proposal.md`
+2. **System principles** — `policy/policyos/policyos_1_0_rules_proposal.md` — 11 families (KERN/GEOG/FEDR/REGD/ENFA/AIGV/ECOL/THRV/DEMO/PRIV/ECON)
 3. **Authoring OS** — `policy/policyos/policyos_authoring_os_v1.md`
+4. **Governance** — `policy/policyos/policyos_governance_v1.md` — amendment process and pillar compliance review gate
 
-See the handoff file and README in `policy/policyos/` for current status.
+All three layers are canonicalized as of 2026-04-27. Amendments follow the process in `policyos_governance_v1.md`.
 
 ## Known open items
 
 - **Citation fixes** — orphan footnote wiring and uncited statistics in progress (automated agents running)
-- **PolicyOS canonicalization** — values layer locked; principles and authoring OS under review
+- **PolicyOS canonicalization** — **complete** as of 2026-04-27; all three layers locked; governance process defined
 - **Plain language** — all 3,810 positions have `rule-plain` descriptions
 - **Science/Technology/Space content** — live page; content in development
 

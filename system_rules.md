@@ -37,6 +37,17 @@ Editorial & provenance obligations (non-negotiable)
 System rules dump
 A machine-readable extraction of system-level rules is available: data/pillar_reports/by_mapping/system_rules_dump.csv and a human-readable version at data/pillar_reports/by_mapping/system_rules_dump.md. These represent the set of SYS-* canonical policy_items the project treats as foundational. Review and suggest edits by tagging entries in the prose export or filing a small proposal describing intended change and provenance.
 
+PolicyOS (canonical system-rules layer)
+The PolicyOS layer is the current canonical cross-platform design rule set. It supersedes the legacy SYS-* entries as the normative framework for how policy must be designed, tested, and enforced. See policy/policyos/README.md for structure and file inventory.
+
+Three-layer hierarchy (all locked as of 2026-04-27):
+1. Platform values — policy/policyos/policyos_platform_values_v1.md
+2. System principles — policy/policyos/policyos_1_0_rules_proposal.md (11 families: KERN, GEOG, FEDR, REGD, ENFA, AIGV, ECOL, THRV, DEMO, PRIV, ECON)
+3. Authoring OS — policy/policyos/policyos_authoring_os_v1.md (NORM, AUTH, TEST, ENFC, PLAC, MAINT)
+Governance process — policy/policyos/policyos_governance_v1.md
+
+PolicyOS rule IDs use PLOS- (system principles) and PAOS- (authoring OS) prefixes.
+
 Representative system rules (selected highlights)
 - CHKS-AINL-0002: Human judgment required for materially harmful decisions; AI absence cannot justify denial.
 - CHKS-AINL-0003: Lack of an AI recommendation must not be used as evidence of unfitness.

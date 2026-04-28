@@ -91,14 +91,14 @@ policy/policyos/
 The current hierarchy (as of April 2026):
 
 1. **Platform values** — `policy/policyos/policyos_platform_values_v1.md` — the moral/political anchor for all rules. Uses a `floor + duty` model (what policy must not violate vs. what it must actively secure). **Locked.**
-2. **System principles** — `policy/policyos/policyos_1_0_rules_proposal.md` — cross-platform design rules (KERN/GEOG/FEDR/REGD/ENFA/AIGV families). Under review.
-3. **Authoring OS** — `policy/policyos/policyos_authoring_os_v1.md` — how policy must be written, tested, scoped, enforced, and maintained (NORM/AUTH/TEST/ENFC/PLAC/MAINT families). Under review.
+2. **System principles** — `policy/policyos/policyos_1_0_rules_proposal.md` — cross-platform design rules (11 families: KERN/GEOG/FEDR/REGD/ENFA/AIGV/ECOL/THRV/DEMO/PRIV/ECON). **Locked.**
+3. **Authoring OS** — `policy/policyos/policyos_authoring_os_v1.md` — how policy must be written, tested, scoped, enforced, and maintained (NORM/AUTH/TEST/ENFC/PLAC/MAINT families). **Locked.**
 
-For the most current status and next steps, read the handoff file: `policy/policyos/copilot_handoff_2026-04-26.md`.
+For governance, amendment process, and pillar compliance review gate, see: `policy/policyos/policyos_governance_v1.md`.
 
 PolicyOS rules use the ID prefix `PLOS-` and `PAOS-`. Do not conflate them with pillar policy positions (`XXXX-XXXX-0000`).
 
-Do not canonicalize PolicyOS rules into `system_rules.md` or the DB until the structural review is complete and approved.
+All three layers are now canonicalized. Amendments follow the process defined in `policyos_governance_v1.md` and the amendment protocol in the values document. Do not make casual changes to any of the three canonical documents.
 
 ---
 
