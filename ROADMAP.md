@@ -1,6 +1,6 @@
 # Freedom and Dignity Project — Roadmap
 
-*Last updated: 2026-04-27. Keep this file current as priorities and milestones shift.*
+*Last updated: 2026-05-01. Keep this file current as priorities and milestones shift.*
 
 ---
 
@@ -17,6 +17,14 @@
 - **PolicyOS pillar audit** complete (2026-04-27); full gap remediation complete (P1–P4, +179 positions, +44 subdomains)
 
 This project does not need more top-level concepts right now. It needs stronger **information architecture** so the site feels like a guided path into a system rather than a collection of important documents.
+
+**2026-05-01 update:** A deeper strategic issue has been identified: the site is built as a policy platform, but the project is a reform movement. The IA work below remains valid, but it must be grounded in a movement identity first. See `.github/project-identity.md` for the identity and voice reference. The five sub-projects below describe the work to bring the site in line with that identity:
+
+1. **Identity & Voice** — reference document ✓ complete (`.github/project-identity.md`)
+2. **Movement Layer** — champion issues, human element, participation pathways
+3. **Site Restructure** — IA, homepage, navigation, tour rebuilt around movement frame
+4. **Content Coherency** — audit/update existing pages for consistent voice
+5. **Accessibility** — design and content pass across the site
 
 ---
 
@@ -361,6 +369,7 @@ Deliverables:
 - clarify contributor pathways for research, writing, review, and structure
 - add collaboration calls to action throughout the site
 - prepare for external growth channels after the site narrative is coherent
+- **expand `CONTRIBUTING.md`** — stub exists; needs: PR workflow, branch naming, review expectations, Discord link, and contributor onboarding for non-technical contributors (referenced from `.github/project-identity.md`)
 
 Success criteria:
 
