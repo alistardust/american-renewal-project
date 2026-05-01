@@ -284,8 +284,11 @@ test.describe('About AI page', () => {
     await expect(page.locator('.nav-links a.active')).toHaveText(/About AI/i);
   });
 
-  test('footer About AI link is present', async ({ page }) => {
-    await expect(page.locator('.footer-links a[href*="about-ai"]')).toBeAttached();
+  test('footer has standard links', async ({ page }) => {
+    // about-ai footer omits the self-referential AI link; verify standard items
+    await expect(page.locator('.footer-links a[href*="platform"]')).toBeAttached();
+    await expect(page.locator('.footer-links a[href*="about-us"]')).toBeAttached();
+    await expect(page.locator('.footer-links a[href*="compare"]')).toBeAttached();
   });
 
   test('AI harms section is present', async ({ page }) => {
@@ -797,5 +800,11 @@ test.describe('Letter from the Founder page', () => {
     // app.js injects nav links and footer — verify both are present
     await expect(page.locator('.nav-links a[href*="mission"]')).toBeAttached();
     await expect(page.locator('.site-footer')).toBeVisible();
+  });
+
+  test('footer has standard links', async ({ page }) => {
+    await expect(page.locator('.footer-links a[href*="platform"]')).toBeAttached();
+    await expect(page.locator('.footer-links a[href*="about-us"]')).toBeAttached();
+    await expect(page.locator('.footer-links a[href*="compare"]')).toBeAttached();
   });
 });
