@@ -97,6 +97,22 @@ Do not hand-edit `policy/catalog/policy_catalog_v2.sqlite`.
 
 Policy that skips this step is not eligible for adoption per PAOS-AUTH-0010. This applies equally to AI-assisted and human-authored drafts.
 
+## Mandatory adversarial review for all policy work (PAOS-TEST-0008)
+
+**Adversarial review is required for all policy writing, expansion, and rewriting** — not only for brand-new rules. This means actively searching for:
+
+- **Gaps** — what the rule fails to cover, who it fails to protect, what scenarios fall outside its scope
+- **Edge cases** — boundary conditions, unusual fact patterns, or populations the rule treats inconsistently
+- **Loopholes** — paths by which the regulated actor can satisfy the letter of the rule while defeating its purpose
+- **Unintended consequences** — perverse incentives, burden-shifting, or foreseeable second-order harms
+- **Abuse paths** — how a bad-faith actor (government, institution, employer, or individual) could exploit the rule
+
+This applies to: new rules, additions to existing families, rewrites, scope expansions, and any change that substantively alters a right, duty, prohibition, or access condition.
+
+**The review must be documented.** If no issues are found, document that the review was conducted and explain why. A finding that produces no changes is still a required finding, not evidence that the step was skipped.
+
+Per PAOS-TEST-0008, changes that skip this step are not eligible for adoption.
+
 ---
 
 ## PolicyOS
