@@ -78,6 +78,25 @@ Do not hand-edit `policy/catalog/policy_catalog_v2.sqlite`.
 - When updating policy content, check the current site HTML first, then the DB, then the source logs.
 - Keep changes surgical: context and traceability matter as much as the final wording.
 
+## Mandatory pre-drafting requirement for new policy (PAOS-AUTH-0010)
+
+**Before writing any new policy rule, policy family, or policy section**, you must:
+
+1. **Read the full PolicyOS framework** — all three layers in order:
+   - `policy/policyos/policyos_platform_values_v1.md` — values that must not be violated
+   - `policy/policyos/policyos_1_0_rules_proposal.md` — cross-platform design constraints; identify which KERN rules and overlays apply
+   - `policy/policyos/policyos_authoring_os_v1.md` — structural requirements every rule must satisfy (NORM/AUTH/TEST/ENFC/PLAC/MAINT checklists)
+
+2. **Conduct domain-specific research** into the policy area before drafting:
+   - Applicable federal/state regulatory frameworks and statutes
+   - Relevant industry standards and professional body guidelines
+   - Known failure modes, enforcement gaps, and historical context
+   - Empirical evidence and primary data sources
+
+3. **Document what you consulted** — every new policy card must include a `rule-notes` field citing the PolicyOS rules applied and the primary sources reviewed.
+
+Policy that skips this step is not eligible for adoption per PAOS-AUTH-0010. This applies equally to AI-assisted and human-authored drafts.
+
 ---
 
 ## PolicyOS
