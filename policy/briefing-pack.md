@@ -149,6 +149,7 @@ PolicyOS is a cross-cutting rule architecture that all policy must comply with. 
 - Research documents (internal working documents, not on site):
   - `policy/research/new-bill-of-rights-adversarial-review.md`
   - `policy/research/senate-reform-research.md`
+  - `policy/research/teacher-pay-rights-shortage-research.md`
   - `policy/research/us-constitution-adversarial-review.md`
 
 ---
