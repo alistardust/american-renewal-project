@@ -271,9 +271,11 @@ Add the hamburger tree IIFE:
     const nav = document.querySelector('.site-nav');
     if (!nav) return;
     const panel = document.createElement('nav');
+    panel.id = 'site-tree';         // required — aria-controls is an IDREF
     panel.className = 'site-tree';
     panel.setAttribute('aria-label', 'Site navigation tree');
-    panel.setAttribute('role', 'tree');
+    // No role="tree" on the <nav> — that overrides its landmark semantics.
+    // The role="tree" belongs only on the <ul> below.
 
     const header = document.createElement('div');
     header.className = 'st-header';
@@ -526,6 +528,8 @@ git commit -m "feat(nav): add site-tree hamburger panel CSS"
 ### Task 5: Update nav HTML on all affected pages
 
 Every top-level HTML page must have the new 5-item primary nav. Replace the old nav-links on each file.
+
+> **Note:** `index.html` is intentionally excluded here — its nav will be fully rebuilt as part of the homepage redesign in Task 11 (Chunk 4). Do not run the script against it now.
 
 **Affected files (nav-links block in each):**
 - `docs/problem.html` (was mission.html)
@@ -1131,11 +1135,11 @@ Content source: `.github/project-identity.md` §What We Believe + §What We Won'
 # Find the commit that deleted rights.html
 git log --oneline -- docs/rights.html
 
-# Retrieve the full file content from the last commit before deletion
-git show <sha>:docs/rights.html > /tmp/rights-content.html
+# Pipe content directly — no temp file needed
+git show <sha>:docs/rights.html | grep -A10 "amendment\|Amendment\|Floor\|Duty\|floor\|duty" | head -80
 
-# Review what's there
-grep -A10 "amendment\|Amendment\|Floor\|Duty\|floor\|duty" /tmp/rights-content.html | head -80
+# Or view the full file piped through less (q to exit):
+git show <sha>:docs/rights.html | cat
 ```
 
 The `rights.html` content has 10 amendments, each with a short title, one-liner, and floor+duty framing. Copy this structure into the Bills of Rights section (do not paraphrase from memory — use the actual recovered content).
@@ -1540,6 +1544,7 @@ Lower-priority audits. These pages are in the hamburger, not the primary nav. Au
 
 **Files:**
 - Modify (as needed): `docs/roadmap.html`, `docs/letter-from-the-founder.html`, `docs/about-ai.html`
+- Modify: `tests/e2e/site.spec.js`
 
 - [ ] **Step 1: Audit each page against identity doc**
 
@@ -1603,7 +1608,7 @@ Expected: all tests pass
 - [ ] **Step 4: Final commit**
 
 ```bash
-git add docs/roadmap.html docs/letter-from-the-founder.html docs/about-ai.html
+git add docs/roadmap.html docs/letter-from-the-founder.html docs/about-ai.html tests/e2e/site.spec.js
 git commit -m "docs: voice audit roadmap, founder letter, about-ai against identity doc"
 ```
 
