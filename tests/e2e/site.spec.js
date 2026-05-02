@@ -661,6 +661,14 @@ test.describe('Roadmap page', () => {
     await expect(page.locator('.nav-links a[href*="problem"]')).toBeAttached();
     await expect(page.locator('.nav-links a[href*="roadmap"]')).toBeAttached();
   });
+
+  test('links forward to plan.html', async ({ page }) => {
+    await expect(page.locator('a[href*="plan.html"]').first()).toBeAttached();
+  });
+
+  test('links forward to join.html', async ({ page }) => {
+    await expect(page.locator('a[href*="join.html"]').first()).toBeAttached();
+  });
 });
 
 // ── ELECTIONS PILLAR — REFERENDUM AND RECALL ─────────────────────────────────
