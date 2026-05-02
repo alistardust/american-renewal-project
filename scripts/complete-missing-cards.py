@@ -1,2107 +1,1771 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Convert all status-missing policy cards in equal-justice-and-policing.html
-to status-included, adding rule-stmt and rule-notes content per PAOS-TEST-0008.
+"""Converts all status-missing policy cards in technology-and-ai pillar to status-included.
 
-Usage: python scripts/complete-missing-cards.py
-"""
+Each card receives:
+  1. Class change: status-missing → status-included
+  2. Badge change: Proposed → Included
+  3. Enhanced rule-stmt with terminal punctuation and technical precision
+  4. New rule-notes paragraph (3–6 sentences: gap / loophole / abuse path / consequence)
 
+PAOS-TEST-0008 adversarial review documented per card in the notes field.
+"""
+from bs4 import BeautifulSoup
 from pathlib import Path
-from bs4 import BeautifulSoup, NavigableString
 
-HTML_FILE = (
-    Path(__file__).parent.parent / "docs/pillars/equal-justice-and-policing.html"
-)
+TARGET = Path("docs/pillars/technology-and-ai.html")
 
-# Keys are ID suffixes (strip the leading 'JUST-').
-# Each dict may contain:
-#   'stmt'   → replace or insert rule-stmt (None = leave existing)
-#   'notes'  → replace, insert, or append to rule-notes (None = leave existing)
-#   'append' → if True, append 'notes' text to existing rule-notes content
-# Cards not listed here get class+badge change only (already have full content).
+CARD_CONTENT: dict[str, dict[str, str]] = {}
 
-CARD_CONTENT = {
-    # ------------------------------------------------------------------ AINL --
-    "AINL-0001": {
-        "notes": (
-            "AI-generated risk assessment tools, including the widely used COMPAS system, "
-            "have been found to predict recidivism with no greater accuracy than untrained "
-            "volunteers — approximately 65% — while producing racially disparate error patterns, "
-            "falsely flagging Black defendants as high-risk at nearly twice the rate of white "
-            "defendants. ProPublica's 2016 analysis of COMPAS scores in Broward County, Florida "
-            "found Black defendants were 77% more likely to be flagged as future criminals and "
-            "45% more likely to be flagged for violent reoffending. In State v. Loomis, "
-            "881 N.W.2d 749 (Wis. 2016), the Wisconsin Supreme Court allowed reference to COMPAS "
-            "scores in sentencing. Adversarial review: vendors may relabel output as "
-            "'informational' rather than 'recommendation' to evade prohibition; courts may "
-            "accept AI risk scores through expert witness testimony rather than direct judicial "
-            "application; prohibition must include any mechanism — direct or indirect — by which "
-            "AI outputs influence sentencing outcomes."
-        ),
-    },
-    "AINL-0002": {
-        "notes": (
-            "Multiple peer-reviewed studies have confirmed that AI recidivism prediction tools "
-            "are no more accurate than human judgment and generate racially biased error rates. "
-            "The AI Now Institute (2019) documented how these tools embed historical law "
-            "enforcement patterns into predictive outputs, causing feedback loops that "
-            "disproportionately harm communities of color. Adversarial review: 'treatment "
-            "recommendation' framing may substitute for 'sentencing recommendation' while "
-            "functionally serving the same purpose; 'risk-informed programming assignment' may "
-            "replicate sentencing impacts in conditions of confinement without qualifying as a "
-            "sentencing decision; scope must cover pre-sentencing, sentencing, and "
-            "conditions-of-incarceration decisions."
-        ),
-    },
-    "AINL-0003": {
-        "notes": (
-            "The National Registry of Exonerations documented 3,200+ exonerations since 1989, "
-            "representing approximately 29,000 years of wrongful imprisonment. AI-assisted "
-            "pattern recognition can surface statistically anomalous cases for human review, "
-            "identify Brady violations across large document sets, and flag discredited forensic "
-            "methods in a class of cases at a scale exceeding human processing capacity. "
-            "Adversarial review: AI case-review tools must not become a new gatekeeping layer "
-            "that reduces access to review rather than expanding it; defense must have equal "
-            "access to review tools as prosecution; AI-identified potential wrongful convictions "
-            "must trigger human review, not automatic relief or denial; the operator of the AI "
-            "tool must not have a conflict of interest in the outcome."
-        ),
-    },
-    "AINL-0004": {
-        "notes": (
-            "USSC data shows Black male federal defendants received sentences averaging 13.4% "
-            "longer than similarly situated white male defendants in FY 2022, controlling for "
-            "legally relevant factors. AI bias auditing tools can identify statistical patterns "
-            "of disparate impact in charging, plea, and sentencing decisions at scale that no "
-            "individual reviewer could detect case-by-case. Adversarial review: an AI "
-            "bias-finding tool controlled by the same agency being audited cannot provide "
-            "independent results; bias audits without structural reforms attached produce "
-            "findings with no remediation pathway; oversight requirements must specify who "
-            "controls the AI, who reviews findings, and what enforceable consequences follow; "
-            "AI identification of bias cannot substitute for structural change."
-        ),
-    },
-    "AINL-0005": {
-        "notes": (
-            "Federal Rule of Evidence 702 and Daubert v. Merrell Dow Pharmaceuticals, "
-            "509 U.S. 579 (1993) require scientific evidence to be based on sufficient facts, "
-            "derive from reliable methods, and result from reliable application of those methods. "
-            "AI systems using opaque proprietary models cannot meet Daubert requirements. "
-            "Trade secret protections have been asserted by vendors including Northpointe "
-            "(COMPAS) to resist disclosure of model methodology. Adversarial review: "
-            "'transparency' must define minimum disclosure standards — model architecture, "
-            "training data, validation methodology, and known error rates — not just that an AI "
-            "was used; vendors claiming trade secret protection must produce methodology to a "
-            "court expert under protective order; challenges to AI evidence require technical "
-            "experts, creating another resource-imbalance problem."
-        ),
-    },
-    "AINL-0006": {
-        "notes": (
-            "The Confrontation Clause (6th Amendment) guarantees the right to confront "
-            "witnesses; AI systems are not witnesses but their outputs may function as such in "
-            "practice. The European Court of Human Rights has found that use of undisclosed "
-            "methods in criminal proceedings can violate Article 6 (fair trial) rights. "
-            "Adversarial review: courts may classify AI output as documentary evidence rather "
-            "than expert testimony, avoiding Confrontation Clause scrutiny; examination rights "
-            "without funded technical resources to exercise them are hollow; courts may accept "
-            "AI examination by prosecution's own experts as sufficient; the right must include "
-            "access to training data, not just model description."
-        ),
-    },
-    "AINL-0007": {
-        "notes": (
-            "AI-based jury selection tools have been marketed to trial consultants using social "
-            "media data, demographic profiles, and behavioral models to identify and exclude "
-            "unfavorable jurors. These tools allow sophisticated operationalization of implicit "
-            "bias through data proxies, evading formal anti-discrimination doctrine. "
-            "Batson v. Kentucky, 476 U.S. 79 (1986) prohibited racial exclusion in jury "
-            "selection but requires opposing counsel to identify discriminatory strikes — a "
-            "showing that AI profiling makes impossible to demonstrate. Adversarial review: "
-            "AI profiling may be used during juror research phases before formal voir dire, "
-            "leaving no discoverable trail; marketing these tools as 'research' allows evasion; "
-            "prohibition must reach the functional activity — using AI to inform juror exclusion "
-            "decisions — not just its formal label."
-        ),
-    },
-    "AINL-0008": {
-        "notes": (
-            "Prosecutorial charging decisions are the most consequential and least supervised "
-            "discretionary acts in the criminal justice system. Research by the Vera Institute "
-            "shows that charging decisions are a primary driver of racial disparities that "
-            "compound through the rest of the system. AI-assisted charging tools risk "
-            "systematizing existing prosecutorial biases at scale without requiring any "
-            "individual prosecutor to make a consciously biased decision. Adversarial review: "
-            "'human oversight' requirements can be satisfied by nominal sign-off with no genuine "
-            "review; AI tools may filter cases before a human sees them; the prohibition must "
-            "require that the human making the decision actually reviewed the individual case "
-            "independently, not merely approved an AI recommendation."
-        ),
-    },
-    "AINL-0009": {
-        "notes": (
-            "Absent disclosure requirements, defendants cannot challenge or investigate "
-            "AI-influenced decisions in their cases. The right to confrontation and to prepare a "
-            "defense is meaningless if the defendant does not know that an AI tool influenced a "
-            "critical decision. Adversarial review: disclosure that 'an AI was used' without "
-            "disclosing what it did and its limitations is functionally inadequate; AI may "
-            "influence early case assessment stages before formal proceedings begin, placing "
-            "decisions outside disclosure windows; late disclosure — after plea negotiations are "
-            "complete — forecloses effective challenge; disclosure standards must include timing "
-            "requirements (before plea discussions) and substantive requirements (model type, "
-            "purpose, known error rates)."
-        ),
-    },
-    "AINL-0010": {
-        "notes": (
-            "The 2009 National Academy of Sciences report Strengthening Forensic Science in "
-            "the United States found that the majority of forensic disciplines lack adequate "
-            "scientific validation. The 2016 PCAST report found that bite-mark analysis, shoe "
-            "print analysis, and others had error rates either unknown or unacceptably high. "
-            "AI evidence systems face the same validation deficit but with additional opacity. "
-            "Adversarial review: courts may apply lower standards to AI evidence because it "
-            "appears more 'objective' than human expert testimony; AI validation is complicated "
-            "by inability to fully examine training data; vendors may produce industry "
-            "self-certification as a substitute for independent scientific validation; the "
-            "standard must require published peer review, known error rates, and independent "
-            "replication."
-        ),
-    },
-    # ------------------------------------------------------------------ BALS --
-    "BALS-0001": {
-        "stmt": (
-            "Cash bail as a condition of pretrial release is prohibited for all misdemeanor "
-            "and non-violent felony offenses; for offenses involving allegations of violence, "
-            "bail determinations must be individualized and based on clear and convincing "
-            "evidence of flight risk or specific safety threat rather than wealth; "
-            "ability-to-pay assessment is mandatory before any monetary condition of release "
-            "is imposed; and courts must provide non-monetary alternatives including supervised "
-            "release, check-in requirements, and targeted assistance with court appearances."
-        ),
-        "notes": (
-            " Adversarial review: abolishing cash bail without adding supervised release "
-            "infrastructure may increase the use of preventive detention as a substitute, "
-            "trading one deprivation for another; 'violent offense' carve-outs must be carefully "
-            "defined to prevent prosecutorial re-categorization of charges; high bail as "
-            "coercive plea pressure must be expressly prohibited; jurisdictions must track "
-            "changes in pretrial detention rates after bail reform to verify that abolition "
-            "produces actual decreases rather than substitutions."
-        ),
-        "append": True,
-    },
-    "BALS-0002": {
-        "notes": (
-            "In United States v. Salerno, 481 U.S. 739 (1987), the Supreme Court upheld "
-            "preventive detention provisions requiring individualized review and a finding of "
-            "future dangerousness by clear and convincing evidence. Research shows that pretrial "
-            "detention of even 2–3 days dramatically increases likelihood of a guilty plea, "
-            "subsequent incarceration, and future criminal justice contact — independently of "
-            "the underlying charges. Adversarial review: 'individualized review' requirements "
-            "can be satisfied by rubber-stamp hearings in high-volume courts; prosecutors can "
-            "use detention requests as plea pressure regardless of genuine flight or safety "
-            "concerns; resources for monitoring alternatives must exist or 'least restrictive' "
-            "standard becomes 'detention because nothing else is available.'"
-        ),
-    },
-    "BALS-0003": {
-        "notes": (
-            "AI pretrial risk assessment tools including the Arnold Foundation Public Safety "
-            "Assessment and Northpointe's FTA score use factors that correlate with race — "
-            "prior arrests (reflecting over-policing, not criminal behavior), residential "
-            "stability, employment history — to generate risk scores. A 2020 study in Science "
-            "found that all three examined AI pretrial tools produced false positive rates twice "
-            "as high for Black defendants as white defendants. Adversarial review: removing AI "
-            "risk scores without addressing judicial bias does not eliminate the disparity — "
-            "courts may replace AI scores with informal heuristics that reproduce the same "
-            "patterns; the alternative to AI risk scores must be genuinely individualized "
-            "review, not informal assessment that is even less constrained."
-        ),
-    },
-    "BALS-0004": {
-        "notes": (
-            "In Stack v. Boyle, 342 U.S. 1 (1951), the Supreme Court held that bail must not "
-            "be excessive in relation to its purpose of ensuring court appearance. Research "
-            "shows that structured pretrial supervision — regular check-ins, court date "
-            "reminders, targeted assistance — is as effective as monetary bail for ensuring "
-            "court appearance for most defendants. Adversarial review: 'least restrictive "
-            "conditions' standards can be circumvented by imposing onerous non-monetary "
-            "conditions — electronic monitoring fees, daily reporting, travel restrictions — "
-            "that are restrictive in practice; electronic monitoring imposes significant costs "
-            "and burdens on defendants; the standard must apply to conditions in aggregate, "
-            "not just to any single condition in isolation."
-        ),
-    },
-    # ------------------------------------------------------------------ CIVL --
-    "CIVL-0001": {
-        "notes": (
-            "The Legal Services Corporation estimates that 80% of the civil legal needs of "
-            "low-income Americans go unmet. In eviction court, research shows landlords are "
-            "represented by attorneys in approximately 90% of cases while tenants appear without "
-            "representation in a majority of cases — a structural disadvantage producing worse "
-            "outcomes regardless of the merits. Adversarial review: 'meaningful access' without "
-            "defining what it means is unenforceable; legal aid referrals do not constitute "
-            "meaningful access if funded capacity is insufficient to serve demand; courts may "
-            "satisfy formal requirements through self-help resources while actual access remains "
-            "limited."
-        ),
-    },
-    "CIVL-0002": {
-        "notes": (
-            "In AT&T Mobility LLC v. Concepcion, 563 U.S. 333 (2011), the Supreme Court held "
-            "that the Federal Arbitration Act preempts state laws invalidating class action "
-            "waivers in arbitration agreements. In Epic Systems Corp. v. Lewis, 584 U.S. 497 "
-            "(2018), the Court extended this to employment class action waivers. Approximately "
-            "60 million workers are currently subject to mandatory arbitration agreements. "
-            "Research by Alexander Colvin shows employees win in forced arbitration at a "
-            "fraction of the rate they win in court. Adversarial review: industry will rewrite "
-            "arbitration clauses to evade prohibition while preserving outcomes; 'voluntary' "
-            "arbitration may be made conditions of employment; this rule requires congressional "
-            "legislation to override FAA preemption."
-        ),
-    },
-    "CIVL-0003": {
-        "notes": (
-            "In Wal-Mart Stores, Inc. v. Dukes, 564 U.S. 338 (2011), the Supreme Court "
-            "significantly raised the bar for class certification. In Comcast Corp. v. Behrend, "
-            "569 U.S. 27 (2013), the Court made it harder to certify classes where individual "
-            "damages calculations differ. These decisions have dramatically reduced certified "
-            "class actions in employment, consumer, and civil rights contexts. Adversarial "
-            "review: class action preservation without adequate legal resources to bring class "
-            "cases is hollow; cy pres settlements — where funds go to third parties rather than "
-            "class members — may not serve harmed individuals."
-        ),
-    },
-    "CIVL-0004": {
-        "notes": (
-            "In Boddie v. Connecticut, 401 U.S. 371 (1971), the Supreme Court held that the "
-            "state may not deny access to divorce proceedings because of inability to pay court "
-            "fees. Research consistently finds that court filing fees are the largest single "
-            "barrier to civil justice access for low-income people; a fee of $50–$200 is "
-            "prohibitive for many. Adversarial review: fee waiver processes can be made so "
-            "procedurally complex that eligible applicants are deterred; automatic fee "
-            "assessment systems may not route people to waiver processes; courts may charge "
-            "reduced fees that are still unaffordable; waiver must be available on simple "
-            "demonstration of low income, not by complex petition."
-        ),
-    },
-    # ------------------------------------------------------------------ CONS --
-    "CONS-0001": {
-        "notes": (
-            "In Estelle v. Gamble, 429 U.S. 97 (1976), the Supreme Court held that deliberate "
-            "indifference to serious medical needs of prisoners violates the Eighth Amendment. "
-            "In Brown v. Plata, 563 U.S. 493 (2011), the Court upheld an order requiring "
-            "California to reduce its prison population because inadequate healthcare caused "
-            "needless suffering and death. Approximately 43% of state prisoners have a current "
-            "mental health diagnosis; nearly 40% have a chronic physical health condition. "
-            "Adversarial review: 'adequate' healthcare has been interpreted minimally by courts "
-            "deferring to corrections officials; telemedicine substitutes may not meet "
-            "constitutional standards for serious conditions; healthcare cost pressure produces "
-            "systematic underdiagnosis of conditions that would require treatment."
-        ),
-    },
-    "CONS-0002": {
-        "notes": (
-            "The United Nations Special Rapporteur on Torture concluded that solitary "
-            "confinement exceeding 15 days can constitute cruel, inhuman, or degrading treatment "
-            "prohibited under international law. Research shows that even short-term solitary "
-            "confinement causes or worsens psychotic episodes, PTSD, depression, and increases "
-            "suicide risk. In Madrid v. Gomez, 889 F. Supp. 1146 (N.D. Cal. 1995), the court "
-            "found that placing mentally ill prisoners in isolation violated the Eighth "
-            "Amendment. Adversarial review: relabeling practices — 'administrative segregation,' "
-            "'protective custody,' 'restrictive housing' — can replicate solitary confinement "
-            "without triggering formal restrictions; facilities may increase short-duration uses "
-            "to evade 'prolonged' thresholds; independent inspection is required because "
-            "facilities self-report usage."
-        ),
-    },
-    "CONS-0003": {
-        "notes": (
-            "Approximately 20% of people in state prisons meet criteria for a serious mental "
-            "illness. People with mental illness in custody are significantly more likely to "
-            "receive disciplinary sanctions for behavior that is symptomatic of their illness "
-            "rather than receiving clinical intervention. This practice constitutes both cruel "
-            "treatment and a failure of basic medical care obligations under Estelle v. Gamble. "
-            "Adversarial review: requiring mental health treatment without adequate staffing "
-            "creates paper compliance with no clinical substance; criminalization of mental "
-            "illness symptoms is often worse at county jails than state prisons, and reforms "
-            "must reach jails; 'treatment' requirements can be satisfied by medication "
-            "administration without therapeutic programming."
-        ),
-    },
-    "CONS-0004": {
-        "notes": (
-            "In Pennsylvania Department of Corrections v. Yeskey, 524 U.S. 206 (1998), the "
-            "Supreme Court held unanimously that the ADA applies to state prisons. Despite this "
-            "ruling, DOJ investigations have found systematic ADA failures in prisons and jails "
-            "including inadequate wheelchair access, denial of sign language interpretation, and "
-            "failure to provide accessible programming. Adversarial review: 'reasonable "
-            "accommodation' in the correctional context is interpreted more narrowly than in "
-            "community settings, with security justifications frequently used to deny "
-            "accommodations that would be required elsewhere; ADA compliance requires investment "
-            "that many facilities resist absent lawsuit or DOJ action."
-        ),
-    },
-    "CONS-0005": {
-        "notes": (
-            "No federal agency is required to independently inspect all correctional facilities. "
-            "State prison systems are largely self-inspecting; local jails are often entirely "
-            "unmonitored. COVID-19 killed at least 3,000 people in U.S. prisons and jails — a "
-            "death rate four times higher than the general population — partly because conditions "
-            "were hidden from external oversight. Adversarial review: inspections without "
-            "authority to impose consequences produce symbolic oversight; advance notice enables "
-            "Potemkin compliance; reports without public accessibility have no accountability "
-            "effect; facilities may avoid inspection by limiting the definition of what "
-            "facilities require oversight."
-        ),
-    },
-    # ------------------------------------------------------------------ CRTS --
-    "CRTS-0001": {
-        "notes": (
-            "Access to Justice research consistently finds that 80% of civil legal needs go "
-            "unmet, and that procedural complexity — not just cost — is a primary barrier. "
-            "Self-represented litigants lose cases at significantly higher rates than represented "
-            "parties even when their substantive positions are equally strong. Adversarial "
-            "review: 'intelligibility' requirements may be satisfied by simplified brochures "
-            "while proceedings remain inaccessible; there is no clear enforcement mechanism when "
-            "courts fail intelligibility standards; intelligibility for defendants in criminal "
-            "proceedings requires resources that courts have resisted funding."
-        ),
-    },
-    "CRTS-0002": {
-        "notes": (
-            "Research by the National Center for Access to Justice shows that employment "
-            "conflicts, transportation barriers, and disability together account for the majority "
-            "of missed court appearances that lead to default judgments, bench warrants, and "
-            "contempt findings. These consequences disproportionately fall on low-income "
-            "defendants. Adversarial review: accommodation processes inconsistently granted "
-            "across individual judges create unpredictable access; flexible scheduling systems "
-            "designed without this requirement may create perverse incentives to limit "
-            "accommodations; remote access technologies may impose costs or technical barriers "
-            "on those they are designed to help."
-        ),
-    },
-    "CRTS-0003": {
-        "notes": (
-            "Research during and after COVID-19 expansion of remote proceedings shows measurable "
-            "effects on outcomes: remote participants are perceived as less credible by "
-            "fact-finders, have more difficulty communicating with counsel in real time, and "
-            "receive worse outcomes in credibility-dependent proceedings. The benefits of remote "
-            "access — reduced transportation and work-conflict barriers — are real and must be "
-            "preserved while due process risks are mitigated. Adversarial review: courts have "
-            "strong cost incentives to expand remote proceedings regardless of due process "
-            "effects; the distinction between access improvement and quality reduction is "
-            "contested; courts need specific standards, not general principles."
-        ),
-    },
-    "CRTS-0004": {
-        "notes": (
-            "Automatic default judgments for missed deadlines, bench warrants for missed "
-            "hearings, and failure-to-appear charges are structural traps that convert procedural "
-            "failures into criminal liability. Research by Matthew Desmond shows that 90% of "
-            "Milwaukee eviction cases ended in default judgments, primarily because tenants did "
-            "not know how to respond to summons. Adversarial review: reducing automatic "
-            "procedural consequences may reduce incentives for timely participation; courts rely "
-            "on defaults for administrative efficiency; 'reducing procedural traps' without "
-            "specific rules produces no concrete requirements."
-        ),
-    },
-    # ------------------------------------------------------------------ DEFS --
-    "DEFS-0001": {
-        "notes": (
-            " Adversarial review: Gideon v. Wainwright, 372 U.S. 335 (1963) established the "
-            "right to counsel but not what constitutes adequate representation. Strickland v. "
-            "Washington, 466 U.S. 668 (1984) set a two-prong adequacy test that courts apply so "
-            "deferentially that ineffective assistance claims succeed in only a fraction of "
-            "cases. The ABA recommends maximum caseloads of 150 felonies or 400 misdemeanors "
-            "per year; many public defenders carry two to four times those loads. Gaps: right "
-            "to counsel does not automatically extend to all post-conviction proceedings in many "
-            "jurisdictions; loophole: courts may appoint counsel so late in proceedings that "
-            "adequate preparation is impossible while satisfying formal appointment requirements."
-        ),
-        "append": True,
-    },
-    "DEFS-0002": {
-        "notes": (
-            "Research by the Brennan Center for Justice found that prosecution offices typically "
-            "have three to four times the staffing and resource levels of public defense offices "
-            "in the same jurisdiction. State funding structures that rely on local county budgets "
-            "for public defense systematically underfund it relative to prosecution, which often "
-            "benefits from federal grants and forfeitures. Adversarial review: 'parity' can be "
-            "defined procedurally (same budget per case) while obscuring structural advantages "
-            "that are not cost-based; parity requirements without ongoing monitoring and "
-            "enforcement revert to baseline underfunding; federal mandates on state criminal "
-            "procedure funding face federalism challenges."
-        ),
-    },
-    "DEFS-0003": {
-        "notes": (
-            "Brady v. Maryland, 373 U.S. 83 (1963) requires disclosure of material exculpatory "
-            "evidence; 'materiality' is not determined until after trial — a standard that "
-            "permits withholding pre-trial evidence that turns out to matter. Open-file discovery "
-            "policies in some jurisdictions have improved compliance but remain voluntary. "
-            "Adversarial review: 'timely' is legally undefined — disclosure on the eve of trial "
-            "satisfies Brady if the defense could still use the information; prosecution controls "
-            "both evidence and timing of disclosure; expert resources in public defense systems "
-            "are severely under-resourced relative to what is needed to analyze complex "
-            "discovery."
-        ),
-    },
-    "DEFS-0004": {
-        "notes": (
-            "The Speedy Trial Act, 18 U.S.C. § 3161, sets strict time limits for federal "
-            "prosecutions; state equivalents vary in stringency. Research shows that delay is "
-            "routinely used strategically — by prosecution to increase plea pressure on "
-            "defendants held in pretrial detention, for whom each additional day represents "
-            "coercive pressure to plead guilty. Adversarial review: speedy trial waivers "
-            "obtained from detained defendants facing bail-related coercion may not be genuinely "
-            "voluntary; courts have broad discretion to find 'excludable' time that delays the "
-            "speedy trial clock; 'procedural delay' and legitimate case complexity are difficult "
-            "to distinguish in individual cases."
-        ),
-    },
-    "DEFS-0005": {
-        "notes": (
-            "The 2009 NAS report Strengthening Forensic Science in the United States found that "
-            "hair analysis, bite-mark comparison, shoe print analysis, and blood spatter analysis "
-            "lack sufficient scientific validation for the conclusions routinely presented to "
-            "juries. The Innocence Project has documented numerous wrongful convictions based on "
-            "false forensic testimony. Adversarial review: challenges to forensic validity "
-            "require expert witnesses, creating resource barriers for defense; courts may apply "
-            "Daubert's gatekeeping function inadequately, deferring to the prosecution's "
-            "institutional expert relationships; judges are often not equipped to evaluate the "
-            "scientific validity of complex forensic methods."
-        ),
-    },
-    "DEFS-0006": {
-        "notes": (
-            "Brady v. Maryland, 373 U.S. 83 (1963) and Giglio v. United States, 405 U.S. 150 "
-            "(1972) require prosecutors to disclose material exculpatory and impeachment "
-            "evidence. Research by the Innocence Project identifies Brady violations as present "
-            "in 40–50% of documented wrongful convictions. The standard for 'materiality' — "
-            "whether the evidence might have changed the outcome — is determined in retrospect "
-            "by the same courts that convicted the defendant. Adversarial review: open-file "
-            "discovery policies are voluntary and inconsistent; prosecution may withhold evidence "
-            "in files not formally labeled as part of the case file; 'continuing' disclosure "
-            "obligations are routinely not enforced after trial begins."
-        ),
-    },
-    "DEFS-0007": {
-        "notes": (
-            "Arizona v. Youngblood, 488 U.S. 51 (1988) held that the government has no "
-            "constitutional duty to preserve potentially useful (as opposed to materially "
-            "exculpatory) evidence absent bad faith. This gap permits agencies to allow evidence "
-            "to deteriorate or be destroyed as long as they cannot be shown to have done so in "
-            "bad faith — a standard almost impossible to meet. DNA evidence is routinely "
-            "destroyed before post-conviction claims can be brought. Adversarial review: "
-            "'negligence' and 'indifference' are difficult to prove; agencies may adopt informal "
-            "evidence-destruction policies that technically avoid 'bad faith' findings; retention "
-            "is expensive and many agencies lack storage resources, creating systematic evidence "
-            "loss without individual accountability."
-        ),
-    },
-    "DEFS-0008": {
-        "notes": (
-            "In Connick v. Thompson, 563 U.S. 51 (2011), the Supreme Court held that a "
-            "municipality is not liable under § 1983 for a Brady violation absent a pattern of "
-            "violations — a standard almost impossible to meet. Individual prosecutors face "
-            "professional discipline for Brady violations at very low rates. The National "
-            "Registry of Exonerations documents Brady violations in approximately 40% of "
-            "wrongful convictions. Adversarial review: criminal dismissal as a remedy for Brady "
-            "violations benefits defendants in single cases but does not deter future violations; "
-            "sanctions against individual prosecutors require judicial willingness to impose "
-            "them; structural enforcement mechanisms — automatic case review, mandatory "
-            "reporting — are more effective than case-by-case sanctions."
-        ),
-    },
-    "DEFS-0009": {
-        "notes": (
-            "In Ake v. Oklahoma, 470 U.S. 68 (1985), the Supreme Court held that indigent "
-            "defendants have a due process right to psychiatric expert assistance when sanity is "
-            "a significant factor. Courts have interpreted Ake narrowly, applying it primarily "
-            "to psychiatric experts. Research shows that defendants with independent forensic "
-            "expert assistance are significantly more likely to successfully challenge unreliable "
-            "forensic evidence. Adversarial review: court-appointed expert funding is often "
-            "inadequate; courts have broad discretion to deny expert requests; prosecution "
-            "retains structural advantage through government-funded crime labs; 'access' without "
-            "specific funding levels and standards produces symbolic rather than meaningful "
-            "access."
-        ),
-    },
-    "DEFS-0010": {
-        "notes": (
-            "Research documents the use of 'litigation snowballs' — large volumes of documents, "
-            "motions, and discovery produced close to trial deadlines that defense counsel with "
-            "minimal resources cannot adequately review. The Innocence Project and academic "
-            "researchers have identified systematic informational asymmetries as a structural "
-            "driver of wrongful convictions. Adversarial review: courts have historically been "
-            "reluctant to impose sanctions for legitimate-appearing litigation tactics even when "
-            "they function to overwhelm defense capacity; what constitutes rewarding surprise "
-            "versus legitimate aggressive litigation is subjective; specific rules — timing "
-            "requirements, volume limits relative to defense resources — are more enforceable "
-            "than general principles."
-        ),
-    },
-    # ------------------------------------------------------------------ DRGS --
-    "DRGS-0001": {
-        "stmt": (
-            "Drug enforcement strategies must transition from criminalization to public health "
-            "approaches; mandatory minimum sentences for non-violent drug possession offenses "
-            "are prohibited; federal and state funding incentives that reward arrest and "
-            "prosecution rates for drug offenses are eliminated."
-        ),
-        "notes": (
-            "The 'war on drugs' intensified by the Anti-Drug Abuse Act of 1986 has produced "
-            "approximately 1.3 million drug arrests annually without evidence of sustained "
-            "reduction in drug use rates. Portugal's 2001 decriminalization of all personal drug "
-            "possession, combined with mandatory health referrals, produced documented decreases "
-            "in HIV infection rates, drug-related deaths, and incarceration without increases in "
-            "drug use or trafficking. Adversarial review: 'public health approach' without "
-            "corresponding healthcare infrastructure creates a framework without capacity; "
-            "transition from criminal to health system may produce gaps if both systems are "
-            "inadequately funded; law enforcement agencies that lose arrest-metric incentives "
-            "may redirect pressure to other offense categories."
-        ),
-    },
-    "DRGS-0002": {
-        "stmt": (
-            "Possession of controlled substances for personal use may not be treated as a "
-            "criminal offense subject to incarceration; personal possession must be addressed "
-            "through public health and harm reduction frameworks; treatment referral and harm "
-            "reduction services must be funded at levels sufficient to meet demand for everyone "
-            "diverted from criminal prosecution."
-        ),
-        "notes": (
-            "Decriminalization of personal drug possession removes criminal penalties for use "
-            "and possession while maintaining health system responses. Research on "
-            "decriminalization programs in Portugal, Switzerland, and multiple U.S. states shows "
-            "no increase in drug use after decriminalization and significant reductions in harm. "
-            "The majority of the 1.3 million annual drug arrests in the United States are for "
-            "possession, not sale or trafficking. Adversarial review: decriminalization without "
-            "adequate treatment infrastructure creates diversion with no destination; 'personal "
-            "use' quantities must be defined with sufficient clarity to prevent prosecutors from "
-            "charging possession-for-distribution on personal-use quantities; decriminalization "
-            "at the federal level while states retain criminal penalties creates a patchwork."
-        ),
-    },
-    "DRGS-0003": {
-        "stmt": (
-            "Drug enforcement spending must be redirected to treatment, harm reduction, and "
-            "prevention services; federal and state funding formulas must prioritize treatment "
-            "capacity over arrest and incarceration rates; drug courts must be adequately funded "
-            "and structured to divert, not merely delay, criminal prosecution."
-        ),
-        "notes": (
-            "Treatment for substance use disorder is significantly more cost-effective than "
-            "incarceration as a public safety strategy: RAND Corporation and the National "
-            "Institute on Drug Abuse estimate that every dollar invested in addiction treatment "
-            "returns four to seven dollars in reduced drug-related crime, criminal justice costs, "
-            "and theft. The majority of people in treatment report that lack of availability — "
-            "not lack of desire — was their primary barrier to accessing care. Adversarial "
-            "review: redirecting funding requires budget reallocation that faces institutional "
-            "resistance from law enforcement agencies dependent on drug enforcement resources; "
-            "'treatment' programs that are coercive, punitive, or inadequately funded may worsen "
-            "outcomes; drug courts may divert people into long supervision periods with criminal "
-            "consequences for treatment failure rather than providing genuine alternatives."
-        ),
-    },
-    "DRGS-0004": {
-        "stmt": (
-            "Federal and state governments must establish regulatory frameworks for controlled "
-            "substances that govern production, distribution, and sale through licensed systems "
-            "with safety, quality, and harm reduction standards; criminal prohibition that drives "
-            "substances into unregulated markets is prohibited where regulated alternatives can "
-            "better protect public safety."
-        ),
-        "notes": (
-            "Regulated substance frameworks — including cannabis legalization in 24 states and "
-            "alcohol regulation nationwide — demonstrate that legalization under robust public "
-            "health oversight is more effective at controlling quality, reducing illegal market "
-            "violence, and targeting use disorder treatment than criminal prohibition. The "
-            "fentanyl crisis illustrates the harm produced by unregulated markets: prohibition "
-            "drove a shift from regulated pharmaceuticals to illicitly manufactured fentanyl "
-            "analogues far more dangerous than the substances they replaced. Adversarial review: "
-            "regulated frameworks require substantial administrative infrastructure; licensing "
-            "systems can be captured by large commercial operators, disadvantaging harm reduction "
-            "approaches; some substances present genuine public safety risks that regulation "
-            "alone cannot adequately address."
-        ),
-    },
-    "DRGS-0005": {
-        "stmt": (
-            "No person may be criminally penalized, arrested, or prosecuted for providing "
-            "emergency medical assistance to a person experiencing a drug overdose or for being "
-            "the person experiencing the overdose; Good Samaritan protections apply to all "
-            "persons present at an overdose scene; law enforcement may not use an overdose call "
-            "as a basis to search, arrest, or investigate the person calling for help or any "
-            "other person present unless evidence of a separate crime is independently "
-            "established."
-        ),
-        "notes": (
-            "Over 100,000 Americans died of drug overdoses in 2022, including approximately "
-            "70,000 from synthetic opioids. Research consistently shows that fear of arrest is "
-            "the primary reason people do not call 911 during overdoses. Every state has enacted "
-            "some form of a Good Samaritan law, but coverage is highly variable: many exclude "
-            "protection for callers with prior drug convictions, exclude protection for the "
-            "overdose victim, or provide protection only during the 911 call. Adversarial "
-            "review: Good Samaritan laws requiring 'good faith' calls are sometimes interpreted "
-            "to exclude calls where the caller hesitated; law enforcement may use overdose calls "
-            "as investigative opportunities; protection for only the 'first-time caller' creates "
-            "perverse incentives not to call after any prior police interaction; full protection "
-            "must extend to all persons present regardless of their history."
-        ),
-    },
-    # ------------------------------------------------------------------ EVDS --
-    "EVDS-0001": {
-        "notes": (
-            "The 2009 National Academy of Sciences report Strengthening Forensic Science in "
-            "the United States found that the majority of forensic science disciplines lack "
-            "adequate scientific validation, peer review, and published error rate data. The "
-            "2016 PCAST report specifically found that bite-mark analysis, shoe print analysis, "
-            "hair comparison, and blood pattern analysis lack foundational validity at the error "
-            "rates routinely implied by expert testimony. Adversarial review: courts continue "
-            "admitting questionable forensic methods due to institutional reliance on existing "
-            "expert structures; labs resist external validation as costly and threatening to "
-            "existing conviction patterns; the 'generally accepted' standard in Frye enables "
-            "courts to defer to forensic community self-certification rather than independent "
-            "scientific evaluation."
-        ),
-    },
-    "EVDS-0002": {
-        "notes": (
-            "The FBI acknowledged in 2015 that forensic hair analysis testimony by FBI examiners "
-            "was overstated in approximately 95% of reviewed cases involving 32 executions and "
-            "268 other convictions. Bite-mark analysis, arson investigation using outdated "
-            "chemical indicators, and blood pattern analysis have all produced documented "
-            "wrongful convictions. Adversarial review: excluding existing junk science requires "
-            "review and potential resentencing of prior convictions based on that science, which "
-            "courts are reluctant to undertake; labs and prosecutors who built careers on these "
-            "methods resist exclusion; 'exclusion' from future proceedings does not address "
-            "thousands of people currently imprisoned based on now-discredited methods."
-        ),
-    },
-    "EVDS-0003": {
-        "notes": (
-            "Chain-of-custody failures — breaks in the documented record of who had access to "
-            "evidence — have contributed to wrongful convictions and provide grounds for evidence "
-            "exclusion. Digital evidence chain-of-custody is increasingly important and "
-            "inadequately standardized: metadata tampering, unauthorized copying, and device "
-            "access without documentation are documented problems. Adversarial review: "
-            "chain-of-custody documentation requirements can be nominally satisfied while actual "
-            "custodial integrity is compromised; rules without effective sanctions for "
-            "non-compliance are advisory only; digital evidence chain-of-custody involves "
-            "complex technical questions that many courts are not equipped to evaluate."
-        ),
-    },
-    "EVDS-0004": {
-        "notes": (
-            "Deepfakes and AI-generated audio, video, and text are now indistinguishable from "
-            "authentic recordings to unaided human perception. A 2023 study found that humans "
-            "could identify AI-generated faces only approximately 50% of the time — no better "
-            "than chance. Courts have no established standards for verifying the authenticity of "
-            "digital evidence. Adversarial review: verification requirements may be outpaced by "
-            "the speed of AI development; the obligation to verify must include a specific "
-            "standard — peer-reviewed authentication methodology, not vendor certification; "
-            "courts may not have technical resources to evaluate authentication claims "
-            "independently; authenticated synthetic evidence used as demonstrative exhibits "
-            "requires the same disclosure standards as evidence."
-        ),
-    },
-    "EVDS-0005": {
-        "notes": (
-            "The discovery that forensic arson investigation was based on false fire science "
-            "resulted in post-conviction review in multiple states; Texas created a Forensic "
-            "Science Commission to review cases affected by discredited methods — the first "
-            "state to do so. Similar reviews have occurred in hair analysis cases after the "
-            "FBI's 2015 admission. Adversarial review: retroactive review programs are "
-            "resource-intensive and most jurisdictions lack capacity; post-conviction review is "
-            "limited by procedural bars and finality doctrines; the burden must be on the state "
-            "to initiate review of its own cases when methods are discredited, not solely on "
-            "individual prisoners to bring claims."
-        ),
-    },
-    # ------------------------------------------------------------------ FFFS --
-    "FFFS-0001": {
-        "notes": (
-            "DOJ's 2015 investigation of the Ferguson, Missouri police department documented "
-            "that Ferguson used traffic fines and misdemeanor fees as a primary revenue source, "
-            "generating 23% of city revenue in fiscal year 2013. People who cannot pay small "
-            "fines face escalating consequences — license suspension, bench warrants, jail time "
-            "— that can destroy employment and housing stability. Adversarial review: the "
-            "primary driver of fine and fee revenue extraction is fiscal pressure on local "
-            "governments; eliminating fine revenue without providing alternative local government "
-            "funding creates structural pressure that may recreate the problem; jurisdictions "
-            "facing revenue crises will resist these limits without replacement revenue."
-        ),
-    },
-    "FFFS-0002": {
-        "notes": (
-            "In Bearden v. Georgia, 461 U.S. 660 (1983), the Supreme Court held that revoking "
-            "probation solely because of inability to pay — without considering alternatives — "
-            "violates the Equal Protection Clause. Despite this, incarceration for failure to "
-            "pay fines and fees continues in many jurisdictions. Adversarial review: "
-            "ability-to-pay assessments can be designed to find most people 'able to pay' at "
-            "reduced amounts; assessment processes can create administrative burdens that deter "
-            "people from requesting waivers; without enforcement mechanisms, assessment "
-            "requirements become advisory."
-        ),
-    },
-    "FFFS-0003": {
-        "notes": (
-            "In Tate v. Short, 401 U.S. 395 (1971), the Supreme Court held that a state cannot "
-            "imprison a person solely for failure to pay a fine if they lack the means to do so. "
-            "Despite this ruling, debtors' prison practices persist through bench warrants for "
-            "missed court dates related to unpaid fines, probation revocation for non-payment, "
-            "and contempt proceedings. Adversarial review: the formal prohibition is circumvented "
-            "by treating non-payment as violation of a probation condition, which permits "
-            "incarceration for the 'condition violation' rather than for non-payment per se; "
-            "this loophole has been sustained by courts in many jurisdictions."
-        ),
-    },
-    "FFFS-0004": {
-        "notes": (
-            "Research by the Brennan Center documents that late fees, interest charges, and "
-            "administrative fees in justice-related debt can cause a $100 fine to balloon to "
-            "thousands of dollars, creating debt that is impossible to pay and that follows "
-            "people for life. DMV-related license suspension for unpaid fines affects 7 million "
-            "Americans and creates barriers to employment that compound inability to pay. "
-            "Adversarial review: caps on compounding charges without caps on underlying fines "
-            "can still produce unaffordable outcomes; 'strictly limited' is not actionable "
-            "without specific dollar limits or formulas; jurisdictions dependent on fee revenue "
-            "will resist these limits."
-        ),
-    },
-    "FFFS-0005": {
-        "notes": (
-            "The Brennan Center documents that low-income defendants in many jurisdictions are "
-            "not informed of waiver options, income-based payment alternatives, or community "
-            "service substitution — options that exist in many jurisdictions but are not "
-            "proactively offered. Research shows that provision of accessible, proactively "
-            "offered alternatives reduces defaults and associated collateral consequences. "
-            "Adversarial review: community service alternatives must be practically accessible "
-            "— not require weekday travel or impose requirements incompatible with work and "
-            "caregiving; waiver processes must not require documentation that people experiencing "
-            "poverty may not have; 'accessible' must be defined with specific procedural "
-            "requirements."
-        ),
-    },
-    "FFFS-0006": {
-        "notes": (
-            "The DOJ's 2015 Ferguson report documented the conflict of interest created when "
-            "courts and law enforcement depend on fines and fees for operating revenue: it "
-            "creates structural incentives to fine more people for more offenses at higher rates "
-            "regardless of public safety rationale. Civil asset forfeiture generates hundreds "
-            "of millions in annual revenue to law enforcement agencies, creating parallel "
-            "revenue-extraction incentives. Adversarial review: eliminating revenue from fines "
-            "without replacing it requires alternative funding that many local governments cannot "
-            "identify; this rule faces strong fiscal resistance; 'core operating revenue' is "
-            "ambiguous — any dependence on fine or forfeiture revenue creates distorting "
-            "incentives."
-        ),
-    },
-    # ------------------------------------------------------------------ IMMS --
-    "IMMS-0001": {
-        "notes": (
-            "The United States maintains one of the largest immigration detention systems in "
-            "the world, with approximately 34,000 people detained on any given day. Unlike "
-            "criminal detention, immigration detention lacks statutory time limits, and "
-            "individuals can be held for months or years awaiting adjudication. The Supreme "
-            "Court held in Zadvydas v. Davis, 533 U.S. 678 (2001) that indefinite civil "
-            "detention raises serious constitutional concerns. Adversarial review: immigration "
-            "detention operates largely outside the constitutional protections that apply to "
-            "criminal detention; private detention facilities are excluded from many oversight "
-            "frameworks; statutory limits can be circumvented by administrative re-designation "
-            "of proceedings."
-        ),
-    },
-    "IMMS-0002": {
-        "notes": (
-            "Only 37% of people in immigration court have legal representation, according to "
-            "DOJ data. Unrepresented immigrants are five times less likely to succeed in "
-            "immigration court. Unlike criminal proceedings, there is no constitutional right "
-            "to appointed counsel in immigration proceedings, which are civil in nature. "
-            "Adversarial review: the right to retain counsel at one's own expense does not "
-            "provide meaningful access for detained, low-income, or non-English-speaking "
-            "respondents; 'meaningful access' to counsel requires funding — right without "
-            "funding produces nominal but not actual access; interpretation quality in "
-            "immigration proceedings is variable, and misinterpretation has caused wrongful "
-            "deportation."
-        ),
-    },
-    "IMMS-0003": {
-        "notes": (
-            "The Trump administration's 'zero tolerance' policy (2018) resulted in more than "
-            "5,400 children being separated from parents at the southern border. Medical and "
-            "psychological research documents severe, long-lasting harm to children separated "
-            "from parents — including elevated rates of PTSD, depression, and developmental "
-            "harm. Many families were not reunited for months; in some cases, parents were "
-            "deported without their children. Adversarial review: 'narrowly defined and "
-            "reviewable conditions' is a flexible standard that may be interpreted broadly; "
-            "family separation as a deterrence strategy — using family harm as leverage — must "
-            "be expressly prohibited regardless of stated operational justification; oversight "
-            "requires real-time reporting, not after-the-fact review."
-        ),
-    },
-    # ------------------------------------------------------------------ JUVS --
-    "JUVS-0001": {
-        "notes": (
-            "Research on adolescent brain development establishes that the adolescent brain is "
-            "not fully developed in regions governing impulse control and long-term consequence "
-            "assessment until the mid-20s. This scientific consensus underpins Roper v. "
-            "Simmons, 543 U.S. 551 (2005) (prohibiting juvenile death penalty), Graham v. "
-            "Florida, 560 U.S. 48 (2010) (prohibiting LWOP for non-homicide juveniles), and "
-            "Miller v. Alabama, 567 U.S. 460 (2012). Rehabilitation-focused approaches show "
-            "significantly lower recidivism rates than punitive approaches for youth. "
-            "Adversarial review: 'rehabilitation-focused' systems must be adequately funded to "
-            "provide educational, therapeutic, and developmental services; relabeling punishment "
-            "as 'treatment' creates systems that are punitive in practice; juvenile facilities "
-            "may prioritize security over rehabilitation due to liability concerns."
-        ),
-    },
-    "JUVS-0002": {
-        "notes": (
-            "Adult sentences for juveniles have been the subject of a series of Supreme Court "
-            "cases limiting their scope through Roper, Graham, Miller, and Jones v. "
-            "Mississippi, 593 U.S. 535 (2021). Despite these limits, children continue to be "
-            "tried as adults under transfer statutes in all 50 states. Transferring youth to "
-            "adult court exposes them to adult prison conditions, adult criminal records, and "
-            "adult sentencing ranges. Adversarial review: 'extremely narrow conditions' for "
-            "adult sentencing must include specific procedural requirements — individualized "
-            "finding, age-appropriate hearing, qualified evaluation — not just general judicial "
-            "discretion; transfer statutes that lower the age for automatic adult prosecution "
-            "must be subject to constitutional scrutiny that currently varies by state."
-        ),
-    },
-    "JUVS-0003": {
-        "notes": (
-            "Juvenile records — even dismissed charges, arrests without conviction, and "
-            "proceedings from early childhood — create lifelong employment, housing, and "
-            "professional licensing barriers. Petition-based sealing processes exist in most "
-            "states but require legal knowledge, fees, and navigation that are systematically "
-            "unavailable to the same young people most affected. Research shows that "
-            "background-check systems frequently include sealed juvenile records in violation of "
-            "sealing orders, because aggregators and third-party databases do not automatically "
-            "honor court-ordered seals. Adversarial review: automatic sealing must include "
-            "mechanisms to purge records from third-party databases; background check systems "
-            "must have enforceable obligations to honor sealing; exceptions for dangerous "
-            "offenses must be defined specifically to prevent exception-swallowing-the-rule "
-            "dynamics."
-        ),
-    },
-    "JUVS-0004": {
-        "notes": (
-            "Research by the Annie E. Casey Foundation documents that youth in correctional "
-            "custody frequently receive inadequate educational services, experience high rates "
-            "of abuse, and have poor mental health outcomes. The Juvenile Justice and "
-            "Delinquency Prevention Act requires states to comply with core protections as a "
-            "condition of federal funding, but monitoring and enforcement are inadequate. "
-            "Adversarial review: 'access to' services does not guarantee quality — monitoring "
-            "must assess whether services are therapeutic and educational in substance, not "
-            "merely formally available; correctional facilities may prioritize security over "
-            "developmental programming; youth confined in adult facilities are legally entitled "
-            "to separation from adults but this requirement is inconsistently enforced."
-        ),
-    },
-    # ------------------------------------------------------------------ LAWS --
-    "LAWS-0001": {
-        "notes": (
-            "Qualified immunity is a judicially created doctrine — not statutory — created by "
-            "the Supreme Court in Harlow v. Fitzgerald, 457 U.S. 800 (1982) and modified in "
-            "Pearson v. Callahan, 555 U.S. 223 (2009) to allow courts to dismiss civil rights "
-            "cases without ever deciding whether a violation occurred. This creates a catch-22 "
-            "where rights cannot be clearly established because cases are dismissed before the "
-            "question is answered. Research by Joanna Schwartz (UCLA) found that QI rarely "
-            "affects ultimate outcomes — government indemnifies officers in almost all cases — "
-            "but it adds procedural barriers that deter meritorious claims. Adversarial review: "
-            "abolishing QI requires Congress to act or the Supreme Court to reverse itself; "
-            "many states have abolished QI for state-law claims; abolition must specify the "
-            "replacement standard — a 'reasonable officer' standard may be too low, while "
-            "strict liability may overcorrect."
-        ),
-    },
-    "LAWS-0002": {
-        "notes": (
-            "Personal liability for civil rights violations has been nearly eliminated by both "
-            "QI and the practice of indemnification — governments pay civil judgments in almost "
-            "all cases. Research by Schwartz found that individual officers personally paid only "
-            "0.02% of dollars in civil rights judgments. Institutional accountability — police "
-            "department liability — is also difficult: Monell v. Department of Social Services, "
-            "436 U.S. 658 (1978) requires showing a municipal policy or custom caused the "
-            "violation. Adversarial review: 'personal accountability' may create chilling "
-            "effects on aggressive but lawful policing if not balanced with adequate "
-            "indemnification for good-faith conduct; institutional accountability requires "
-            "identifying a policy or custom, which protects jurisdictions that permit "
-            "problematic conduct informally without formal policy adoption."
-        ),
-    },
-    "LAWS-0003": {
-        "notes": (
-            "The 'clearly established' standard for qualified immunity requires identifying a "
-            "prior case with nearly identical facts — a standard so demanding that courts have "
-            "found QI applies even for conduct the court acknowledged was a rights violation. "
-            "Courts have dismissed cases involving officers shooting fleeing suspects and using "
-            "excessive force solely because no court had previously ruled on identical factual "
-            "circumstances. Adversarial review: replacing the 'clearly established' standard "
-            "requires specifying a different standard; 'reasonably knowable' violations is more "
-            "workable but requires consistent application; if any reasonable officer could have "
-            "known the conduct was wrong, that should be sufficient for liability; the "
-            "replacement standard must not recreate the same practical bar through different "
-            "language."
-        ),
-    },
-    "LAWS-0004": {
-        "notes": (
-            "Municipal indemnification of officers is nearly universal in practice: research "
-            "shows governments indemnified officers in 99.98% of civil rights lawsuits. The "
-            "combination of QI and universal indemnification eliminates both the legal barrier "
-            "and the financial consequence for rights violations. Indemnification policies can "
-            "also be used to maintain confidentiality around settlements — prohibiting public "
-            "disclosure of misconduct findings as a condition of government payment. Adversarial "
-            "review: limiting indemnification for bad-faith conduct requires proving bad faith, "
-            "a standard difficult to meet in practice; exposing officers to personal liability "
-            "may deter qualified candidates from law enforcement positions; indemnification "
-            "limits without changes to underlying QI doctrine may have limited deterrent effect."
-        ),
-    },
-    # ------------------------------------------------------------------ LNGS --
-    "LNGS-0001": {
-        "notes": (
-            "Title VI of the Civil Rights Act of 1964 prohibits discrimination based on "
-            "national origin in programs receiving federal funds, which includes denial of "
-            "language access. However, federal language access requirements are inconsistently "
-            "enforced. Court interpreters are not required in all proceedings: many plea "
-            "hearings, arraignments, probation meetings, and jail administrative processes lack "
-            "interpretation. Adversarial review: 'qualified' interpreter standards vary by "
-            "jurisdiction; remote interpretation may be inadequate for complex proceedings; "
-            "courts may use bilingual court staff rather than independent interpreters, creating "
-            "accuracy and conflict-of-interest concerns."
-        ),
-    },
-    "LNGS-0002": {
-        "notes": (
-            "In criminal proceedings, due process requires meaningful participation including "
-            "language access. However, in civil and administrative proceedings, many "
-            "jurisdictions assess fees for interpretation services. Research shows that fee "
-            "barriers for interpretation result in waived interpretation services, producing "
-            "waiver of legal rights the person did not understand. Adversarial review: 'cost "
-            "barriers' could be eliminated while creating administrative barriers — lengthy "
-            "processes, documentation requirements, or advance scheduling — that functionally "
-            "limit access; remote interpretation must be provided as equivalent to in-person "
-            "interpretation where technically feasible."
-        ),
-    },
-    "LNGS-0003": {
-        "notes": (
-            "Courts have found language access failures to be 'harmless error' even when "
-            "defendants could not understand charges against them or the rights they were "
-            "waiving. A guilty plea entered without understanding is constitutionally defective, "
-            "but courts have upheld pleas entered through inadequate interpretation in many "
-            "jurisdictions. Adversarial review: the 'harmless error' standard is applied by the "
-            "same courts that permitted the error; determining what 'impairs understanding' "
-            "requires retrospective assessment of comprehension that courts will resolve against "
-            "defendants; structural solutions — mandatory qualified interpretation — are more "
-            "effective than case-by-case harmless error review."
-        ),
-    },
-    "LNGS-0004": {
-        "notes": (
-            "Google Translate and similar automated tools produce error rates of 5–15% in "
-            "technical legal texts, with higher error rates for less-common languages. Legal "
-            "translation requires not only linguistic accuracy but understanding of legal "
-            "concepts — errors in translating terminology can result in a defendant agreeing to "
-            "something they did not understand. Adversarial review: 'may not rely solely on "
-            "automated translation' requires a standard for when human interpretation is "
-            "required; cost pressures push courts toward automated tools; the standard must "
-            "specify human interpreter requirements for specific proceeding types, not leave it "
-            "to judicial discretion."
-        ),
-    },
-    "LNGS-0005": {
-        "notes": (
-            "Research by the National Center for Access to Justice shows that language-access "
-            "needs are frequently unidentified at intake: defendants who fear immigration "
-            "consequences for disclosing language needs, or lack knowledge of available "
-            "services, do not self-identify. Court systems that rely on self-identification miss "
-            "the people most in need of language access. Adversarial review: proactive "
-            "identification requires training and resources that many underfunded courts lack; "
-            "systemic intake processes must standardize language identification without creating "
-            "stigma or immigration reporting risk for those identified."
-        ),
-    },
-    # ------------------------------------------------------------------ OVRG --
-    "OVRG-0001": {
-        "notes": (
-            " Adversarial review: standardized data requirements can be satisfied by data that "
-            "is technically comparable but practically unusable — lack of meaningful definitions, "
-            "inconsistent categorization, or formats that prevent analysis; data publication "
-            "without analysis produces raw numbers that obscure rather than reveal patterns; "
-            "agencies may use definitional choices to make data appear more favorable; "
-            "independent analysis capacity must accompany data publication requirements; data "
-            "disaggregated only at agency level may not reveal officer-level or "
-            "prosecutor-level patterns that are the most actionable accountability information."
-        ),
-        "append": True,
-    },
-    "OVRG-0002": {
-        "notes": (
-            "The U.S. Sentencing Commission's 2023 data shows Black male defendants receive "
-            "sentences 13.4% longer than equivalently situated white male defendants; "
-            "disaggregated data makes this disparity visible and measurable. Research by the "
-            "Stanford Open Policing Project, using 100 million traffic stops, found statistically "
-            "significant racial disparities in stop rates, search rates, and citation rates in "
-            "the majority of examined jurisdictions — findings possible only because disaggregated "
-            "data was made available for analysis. Adversarial review: disaggregation by officer "
-            "and prosecutor is politically contentious but necessary for individual "
-            "accountability; categories can be defined at a level of granularity that reveals "
-            "nothing; quarterly reporting requirements must include specific minimum data fields, "
-            "not leave field definition to agency discretion."
-        ),
-    },
-    "OVRG-0003": {
-        "notes": (
-            "The Ferguson DOJ investigation was made possible by compelled access to documents "
-            "the city would not have provided voluntarily. Research on police accountability "
-            "boards shows that access — including subpoena power, access to body camera footage, "
-            "access to personnel records, and access to facilities — is the single strongest "
-            "predictor of whether oversight bodies produce meaningful accountability. "
-            "Adversarial review: 'access' without the ability to compel is not true access; "
-            "agencies may delay, restrict, or condition access in ways that defeat its purpose; "
-            "oversight bodies need independent legal authority — not simply access on department "
-            "sufferance — to conduct genuine investigations."
-        ),
-    },
-    "OVRG-0004": {
-        "notes": (
-            "Research on police oversight bodies shows that audit findings and recommendations "
-            "are routinely ignored absent enforceable follow-up mechanisms. The DOJ consent "
-            "decree process — which imposes binding requirements and independent monitoring — "
-            "has been shown to produce lasting reform in jurisdictions that remain under "
-            "monitoring. Voluntary compliance with non-binding recommendations has a poor track "
-            "record in law enforcement accountability contexts. Adversarial review: 'required "
-            "to act' without specifying the nature of required action permits compliance theater; "
-            "enforcement of action requirements requires oversight of the oversight process; "
-            "audit findings that produce meaningful follow-up require political will to impose "
-            "real consequences."
-        ),
-    },
-    # ------------------------------------------------------------------ POLC --
-    "POLC-0001": {
-        "stmt": (
-            "Law enforcement agencies may not acquire, possess, or deploy military weapons, "
-            "equipment, or vehicles transferred through DoD 1033 or equivalent programs or "
-            "purchased commercially to perform the same function; prohibited equipment includes "
-            "tracked and armed vehicles, grenade launchers, weaponized aircraft, and equipment "
-            "designed primarily for battlefield use; all prohibited equipment currently in law "
-            "enforcement possession must be returned, decommissioned, or destroyed within "
-            "24 months of enactment."
-        ),
-        "notes": (
-            "The Department of Defense 1033 Program has transferred approximately $7.4 billion "
-            "in surplus military equipment to civilian law enforcement agencies since 1997, "
-            "including armored vehicles, grenade launchers, and aircraft. A 2014 ACLU report, "
-            "'War Comes Home,' found that SWAT deployments increased by more than 1,400% between "
-            "the 1970s and 2000s, with 79% of SWAT deployments used to execute search warrants "
-            "— primarily for drugs. Research by Jonathan Mummolo at Princeton found that "
-            "militarized policing does not improve public safety outcomes but significantly "
-            "reduces civilian-police trust. Adversarial review: prohibition must cover commercial "
-            "acquisition of functionally equivalent equipment, not just 1033 transfers; agencies "
-            "may argue that equipment serves dual-use roles; a prohibited equipment list must be "
-            "specific enough to prevent circumvention by relabeling."
-        ),
-    },
-    "POLC-0002": {
-        "stmt": (
-            "Law enforcement agencies must establish and maintain community policing programs "
-            "that include consistent geographic beat assignment, community liaison roles, and "
-            "structured non-enforcement engagement with residents; community policing must be "
-            "implemented as a structural practice, not an optional or supplemental program, and "
-            "must be funded and staffed at levels sufficient to reach all communities within "
-            "the jurisdiction."
-        ),
-        "notes": (
-            "Community policing programs — when implemented substantively — are associated with "
-            "improved trust between officers and residents, increased crime reporting, and better "
-            "public safety outcomes. The CAHOOTS (Crisis Assistance Helping Out On The Streets) "
-            "model in Eugene, Oregon — operating since 1989 — demonstrates that non-enforcement "
-            "community crisis response can handle a significant percentage of 911 calls without "
-            "police involvement. Adversarial review: 'community policing' has been applied as a "
-            "label to programs that do not meaningfully change policing practices; officer "
-            "resistance and evaluation metrics that reward arrests undermine implementation; "
-            "community policing must be evaluated on community trust outcomes, not just program "
-            "participation."
-        ),
-    },
-    "POLC-0003": {
-        "stmt": (
-            "Law enforcement agencies must provide officers with mandatory access to confidential "
-            "mental health support, including trauma-informed therapy, peer support programs, and "
-            "crisis counseling; mental health care must be provided without career penalty and "
-            "may not be used as the basis for adverse employment action absent an independent, "
-            "documented fitness-for-duty concern; agencies must fund and staff mental health "
-            "programs at levels sufficient to meet demonstrated need."
-        ),
-        "notes": (
-            "Law enforcement officers experience elevated rates of PTSD, depression, and suicide "
-            "compared with the general population; research by the Blue H.E.L.P. organization "
-            "documents that officer suicides have exceeded line-of-duty deaths in recent years. "
-            "Untreated officer trauma correlates with excessive force, poor judgment in crisis "
-            "situations, and early career exit. Research shows that destigmatizing care-seeking "
-            "— by decoupling mental health treatment from career consequences — is the most "
-            "important factor in improving utilization rates. Adversarial review: mandatory "
-            "mental health programs without confidentiality protections are not used; "
-            "fitness-for-duty evaluation authority, if misapplied, could discipline officers for "
-            "seeking care; peer support programs led by officers may inadequately address serious "
-            "clinical needs."
-        ),
-    },
-    "POLC-0004": {
-        "stmt": (
-            "Mental health crises, behavioral health emergencies, and calls primarily involving "
-            "substance use must be routed to trained civilian crisis responders rather than armed "
-            "law enforcement as a default response; law enforcement may be requested to provide "
-            "backup where a genuine safety threat is present; jurisdictions must fund and staff "
-            "civilian crisis response programs at levels sufficient to respond to all qualifying "
-            "calls within service-level standards comparable to emergency police response."
-        ),
-        "notes": (
-            "Approximately 25% of people killed by police have a mental health condition. "
-            "Research on co-responder and alternative response models — including CAHOOTS in "
-            "Eugene, Oregon (1989), the STAR program in Denver, Colorado, and the CARE program "
-            "in Oakland, California — demonstrates that trained civilian responders can safely "
-            "handle 96–99% of behavioral health emergency calls without police involvement. "
-            "Adversarial review: crisis response programs that lack 24/7 coverage default to "
-            "police response during off-peak hours; 'backup' carve-outs can expand to swallow "
-            "the default rule if not tightly defined; civilian crisis workers face safety risks "
-            "in environments where police presence is unavailable; funding crisis response must "
-            "not result in reduced law enforcement response capacity for genuine violent "
-            "emergencies."
-        ),
-    },
-    "POLC-0005": {
-        "stmt": (
-            "Law enforcement officers may not use race, ethnicity, national origin, religion, "
-            "or immigration status as a factor in decisions to stop, detain, question, search, "
-            "or arrest any person; agencies must collect and publicly report the race, ethnicity, "
-            "gender, and age of every person stopped, searched, or arrested on a monthly basis; "
-            "officers found to have engaged in racial profiling must face investigation and "
-            "enforceable consequences including suspension, termination, and civil liability."
-        ),
-        "notes": (
-            "In Terry v. Ohio, 392 U.S. 1 (1968), the Supreme Court authorized stops based on "
-            "'reasonable articulable suspicion' — a standard that courts have allowed to "
-            "incorporate race in combination with other factors. In Floyd v. City of New York, "
-            "959 F. Supp. 2d 540 (S.D.N.Y. 2013), the court found that the NYPD's "
-            "stop-and-frisk program constituted a pattern of unconstitutional racial stops — "
-            "85% Black and Latino, 88% resulting in no further action. The Stanford Open "
-            "Policing Project documented similar patterns across 100 million traffic stops "
-            "nationally. Adversarial review: 'pretext' stops that use minor traffic violations "
-            "to provide legal cover for race-based investigations are difficult to prohibit "
-            "without evidence of the underlying motivation; data collection creates "
-            "accountability only if analyzed and acted on; banning racial profiling in formal "
-            "policy while evaluating officers on arrest metrics creates structural pressure to "
-            "profile."
-        ),
-    },
-    "POLC-0006": {
-        "stmt": (
-            "Law enforcement officers may not carry, possess, or deploy automatic weapons or "
-            "semi-automatic rifles with military-style features during regular civilian policing "
-            "duties; these weapons may not be acquired through military equipment transfer "
-            "programs or commercial purchase for standard patrol or enforcement operations; "
-            "limited exceptions apply to specialized response units for documented active threat "
-            "situations under strict protocols with mandatory review."
-        ),
-        "notes": (
-            "Automatic and military-style weapons in civilian law enforcement create escalation "
-            "risks in situations that would otherwise be resolved without lethal force. The "
-            "militarized appearance and capability of law enforcement equipped with these weapons "
-            "has been documented to reduce public trust and community cooperation. "
-            "Cross-referenced with the gun policy pillar: arguments for civilian firearm "
-            "restrictions apply with equal or greater force to law enforcement agencies that are "
-            "not constitutionally required to arm patrol officers with military-grade weaponry. "
-            "Adversarial review: 'limited exceptions' for specialized units may expand in "
-            "practice; definitions of 'military-style features' must be specific to prevent "
-            "circumvention; prohibition must include training protocols that reinforce "
-            "de-escalation rather than force-first response."
-        ),
-    },
-    "POLC-0007": {
-        "stmt": (
-            "Law enforcement agencies may not acquire, possess, or deploy weapons designed for "
-            "military combat including explosive devices, grenade launchers, weaponized "
-            "surveillance drones, offensive armored vehicles with mounted weapons, and "
-            "battlefield-grade crowd control weapons; these prohibitions apply equally to "
-            "acquisition through military transfer programs and commercial purchase; existing "
-            "prohibited weapons must be decommissioned within 24 months."
-        ),
-        "notes": (
-            "Military weapons in civilian law enforcement have been used in the policing of "
-            "protests, raids, and community enforcement operations in ways that produce "
-            "documented harm, destroy community trust, and violate civil rights. The 2014 ACLU "
-            "'War Comes Home' report documented SWAT teams using armored vehicles, battering "
-            "rams, and flash-bang grenades in routine drug enforcement operations against "
-            "non-violent suspects. Cross-referenced with the gun policy pillar: the distinction "
-            "between civilian law enforcement and military operations is a foundational principle "
-            "of American constitutional government. Adversarial review: prohibition of offensive "
-            "armored vehicles while permitting defensive ones requires specific technical "
-            "definitions; 'weapons of war' must be defined by function, not solely by formal "
-            "military designation, to prevent circumvention through commercial acquisition."
-        ),
-    },
-    "POLC-0008": {
-        "stmt": (
-            "Where a law enforcement situation genuinely requires military-grade capabilities, "
-            "the National Guard under gubernatorial activation through proper civilian command "
-            "authority is the required deployment mechanism; local law enforcement agencies may "
-            "not acquire military equipment commercially or through transfer programs as a "
-            "substitute for proper National Guard activation; deployment of National Guard units "
-            "requires written civilian authorization, time limits, documented objectives, and "
-            "post-deployment review."
-        ),
-        "notes": (
-            "The Posse Comitatus Act (1878) prohibits the use of federal military forces in "
-            "domestic law enforcement; the National Guard is exempt from this prohibition when "
-            "activated by a governor, preserving civilian command control over military-type "
-            "response to domestic situations. This distinction ensures that military capabilities "
-            "in domestic situations remain under civilian political accountability rather than "
-            "permanent operational possession of law enforcement agencies. Research on National "
-            "Guard deployments during civil unrest shows that proper activation with clear "
-            "objectives and civilian oversight produces better outcomes than deployment of "
-            "locally militarized police. Adversarial review: National Guard deployment under "
-            "federal Title 10 authority bypasses the gubernatorial command chain and the civilian "
-            "accountability it provides; the threshold for requiring military-grade capabilities "
-            "must be high enough to prevent normalization of military response; post-deployment "
-            "review must examine whether deployment was justified and proportionate."
-        ),
-    },
-    "POLC-0009": {
-        "stmt": (
-            "Law enforcement officers must complete a minimum of 40 hours per year of "
-            "non-enforcement community engagement in the geographic areas they are assigned to "
-            "police, as a condition of certification; qualifying activities must build genuine "
-            "community relationships and are distinct from enforcement duties; agencies must "
-            "report annually on compliance and community engagement outcomes."
-        ),
-        "notes": (
-            "Community policing research consistently identifies relationship building between "
-            "officers and residents as the most important determinant of police effectiveness and "
-            "public safety outcomes. Officers who have non-enforcement relationships with "
-            "community members produce better outcomes in crisis situations, have higher rates of "
-            "community cooperation with investigations, and experience lower rates of excessive "
-            "force complaints. Adversarial review: 'community service' requirements can be "
-            "satisfied by token activities that do not produce genuine relationships; "
-            "enforcement-adjacent activities may be relabeled as community engagement; evaluation "
-            "must measure community trust outcomes, not merely hours logged; 40 hours is a floor "
-            "— agency programs should provide substantially more structured community engagement."
-        ),
-    },
-    # POLC-0010, 0011, 0012 → class/badge change only (already have full content)
-    "POLC-0013": {
-        "notes": (
-            "The DOJ's 2015 Ferguson investigation found that systematic destruction of officer "
-            "misconduct records through collective bargaining agreement provisions enabled repeat "
-            "offenders to continue policing without accountability. The 'wandering officer' "
-            "phenomenon — officers with substantiated misconduct records rehired across "
-            "jurisdictions — has been documented by the Washington Post and academic researchers: "
-            "at least 85,000 officers nationwide have been credibly accused of misconduct, but "
-            "thousands have been rehired without disclosure of prior records. Adversarial "
-            "review: officer privacy interests may be asserted against disclosure of misconduct "
-            "records under state public records laws; union contract provisions requiring record "
-            "destruction are difficult to void without litigation; cross-jurisdictional "
-            "disclosure requires a national registry that does not currently exist."
-        ),
-    },
-    "POLC-0014": {
-        "notes": (
-            "Brady v. Maryland, 373 U.S. 83 (1963) and Giglio v. United States, 405 U.S. 150 "
-            "(1972) require prosecutors to disclose evidence material to guilt or punishment, "
-            "including witness credibility. Officers with records of dishonesty, evidence "
-            "planting, or racial bias are Brady-Giglio material, but disclosure is inconsistent. "
-            "In many jurisdictions, officer misconduct records are not routinely provided to "
-            "prosecutors, and prosecutors do not maintain systematic Giglio lists. Adversarial "
-            "review: 'suppression' of Brady/Giglio material occurs through both active "
-            "non-disclosure and systemic failure to inquire; prosecutors may be unaware of "
-            "relevant officer misconduct if law enforcement agencies do not proactively share "
-            "records; the disclosure obligation must include a systemic investigation "
-            "requirement, not just passive disclosure of known information."
-        ),
-    },
-    "POLC-0015": {
-        "notes": (
-            "Research by the Buffalo News found that dozens of New York police officers found "
-            "lying under oath continued working as officers; many continued to provide testimony "
-            "in criminal cases. The 'testilying' phenomenon — police officers lying under oath "
-            "— has been documented by researchers including Jerome Skolnick and in the work of "
-            "district attorneys who maintain Giglio lists. Officers with substantiated dishonesty "
-            "findings who continue testifying can corrupt criminal proceedings in ways that "
-            "produce wrongful convictions. Adversarial review: 'substantiated' misconduct is "
-            "rarely achieved when investigations are conducted internally; decertification "
-            "processes vary dramatically by state — some have no decertification authority; "
-            "officers decertified in one jurisdiction may be certified in another absent national "
-            "coordination."
-        ),
-    },
-    "POLC-0016": {
-        "notes": (
-            "Police union contracts in many states contain provisions requiring destruction of "
-            "discipline records after short periods, confidentiality agreements covering "
-            "misconduct settlements, and restrictions on what information can be shared with "
-            "civilian oversight bodies or prosecutors. New York's repeal of Civil Rights Law "
-            "§ 50-a in 2020 — which had shielded police personnel records from public "
-            "disclosure — demonstrated that legislative action can override collective "
-            "bargaining-based secrecy. Adversarial review: state laws that preempt municipal "
-            "efforts to reform police contracts must be addressed at the state level; "
-            "confidentiality provisions in individual misconduct settlement agreements may "
-            "persist even after systemic policy changes; the provision must specify which "
-            "confidentiality mechanisms are prohibited, not rely on 'secrecy' as a general "
-            "category."
-        ),
-    },
-    "POLC-0017": {
-        "notes": (
-            "A 2020 Associated Press investigation found that over 1,000 officers were hired in "
-            "new jurisdictions after being fired or forced to resign for misconduct, including "
-            "officers involved in serious civil rights violations. Research by Roger Goldman "
-            "documents that police certification is controlled at the state level and that "
-            "revocation in one state does not automatically prevent certification in another. "
-            "Only a minority of states have comprehensive decertification processes; no national "
-            "officer certification database exists. Adversarial review: a national tracking "
-            "system requires federal legislation and state cooperation; privacy concerns may "
-            "limit the scope of information shared; decertification authority without a "
-            "comprehensive tracking system is inadequate; agencies that do not check the "
-            "registry before hiring cannot be compelled to do so absent federal funding "
-            "conditionality."
-        ),
-    },
-    # ------------------------------------------------------------------ PROS --
-    "PROS-0005": {
-        "notes": (
-            "Prosecutorial charging decisions are among the most consequential and least "
-            "transparent decisions in the criminal justice system — largely unreviewable by "
-            "courts and subject to almost no external oversight. Research documents that charging "
-            "disparities by race are significant and compound through the rest of the justice "
-            "system. AI tools marketed to prosecutors — case management systems with built-in "
-            "'risk flags' and 'priority scoring' — may systematize charging disparities at scale "
-            "without requiring any individual prosecutor to make a consciously biased decision. "
-            "Adversarial review: 'accountable human review' can be satisfied by nominal sign-off "
-            "with no genuine independent analysis; AI tools that function as filters before a "
-            "prosecutor sees a case can influence outcomes without ever becoming subject to "
-            "disclosure; the prohibition must define what constitutes 'independent human review' "
-            "with specificity — reviewing an AI recommendation is not independent review."
-        ),
-    },
-    # ------------------------------------------------------------------ PRPS --
-    "PRPS-0001": {
-        "notes": (
-            "In Timbs v. Indiana, 586 U.S. 146 (2019), the Supreme Court held that the "
-            "Excessive Fines Clause applies to state civil forfeiture proceedings. The Institute "
-            "for Justice's 'Policing for Profit' report documented that civil forfeiture "
-            "generates over $68 billion annually for law enforcement agencies, including $4.5 "
-            "billion through the DOJ equitable sharing program. Many people lose property to "
-            "civil forfeiture without being charged with a crime; in many jurisdictions, the "
-            "cost of contesting forfeiture exceeds the value of the forfeited property. "
-            "Adversarial review: requiring a criminal conviction before permanent forfeiture may "
-            "create pressure to pursue criminal charges for the purpose of validating forfeiture; "
-            "'clear evidentiary standards' must be specified — preponderance in a civil "
-            "proceeding is insufficient given the forfeiture revenue incentive."
-        ),
-    },
-    "PRPS-0002": {
-        "notes": (
-            "Civil forfeiture proceedings often involve property owners who receive no notice "
-            "until after seizure, face burden-shifting rules requiring them to disprove the "
-            "government's case, and have no right to appointed counsel. In many jurisdictions, "
-            "the value of property seized is less than the cost of retaining counsel to contest "
-            "the seizure. Research by the Institute for Justice shows that low-income people and "
-            "communities of color are disproportionately targeted for civil forfeiture. "
-            "Adversarial review: 'timely review' standards in forfeiture can be satisfied by "
-            "preliminary hearings far short of full due process; 'clear evidentiary standards' "
-            "must be defined to prevent them from functioning as rubber stamps."
-        ),
-    },
-    "PRPS-0003": {
-        "notes": (
-            "The DOJ equitable sharing program distributes forfeiture revenue back to the law "
-            "enforcement agencies that initiated seizures — creating a direct financial incentive "
-            "to seize more property. Research by Marian Williams and colleagues found that law "
-            "enforcement agencies seize more property in years when they face budget shortfalls "
-            "— evidence of revenue-motivated policing. The Ferguson DOJ report documented "
-            "similar patterns at the local level. Adversarial review: eliminating forfeiture as "
-            "revenue without providing alternative law enforcement funding creates fiscal "
-            "pressure that may recreate the incentive through other means; 'core operating "
-            "revenue' is undefined — any dependence on forfeiture revenue creates distorting "
-            "incentives."
-        ),
-    },
-    "PRPS-0004": {
-        "notes": (
-            "Federal civil asset forfeiture allows permanent property seizure based on a "
-            "preponderance of evidence standard in a civil proceeding, without a criminal "
-            "conviction. The burden in many federal forfeiture actions effectively shifts to the "
-            "property owner to affirmatively prove their property is not proceeds of criminal "
-            "activity. New Mexico, North Carolina, and several other states have banned civil "
-            "asset forfeiture absent conviction at the state level. Adversarial review: "
-            "requiring conviction before forfeiture may make forfeiture nearly impossible in "
-            "cases involving criminal enterprises where individuals are difficult to convict; "
-            "criminal forfeiture as an alternative requires a conviction, which maintains due "
-            "process; the carve-out for temporary seizure pending criminal proceedings must be "
-            "strictly limited."
-        ),
-    },
-    "PRPS-0005": {
-        "notes": (
-            "Temporary seizure of property pending criminal proceedings can last years where "
-            "cases are complex or delayed. Extended pre-conviction seizure can destroy "
-            "businesses, impoverish families, and function as punishment before any finding of "
-            "guilt. Federal law permits indefinite asset freezing during prosecution under "
-            "18 U.S.C. § 1963. Adversarial review: 'strong evidentiary standards' and 'strict "
-            "time limits' must be specified in statute rather than left to judicial discretion; "
-            "time limits must be real limits with automatic return obligations, not procedural "
-            "milestones that can be extended indefinitely."
-        ),
-    },
-    "PRPS-0006": {
-        "notes": (
-            "In Krimstock v. Kelly, 306 F.3d 40 (2d Cir. 2002), the Second Circuit found that "
-            "due process requires prompt judicial review of vehicle seizures. Despite this, "
-            "forfeiture challenge processes in many jurisdictions require hiring counsel in the "
-            "jurisdiction where the seizure occurred and involve procedural complexity that is "
-            "intentionally or effectively prohibitive. Institute for Justice research shows that "
-            "in many jurisdictions, the majority of people whose property is seized never "
-            "contest the forfeiture, not because they lack grounds but because the process is "
-            "inaccessible. Adversarial review: 'meaningful and accessible' challenge processes "
-            "require both procedural reform and waiver of costs; right to challenge without a "
-            "right to counsel at government expense in high-value cases is functionally hollow; "
-            "jurisdictions have fiscal incentives to make challenges expensive and difficult."
-        ),
-    },
-    # ------------------------------------------------------------------ RECS --
-    "RECS-0001": {
-        "notes": (
-            "Research by the National Reentry Resource Center documents that 70 million "
-            "Americans have a criminal record, and that records create barriers to employment in "
-            "approximately 75% of job categories, housing in the majority of federally assisted "
-            "housing programs, and professional licensing in dozens of fields. These barriers "
-            "are disproportionately borne by Black Americans, who have higher rates of criminal "
-            "justice contact due to documented enforcement disparities. Adversarial review: "
-            "sealing and expungement without enforcement mechanisms — requiring employers, "
-            "landlords, and licensing boards to honor seals — produces paper reform; third-party "
-            "background check aggregators that do not honor sealing orders must be regulated; "
-            "'broad access' to sealing processes is meaningless if processes are prohibitively "
-            "expensive, complex, or slow."
-        ),
-    },
-    "RECS-0002": {
-        "notes": (
-            "Research by J.J. Prescott and Sonja Starr at the University of Michigan found that "
-            "only 6.5% of Michigan residents eligible for expungement received it within five "
-            "years, despite significant benefits documented by follow-up research. The primary "
-            "barrier was procedural complexity — not lack of desire. Automatic expungement "
-            "processes in states like Pennsylvania and New Jersey have dramatically increased "
-            "expungement rates. Adversarial review: automatic systems must be actively monitored "
-            "to catch implementation failures — records that are not purged from all systems as "
-            "required; state court systems without modernized records management cannot "
-            "implement automatic expungement without infrastructure investment; courts may "
-            "resist automatic systems due to administrative burden."
-        ),
-    },
-    "RECS-0003": {
-        "notes": (
-            "Juvenile adjudications were historically sealed automatically in most states, but "
-            "this protection has eroded through exceptions for certain offenses, transfer to "
-            "adult court, and technological changes that make records more accessible. Research "
-            "documents that juvenile records accessed through background check systems appear "
-            "more frequently in employment and housing contexts than they should under legal "
-            "sealing requirements. Adversarial review: 'most cases' is ambiguous — specific "
-            "offense categories must be defined for both automatic sealing and exceptions; "
-            "third-party databases must be regulated and required to purge records on sealing; "
-            "the 'extraordinary circumstances' exception must be defined to prevent expansion."
-        ),
-    },
-    "RECS-0004": {
-        "notes": (
-            "Arrests and dismissed charges create criminal records that appear in background "
-            "checks even though no conviction resulted. Research by the National Employment Law "
-            "Project found that 90% of employers conduct background checks and many exclude "
-            "applicants with arrest records regardless of outcome. An arrest record for a charge "
-            "that was dropped, dismissed, or acquitted provides no evidence of guilt but imposes "
-            "significant collateral consequences. Adversarial review: sealing dismissals without "
-            "clearing them from all databases is inadequate — sealed records reappear through "
-            "aggregation; the process for sealing must be immediate and automatic, not dependent "
-            "on a post-disposition petition."
-        ),
-    },
-    "RECS-0005": {
-        "notes": (
-            "A 2021 report by the National Consumer Law Center documented systematic violations "
-            "of the Fair Credit Reporting Act by background check companies failing to honor "
-            "court-ordered record seals. Research shows that even when individuals have "
-            "successfully cleared their records, the records reappear in third-party databases "
-            "maintained by data brokers. Adversarial review: federal FCRA enforcement of sealing "
-            "compliance requires FTC resources that have not historically been adequate; "
-            "state-level enforcement is inconsistent; data brokers argue that public records are "
-            "public regardless of court sealing orders — a legal position that must be directly "
-            "addressed by statute."
-        ),
-    },
-    "RECS-0006": {
-        "notes": (
-            "Research by the National Consumer Law Center found that 52% of background check "
-            "reports contain inaccurate information; approximately 22% contained charges without "
-            "disposition information (showing an arrest without noting it was dismissed or "
-            "acquitted). These errors disproportionately harm people of color, who have higher "
-            "rates of criminal justice contact. The Fair Credit Reporting Act provides error "
-            "correction rights but the process is complex and enforcement is inadequate. "
-            "Adversarial review: 'accessible' processes must include specific time limits for "
-            "corrections; agencies that fail to correct errors must face enforceable "
-            "consequences; the burden of error correction falls entirely on individuals who may "
-            "not know how to navigate the system."
-        ),
-    },
-    # ------------------------------------------------------------------ REIS --
-    "REIS-0001": {
-        "notes": (
-            "Research by the Collateral Consequences Resource Center documents over 44,000 "
-            "state and federal collateral consequences — statutory restrictions on housing, "
-            "employment, licensing, public benefits, and civic participation triggered by "
-            "criminal convictions. Many of these restrictions are permanent, applying for life "
-            "regardless of time elapsed or rehabilitation. Research by the American Bar "
-            "Association shows these restrictions are rarely proportionate to any public safety "
-            "rationale. Adversarial review: 'unnecessary' collateral consequences require "
-            "individualized review that courts and agencies are not equipped to conduct at scale; "
-            "many collateral consequences are imposed by agencies with no notice to the person "
-            "affected; the proliferation across thousands of statutes requires comprehensive "
-            "legislative audit, not case-by-case reform."
-        ),
-    },
-    "REIS-0002": {
-        "notes": (
-            "The ABA Criminal Justice Standards on Collateral Sanctions (2004) recommend that "
-            "collateral consequences be reviewed for proportionality, necessity, and connection "
-            "to legitimate public safety rationale. Few states have conducted such reviews. "
-            "Research by David Weiman and others documents that collateral consequences destroy "
-            "employment and housing stability, both of which are empirically among the strongest "
-            "predictors of recidivism — meaning that excessive collateral consequences may "
-            "increase rather than decrease public safety risk. Adversarial review: 'clearly "
-            "justified safety needs' is a standard requiring individualized assessment that "
-            "administrative agencies are not equipped to apply to thousands of statutes; "
-            "legislative audits face resistance from agencies that have built regulatory "
-            "frameworks around existing collateral consequences."
-        ),
-    },
-    "REIS-0003": {
-        "notes": (
-            "Research by the Urban Institute's Justice Policy Center shows that 95% of "
-            "incarcerated people will eventually be released. Lack of identification, housing, "
-            "healthcare, and employment support at release are the strongest predictors of "
-            "re-incarceration within 12 months. The cost of inadequate reentry support — "
-            "recidivism, re-prosecution, re-incarceration — far exceeds the cost of adequate "
-            "support services. Adversarial review: reentry programs that are underfunded produce "
-            "nominal services that do not meet actual needs; identification access is a "
-            "prerequisite for housing and employment and is a common but under-resourced reentry "
-            "service; healthcare continuity at release — particularly for mental health and "
-            "substance use disorder — is the most critical and most underfunded reentry support."
-        ),
-    },
-    "REIS-0004": {
-        "notes": (
-            "Research consistently shows that housing stability, employment, family connection, "
-            "and access to healthcare are the most powerful predictors of successful "
-            "reintegration and reduced recidivism — more predictive than surveillance, "
-            "monitoring, or graduated sanctions. Policies that impose housing exclusions, "
-            "employment exclusions, and civic exclusions reduce the social supports that predict "
-            "success. Adversarial review: 'reintegration as a public safety goal' is a values "
-            "statement requiring specific policy changes to have effect; the political environment "
-            "in many jurisdictions treats post-release hardship as deserved rather than as a "
-            "preventable public safety problem; this position requires direct confrontation with "
-            "punitive collateral consequence frameworks."
-        ),
-    },
-    # ------------------------------------------------------------------ REVS --
-    "REVS-0001": {
-        "notes": (
-            " Adversarial review: post-conviction review processes are limited by finality "
-            "doctrine, successive petition bars, and procedural default rules that make relief "
-            "difficult to obtain even with compelling evidence; the Antiterrorism and Effective "
-            "Death Penalty Act (AEDPA, 1996) imposed strict limitations on federal habeas corpus "
-            "review; loophole: prosecutors may characterize new evidence as 'not newly "
-            "available' to bar reopening; gap: people serving sentences without counsel cannot "
-            "effectively navigate post-conviction processes; unintended consequence: expanding "
-            "post-conviction review requirements without commensurate resources may lengthen "
-            "proceedings and delay resolution for all parties."
-        ),
-        "append": True,
-    },
-    "REVS-0002": {
-        "stmt": (
-            "Every jurisdiction must establish an independent post-conviction review mechanism "
-            "with authority to accept and investigate claims of innocence based on new evidence, "
-            "procedural error, or discredited science; review bodies must have subpoena "
-            "authority, access to case files and physical evidence, and the ability to recommend "
-            "relief directly to courts; access to review must not depend on ability to pay or "
-            "prior exhaustion of other remedies."
-        ),
-        "notes": (
-            "As of 2024, approximately 30 states have established conviction integrity units, "
-            "innocence projects, or formal post-conviction review mechanisms, but their "
-            "authority, resources, and independence vary significantly. The National Registry of "
-            "Exonerations has documented over 3,200 exonerations since 1989. Research shows "
-            "that conviction integrity units with prosecutorial independence produce more "
-            "exonerations than those that operate within regular case processing structures. "
-            "Adversarial review: conviction integrity units within prosecutor offices have an "
-            "inherent conflict of interest in reviewing that office's own convictions; "
-            "'independence' must mean structural independence, not just administrative "
-            "separation; funding must be adequate to investigate the full caseload of credible "
-            "claims; jurisdictions without innocence infrastructure remain gaps in the national "
-            "post-conviction review system."
-        ),
-    },
-    "REVS-0003": {
-        "notes": (
-            "The National Registry of Exonerations has identified common contributing factors "
-            "to wrongful convictions including perjury or false accusation (57% of cases), false "
-            "or misleading forensic evidence (24%), police misconduct (33%), and Brady "
-            "violations (over 40%). These factors, when documented in a case, are statistically "
-            "associated with substantially elevated probability of wrongful conviction. "
-            "Adversarial review: mandatory review triggers based on indicators may produce high "
-            "volume with limited capacity to process; review must be substantive, not "
-            "rubber-stamp; 'mandatory review' without specific required processes and timelines "
-            "creates the form of review without the substance."
-        ),
-    },
-    "REVS-0004": {
-        "notes": (
-            "AI pattern-recognition tools can identify statistical anomalies in large case sets "
-            "— cases with a particular forensic expert, a particular officer, or a particular "
-            "prosecutorial charging pattern — that signal elevated risk of wrongful conviction "
-            "at a scale impossible through individual case review. The Innocence Project's data "
-            "analysis work demonstrates that systemic factors affect classes of cases. "
-            "Adversarial review: AI case pattern tools must not create new barriers to relief "
-            "— findings of 'no anomaly' must not be used to deny individual claims that have "
-            "independent merit; the operator of pattern-recognition AI must be independent from "
-            "prosecution; identified patterns must trigger mandatory review, not merely flag "
-            "cases for discretionary consideration."
-        ),
-    },
-    "REVS-0005": {
-        "notes": (
-            "AEDPA's one-year limitation on federal habeas corpus petitions and successive "
-            "petition bars have been applied to deny review of credible innocence claims where "
-            "evidence emerged after statutory deadlines. The Supreme Court held in McQuiggin "
-            "v. Perkins, 569 U.S. 383 (2013) that actual innocence can excuse procedural "
-            "default — but the standard is extremely demanding. Adversarial review: removing "
-            "deadline bars creates concerns about finality and the interests of victims and the "
-            "public in resolution; credible evidence of innocence must be defined with a "
-            "workable standard that is higher than mere possibility but not as demanding as "
-            "McQuiggin; courts may apply 'credible evidence' requirements so stringently as to "
-            "replicate the same barriers under a different label."
-        ),
-    },
-    "REVS-0006": {
-        "notes": (
-            "The Supreme Court held in Martinez v. Ryan, 566 U.S. 1 (2012) and Trevino v. "
-            "Thaler, 569 U.S. 413 (2013) that inadequate post-conviction counsel can establish "
-            "cause for procedural default in habeas proceedings — but this does not create a "
-            "right to appointed counsel in post-conviction proceedings. Research shows that "
-            "self-represented prisoners attempting to navigate federal habeas corpus proceedings "
-            "face procedural complexity that makes claims almost impossible to develop without "
-            "legal assistance. Adversarial review: providing counsel access for post-conviction "
-            "proceedings is resource-intensive; public defender post-conviction units are "
-            "severely understaffed; the structural demand for post-conviction review counsel is "
-            "substantially higher than current capacity in most jurisdictions."
-        ),
-    },
-    "REVS-0007": {
-        "notes": (
-            "Cases affected by systemic misconduct — including falsified evidence by a "
-            "particular crime lab analyst, discredited testimony by a particular expert, or "
-            "Brady violations by a particular prosecutorial office — affect classes of "
-            "convictions that individual post-conviction processes cannot efficiently address. "
-            "The Massachusetts Hinton lab scandal (2012) and the Houston crime lab scandal "
-            "(2002–2012) both required multi-year, multi-agency class review processes. Research "
-            "by the National Registry shows that systemic-misconduct exonerations are "
-            "underrepresented because class review processes do not exist in most jurisdictions. "
-            "Adversarial review: systemic review programs require significant government "
-            "investment and face resistance from agencies responsible for the misconduct; "
-            "timelines for class review can extend for years while affected individuals remain "
-            "incarcerated."
-        ),
-    },
-    # ------------------------------------------------------------------ RSTS --
-    "RSTS-0001": {
-        "notes": (
-            "Research on restorative justice programs — including victim-offender mediation, "
-            "community circles, and reparative boards — consistently shows superior outcomes "
-            "compared to incarceration on recidivism, victim satisfaction, cost, and community "
-            "safety. A 2007 meta-analysis by Lawrence Sherman and Heather Strang found that "
-            "restorative justice programs reduced recidivism for both violent and property "
-            "offenses. Adversarial review: 'appropriate and voluntary' requires that restorative "
-            "programs have genuine capacity to be refused without criminal justice consequence; "
-            "restorative justice can be made coercive when offered as the only alternative to "
-            "incarceration; program quality varies widely — poorly facilitated processes can "
-            "retraumatize victims; restorative approaches work best for offenses where "
-            "victim-offender relationships exist and are less applicable to complex or "
-            "organizational crimes."
-        ),
-    },
-    "RSTS-0002": {
-        "notes": (
-            "Research shows that criminal prosecution for low-level and first-time offenses "
-            "produces worse outcomes than diversion — higher recidivism, greater collateral "
-            "consequences, and higher costs — for the majority of people who would otherwise be "
-            "eligible for diversion programs. Drug courts, mental health courts, and community "
-            "supervision diversion programs have strong evidence bases when adequately funded "
-            "and structured with genuine exit pathways. Adversarial review: diversion programs "
-            "that impose lengthy supervision periods with criminal consequences for failure "
-            "produce 'net-widening' — bringing more people under justice system control than "
-            "would otherwise face consequences; diversion for some charges while maintaining "
-            "prosecution for others requires clear criteria that do not reproduce racial and "
-            "class disparities in access."
-        ),
-    },
-    "RSTS-0003": {
-        "notes": (
-            "Restorative justice processes that are coerced — presented as the only alternative "
-            "to incarceration, or conditioned on admission of guilt that can be used in "
-            "subsequent proceedings — undermine due process. Admission of responsibility in "
-            "restorative programs is sometimes used to support subsequent prosecution if the "
-            "program fails. Adversarial review: 'voluntary' participation must be defined so "
-            "that prosecutors cannot effectively compel participation by making criminal "
-            "prosecution the only alternative; confidentiality of statements made in restorative "
-            "processes must be protected; completion of a restorative process must not be used "
-            "as evidence of guilt in any subsequent proceedings."
-        ),
-    },
-    "RSTS-0004": {
-        "notes": (
-            "Research documents significant disparities in access to diversion and restorative "
-            "justice programs by race, geography, and class. Diversion is more commonly offered "
-            "to white, suburban, and more affluent defendants for equivalent offenses. This "
-            "disparity reflects both prosecutorial discretion and program availability — rural "
-            "areas and high-poverty jurisdictions have fewer diversion options. Adversarial "
-            "review: formal equity requirements must be accompanied by evaluation mechanisms "
-            "that identify disparate access patterns; prosecutors have broad discretion that may "
-            "resist formal equity requirements; funding must support diversion and restorative "
-            "programs in jurisdictions that currently have none, not only in those already "
-            "operating programs."
-        ),
-    },
-    "RSTS-0005": {
-        "notes": (
-            "Successful completion of diversion programs typically results in charge dismissal, "
-            "but practices around subsequent record treatment vary widely. Many diversion "
-            "completions create arrest records, charge records, or diversion program records "
-            "that appear in background checks. Research shows that people who have successfully "
-            "completed diversion programs are substantially more employed and stably housed than "
-            "those who received criminal convictions. Adversarial review: 'support for "
-            "dismissal' is not the same as automatic dismissal — specificity about what "
-            "completion produces is required; background check systems must be required to treat "
-            "successfully diverted charges identically to charges that were never filed."
-        ),
-    },
-    # ------------------------------------------------------------------ SUPR --
-    "SUPR-0001": {
-        "notes": (
-            "The United States has the largest probation and parole population in the world — "
-            "over 4 million people. Approximately 45% of state prison admissions in many states "
-            "are probation and parole revocations rather than new crimes. Research by the "
-            "Columbia University Justice Lab shows that this revolving door effect accounts for "
-            "a substantial portion of U.S. incarceration rates. Adversarial review: 'designed "
-            "to support reintegration' requires specific structural changes to supervision "
-            "requirements, revocation standards, and resource allocation that face resistance "
-            "from probation and parole agencies."
-        ),
-    },
-    "SUPR-0002": {
-        "notes": (
-            "Research by the Columbia University Justice Lab documents that many probation "
-            "conditions are imposed as a uniform checklist rather than as individualized "
-            "requirements — resulting in conditions like 'no internet use' or 'no contact with "
-            "anyone with a criminal record' that are impossible to satisfy in modern life. These "
-            "conditions function as traps that ensure revocation regardless of rehabilitation "
-            "progress. Adversarial review: courts impose conditions from checklists without "
-            "individualized assessment due to time pressure; conditions must have specific nexus "
-            "to supervision rationale — the connection between condition and safety or "
-            "supervision purpose must be documented; challenging conditions requires legal "
-            "resources most probationers lack."
-        ),
-    },
-    "SUPR-0003": {
-        "notes": (
-            "Research documents that approximately 45% of state prison admissions in "
-            "high-supervision-state contexts result from technical violations of supervision "
-            "conditions rather than new offenses. Technical violations include missed "
-            "appointments, positive drug tests, failure to report an address change, and similar "
-            "administrative failures unrelated to public safety. Adversarial review: 'should "
-            "not by default trigger incarceration' leaves too much discretion — specific "
-            "mandatory sanctions short of incarceration must be required for technical "
-            "violations; supervision agents must not have unlimited discretion to determine what "
-            "constitutes a technical violation; some technical violations have genuine public "
-            "safety implications and must be addressed with proportionate responses."
-        ),
-    },
-    "SUPR-0004": {
-        "notes": (
-            "In Morrissey v. Brewer, 408 U.S. 471 (1972), the Supreme Court held that parolees "
-            "are entitled to due process before revocation, including notice of alleged "
-            "violations and a neutral hearing body. In Gagnon v. Scarpelli, 411 U.S. 778 "
-            "(1973), the Court extended similar protections to probationers. Despite these "
-            "constitutional requirements, revocation hearings are often brief and heavily "
-            "deferential to supervision agents. Adversarial review: formal due process "
-            "requirements can be satisfied by hearings that are procedurally adequate but "
-            "substantively rubber-stamp revocation recommendations; supervision agents' "
-            "statements receive disproportionate weight; meaningful review requires counsel, "
-            "evidence access, and genuinely neutral adjudicators."
-        ),
-    },
-    "SUPR-0005": {
-        "notes": (
-            "Research documents supervision conditions including geographic restrictions that "
-            "prevent people from living with family members who have criminal records, reporting "
-            "requirements incompatible with employment, and drug testing requirements that "
-            "conflict with prescribed medications. These conditions function as traps regardless "
-            "of the supervised person's good-faith efforts to comply. Adversarial review: "
-            "'impossible' conditions are often imposed by agencies under time pressure with no "
-            "individualized assessment; challenging conditions requires legal resources most "
-            "supervised people lack; agencies may impose restrictive conditions to manage "
-            "liability rather than to achieve supervision goals."
-        ),
-    },
-    "SUPR-0006": {
-        "notes": (
-            "Research documents that the risk of recidivism decreases sharply over time after "
-            "release from incarceration — the aging-out effect — and that continued supervision "
-            "of low-risk individuals after two to three years produces no public safety benefit "
-            "while imposing significant burdens and costs. Research by the Council of State "
-            "Governments Justice Center shows that automatically reducing supervision length for "
-            "people who have complied with conditions for extended periods produces equivalent "
-            "public safety outcomes at substantially lower cost. Adversarial review: periodic "
-            "review that can extend as well as reduce supervision creates a two-edged process "
-            "that may increase rather than decrease supervision length; 'clear evidence' "
-            "justifying continued supervision must be defined specifically to prevent automatic "
-            "extension as the default."
-        ),
-    },
-    # ------------------------------------------------------------------ VICS --
-    "VICS-0001": {
-        "notes": (
-            "Research on victim satisfaction with criminal justice processes consistently shows "
-            "that participation and information — knowing what is happening in their case — are "
-            "more important to victims than outcomes, including sentence length. The Crime "
-            "Victims' Rights Act of 2004 (18 U.S.C. § 3771) establishes federal rights "
-            "including notice, access to proceedings, and reasonable right to be heard. "
-            "Adversarial review: victim rights must be implemented in ways that preserve "
-            "defendants' due process rights — victim testimony at sentencing, victim impact "
-            "evidence, and victim participation in plea negotiations must not override the "
-            "presumption of innocence or defendants' confrontation rights; 'meaningful "
-            "participation' must not be interpreted to give victims veto power over prosecutorial "
-            "decisions."
-        ),
-    },
-    "VICS-0002": {
-        "notes": (
-            "Research consistently shows that trauma-informed responses to crime victims — "
-            "including stable housing, healthcare, mental health treatment, and safe environments "
-            "for disclosure — improve both victim recovery and cooperation with law enforcement "
-            "investigations. The Violence Against Women Act and the Victims of Crime Act (VOCA) "
-            "provide federal funding for victim services, but research documents large gaps "
-            "between demand and available services. Adversarial review: 'trauma-informed' "
-            "services require training and infrastructure that many localities lack; services "
-            "restricted to victims who cooperate with prosecution exclude many crime victims; "
-            "healthcare and mental health services for victims must not be contingent on criminal "
-            "prosecution."
-        ),
-    },
-    "VICS-0003": {
-        "notes": (
-            "Victim rights frameworks, while legitimate and important, can be weaponized to "
-            "erode defendants' due process rights when implemented without appropriate limits. "
-            "Mandatory victim impact testimony, victim participation in plea decisions, and "
-            "enhanced prosecution at victim request can create pressure on prosecutors to pursue "
-            "more aggressive cases regardless of evidentiary merit. Adversarial review: 'may "
-            "not be used to erode' requires active judicial and prosecutorial management; victim "
-            "rights organizations may advocate for expanded rights without adequate attention to "
-            "defense rights impacts; the tension between victim participation and defendants' "
-            "rights requires ongoing institutional management, not a one-time policy decision."
-        ),
-    },
-    "VICS-0004": {
-        "notes": (
-            "Research on victims' experiences in the criminal justice system shows that many "
-            "victims do not want maximum punishment — they want acknowledgment, explanation, and "
-            "some form of accountability. Restorative approaches that center victims' actual "
-            "interests often produce more satisfaction than punitive approaches. Adversarial "
-            "review: 'retribution alone' as the prohibited outcome requires a standard for when "
-            "prosecutor charging and sentencing recommendations have moved from justice to "
-            "retribution — a standard that is difficult to define and enforce; victims may want "
-            "retributive outcomes and prosecutors may feel ethically obligated to pursue them."
-        ),
-    },
-    "VICS-0005": {
-        "notes": (
-            "Research documents significant disparities in access to victim services by race, "
-            "geography, citizenship, and class. Services are concentrated in jurisdictions with "
-            "more resources; rural victims, immigrant victims, and victims in communities with "
-            "lower income receive substantially fewer services. The U visa program provides some "
-            "protection for immigrant crime victims but is administrative rather than statutory "
-            "and has capacity limits. Adversarial review: 'equitable' services require both "
-            "equal access and culturally competent delivery; services designed for one "
-            "demographic may be inaccessible or ineffective for others; funding equity requires "
-            "federal allocation formulas that reach underserved jurisdictions."
-        ),
-    },
-    # ------------------------------------------------------------------ WITS --
-    "WITS-0001": {
-        "notes": (
-            "Witness intimidation is a documented, serious problem that affects the ability of "
-            "the justice system to function, particularly in communities with high rates of "
-            "violent crime. Research by the Urban Institute documents that witness intimidation "
-            "is a primary reason why many violent crimes go unsolved — witnesses who fear "
-            "retaliation do not cooperate. Federal witness protection (18 U.S.C. § 1512) "
-            "prohibits witness intimidation; the Witness Security Program provides physical "
-            "protection for high-risk witnesses. Adversarial review: 'accountable legal "
-            "protections' for witnesses must not convert witness protection into coercion — "
-            "witnesses held under 'protective' arrangements without freedom to leave or "
-            "communicate are effectively detained; the distinction between protection and "
-            "detention must be enforced."
-        ),
-    },
-    "WITS-0002": {
-        "notes": (
-            "Witness protection measures range from relocation to confidentiality orders to "
-            "anonymous testimony — with varying impacts on defendants' rights. Anonymous "
-            "testimony directly implicates the Confrontation Clause right to confront witnesses. "
-            "Roviaro v. United States, 353 U.S. 53 (1957) established limits on informant "
-            "privilege in criminal cases. Adversarial review: 'proportionate' witness protection "
-            "must balance genuine threat assessment against defendants' confrontation rights; "
-            "protective orders that prevent defense counsel from knowing witnesses' identities "
-            "before trial create serious fairness concerns; protection measures imposed without "
-            "adequate threat assessment may be used as tools for coercion."
-        ),
-    },
-    "WITS-0003": {
-        "notes": (
-            "Giglio v. United States, 405 U.S. 150 (1972) requires disclosure of benefits "
-            "provided to witnesses, including benefits to family members. Undisclosed benefits "
-            "— reduced charges for cooperating witnesses, government payments, housing "
-            "assistance — undermine the jury's ability to assess credibility. Research on "
-            "informant testimony by Alexandra Natapoff documents that informant testimony is "
-            "among the leading contributors to wrongful convictions. Adversarial review: "
-            "'material inducements' must be defined broadly to include informal arrangements "
-            "and future benefits, not just formal agreements; prosecutors may characterize "
-            "arrangements as 'not yet binding' to avoid disclosure; ongoing benefits provided "
-            "to witnesses post-trial without pre-trial disclosure create retroactive impeachment "
-            "material that is often not disclosed."
-        ),
-    },
-    "WITS-0004": {
-        "notes": (
-            "Witness intimidation by law enforcement — including threatening to report family "
-            "members for immigration violations, threatening adverse action on pending cases, or "
-            "using investigative power coercively against witnesses — is a documented problem in "
-            "high-stakes cases. Research documents cases where police officers were found to have "
-            "intimidated witnesses to suppress exculpatory testimony. Adversarial review: "
-            "'officials' must be defined broadly to include law enforcement, prosecutors, and "
-            "government contractors; internal investigations of official witness intimidation are "
-            "subject to the same conflict-of-interest problems as other internal investigations; "
-            "independent investigation authority is required."
-        ),
-    },
-    "WITS-0005": {
-        "notes": (
-            "Witnesses — particularly victims who are also witnesses — experience significant "
-            "psychological effects from testifying about traumatic events in adversarial "
-            "proceedings. Research on trauma and memory shows that trauma can affect the "
-            "accuracy and consistency of testimony in ways that are frequently misinterpreted as "
-            "deception. Trauma-informed support for witnesses improves both witness welfare and "
-            "the quality of testimony. Adversarial review: 'trauma-informed' support that "
-            "includes coaching or preparation sessions with prosecution must be disclosed to "
-            "defense; support that influences testimony content crosses from support into witness "
-            "preparation that may affect adversarial fairness; support programs must be designed "
-            "to support accurate testimony, not to produce consistent testimony for prosecution "
-            "purposes."
-        ),
-    },
-}  # end CARD_CONTENT
+# ---------------------------------------------------------------------------
+# AGES — Age Verification
+# ---------------------------------------------------------------------------
+CARD_CONTENT["TECH-AGES-0001"] = {
+    "stmt": "Mandatory identity-based age verification systems that require government-issued identification, biometric data, or persistent tracking to access lawful online content are prohibited.",
+    "notes": "This rule blocks the most invasive age verification architectures but leaves room for systems that route through private data brokers who perform identity matching without technically collecting government-issued credentials directly. A compliant actor could contract with a commercial identity aggregator that reconstructs equivalent identity profiles through inferred data, achieving the same surveillance effect while satisfying the prohibition's literal terms. Governments could mandate platform compliance with nominal verification standards that effectively require the same data collection, laundering the surveillance obligation through regulatory requirements rather than direct government systems. The rule does not address cross-border platforms that may not be subject to U.S. jurisdictional enforcement."
+}
+CARD_CONTENT["TECH-AGES-0002"] = {
+    "stmt": "Age verification systems must not create centralized databases of user identity or browsing activity, whether operated by governments, platforms, or their vendors.",
+    "notes": "Centralized database prohibitions are vulnerable to technical circumvention through federated or distributed storage architectures that retain equivalent identifying information across multiple systems without a single central store. Compliant actors could use rolling cryptographic tokens that are individually unlinkable but collectively reidentifiable through intersection attacks or metadata analysis. Governments or private entities could compel third-party verification vendors to maintain retention logs under separate legal authority not covered by the prohibition. The rule creates no affirmative deletion obligation and does not specify enforcement mechanisms or auditing requirements for violations."
+}
+CARD_CONTENT["TECH-AGES-0003"] = {
+    "stmt": "Age assurance mechanisms that preserve privacy — including local device verification, zero-knowledge proofs, and non-identifying credential systems — are permitted and must be accepted as compliant alternatives where technically feasible.",
+    "notes": "Privacy-preserving alternatives depend on accurate implementation and independent auditing; without mandatory standards, nominally privacy-preserving systems may retain identifying data through hidden telemetry or vendor back-channels. A compliant actor could offer a zero-knowledge system with flawed implementation or undisclosed data collection not apparent to users or regulators. The availability of alternatives does not prevent platforms from defaulting to less private systems unless the rule imposes an affirmative obligation to offer them prominently and without degraded user experience. Standards for what constitutes a sufficiently privacy-preserving mechanism remain undefined absent rulemaking, creating significant compliance uncertainty."
+}
+CARD_CONTENT["TECH-AGES-0004"] = {
+    "stmt": "Any permitted age verification system must minimize data collection to the minimum necessary for verification and must prohibit retention of verification data beyond the immediate transaction.",
+    "notes": "Data minimization requirements depend on clear definitions of necessity and enforceable deletion timelines, neither of which this rule specifies; regulatory capture during rulemaking could allow broad retention under vague fraud-prevention or legal-compliance justifications. Compliant actors could define necessity expansively — retaining metadata, device identifiers, or session logs for security purposes — while technically satisfying minimization requirements. Without third-party audits, self-reported compliance with deletion obligations is unverifiable, particularly for multi-vendor systems with complex data-sharing arrangements. Cross-border data flows may allow retention in jurisdictions with weaker deletion enforcement, effectively circumventing domestic minimization requirements."
+}
+CARD_CONTENT["TECH-AGES-0005"] = {
+    "stmt": "Age verification requirements must be narrowly scoped to specific high-risk content categories designated by statute or regulation and may not be expanded to general internet access, communications platforms, or lawful online services.",
+    "notes": "Scope limitations are vulnerable to legislative and regulatory creep once the technical infrastructure for age verification exists and can be extended incrementally without attracting the scrutiny that would attend a broad proposal. Compliant actors or agencies could define designated content categories expansively enough to encompass a substantial fraction of online activity while nominally satisfying the 'specific categories' standard. Governments with interests in internet monitoring could use age verification infrastructure as an entry point to establish general identification requirements, citing child protection rationale to pre-empt constitutional challenges. This rule requires affirmative legislative action to prevent category expansion and cannot be enforced passively."
+}
+CARD_CONTENT["TECH-AGES-0006"] = {
+    "stmt": "Governments and private entities may not use age verification systems as a proxy for surveillance, content censorship, or behavioral tracking of any user, regardless of age.",
+    "notes": "Surveillance proxy prohibitions are difficult to enforce when the same infrastructure simultaneously serves legitimate verification and illegitimate monitoring purposes, requiring intent or effect standards that are hard to litigate. A government or private entity could maintain that surveillance data was collected as an incidental byproduct of legitimate age verification rather than as a primary purpose, defeating the prohibition under lenient interpretations. Private platforms under government pressure could design systems that nominally serve verification but route behavioral data to enforcement databases through intermediary APIs not covered by the prohibition's terms. Without independent technical audits mandated by this rule, the distinction between verification and surveillance infrastructure cannot be externally verified."
+}
 
 
-def process_card(card: "Tag", content: "dict | None", soup: BeautifulSoup) -> None:
-    """Apply class, badge, stmt, and notes changes to a single status-missing card."""
-    # 1. Update CSS class
-    classes = card.get("class", [])
-    card["class"] = [
-        "status-included" if c == "status-missing" else c for c in classes
-    ]
-
-    # 2. Update badge text
-    badge = card.find("span", class_="rule-badge")
-    if badge:
-        badge.string = "Included"
-
-    if not content:
-        return  # class/badge change only
-
-    # 3. Handle rule-stmt
-    stmt_text = content.get("stmt")
-    if stmt_text:
-        stmt_p = card.find("p", class_="rule-stmt")
-        if stmt_p:
-            stmt_p.clear()
-            stmt_p.append(NavigableString(stmt_text))
-        else:
-            title_p = card.find("p", class_="rule-title")
-            new_stmt = soup.new_tag("p")
-            new_stmt["class"] = "rule-stmt"
-            new_stmt.append(NavigableString(stmt_text))
-            if title_p:
-                title_p.insert_after(new_stmt)
-
-    # 4. Handle rule-notes
-    notes_text = content.get("notes")
-    if notes_text:
-        notes_p = card.find("p", class_="rule-notes")
-        if notes_p:
-            if content.get("append"):
-                notes_p.append(NavigableString(notes_text))
-            else:
-                notes_p.clear()
-                notes_p.append(NavigableString(notes_text))
-        else:
-            # Insert after rule-stmt (which may have just been inserted)
-            stmt_p = card.find("p", class_="rule-stmt")
-            title_p = card.find("p", class_="rule-title")
-            anchor = stmt_p if stmt_p else title_p
-            new_notes = soup.new_tag("p")
-            new_notes["class"] = "rule-notes"
-            new_notes.append(NavigableString(notes_text))
-            if anchor:
-                anchor.insert_after(new_notes)
+# ---------------------------------------------------------------------------
+# AINL — AI in Law / General AI Governance
+# ---------------------------------------------------------------------------
+CARD_CONTENT["TECH-AINL-0001"] = {
+    "stmt": "High-risk AI systems — those that affect rights, liberty, health, housing, employment, benefits, or access to education — must be subject to heightened governance review, including documented impact assessments, bias audits, and civil rights evaluations, before deployment.",
+    "notes": "This rule establishes a governance review requirement but does not define the specific standards, scope, or binding outcomes of that review, leaving significant implementation discretion to deploying agencies and companies. A compliant actor could satisfy 'heightened review' through a perfunctory internal checklist that does not independently assess bias, failure modes, or civil rights impacts. The definition of 'high-risk' is not specified, allowing narrow definitional choices that exclude consequential systems such as hiring screeners, benefits fraud-detection tools, or insurance pricing models. Without mandatory public disclosure of review outcomes, review processes cannot be externally verified or challenged by affected communities."
+}
+CARD_CONTENT["TECH-AINL-0002"] = {
+    "stmt": "AI systems that affect rights, liberty, healthcare, education, employment, benefits, policing, or housing must not operate without meaningful human accountability — including identified responsible decision-makers, documented review procedures, and enforceable override authority.",
+    "notes": "The requirement for 'meaningful human accountability' does not specify what meaningful review entails or what authority a human reviewer must have to override AI outputs; nominal accountability can coexist with de facto automation. A compliant actor could satisfy accountability requirements by appointing a formally responsible human who in practice approves AI recommendations automatically, maintaining paper compliance while eliminating substantive oversight. High-volume decision environments — such as benefits processing or content moderation — create structural pressure to rubber-stamp AI outputs even when human accountability nominally exists. The rule does not address automated decision chains where accountability is distributed across multiple humans none of whom bear full individual responsibility for any specific outcome."
+}
+CARD_CONTENT["TECH-AINL-0003"] = {
+    "stmt": "No fully automated decision in critical domains — including criminal justice, immigration, benefits, healthcare, housing, or employment — may take effect without providing the affected person a right to notice of the decision basis, a plain-language explanation, an opportunity to contest, and access to human review with authority to override.",
+    "notes": "The right to explanation, appeal, and human review is only meaningful if the explanation is genuinely informative rather than a generic disclaimer, and if the appeal process has real authority to change outcomes within a timeframe that prevents irreversible harm. Systems classified as 'not fully automated' can still make de facto automated decisions if human reviewers have no practical capacity to override them within operational timelines. As established in State v. Loomis, 881 N.W.2d 749 (Wis. 2016), proprietary trade secret claims can block meaningful disclosure of AI decision logic even when rights are at stake. The rule does not specify minimum review response times or prohibit high-volume systems that structurally prevent genuine case-by-case review."
+}
+CARD_CONTENT["TECH-AINL-0004"] = {
+    "stmt": "AI systems used in public-sector decision-making must be fully documented, publicly described in terms that allow meaningful scrutiny, and independently auditable by regulators, civil society organizations, and affected individuals seeking to understand or contest decisions.",
+    "notes": "Transparency and auditability requirements depend on access to documentation and data that agencies may treat as proprietary, classified, or protected by vendor contracts, any of which can block external scrutiny. Independent auditors without security clearances cannot review AI systems used in national security or law enforcement contexts, creating a significant carve-out for some of the most consequential government AI applications. Compliant agencies could satisfy documentation requirements through high-level descriptions that conceal operational decision logic, training data composition, and known failure modes from external review. Without standardized audit protocols and mandatory public reporting requirements, formal compliance may generate no meaningful accountability."
+}
+CARD_CONTENT["TECH-AINL-0005"] = {
+    "stmt": "Operators and deployers of AI systems must retain legal liability for harms caused by those systems and may not contract away or disclaim civil liability to harmed individuals through terms of service, vendor agreements, or indemnification arrangements.",
+    "notes": "Liability retention is meaningful only if affected individuals can access sufficient information about system design and outputs to establish harm causation — which AI opacity systematically prevents, particularly for individuals without litigation resources. Compliant deployers could contractually transfer financial exposure to vendors while maintaining formal liability, making recovery practically difficult for harmed individuals without resources to pursue complex AI-specific litigation. Limited liability corporate structures, bankruptcy protections, and lengthy litigation timelines reduce the practical deterrent effect of liability exposure for large deployers. The rule does not specify the applicable standard of care, leaving courts to develop common law rules that may be slow to reflect the specific characteristics of AI-generated harm."
+}
+CARD_CONTENT["TECH-AINL-0006"] = {
+    "stmt": "AI systems must be tested for bias, safety, reliability, and misuse risks both before initial deployment and on an ongoing basis after deployment, with documented test results subject to regulatory review and meaningful public disclosure.",
+    "notes": "Pre-deployment testing is ineffective if testing environments do not reflect real-world deployment conditions, edge cases, adversarial inputs, or historically underrepresented populations. Compliant actors could conduct testing on curated datasets that exclude historically disadvantaged groups or unusual use cases, generating favorable results that do not predict real-world performance across the full deployment population. Post-deployment monitoring obligations require clear standards and independent enforcement capacity that this rule does not establish on its own. The well-documented gap between lab testing and production performance in deployed AI systems means that without ongoing monitoring requirements, deployment-phase testing provides false assurance of safety."
+}
+CARD_CONTENT["TECH-AINL-0007"] = {
+    "stmt": "AI systems covered by this pillar must maintain model cards, system documentation, or equivalent public-facing disclosures appropriate to their risk level, including training data sources, known limitations, performance disparities across demographic groups, and intended and prohibited uses.",
+    "notes": "Model cards and documentation requirements are only as informative as the standards governing their minimum content; without mandatory disclosures, they can become marketing documents rather than accountability tools. Compliant actors could publish documentation describing system goals and intended use without disclosing training data composition, known failure modes, or performance disparities across demographic groups. Proprietary claims can be used to redact critical technical information from public documentation while formally satisfying disclosure requirements. Documentation provided to the public may differ materially from information provided to regulators under NDA, creating unverifiable compliance and information asymmetry that disadvantages harmed individuals."
+}
+CARD_CONTENT["TECH-AINL-0008"] = {
+    "stmt": "Secret law, undisclosed legal interpretations, and AI decision systems whose existence, logic, or effects are withheld from the public may not be used to determine individual rights, obligations, or access to public services.",
+    "notes": "The prohibition on secret law and undisclosed AI systems is one of the most critical constraints on government AI but depends on courts and Congress maintaining oversight authority over classification decisions that agencies may use expansively. Classified AI systems used in immigration enforcement, benefits fraud detection, or law enforcement could be exempted under national security grounds even when their outputs directly affect civil rights with no meaningful accountability. Agencies can maintain formal disclosure by publishing vague descriptions of AI use that conceal operational logic, training data, and known limitations while technically satisfying the disclosure requirement. Without independent oversight of classified AI decision systems with authority to mandate remediation, secrecy can permanently shield algorithmic discrimination from any meaningful review."
+}
 
 
-def main() -> None:
-    html_text = HTML_FILE.read_text(encoding="utf-8")
-    soup = BeautifulSoup(html_text, "html.parser")
+# ---------------------------------------------------------------------------
+# ALGO — Algorithmic Accountability
+# ---------------------------------------------------------------------------
+CARD_CONTENT["TECH-ALGO-0001"] = {
+    "stmt": "People must be informed — in clear, plain language at the point of decision — when AI or algorithmic systems materially influence ranking, eligibility determinations, content triage, moderation outcomes, or access to services affecting them.",
+    "notes": "Disclosure obligations for algorithmic influence are limited by the difficulty of defining 'material' influence and by platforms' interest in characterizing all algorithmic curation as normal editorial judgment that does not require disclosure. Compliant platforms could satisfy disclosure through generic privacy policy language stating that algorithms are used, without specifying what is ranked, why, or what effect that has on any individual or category of users. High-volume automated decisions in hiring, insurance, and content moderation may be formally disclosed without providing users meaningful ability to understand or contest how their specific outcome was determined. The rule does not require disclosure of specific ranking factors, weights, or training objectives; only that algorithmic influence occurred."
+}
+CARD_CONTENT["TECH-ALGO-0002"] = {
+    "stmt": "People must have a meaningful right to contest materially harmful algorithmic decisions affecting them, including access to a human reviewer with genuine authority to override the automated outcome within a timeframe that prevents irreversible harm.",
+    "notes": "The right to contest algorithmic decisions is effective only if the contest process has genuine authority to override outcomes and if users receive sufficient information to make substantive, informed challenges. Compliant actors could establish nominal appeal processes that require users to articulate specific technical objections without providing the technical information needed to do so. Response timelines, burden of proof standards, and the criteria for overturning an algorithmic outcome are unspecified, allowing appeals to function as delay mechanisms or deterrents rather than genuine remedies. High-volume automated systems create structural incentives to deny appeals quickly to control operational costs regardless of merit, absent mandatory minimum reversal rates or independent oversight."
+}
+CARD_CONTENT["TECH-ALGO-0003"] = {
+    "stmt": "Users must have access to non-algorithmic or less personalized alternatives for core services wherever technically practicable, and platforms may not make such alternatives so cumbersome or degraded as to coerce return to personalized systems.",
+    "notes": "The availability of non-algorithmic alternatives depends on platforms' willingness to make them genuinely usable rather than technically available but practically hidden, slow, or degraded in quality relative to personalized alternatives. Compliant platforms could offer a non-personalized feed that is significantly worse in design or functionality, effectively coercing users back into personalized systems without formally denying access to alternatives. The 'where practical' limitation creates substantial discretion to avoid offering alternatives on grounds of operational cost or technical complexity, and is vulnerable to captive rulemaking by platform-friendly regulators. Alternative interfaces may still rely on algorithmic curation for content filtering, safety, or search functionality, raising unresolved questions about what degree of algorithmic influence triggers the alternatives requirement."
+}
+CARD_CONTENT["TECH-ALGO-0004"] = {
+    "stmt": "Algorithmic optimization that is designed or demonstrably deployed to target psychological vulnerabilities — including compulsive use patterns, fear responses, social comparison anxiety, or political radicalization pathways — for commercial profit or political influence is prohibited.",
+    "notes": "Defining 'manipulative algorithmic optimization' requires distinguishing it from legitimate personalization, which platforms will contest vigorously in enforcement proceedings through arguments that engagement optimization is value-neutral. Compliant actors could use A/B testing frameworks that technically optimize for engagement metrics rather than explicitly targeting 'psychological vulnerabilities,' maintaining equivalent manipulative effects within a nominally acceptable framing. Continuous iterative optimization that exploits vulnerabilities emergently through learning rather than explicit design — which characterizes most production recommendation systems — may evade intent-based prohibition standards without an effects test. The rule does not address the feedback loop between algorithmic optimization and content creation incentives that drive manipulation at the ecosystem level regardless of platform intent."
+}
+CARD_CONTENT["TECH-ALGO-0005"] = {
+    "stmt": "Platforms must publicly disclose their core ranking and recommendation objectives, including primary optimization targets, major content categories given preferential or reduced treatment, and the general logic by which personalization affects content visibility.",
+    "notes": "Disclosure of ranking objectives does not require disclosure of specific weights, training data, or emergent behaviors that implement those objectives in production, which may diverge significantly from stated objectives. Compliant platforms could describe objectives in aspirational terms — 'meaningful connections,' 'relevant content,' 'healthy conversations' — that provide no operational insight into what the algorithm actually promotes or suppresses at scale. Objectives stated in public disclosures may diverge from internal optimization targets actually used in production, particularly when commercial incentives are misaligned with stated public-interest goals. User-facing disclosure written in complex or legalistic language does not constitute meaningful transparency under any reasonable standard, but may satisfy formal compliance requirements absent plain-language requirements."
+}
+CARD_CONTENT["TECH-ALGO-0006"] = {
+    "stmt": "Independent researchers must have protected, structured access to platform data necessary to study algorithmic harms, discrimination, and manipulation, subject to privacy safeguards that do not allow platforms to use privacy protection as a blanket shield against accountability research.",
+    "notes": "Protected researcher access is only effective if platforms cannot use privacy protection or proprietary claims to block substantive research without formally violating this rule. Compliant platforms could provide access to data that satisfies formal API requirements while withholding variables most relevant to harmful outcomes, or could structure APIs to make statistical analysis computationally infeasible or economically prohibitive. The genuine tension between privacy protection and algorithmic accountability allows platforms to invoke privacy as a shield in a way that prevents research into the very harms privacy law is meant to address. Academic researchers typically lack the legal standing, financial resources, or technical leverage to contest inadequate data access in enforcement proceedings against large platforms."
+}
 
-    missing_cards = soup.find_all("div", class_="status-missing")
+# ---------------------------------------------------------------------------
+# AUDT — Audit and Accountability
+# ---------------------------------------------------------------------------
+CARD_CONTENT["TECH-AUDT-0001"] = {
+    "stmt": "AI systems covered by this pillar must support independent auditing for safety, bias, reliability, and misuse by external entities with appropriate technical access, clear audit standards, and the authority to publish findings without legal interference from deployers.",
+    "notes": "Independent auditing requirements depend on auditors having meaningful technical access, standardized audit frameworks, and legal protections from retaliation — none of which this rule establishes independently. Compliant deployers could select auditors they fund and control, creating structural conflicts of interest that undermine independence despite formal compliance with an auditing requirement. Auditors may be contractually restricted from publishing specific findings under confidentiality or trade secret agreements, producing audits that confirm process compliance without revealing substantive harms or biases. Without standardized audit protocols and mandatory public reporting, audit results cannot be compared across systems or verified by external parties, making auditing a credentialing exercise rather than an accountability mechanism."
+}
+CARD_CONTENT["TECH-AUDT-0002"] = {
+    "stmt": "Individuals harmed by AI-assisted decisions must have access to meaningful explanation of how the system affected their specific outcome and to a genuine redress process with authority to provide remediation, not merely reconsideration.",
+    "notes": "Meaningful explanation and redress requires that individuals can access understandable information about how the AI system affected their specific outcome — not just general system documentation that does not engage with their individual case. Compliant actors could satisfy explanation requirements through formulaic disclosures that describe system categories without enabling individuals to understand the specific factors that drove their individual outcome. Redress processes with high procedural barriers — documentation requirements, short deadlines, complex appeal pathways — effectively negate the right even when formally available to all affected individuals. Structural asymmetries between individual users and well-resourced deployers mean that legally available remedies remain practically inaccessible for most harmed people absent legal aid or class action mechanisms."
+}
+CARD_CONTENT["TECH-AUDT-0003"] = {
+    "stmt": "Organizations deploying high-risk AI systems must retain logs sufficient for forensic review, investigation, and appeals of all consequential decisions, including data inputs, model outputs, model version information, and the identity of any human reviewers involved.",
+    "notes": "Forensic logging requirements are only actionable if they specify minimum log content, retention periods, access rights, and chain-of-custody standards, none of which this rule defines independently. Compliant deployers could maintain logs of system outputs without logging inputs, model states, or the human decision points that would enable meaningful forensic reconstruction of the decision process. Log retention periods shorter than the applicable limitation period for civil or criminal claims would leave affected individuals unable to pursue remedies by the time they identify the harm and access legal counsel. Logs maintained exclusively by deployers without independent escrow or third-party access create a situation where the entity most incentivized to obstruct accountability controls all material evidence."
+}
+CARD_CONTENT["TECH-AUDT-0004"] = {
+    "stmt": "All government use of AI systems must be cataloged in a publicly accessible registry with descriptions of system purpose, legal authority, deployment scope, oversight mechanisms, and vendor relationships, except for narrowly defined classified programs subject to independent congressional oversight.",
+    "notes": "A public AI registry is only effective if entries contain sufficient operational detail rather than high-level descriptions that obscure actual capabilities, risks, and the populations affected. Compliant agencies could satisfy registry requirements through brief entries that describe system purpose without disclosing training data composition, performance metrics across demographic groups, known failure modes, or adverse incident history. National security and law enforcement carve-outs from registry requirements can cover a substantial fraction of the most consequential government AI systems, creating accountability-free zones precisely where oversight is most necessary. Without standardized entry formats, mandatory update requirements, and independent verification, registries risk becoming documentation theater that satisfies formal disclosure norms without enabling meaningful public oversight."
+}
+CARD_CONTENT["TECH-AUDT-0005"] = {
+    "stmt": "Classified or sensitive AI systems must be subject to independent oversight review by cleared reviewers with technical expertise, the authority to require remediation, and reporting obligations to congressional oversight bodies — not solely to the agency deploying the system.",
+    "notes": "Independent oversight of classified AI systems requires oversight bodies with security clearances, genuine technical expertise, and real authority to require changes — not merely advisory status or the ability to raise concerns to the deploying agency. Compliant agencies could satisfy oversight requirements through internal inspector general review that is structurally dependent on the agency being reviewed, limiting meaningful independence. Classification authority can be invoked expansively to bring systems under classified-only oversight that should be subject to public accountability, using genuine national security needs as cover for avoiding scrutiny of systems with significant civil rights impacts. Without mechanisms for at least aggregate findings from classified oversight to reach the public or cleared congressional committees, oversight of classified AI cannot generate accountability pressure."
+}
+
+
+# ---------------------------------------------------------------------------
+# AUTS — Autonomous Systems
+# ---------------------------------------------------------------------------
+CARD_CONTENT["TECH-AUTS-0001"] = {
+    "stmt": "High-risk autonomous systems must not be deployed in contexts where failure could cause loss of liberty, bodily harm, or deprivation of legal rights without verified strict safeguards, including independent pre-deployment testing, documented failure mode analysis, real-time override capability, and mandatory incident reporting.",
+    "notes": "The requirement for 'strict safeguards' is undefined and subject to regulatory capture without minimum substantive standards mandated by statute or regulation. Compliant actors could implement nominal safeguards — checklist reviews, automated monitoring dashboards — that do not address the specific failure modes of their deployment context. As established in Mathews v. Eldridge, 424 U.S. 319 (1976), the adequacy of procedural protections in deprivation contexts must be weighed against the risk and severity of erroneous outcomes; autonomous systems in high-stakes domains typically fail this standard without genuine human review. The rule does not prohibit deployment during a remediation period, creating incentives to deploy first and address documented harms after the fact."
+}
+CARD_CONTENT["TECH-AUTS-0002"] = {
+    "stmt": "AI systems used in healthcare, education, benefits administration, housing allocation, or employment decisions must not replace accountable human decision-makers; humans must retain genuine decision-making authority with adequate information, time, and institutional support to exercise independent judgment.",
+    "notes": "The prohibition on replacing accountable human decision-makers is vulnerable to gradual erosion where humans formally remain in the loop but exercise no substantive independent judgment due to time pressure, caseload, or institutional culture that punishes deviation from AI recommendations. Compliant systems could retain a human who rubber-stamps AI recommendations without providing the information, time, or institutional authority to deviate, maintaining formal accountability while eliminating substantive oversight. High-volume environments — benefits processing, content moderation, housing allocation — structurally eliminate meaningful human review through operational pressure, while maintaining formal compliance. The rule does not address systems where the human role is advisory to an AI rather than supervisory, effectively inverting the accountability relationship without triggering any prohibition."
+}
+CARD_CONTENT["TECH-AUTS-0003"] = {
+    "stmt": "Automated denial systems for benefits, care, housing, or legal status are prohibited unless human review with authority to approve is guaranteed to occur before the denial takes effect and before any harm to the individual accrues.",
+    "notes": "The requirement for human review 'before harm occurs' is difficult to enforce in high-volume systems where benefits are terminated on a rolling basis and the distinction between pre-harm and post-harm review collapses for individuals with no buffer against service interruption. Compliant systems could implement nominal human review occurring simultaneously with automated processing, maintaining technical compliance while providing no meaningful protection against erroneous terminations. Appeals processes that restore benefits only retroactively still expose claimants to harm during the deprivation period, which is particularly severe for food, housing, and medical benefits where gaps cause immediate and sometimes irreversible injury. The rule does not specify what qualifies as 'human review' sufficient to satisfy the pre-harm requirement, leaving open formal compliance through cursory sign-offs."
+}
+CARD_CONTENT["TECH-AUTS-0004"] = {
+    "stmt": "Government agencies must maintain human override authority and documented escalation procedures for all automated systems affecting public rights or services, with override decisions tracked, regularly reviewed, and protected from institutional pressure that suppresses deviation from automated outputs.",
+    "notes": "Human override authority is meaningful only if override decisions are tracked, reviewable, and institutionally protected — not if performance metrics, approval chains, or career consequences structurally discourage exercise of override authority in practice. Compliant agencies could maintain formal override authority while structuring operational incentives that make override practically impossible without significant individual risk, rendering override a theoretical right rather than a practical check. Documented escalation procedures that require multiple approval layers effectively prevent timely intervention in time-sensitive decisions such as those affecting emergency benefits, safety, or housing stability. Without external monitoring of override rates and outcomes, agencies cannot be held accountable for systematically undermining override authority through operational design."
+}
+
+# ---------------------------------------------------------------------------
+# BIOS — Biometrics
+# ---------------------------------------------------------------------------
+CARD_CONTENT["TECH-BIOS-0001"] = {
+    "stmt": "Mass facial recognition in public spaces for general law-enforcement identification, administrative monitoring, or immigration enforcement is banned; biometric identification in public spaces requires particularized judicial authorization and may not operate as a general population surveillance system.",
+    "notes": "A ban on mass facial recognition must address retrospective use — applying facial recognition to stored footage, photographs, or archived images rather than real-time capture — which may evade restrictions framed around live public-space deployment. Buolamwini & Gebru (2018) documented error rates of up to 34.7% for dark-skinned women in commercial facial recognition systems, making mass deployment not only a civil liberties threat but a source of systemic misidentification that disproportionately harms Black and Brown communities. Compliant agencies could deploy facial recognition in nominally non-public spaces such as transit hubs, government buildings, or employer premises, creating a de facto surveillance infrastructure through adjacent deployment that achieves equivalent population monitoring. The rule does not address government use of commercially acquired facial recognition results derived from social media platforms or private security systems, which may achieve mass identification without direct government system deployment."
+}
+CARD_CONTENT["TECH-BIOS-0002"] = {
+    "stmt": "Real-time biometric tracking of crowds or demonstrations — including tracking of political assemblies, labor actions, religious gatherings, or protest events — is banned regardless of technical implementation.",
+    "notes": "Real-time crowd tracking prohibitions must address technical circumvention through non-real-time capture with rapid post-processing that functionally achieves real-time tracking with slight latency, or through adjacent surveillance methods such as license plate readers and device tracking. Compliant actors could use non-biometric crowd monitoring methods — gait analysis, device fingerprinting, aggregate thermal sensing — to achieve demographic and identity profiling of demonstrations without technically using biometrics as defined. The constitutional significance of protecting political assemblies is acute: crowd tracking enables selective prosecution of protest organizers and chilling of constitutionally protected speech even when the underlying surveillance method is characterized as administrative or preventive rather than targeted. The rule does not address private entities such as event organizers, venue operators, or right-wing coordinating groups who may capture and share crowd biometric data with law enforcement."
+}
+CARD_CONTENT["TECH-BIOS-0003"] = {
+    "stmt": "Biometric systems may not be used as general identity infrastructure for access to lawful content, public services, or normal participation in civic and economic life; biometric authentication must remain optional and alternative non-biometric access pathways must always be available.",
+    "notes": "Prohibitions on biometric identity infrastructure are undermined by mission creep: systems initially justified for narrow security purposes tend to expand into general identification as their infrastructure becomes technically and administratively established and the cost of maintaining alternatives increases. Compliant actors could design systems where non-biometric alternatives are technically available but made so cumbersome in practice that biometric identification becomes effectively required for normal participation in public life. This rule does not address existing identity infrastructure with biometric components — passport systems, Real ID driver's licenses — which may serve as the technical and legal foundation for expanded general use. The gradual normalization of biometric identification in private contexts — smartphones, workplaces, airports, retail — creates de facto infrastructure that eventually supports and normalizes government general use."
+}
+CARD_CONTENT["TECH-BIOS-0004"] = {
+    "stmt": "Where biometric systems are permitted under this pillar, they must satisfy documented necessity and proportionality requirements, operate under auditable and transparent procedures, and be subject to strict data deletion schedules with external verification.",
+    "notes": "Necessity and proportionality requirements depend on clear substantive standards and independent oversight; without these, deploying agencies can justify broad biometric deployment under vague safety or efficiency claims that are not subject to meaningful external review. Compliant actors could satisfy auditability requirements through internal logs that are not accessible to external auditors, affected individuals, or civil liberties organizations. Deletion rules are ineffective if biometric templates or source data are shared with third parties before deletion obligations attach, or if compliant deletion of processed templates does not prevent re-enrollment from retained source images or video. The rule does not specify what body has authority to determine whether necessity and proportionality standards are satisfied, leaving this determination to the same agencies and entities that have deployment incentives."
+}
+CARD_CONTENT["TECH-BIOS-0005"] = {
+    "stmt": "Biometric data must be classified as highly sensitive personal information subject to heightened consent requirements, strict data minimization, purpose limitation, mandatory deletion timelines, and stronger legal protections than apply to ordinary personal data.",
+    "notes": "Heightened data protection requires both stronger legal standards and effective enforcement capacity; many entities collecting biometric data operate in regulatory environments where neither exists. Illinois BIPA (740 ILCS 14) demonstrates that biometric privacy law can be effective when it provides a private right of action with meaningful damages, creating compliance incentives that do not depend solely on underfunded regulatory enforcement. Compliant actors could obtain facially valid consent through buried contractual terms, pre-checked boxes, or mandatory consent-as-condition-of-service that most users do not read or understand, satisfying formal consent requirements without meaningful informed agreement. Classification of biometric data as 'highly sensitive' without specifying the additional legal protections this classification triggers creates an aspirational standard that may have no binding operational content absent subsequent rulemaking."
+}
+
+
+# ---------------------------------------------------------------------------
+# DATA — Surveillance Data Fusion
+# ---------------------------------------------------------------------------
+CARD_CONTENT["TECH-DATA-0001"] = {
+    "stmt": "Cross-agency fusion of surveillance datasets is prohibited except where specifically authorized by statute, subject to judicial oversight, publicly disclosed in general terms, and subject to periodic reauthorization requiring affirmative legislative or judicial renewal.",
+    "notes": "Cross-agency fusion prohibitions depend on clear definitions of what constitutes 'fusion' — whether sharing individual records, bulk data transfers, joint analytical platforms, or API access to other agencies' systems are each covered. Compliant agencies could achieve functional surveillance fusion through joint task forces or intelligence-sharing memoranda that do not technically create a centralized dataset but produce equivalent analytical capability. Periodic reauthorization requirements are ineffective if the reauthorization process is captured by national security interests that treat all existing surveillance infrastructure as presumptively necessary without genuine cost-benefit review. The rule does not address international data sharing with allied intelligence services, which may achieve functional fusion of U.S. surveillance data outside domestic legal constraints."
+}
+CARD_CONTENT["TECH-DATA-0002"] = {
+    "stmt": "The creation of secret AI-generated behavioral profiles or dossiers on individuals — including inferred political affiliations, associations, behavioral patterns, or psychological characteristics — is banned absent individualized legal cause and judicial process.",
+    "notes": "The prohibition on secret AI-generated dossiers requires robust enforcement mechanisms against agencies that maintain informal behavioral profiles without formally acknowledging their existence or characterizing them as covered by the prohibition. Compliant actors could maintain distributed data across multiple systems that can be rapidly assembled into individual behavioral profiles under legal process without maintaining a formally prohibited single 'dossier,' exploiting a disaggregation loophole. Intelligence agencies have historically maintained behavioral profiles under authorities that do not require individualized cause for initial collection, treating the prohibition as inapplicable to intelligence functions distinct from law enforcement. The rule does not address the private sector's role in generating and selling behavioral profiles that government agencies can then access, effectively outsourcing dossier creation while avoiding direct prohibition."
+}
+CARD_CONTENT["TECH-DATA-0003"] = {
+    "stmt": "Government agencies may not purchase, license, or otherwise acquire commercially collected bulk location data, biometric data, or behavioral data to use in AI surveillance systems in ways that would require a warrant if the government collected the same data directly.",
+    "notes": "The ban on commercial data acquisition must be broad enough to cover indirect acquisition through contractors, fusion centers, and interagency arrangements, not only direct government purchases. Compliant agencies could fund private entities — research organizations, fusion centers, intelligence contractors — that perform surveillance data analysis and share processed results, avoiding direct data purchase while achieving equivalent intelligence outcomes. As established in Carpenter v. United States, 585 U.S. 296 (2018), the third-party doctrine limits Fourth Amendment protection for commercially held data, making this statutory prohibition the primary constitutional backstop; loopholes in the prohibition directly enable warrantless surveillance at scale. The rule does not address the supply-side problem of commercial mass surveillance data collection itself, meaning prohibition of government acquisition does not reduce the underlying surveillance infrastructure that generates the data."
+}
+
+
+# ---------------------------------------------------------------------------
+# EDUS — Education Technology
+# ---------------------------------------------------------------------------
+CARD_CONTENT["TECH-EDUS-0001"] = {
+    "stmt": "AI systems deployed in educational settings must demonstrably enhance learning, critical thinking, and equitable access to education; they may not replace human instruction, diminish the role of qualified educators, or create new barriers to educational equity.",
+    "notes": "The requirement that AI 'enhance' rather than replace learning depends on evidence standards that are not defined; vendors can assert enhancement without demonstrating it against credible pedagogical benchmarks. Compliant systems could be deployed in ways that formally retain human instruction while structurally reducing educator capacity, funding, and authority — achieving gradual de facto replacement through attrition. The equity requirement is not self-enforcing: AI tools that are technically available to all students may still produce disparate educational outcomes based on implementation quality, device access, internet connectivity, and prior knowledge gaps. FERPA (20 U.S.C. § 1232g) protects student records but does not impose substantive constraints on how AI vendors use de-identified or aggregated student data."
+}
+CARD_CONTENT["TECH-EDUS-0002"] = {
+    "stmt": "AI systems may not replace human educators in primary, secondary, or higher education contexts where direct instructional interaction, mentorship, or developmental support is required, regardless of cost savings or scalability claims by vendors or administrators.",
+    "notes": "The prohibition on replacing human educators depends on defining 'replacement' clearly enough to prevent gradual substitution through AI-mediated instruction with reduced human contact hours. Compliant institutions could use AI to teach a substantial majority of instructional content while retaining a single human to nominally supervise large groups, satisfying the letter of the prohibition while eliminating meaningful educator-student relationships. Financial pressure on underfunded public schools creates systemic incentives to adopt AI instruction as a cost-reduction measure rather than as a pedagogical enhancement, with equity implications that fall hardest on students in under-resourced communities. The rule does not address who has enforcement authority or standing to challenge AI deployment decisions by individual institutions."
+}
+CARD_CONTENT["TECH-EDUS-0003"] = {
+    "stmt": "AI systems may be used to support educators and students in clearly defined assistive roles, but may not substitute for qualified teaching, individualized mentorship, or developmental support that requires human judgment, relationship, and professional expertise.",
+    "notes": "The distinction between 'support' and 'substitute' is contested and will be litigated by vendors and administrators seeking to use AI for cost reduction under a support framing. Compliant institutions could deploy AI for the vast majority of student-facing educational activity while characterizing human educators as in a support role relative to the AI, inverting the intended relationship. Assistive AI tools that perform well on average may still produce significant harm for individual students with unusual learning needs, disabilities, or social circumstances that require human responsiveness. The rule does not address the cumulative effect of multiple nominally assistive AI tools that collectively displace human educational relationships even when each tool individually satisfies the support-not-substitute standard."
+}
+CARD_CONTENT["TECH-EDUS-0004"] = {
+    "stmt": "AI systems may not be used as the sole basis for grading, evaluation, or academic assessment in high-stakes decisions — including grade advancement, certification, disciplinary action, or college admissions — without mandatory human review and substantive override authority.",
+    "notes": "AI grading systems trained on historical data may reproduce the biases of prior human graders, scoring disadvantaged students lower without the bias being detectable through normal accuracy metrics. Compliant institutions could retain nominal human review in which educators approve AI grades without meaningful engagement, satisfying the formal requirement while eliminating substantive oversight. Proprietary vendor models may be used as sole assessors in practice by multiple institutions without any single institution having full accountability for the system's aggregate bias effects. FERPA protects students' right to inspect their educational records but provides limited recourse against biased AI scoring unless the institution accepts that bias occurred."
+}
+CARD_CONTENT["TECH-EDUS-0005"] = {
+    "stmt": "Students have the right to request and receive meaningful human review of any AI-influenced grading or evaluation decision, and institutions must maintain a process with genuine authority to override AI outputs based on human professional judgment.",
+    "notes": "Human review rights are only meaningful if students know AI was used in their evaluation, which institutions may not disclose proactively unless required. Compliant institutions could satisfy the review requirement through a process in which the reviewing educator has no access to information needed to deviate from the AI grade — such as the submission context, rubric, or comparative sample — and is not permitted to adjust scores except for clerical errors. High-stakes decisions often involve third-party systems (standardized tests, platform-based assessments) where the institution has contracted away the ability to conduct genuine human review of AI-generated scores. The rule does not specify how quickly review must occur, which is critical when AI-influenced grades affect enrollment, graduation, or scholarship eligibility on short timelines."
+}
+CARD_CONTENT["TECH-EDUS-0006"] = {
+    "stmt": "Educational institutions must establish clear, publicly disclosed policies on AI use in academic work that promote genuine learning, protect academic integrity, and do not impose punishments based on unreliable AI plagiarism or cheating detection systems.",
+    "notes": "AI academic integrity detection systems have high false positive rates, particularly for multilingual students and students from non-dominant cultural backgrounds whose writing patterns may be misclassified as AI-generated. Institutions using AI detection tools as sole or primary evidence of academic misconduct expose students to disciplinary action based on algorithmically unreliable evidence, with particular harm to students who cannot effectively contest technical determinations. Compliant policies could formally prohibit sole-basis AI detection while structuring disciplinary processes that in practice treat AI detection as near-conclusive, effectively maintaining the same outcome. The absence of strong false-positive documentation requirements means that institutional liability for wrongful disciplinary action based on AI detection remains low, reducing incentives for careful policy design."
+}
+CARD_CONTENT["TECH-EDUS-0007"] = {
+    "stmt": "AI systems used in education must be systematically evaluated for bias before deployment and on an ongoing basis, and must not result in statistically demonstrable disadvantage for students based on race, gender, disability status, socioeconomic background, language, or national origin.",
+    "notes": "Bias evaluation requirements depend on institutions having access to demographic data and statistical expertise to detect disparate outcomes, which many underfunded schools lack. Compliant vendors could conduct bias evaluations on unrepresentative test populations and present favorable aggregate accuracy metrics that conceal substantial disparate performance across demographic subgroups. Educational outcomes data are subject to FERPA restrictions that may limit independent researchers' ability to conduct the population-level bias analysis needed to identify systemic harm. The rule does not specify who has authority to act on bias findings or what remediation is required, leaving enforcement to institutions that may have financial or reputational incentives to minimize disclosure of bias findings."
+}
+CARD_CONTENT["TECH-EDUS-0008"] = {
+    "stmt": "AI tools used in education must be accessible to all students regardless of disability status, device access, or internet connectivity, and may not function as mechanisms that create or reinforce educational inequity between well-resourced and under-resourced students or schools.",
+    "notes": "Accessibility requirements for AI educational tools interact with existing digital divide infrastructure gaps that this rule cannot address on its own without companion investment in device access and broadband connectivity. Compliant tools could satisfy technical accessibility standards — screen reader compatibility, captioning — while still being inaccessible to students without high-speed internet, current-generation devices, or the digital literacy to use complex interfaces. Vendors could price AI tools at levels that create significant quality differentials between schools that can afford premium versions and those using reduced-capability free tiers, reinforcing existing educational inequity through a nominally uniform platform. The rule does not address the unequal quality of AI implementation support, professional development, and technical infrastructure that determines whether students in under-resourced schools benefit comparably to peers in well-funded schools."
+}
+CARD_CONTENT["TECH-EDUS-0009"] = {
+    "stmt": "Student data collected by AI systems in educational settings must be limited to what is strictly necessary for the specific educational purpose, with no retention beyond that purpose and no transfer to systems or entities with unrelated educational or commercial functions.",
+    "notes": "Data minimization in educational AI depends on clear purpose specifications and auditable enforcement, which are frequently absent from vendor contracts that grant broad data rights in exchange for free or subsidized platform access. FERPA (20 U.S.C. § 1232g) prohibits disclosure of student education records without consent but has significant exceptions for school officials and service providers, creating gaps that AI vendors can exploit through contractual characterization of themselves as school officials. Compliant vendors could define the 'educational purpose' broadly to encompass analytics, product improvement, and research that serve vendor commercial interests without serving students. De-identified or aggregated student data that is exempt from FERPA protections can still enable behavioral profiling, product targeting, and commercial monetization of insights derived from student populations."
+}
+CARD_CONTENT["TECH-EDUS-0010"] = {
+    "stmt": "Student data collected through AI systems in educational contexts may not be sold, licensed, shared with third parties for advertising purposes, or used for behavioral profiling, commercial targeting, or any purpose unrelated to the direct delivery of educational services to the student.",
+    "notes": "Prohibition on commercial use of student data depends on broadly defining 'commercial purpose' to cover indirect monetization pathways — product improvement, model training, derived behavioral insights — that vendors may argue are exempt. COPPA (15 U.S.C. § 6501) provides protection for children under 13 but leaves older students with weaker statutory protections that many state student data privacy laws attempt to fill unevenly. Compliant vendors could share 'anonymized' or 'aggregated' student data with advertising partners or data brokers, where re-identification risk is real but difficult to prove in enforcement proceedings. The market structure of educational technology — where free platforms are subsidized by data monetization — creates systemic pressure toward commercial data use even when formal policies prohibit it."
+}
+CARD_CONTENT["TECH-EDUS-0011"] = {
+    "stmt": "AI systems deployed in educational settings involving minors must apply enhanced privacy protections — including stricter consent standards, reduced retention periods, enhanced security requirements, and prohibition of inferences that could stigmatize or disadvantage students in non-educational contexts.",
+    "notes": "Enhanced protections for minors in educational AI contexts are undermined when the definition of 'educational setting' does not cover all platforms and tools used by students in school-connected activities. COPPA (15 U.S.C. § 6501) protection applies to children under 13 but not to adolescents aged 13–17 who are the most active users of many educational AI platforms. Compliant operators could collect data from students outside the formal school context — through homework help apps, personal device usage, or summer programs — without triggering the enhanced protections applicable to official school deployments. Behavioral profiles built on student data during school years may persist indefinitely in commercial systems and affect students in adult employment, credit, and insurance contexts they cannot anticipate as minors."
+}
+CARD_CONTENT["TECH-EDUS-0012"] = {
+    "stmt": "AI systems may not be used for invasive surveillance of students — including continuous behavioral monitoring, attention tracking, keystroke logging, facial expression analysis, emotional state inference, or biometric identification — without documented necessity, proportionality review, and explicit parental and student consent.",
+    "notes": "Student surveillance tools, including 'proctoring' software used for remote test administration, have been documented to disproportionately fail students of color and students with disabilities through false-positive detection of prohibited behaviors. Compliant institutions could deploy surveillance tools under broad contractual consent obtained during enrollment rather than specific informed consent for each surveillance application, treating general consent as covering all subsequent uses. Surveillance infrastructure built for academic integrity purposes tends to expand into broader behavioral monitoring as the technical capability exists and the sunk infrastructure cost creates institutional inertia. The rule does not address the cumulative surveillance effect when multiple individually justified tools — attendance tracking, engagement analytics, proctoring — combine into a comprehensive behavioral monitoring system."
+}
+CARD_CONTENT["TECH-EDUS-0013"] = {
+    "stmt": "AI systems may not be used in educational contexts to infer, classify, or report student emotional states, attention levels, cognitive engagement, or psychological characteristics for purposes of evaluation, discipline, or behavioral management.",
+    "notes": "Emotion inference systems deployed in educational contexts rely on behavioral proxies — facial expressions, eye movement, body position — that have not been validated for accuracy or cultural generalizability, and may produce systematically biased classifications of students from different cultural backgrounds. Compliant institutions could use emotion inference outputs as supplementary rather than primary evaluation data, maintaining nominal compliance while allowing AI emotional assessments to materially influence educational decisions. Student behavioral data collected under the framing of engagement measurement can function as emotional surveillance with downstream consequences for students labeled as inattentive, disengaged, or non-compliant by automated systems. The therapeutic and developmental harm of subjecting children to continuous emotional inference without consent is a significant unintended consequence that may not be captured in standard educational outcome metrics."
+}
+CARD_CONTENT["TECH-EDUS-0014"] = {
+    "stmt": "Educational institutions may not use AI systems to assign behavioral compliance scores, citizenship ratings, or social conduct indices to students that affect their educational opportunities, disciplinary record, or reputation beyond the specific documented behavioral incident giving rise to any action.",
+    "notes": "Behavioral scoring systems in schools echo social credit architectures and create permanent digital records that follow students beyond the educational context, affecting employment, housing, and financial services in ways students cannot anticipate. Compliant institutions could use AI-generated behavioral analytics under different terminology — 'student success indicators,' 'engagement profiles,' 'risk assessments' — that accomplish the same function without formally constituting a 'score.' Aggregated behavioral data from multiple sources creates profiles that are harder to contest than individual incident records and may be shared with subsequent educational institutions or employers under broadly written consent agreements. Students from racial, ethnic, and disability communities disproportionately bear the burden of AI behavioral classification systems, reproducing the school-to-prison pipeline dynamics documented in prior research on exclusionary school discipline."
+}
+CARD_CONTENT["TECH-EDUS-0015"] = {
+    "stmt": "AI-generated educational content — including AI-written explanations, assessments, feedback, instructional materials, and responses — must be clearly identified as AI-generated and must disclose material limitations including potential inaccuracies, training data constraints, and lack of live fact-checking.",
+    "notes": "AI-generated content presented without clear disclosure creates false impressions of authoritative instruction and may embed inaccuracies, outdated information, or biased framing that students cannot identify without knowing the content was generated rather than authored by human experts. Compliant platforms could satisfy disclosure requirements through small-print disclaimers that do not register with students as material disclosures in the context of regular educational use. AI-generated content that reflects dominant cultural or political perspectives without disclosure imposes those perspectives on students as if they were objective educational content, raising concerns about ideological influence without accountability. The rule does not address the quality, accuracy, or pedagogical soundness of AI-generated content itself, only the disclosure requirement."
+}
+CARD_CONTENT["TECH-EDUS-0016"] = {
+    "stmt": "AI systems may not be used in educational settings to impose, filter, or curate content in ways that advance ideological viewpoints without full transparency, educator review, and the ability to override or supplement the AI's framing.",
+    "notes": "AI content curation systems reflect the ideological and cultural biases of their training data and design choices, which may systematically filter out perspectives, histories, and voices that are important to inclusive education. Compliant platforms could characterize ideological curation as 'quality filtering' or 'age-appropriate content selection,' using technical legitimacy framing to avoid oversight. Educators who rely on AI-curated content without reviewing the underlying curation logic may unknowingly transmit systematically biased perspectives to students. The rule does not address the market concentration problem: when a small number of AI educational platforms are used by millions of students, the ideological choices embedded in those systems have population-scale effects on what students learn."
+}
+CARD_CONTENT["TECH-EDUS-0017"] = {
+    "stmt": "Educational AI systems must be designed and deployed to build students' independent critical thinking, research, and analytical capabilities, not to provide passive answer generation that substitutes for learning those capabilities.",
+    "notes": "The distinction between AI that supports critical thinking and AI that substitutes for it is not self-enforcing and depends on pedagogical design choices that incentive structures may systematically undermine. Compliant platforms offering AI-generated answers, explanations, and essays may claim to promote critical thinking through prompting features while primarily reducing the cognitive work that produces learning. Students habituated to AI answer generation may struggle to develop the problem-solving independence needed for contexts where AI tools are unavailable or inappropriate, with long-term educational harm obscured by short-term performance metrics. Assessment systems that measure learning outcomes may not detect the difference between students who developed genuine competency and those who developed effective AI tool use, masking the harm until the competency gap becomes consequential."
+}
+CARD_CONTENT["TECH-EDUS-0018"] = {
+    "stmt": "AI tools may be used in educational settings to improve access for students with disabilities, including AI-assisted transcription, translation, adaptive learning interfaces, and assistive communication tools, provided such use complies with disability rights requirements and does not reduce access to qualified human support.",
+    "notes": "AI accessibility tools are genuinely valuable for students with disabilities and this exception recognizes that prohibition without distinction would harm the very students the rule is designed to protect. Compliant institutions could use AI accessibility tools to justify reducing funding for human special education staff, interpreters, and adaptive learning specialists — treating AI as a cost-equivalent substitute rather than a supplement to human disability support. AI accessibility tools may not perform equally well for all disability categories or student profiles, potentially improving access for some students with disabilities while leaving others worse off than with traditional human accommodations. The rule does not address what happens when AI accessibility tools fail: whether schools must maintain backup human accommodations and who bears liability for educational harm from AI tool failures affecting students with disabilities."
+}
+CARD_CONTENT["TECH-EDUS-0019"] = {
+    "stmt": "AI systems used in multilingual educational settings should support students' home languages and reduce language barriers to educational access, provided such systems meet accuracy, cultural competency, and equity standards appropriate for educational use.",
+    "notes": "AI translation and multilingual support systems perform significantly less accurately on less-resourced languages and dialects, which are disproportionately the home languages of immigrant students and students from historically marginalized communities. Compliant platforms could deploy AI multilingual support that performs well for dominant languages such as Spanish while providing materially inferior support for languages like Haitian Creole, Somali, or Amharic, reinforcing existing inequities among multilingual students. AI translation in educational contexts may introduce subtle inaccuracies or cultural decontextualization that human interpreters and bilingual teachers would not, with effects on student comprehension that are difficult to detect without robust quality monitoring. The aspirational framing of this rule ('should support') rather than a binding requirement reflects the developmental state of multilingual AI tools and should be reviewed as technology improves."
+}
+CARD_CONTENT["TECH-EDUS-0020"] = {
+    "stmt": "Educational institutions must publicly disclose to students, parents, and the community when and how AI systems are used in teaching, evaluation, administration, and student support services, including the identity of vendors, the data collected, and how decisions are made.",
+    "notes": "Disclosure requirements are only meaningful if they occur before AI use begins, in language accessible to students and parents, and with enough specificity to enable informed objection or consent. Compliant institutions could satisfy disclosure requirements through annual privacy notices or portal updates that most parents and students do not read, treating legally adequate notice as equivalent to meaningful transparency. Vendor identity disclosure enables independent scrutiny of AI systems that rely on proprietary claims to avoid oversight; absent that scrutiny, disclosure becomes an empty formality. The rule does not specify what rights parents or students have upon receiving disclosure, limiting disclosure to an information obligation without a corresponding decision right."
+}
+CARD_CONTENT["TECH-EDUS-0021"] = {
+    "stmt": "AI systems used in education must be subject to regular independent audits assessing bias, accuracy, and educational impact, with audit findings publicly reported and institutions required to remediate documented harms within defined timeframes.",
+    "notes": "Independent audit requirements depend on auditors having technical access, educational domain expertise, and legal protections to publish findings that may embarrass vendors or institutions. Compliant institutions could select auditors contracted to vendor organizations, producing audits that nominally satisfy independence requirements while generating favorable findings. Audit scope that focuses on technical accuracy metrics rather than equity outcomes and educational effectiveness may miss the most important harms. Without mandatory public reporting and defined remediation timelines, audit findings that document harm may lead to no institutional change if the findings are treated as confidential or advisory."
+}
+CARD_CONTENT["TECH-EDUS-0022"] = {
+    "stmt": "Vendors providing AI systems to educational institutions may not use proprietary, trade secret, or confidentiality claims to prevent oversight, auditing, or accountability by regulators, independent researchers, or institution administrators acting on behalf of students.",
+    "notes": "Proprietary opacity in educational AI systems prevents institutions from fulfilling their legal and ethical obligations to students, as administrators cannot meaningfully oversee systems they cannot inspect. Compliant vendors could comply with audit requests by providing high-level architecture documents rather than the training data, model weights, or decision logic needed for meaningful review. Vendor contracts with institutions often include indemnification clauses that shift liability for AI harms to institutions while maintaining vendor control over system design and auditing, creating accountability gaps. The rule does not address what happens when vendors decline to provide access and choose to exit the market rather than comply, potentially disrupting educational services for students dependent on the platform."
+}
+CARD_CONTENT["TECH-EDUS-0023"] = {
+    "stmt": "AI systems must demonstrate educational benefit through rigorous, peer-reviewed evidence in real educational environments before being deployed at scale in classrooms, and institutions must have access to that evidence before procurement decisions.",
+    "notes": "Evidence of educational benefit is often produced by vendors with financial interests in favorable findings, and independent replication in diverse educational contexts is rarely funded or required before procurement. Compliant vendors could produce favorable internal studies or pilot results that do not generalize to the student populations and resource environments of the purchasing institutions, particularly under-resourced public schools. The pace of EdTech procurement often exceeds the pace of rigorous evaluation, leading to widespread deployment of systems that have not been independently validated, with under-resourced schools bearing disproportionate risk as early adopters. The rule does not specify the quality standards for required evidence — randomized control, observational study, or vendor testimonial — leaving significant room for compliant low-quality evidence that does not support the deployment decision."
+}
+CARD_CONTENT["TECH-EDUS-0024"] = {
+    "stmt": "Students may not be used as test subjects for AI educational systems without explicit informed consent from students and, where applicable, their parents or guardians, with full disclosure of the nature of the experiment, associated risks, and students' right to opt out without academic penalty.",
+    "notes": "Educational AI deployment frequently operates as large-scale experimentation on student populations without consent, treating 'pilot programs' and 'beta deployments' as exempt from research ethics requirements that apply to formal studies. Compliant institutions could frame AI deployment as standard educational practice rather than experimentation, avoiding consent obligations while using student outcomes to refine vendor products in ways that clearly constitute research. Opt-out provisions are insufficient protection when non-participation has academic implications — receiving less technology-mediated support, missing curriculum delivered through AI platforms — that effectively coerce participation. The rule does not address the conflict between institutions' interest in AI cost savings through deployment and students' interest in protection from being used as test subjects to improve vendor systems."
+}
+
+
+# ---------------------------------------------------------------------------
+# ENVS — Environmental Sustainability
+# ---------------------------------------------------------------------------
+CARD_CONTENT["TECH-ENVS-0001"] = {
+    "stmt": "AI systems and infrastructure operators must not externalize environmental costs to the public or ecosystems and must demonstrate compliance with sustainable limits for energy consumption, water use, materials sourcing, and ecological impact throughout the system lifecycle.",
+    "notes": "Externalization prohibitions depend on accurate measurement of actual environmental costs, which AI companies have strong incentives to understate and limited legal obligations to disclose. Strubell et al. (2019) documented that training a single large language model can emit as much carbon as the lifetime emissions of five automobiles, illustrating the scale of potential externalized costs. Compliant actors could satisfy this rule through carbon credit purchases or renewable energy certificates that do not reduce actual consumption or grid-level emissions, creating accounting compliance without substantive environmental benefit. The rule does not address supply chain externalization — the environmental costs of hardware manufacturing, rare earth extraction, and overseas data center operations — which may exceed direct operational costs."
+}
+CARD_CONTENT["TECH-ENVS-0002"] = {
+    "stmt": "Large-scale AI systems and data centers above a defined energy consumption threshold must achieve carbon neutrality or better over their full operational lifecycle, verified by independent third-party auditors using standardized lifecycle assessment methodologies.",
+    "notes": "Carbon neutrality requirements depend critically on how 'full lifecycle' is defined: operators who count only direct electricity use while excluding manufacturing, cooling, transmission losses, and decommissioning can claim carbon neutrality while causing substantial net emissions. IEA (2024) estimates data centers consumed 200–250 TWh globally, a figure growing rapidly with AI infrastructure expansion; lifecycle accounting that excludes hardware production understates true carbon footprint by a significant and contested margin. Compliant actors could satisfy carbon neutrality requirements through purchased offsets from projects that do not represent permanent, additional, or verifiable carbon removal, using accounting tools to report neutrality without achieving it. The rule does not address the carbon intensity of AI model use — inference operations that scale with deployment — which may exceed training-phase emissions for widely deployed models."
+}
+CARD_CONTENT["TECH-ENVS-0003"] = {
+    "stmt": "Operators of large AI systems above a defined energy threshold must publicly disclose energy consumption by source, greenhouse gas emissions, efficiency metrics, and year-over-year trends on a standardized, machine-readable basis accessible to regulators and the public.",
+    "notes": "Public energy disclosure requirements depend on standardized reporting metrics that do not currently exist uniformly, allowing operators to choose favorable metrics and baselines that understate environmental impact. Compliant actors could disclose energy use in aggregate terms that obscure the attribution of emissions to specific AI workloads, making it impossible to assess the marginal environmental cost of particular systems or deployment decisions. Self-reported disclosure without third-party verification creates opportunities for inaccurate reporting with limited audit capacity, particularly given the technical complexity of attributing energy use across shared infrastructure. The rule does not specify enforcement consequences for inaccurate or misleading disclosure, reducing the deterrent effect against greenwashing."
+}
+CARD_CONTENT["TECH-ENVS-0004"] = {
+    "stmt": "High-consumption AI infrastructure must be powered by dedicated renewable energy sources or equivalent low-carbon generation directly tied to operational consumption, not offset through renewable energy certificates that do not represent additionality in generation capacity.",
+    "notes": "Renewable energy accounting through tradeable certificates allows operators to claim renewable supply while drawing from fossil fuel-heavy grids, with the certificate purchase representing a financial transaction rather than a physical energy flow. Compliant actors could purchase certificates from existing renewable generators without funding new capacity, failing to achieve the additionality — new clean generation brought into existence by the AI operator's demand — that genuine renewable energy use requires. 'Dedicated' renewable supply requirements may be difficult to enforce for large data centers that draw from shared regional transmission grids where individual electron sourcing cannot be technically guaranteed. The rule does not address time-of-day matching requirements: renewable certificates from off-peak solar generation do not offset evening or nighttime peak data center consumption from fossil fuel sources."
+}
+CARD_CONTENT["TECH-ENVS-0005"] = {
+    "stmt": "AI infrastructure operators must publicly disclose annual water consumption — including cooling water, evaporative losses, and indirect water use in energy generation — disaggregated by facility and measured against permitted withdrawal amounts and local watershed capacity.",
+    "notes": "Water disclosure requirements for data centers are significant because AI cooling systems can consume millions of gallons per year, with evaporative cooling towers presenting particular concerns in drought-stressed regions where that water is not returned to local watersheds. Compliant operators could report gross water intake without disclosing consumptive use — water evaporated or otherwise not returned to the watershed — understating actual impact on local water availability. Water use reporting that is aggregated at the corporate rather than facility level obscures local environmental impacts in specific communities and watersheds most affected by large data center siting decisions. The rule does not require operators to compare their consumption to permitted amounts or to local watershed sustainability thresholds, limiting the actionability of the disclosed data."
+}
+CARD_CONTENT["TECH-ENVS-0006"] = {
+    "stmt": "AI systems and infrastructure may not disproportionately strain local water resources, particularly in regions classified as water-stressed, drought-prone, or facing agricultural and residential water supply pressures, without prior independent environmental review and binding mitigation commitments.",
+    "notes": "Water stress designations may lag actual drought conditions by several years, and operators could secure water rights during non-drought periods that prove unsustainable under climate change scenarios that worsen drought frequency and severity. Compliant operators could site facilities in regions not currently classified as water-stressed while drawing on transboundary water sources shared with drought-affected communities downstream, technically avoiding the prohibition while causing equivalent harm. Water use rights secured through prior appropriation systems may be legally valid but environmentally unsustainable, and this rule does not address the interaction between existing water law and climate-adaptive water governance requirements. The rule does not specify who conducts the 'independent environmental review' or what the binding mitigation commitments must contain, leaving significant implementation discretion."
+}
+CARD_CONTENT["TECH-ENVS-0007"] = {
+    "stmt": "Materials used in AI hardware — including rare earth elements, cobalt, lithium, and other critical minerals — must be sourced through supply chains that meet verified environmental protection standards and labor rights requirements throughout extraction, processing, and manufacturing.",
+    "notes": "Supply chain verification for rare earth and critical mineral sourcing is technically difficult and commercially inconvenient, creating systematic pressure toward surface-level compliance with verification frameworks rather than substantive supply chain transformation. Compliant hardware manufacturers could satisfy certification requirements through third-party auditors that have documented conflicts of interest with industry, producing certifications that do not reflect actual mining and processing conditions in supplier countries. The geographic concentration of rare earth mining and processing in countries with weaker environmental and labor protections creates structural tension between supply chain sustainability requirements and cost-competitive procurement. The rule does not address the broader political economy of AI hardware supply chains: national security interests in securing critical mineral supplies may create pressure to accept lower environmental standards in supplier relationships."
+}
+CARD_CONTENT["TECH-ENVS-0008"] = {
+    "stmt": "AI hardware manufacturers bear full lifecycle responsibility for environmental impacts — from raw material extraction through manufacturing, deployment, and end-of-life disposal — and must fund recovery, reuse, and responsible recycling programs for hardware they produce.",
+    "notes": "Extended producer responsibility for AI hardware faces significant enforcement challenges when manufacturers operate across multiple jurisdictions with different liability frameworks, and when recycling costs are transferred to downstream purchasers or local governments. Compliant manufacturers could satisfy lifecycle responsibility requirements through contracted recycling programs that formally comply with requirements while achieving low actual recovery rates due to logistical and economic barriers to hardware return. E-waste from data center hardware has well-documented links to informal recycling in developing countries where environmental and labor protections are absent; lifecycle responsibility frameworks must include export restrictions to be effective. The rule does not address obsolescence cycles driven by AI model performance demands that cause hardware retirement far earlier than physical durability would require, generating waste that reflects industry choices rather than hardware failure."
+}
+CARD_CONTENT["TECH-ENVS-0009"] = {
+    "stmt": "AI-related hardware must meet minimum durability, repairability, and reuse standards, and manufacturers may not design hardware to impede repair, require proprietary replacement components, or accelerate obsolescence through software-driven capability restrictions.",
+    "notes": "Right-to-repair standards for AI hardware face strong industry opposition grounded in intellectual property and security arguments that, while sometimes legitimate, have been used broadly to prevent repairs that would have no security or IP implications. Compliant manufacturers could design hardware that meets nominal repairability standards for standard components while using proprietary connectors, encrypted firmware, or void-if-opened policies for the components most likely to fail, undermining practical repairability. Performance specifications for AI workloads change rapidly enough that hardware may become functionally obsolete for AI purposes before it is physically worn out, making repairability standards less relevant to actual AI hardware waste than model performance upgrade cycles. The rule does not address the systemic mismatch between AI infrastructure investment cycles and the longer timescales needed to realize environmental returns from durability requirements."
+}
+CARD_CONTENT["TECH-ENVS-0010"] = {
+    "stmt": "Operators of AI hardware and infrastructure must implement and report on responsible recycling, component recovery, and responsible disposal programs achieving minimum verified recovery rates for key materials including critical minerals, precious metals, and plastics.",
+    "notes": "Recycling program requirements are ineffective without minimum recovery rate standards and independent verification; self-reported recycling compliance consistently overstates actual material recovery rates. Compliant operators could satisfy recycling requirements through contracts with certified recyclers who then export e-waste to developing countries for informal processing, technically complying with domestic certification requirements while externalizing the environmental and health costs to communities abroad. Critical minerals in AI hardware — including rare earth elements, cobalt, and lithium — require specialized recycling infrastructure that does not exist at scale domestically; without investment requirements, recycling mandates may outpace the infrastructure needed to fulfill them. The rule does not address the recycling economics problem: when recycled materials are less valuable than virgin extraction, market forces provide no incentive for operators to invest in high-quality recovery programs beyond regulatory minimums."
+}
+CARD_CONTENT["TECH-ENVS-0011"] = {
+    "stmt": "Companies developing or deploying AI systems must account for and internalize environmental costs in their pricing, financial reporting, and operational planning rather than shifting those costs to the public, future generations, or ecosystems through unpriced externalities.",
+    "notes": "Internalization of environmental costs requires either regulatory pricing mechanisms — carbon taxes, water tariffs, pollution permits — or tort liability that currently does not attach to diffuse environmental harms from AI infrastructure, leaving companies able to externalize costs legally. Compliant companies could satisfy internalization requirements through internal carbon pricing mechanisms that affect accounting but not actual decision-making, particularly when those prices are set below the social cost of carbon. Environmental cost accounting that is self-determined without standardized methodology creates opportunities for understating costs in ways that satisfy formal requirements while maintaining effective externalization. The rule does not specify what accountability mechanisms enforce internalization requirements or what remedies apply when companies continue to externalize documented environmental costs."
+}
+CARD_CONTENT["TECH-ENVS-0012"] = {
+    "stmt": "Large-scale AI infrastructure deployments above a defined capacity threshold must complete independent environmental impact assessments — including energy, water, materials, noise, and community impact analysis — prior to approval, construction, or expansion, with results publicly disclosed before approval decisions.",
+    "notes": "Environmental impact assessment requirements depend on clear coverage thresholds and substantive assessment standards; narrow thresholds allow incremental capacity expansion in tranches below the trigger level, achieving equivalent scale without triggering review. Compliant operators could conduct assessments through consultants they hire and pay, creating the same structural conflict of interest documented in EIA processes for extractive industries and other major infrastructure. Public disclosure requirements that occur simultaneously with or after approval decisions limit the practical utility of disclosure for community input and democratic accountability. The rule does not specify what adverse findings require mitigation, what mitigation is sufficient, or who has standing to challenge approval decisions based on inadequate environmental assessment."
+}
+CARD_CONTENT["TECH-ENVS-0013"] = {
+    "stmt": "AI systems may be used to support climate modeling, environmental monitoring, conservation planning, and emissions mitigation provided such use is governed by transparent, publicly accountable frameworks and does not create conflicts of interest that benefit AI operators at public expense.",
+    "notes": "AI applications in climate science are genuinely valuable and this provision appropriately permits them while requiring transparency and accountability to prevent capture by commercial interests. Compliant AI operators could provide climate modeling services under nominally transparent frameworks while using government contract data to train commercial models or identify investment opportunities that benefit from climate information asymmetries. Government AI climate contracts may create dependencies on proprietary AI infrastructure that reduces public sector autonomy and locks in commercial vendor relationships difficult to exit. The rule does not address the carbon cost of AI systems used for environmental purposes — a computationally intensive climate model trained by an AI company may emit more than it saves if operated without lifecycle carbon accounting."
+}
+CARD_CONTENT["TECH-ENVS-0014"] = {
+    "stmt": "AI systems may be used to optimize energy, water, and resource efficiency in industrial, infrastructure, and building systems, provided such optimization does not create hidden environmental tradeoffs, obscure real total resource consumption, or generate inequitable outcomes for vulnerable communities.",
+    "notes": "AI resource optimization systems may achieve efficiency gains in measured domains while shifting resource consumption to unmeasured or unregulated domains — such as optimizing energy use in data center cooling while increasing the workload that drives total energy demand. Compliant operators could deploy AI optimization in ways that improve per-unit efficiency while total absolute resource use increases, satisfying efficiency requirements while worsening aggregate environmental outcomes — the rebound effect. AI optimization applied to energy grids, water systems, or industrial processes may produce outcomes that serve aggregate efficiency while imposing costs or service reductions on lower-income communities and environmental justice communities without explicit equity safeguards. The rule does not specify how 'hidden tradeoffs' are to be identified, measured, or reported, leaving this as an aspirational constraint without operational content."
+}
+CARD_CONTENT["TECH-ENVS-0015"] = {
+    "stmt": "AI systems may support modernization of electrical grids, microgrids, and renewable energy systems under publicly accountable frameworks that maintain grid resilience, protect consumer interests, and are subject to utility commission oversight and public access requirements.",
+    "notes": "AI-managed grid systems introduce new cyber vulnerability and single-point-of-failure risks that traditional grid architectures do not have, and which this provision does not require to be addressed. Compliant operators could use grid AI systems that optimize for efficiency under normal conditions while lacking the redundancy, manual override capability, and resilience needed to maintain grid function under adversarial attack or extreme weather. AI grid management controlled by private utilities or technology companies may optimize for profit metrics rather than resilience or consumer welfare without robust utility commission oversight requirements. The rule does not address the public interest implications of AI systems that control critical grid infrastructure being developed and operated by private companies with limited transparency obligations."
+}
+CARD_CONTENT["TECH-ENVS-0016"] = {
+    "stmt": "AI companies may not misrepresent environmental impact through selective metric reporting, accounting exclusions, unverifiable offset claims, or marketing claims about sustainability that are not supported by independently verified lifecycle assessments.",
+    "notes": "AI industry greenwashing is a documented pattern: companies claiming carbon neutrality through offset purchases, renewable energy certificates, and favorable accounting choices while actual operational emissions and embedded hardware emissions are not substantively reduced. Compliant actors could commission favorable third-party assessments that use methodologies designed to produce preferred conclusions, satisfying the formal requirement of independent verification while maintaining substantive misrepresentation. Enforcement of environmental misrepresentation claims against AI companies requires regulatory capacity to evaluate complex technical lifecycle assessments, which existing consumer protection agencies may not have. The rule does not address claims made in investor communications, bond offerings, or ESG disclosures under securities law frameworks, which may require separate enforcement action."
+}
+CARD_CONTENT["TECH-ENVS-0017"] = {
+    "stmt": "Environmental reporting for AI systems must follow mandatory, standardized, independently verified metrics covering energy, water, materials, and emissions, with sufficient methodological specificity to prevent selective reporting and enable meaningful comparison across operators and time periods.",
+    "notes": "Standardized reporting requirements are only as robust as the standards-setting process; industry capture of voluntary standards bodies has historically produced standards that favor favorable reporting over meaningful accountability. Compliant operators could select from multiple approved measurement methodologies that produce systematically different results, comparing favorable periods or using favorable scope definitions to report better than actual environmental performance. Data center and AI infrastructure reporting lacks a mandatory federal standard in the United States as of 2025, meaning this provision requires either new legislation or an EPA or DOE rulemaking to become operational. The rule does not address the international dimension: AI infrastructure operators with facilities in multiple countries may apply inconsistent methodologies across jurisdictions in ways that aggregate reporting does not reveal."
+}
+CARD_CONTENT["TECH-ENVS-0018"] = {
+    "stmt": "AI infrastructure may not be sited in ways that disproportionately impose noise, pollution, water consumption, or other environmental burdens on communities already facing environmental health disparities, consistent with the environmental justice requirements of applicable federal law.",
+    "notes": "Environmental justice requirements for data center siting depend on accurate community impact assessment and genuine consideration of cumulative burden — not just the marginal impact of a single new facility on a community already overburdened with environmental stressors. Compliant developers could satisfy environmental justice review requirements through outreach processes that create participation records without genuine community input on siting decisions, using consultation as procedural compliance rather than substantive accommodation. Siting decisions by AI companies are often shaped by energy and water availability, land cost, and tax incentives offered by local governments competing for economic development, creating systematic pressure to locate in communities that accept lower environmental standards in exchange for jobs. The rule does not specify what cumulative burden analysis is required or what degree of disproportionate impact triggers a prohibition versus a mitigation obligation."
+}
+CARD_CONTENT["TECH-ENVS-0019"] = {
+    "stmt": "The environmental costs of AI hardware supply chains — including extraction, processing, manufacturing, and shipping — may not be offloaded to developing nations or communities through supply chain arrangements that avoid the environmental standards applicable in the United States.",
+    "notes": "Supply chain environmental standard requirements face inherent enforcement challenges when the supply chain spans multiple sovereignties with different environmental regulations and no extraterritorial jurisdiction for U.S. environmental law. Compliant companies could satisfy 'no global offloading' requirements through formal supplier codes of conduct while sourcing from suppliers that do not comply with those codes, exploiting the gap between contractual requirements and verified compliance. Trade law constraints limit the ability of the United States to impose environmental performance standards on imported goods, making this rule dependent on either diplomatic agreements, import restrictions, or Lacey Act-style enforcement that requires significant evidentiary support. The rule does not address the political economy of critical mineral supply chains, where national security interests in supply chain diversification may override environmental standard requirements in supplier relationships."
+}
+CARD_CONTENT["TECH-ENVS-0020"] = {
+    "stmt": "AI infrastructure policy must be developed in coordination with national energy policy, grid modernization planning, renewable investment programs, and public infrastructure strategies to ensure AI energy demand growth does not undermine clean energy transition goals.",
+    "notes": "AI energy demand growth is on a trajectory that could consume a significant fraction of projected renewable energy buildout, making coordination between AI infrastructure policy and energy transition planning a genuine national priority rather than a rhetorical aspiration. Compliant policy development could achieve formal coordination through interagency consultation processes that produce no binding constraints on AI infrastructure siting or energy demand, satisfying process requirements without substantive integration. The rule does not establish binding energy demand caps or renewable energy build requirements specifically sized to AI sector growth, leaving coordination as an aspiration rather than a mechanism. Regulatory authority over AI energy use is fragmented across FERC, state utility commissions, EPA, and DOE in ways that make integrated policy coordination structurally difficult without new legislative authority."
+}
+CARD_CONTENT["TECH-ENVS-0021"] = {
+    "stmt": "Operators of AI data centers and large data facilities must comply with noise pollution standards covering fan, cooling, generator, and HVAC systems, with monitoring, mitigation, and community complaint mechanisms required for all facilities above a defined capacity threshold.",
+    "notes": "Noise standards for data centers do not currently exist as a specific federal category in the United States, making this provision dependent on new rulemaking under the Noise Control Act or equivalent authority that would need to address AI facility specifics. Compliant operators in jurisdictions with general industrial noise standards could locate data centers at parcel boundaries where distances to residential areas satisfy technical standards while still causing harm to nearby communities, particularly in rural areas where siting options are limited. Intermittent high-noise events — emergency generator testing, equipment replacement — may be exempt from continuous monitoring requirements despite causing significant community impact. The rule does not address cumulative noise from multiple AI facilities that are individually compliant but collectively exceed acceptable community exposure levels when concentrated in a geographic area."
+}
+CARD_CONTENT["TECH-ENVS-0022"] = {
+    "stmt": "Large-scale AI data centers above a defined capacity threshold must operate within binding water consumption permits based on watershed-specific availability assessments, with actual consumption reported quarterly against permitted amounts on a publicly accessible basis.",
+    "notes": "Binding water consumption limits require permits calibrated to actual watershed sustainability, not historical averages; as climate change reduces precipitation and snowpack, historically adequate permits may become unsustainable without automatic adjustment mechanisms. Compliant operators could structure facilities as multiple nominally independent units each below the threshold that triggers binding consumption limits, using organizational fragmentation to avoid permit requirements while maintaining equivalent aggregate consumption. Quarterly public reporting of consumption against permits enables community and regulatory monitoring but requires that permit data is also publicly accessible for comparison, which may require disclosure requirements separate from consumption reporting. The rule does not specify what happens when operators exceed permitted consumption limits — whether violations trigger mandatory curtailment, fees, enhanced review, or permit modification — limiting the binding effect of the consumption caps."
+}
+CARD_CONTENT["TECH-ENVS-0023"] = {
+    "stmt": "AI infrastructure requiring significant water cooling may not be sited in federally or state-designated water-stressed or drought-prone regions without independently verified water-neutral mitigation plans approved through a public review process.",
+    "notes": "Water stress designations may lag actual drought conditions in regions experiencing rapidly intensifying water scarcity under climate change, and operators could secure siting approvals during non-stressed periods before stress conditions emerge. Compliant operators could propose water-neutral mitigation through recycled water supply sources that are theoretically available but practically insufficient during drought conditions when competing municipal and agricultural demand peaks simultaneously. The public review requirement depends on adequate public notice, meaningful comment periods, and genuine agency consideration — not perfunctory compliance with formal process requirements. The rule does not address what happens to existing permitted facilities if a region's water stress classification changes after initial siting approval, leaving open whether existing facilities must retrofit or obtain new review."
+}
+CARD_CONTENT["TECH-ENVS-0024"] = {
+    "stmt": "AI data centers may not draw on groundwater or aquifer sources in ways that measurably degrade water tables, reduce flows to downstream users, or damage dependent ecosystems, without independent hydrological review, public notice, and binding mitigation commitments verified by independent monitoring.",
+    "notes": "Groundwater impacts from data center pumping may manifest years after extraction begins due to aquifer lag times, making real-time monitoring insufficient to detect harm before it becomes irreversible at relevant geological scales. Compliant operators could obtain groundwater extraction permits based on historical aquifer data that does not reflect current recharge rates or cumulative depletion from other industrial users in the same region. The complex hydrology of shared aquifers makes attribution of specific impacts to specific operators technically difficult, creating enforcement challenges when multiple large users collectively deplete an aquifer without any individual exceeding their permit. The rule does not specify what independent monitoring is required, at what intervals, by whom, and with what public reporting obligations, leaving the effectiveness of mitigation commitments dependent on implementation details."
+}
+CARD_CONTENT["TECH-ENVS-0025"] = {
+    "stmt": "New large-scale AI data centers above a defined capacity threshold must implement water recycling, reclamation, or closed-loop cooling systems to the maximum extent technically feasible and must report recycling rates alongside gross consumption figures in all public disclosures.",
+    "notes": "Technical feasibility standards for water recycling can be contested by operators who claim that available recycled water sources do not meet quality requirements for cooling systems, with 'maximum extent technically feasible' providing wide discretion absent specific engineering standards. Compliant operators could report recycling rates calculated using favorable denominator definitions — recycled water as a fraction of total water budget rather than of actual cooling water consumption — producing misleading efficiency metrics. The requirement applies to new data centers but does not establish a timeline for retrofit of existing facilities, creating a long-term bifurcation between new and legacy infrastructure that limits aggregate water consumption reduction. The rule does not address whether recycled water used in cooling operations must meet quality standards that prevent the introduction of contaminants into local wastewater streams or groundwater through discharge."
+}
+CARD_CONTENT["TECH-ENVS-0026"] = {
+    "stmt": "Operators of high-water-consumption AI infrastructure must file publicly accessible drought contingency plans specifying operational curtailment thresholds, water priority provisions for municipal and agricultural users, and mitigation timelines that become binding obligations during declared water emergencies.",
+    "notes": "Drought contingency planning is only effective if the plans include operationally specific curtailment thresholds rather than aspirational language, and if those thresholds are calibrated to actual emergency water governance frameworks rather than self-defined scenarios. Compliant operators could file plans with curtailment timelines that extend beyond typical drought emergency durations, effectively deferring any operational impact until after normal water conditions return. Plans that prioritize municipal and agricultural water users on paper may be commercially unenforceable in practice if the data center's water rights are senior under prior appropriation systems that legally prioritize established uses. The rule does not specify a review process for the adequacy of filed plans, who has authority to enforce curtailment obligations, or what penalties apply to operators who fail to comply with plans during declared emergencies."
+}
+CARD_CONTENT["TECH-ENVS-0027"] = {
+    "stmt": "Regulators must conduct community water impact reviews — assessing effects on residential access, municipal supply, agricultural users, environmental flows, and cumulative watershed impacts — before approving large data center water permits, with mandatory public comment periods and binding mitigation conditions attached to any permit issued.",
+    "notes": "Community water impact reviews require regulators with hydrological expertise, community engagement capacity, and legal authority to impose binding mitigation conditions — combinations that are rare in water permitting agencies historically focused on permit processing rather than comprehensive impact review. Compliant regulators could conduct community impact reviews that satisfy formal procedural requirements while failing to assess cumulative impacts from multiple facilities in the same watershed or the interaction of data center water use with projected climate change impacts on local water availability. Mandatory public comment requirements are meaningful only if the comment period is adequate for community preparation, if comments are substantively addressed in agency decisions, and if affected communities have standing to challenge approvals that do not adequately respond to their concerns. The rule does not specify what binding mitigation conditions are available to regulators — water use caps, offset requirements, monitoring obligations, financial assurance — limiting the protective effect of the review process."
+}
+
+
+# ---------------------------------------------------------------------------
+# FINC — Financial Services & Algorithmic Lending
+# ---------------------------------------------------------------------------
+CARD_CONTENT["TECH-FINC-0001"] = {
+    "stmt": "Automated lending systems must comply fully with the Equal Credit Opportunity Act and Fair Housing Act requirements for adverse action notices, including the specific factors and data inputs that contributed to adverse decisions, in plain-language explanations accessible to applicants.",
+    "notes": "ECOA adverse action notice requirements were designed for human underwriting; their application to algorithmic models is contested where models use hundreds of correlated inputs and no single factor is determinative, potentially rendering compliant disclosures uninformative. Compliant lenders could provide technically accurate but practically opaque adverse action notices citing aggregate score components rather than the specific data points that differentiated this applicant's profile from an approval — satisfying the letter of the requirement without enabling the applicant to understand or challenge the decision. Algorithmic lending models trained on biased historical credit data can perpetuate discriminatory patterns through facially neutral variables correlated with protected characteristics, satisfying ECOA's formal neutrality requirement while producing disparate impact in violation of its spirit. The rule does not address the interaction between ECOA adverse action notice requirements and trade secret protections for proprietary model architectures that lenders have used to resist regulatory and litigation access to model internals."
+}
+CARD_CONTENT["TECH-FINC-0002"] = {
+    "stmt": "AI lending systems that produce disparate impact based on race, gender, national origin, or other protected characteristics must be redesigned, recalibrated, or discontinued; disparate impact must be measured using standardized testing methods across protected classes compared against control populations.",
+    "notes": "Disparate impact testing requirements for AI lending depend on data availability and methodology choices that can produce significantly different conclusions from the same underlying lending data, creating opportunities for operators to select testing approaches that minimize documented disparate impact. Compliant lenders could reduce measured disparate impact at approval rates while increasing disparate impact in pricing — charging higher interest rates to similarly creditworthy borrowers from protected classes — if only approval disparate impact is measured and pricing disparities are not separately tested. Redesign requirements that require discontinuation of profitable lending models create strong commercial pressure to discover methodological approaches that technically satisfy testing requirements without substantively eliminating discriminatory outcomes. The rule does not specify what testing methods are standardized, what remediation timeline applies, or what penalty attaches to continued operation of a model after disparate impact is documented."
+}
+CARD_CONTENT["TECH-FINC-0003"] = {
+    "stmt": "Financial institutions using AI for credit, insurance, or financial product eligibility determinations must provide individualized human review upon applicant request, at no cost to the applicant, within a reasonable timeframe, and must document the outcome of such reviews.",
+    "notes": "Human review requirements are undermined if the reviewing human lacks access to model internals and simply validates the model output rather than conducting independent underwriting, converting the review into a procedural formality without substantive reconsideration. Compliant institutions could structure human review processes that nominally re-examine the decision but apply the same biased criteria as the automated system, ensuring human review never overturns automated denials despite documented model problems. Review timelines that are 'reasonable' but undefined in the rule allow institutions to provide human review within 60 or 90 days — too late to be useful for time-sensitive credit decisions such as mortgages, auto loans, or emergency credit needs. The rule does not address what information applicants must be given to make use of the human review process, what the reviewer must actually examine, or what documentation the institution must retain to enable regulatory audit."
+}
+CARD_CONTENT["TECH-FINC-0004"] = {
+    "stmt": "AI systems used for financial product pricing — including interest rates, insurance premiums, and product terms — must be regularly tested for algorithmic price discrimination and may not use geographic, demographic, or behavioral proxies that produce disparate pricing outcomes by protected class.",
+    "notes": "Algorithmic price discrimination testing is complicated by the near-infinite number of potential proxies for protected characteristics in behavioral, geographic, and credit data, and the difficulty of distinguishing legitimate risk-correlated variables from discriminatory proxies in models with hundreds of inputs. Compliant institutions could use pricing models that technically exclude protected characteristics while achieving functionally equivalent segmentation through correlated variables — zip code proxies for race, income proxies for protected class membership — in ways that standard proxy testing may not detect. Dynamic pricing systems that adjust rates in real time based on behavioral signals may produce disparate outcomes based on protected class-correlated browsing patterns, session timing, or device type in ways that are not captured by application-time disparate impact testing. The rule does not specify what testing frequency is sufficient, what disparate pricing threshold triggers remediation, or who has access to pricing model data for independent auditing."
+}
+CARD_CONTENT["TECH-FINC-0005"] = {
+    "stmt": "Fintech companies and neobanks using alternative data sources — including rent payment history, utility payments, social media activity, and gig economy income — for credit decisions must demonstrate that alternative data use does not perpetuate or worsen credit discrimination against traditionally underserved populations.",
+    "notes": "Alternative credit data is marketed as expanding credit access to thin-file borrowers, but many alternative data sources correlate strongly with race, income, and immigration status in ways that could replicate or worsen historical lending discrimination under new data forms. Compliant fintechs could conduct internal disparate impact testing using data categories and population samples that produce favorable results without independent verification, treating self-assessed non-discrimination as equivalent to verified compliance. Social media and behavioral data used in credit scoring can reflect discriminatory network effects — being connected to people with poor credit is correlated with community-level economic marginalization rather than individual creditworthiness — in ways that convert social discrimination into financial discrimination. The rule does not establish who reviews the demonstration of non-discrimination, what standards it must meet, or what happens if the demonstration is inadequate after a fintech has already deployed the credit model."
+}
+CARD_CONTENT["TECH-FINC-0006"] = {
+    "stmt": "AI systems used in debt collection must comply with the Fair Debt Collection Practices Act, including prohibitions on harassment, false representations, and unfair practices, and may not use psychological profiling or behavioral targeting to exploit consumers' emotional states, cognitive biases, or financial desperation.",
+    "notes": "FDCPA compliance in AI debt collection is complicated because the Act was designed around human collector behavior, and algorithmic systems that optimize contact timing, message framing, and escalation sequences for maximum payment extraction may violate the Act's spirit while satisfying its literal requirements. Compliant debt collection AI could use behavioral data to identify optimal times to contact debtors when they are most financially stressed — immediately after failed payment attempts, at month-end — in ways that technically comply with contact frequency limits while maximizing psychological pressure. AI debt collection systems can collect and analyze response patterns to identify which debtors respond to which types of pressure, enabling personalized exploitation of individual vulnerability patterns that the FDCPA's general prohibitions do not specifically address. The rule does not define what constitutes prohibited 'psychological profiling' or 'behavioral targeting' with sufficient specificity to enable compliance assessment or enforcement."
+}
+CARD_CONTENT["TECH-FINC-0007"] = {
+    "stmt": "AI systems used for insurance underwriting, claims adjudication, or premium determination must be tested for disparate impact by protected class, must provide claim denial reasons in plain language, and may not use data sources that serve as proxies for protected characteristics.",
+    "notes": "Insurance AI testing for protected class disparate impact is complicated by the fact that most insurance-relevant risk factors correlate with socioeconomic conditions that are themselves correlated with protected characteristics, making the line between actuarially sound risk pricing and proxy discrimination genuinely contested. Compliant insurers could use health or auto insurance models that technically exclude protected characteristics while using behavioral, geographic, and socioeconomic inputs that produce functionally equivalent segmentation, satisfying form while preserving substance. AI claims adjudication systems that deny claims based on pattern matching against historical approved and denied claims will replicate biases embedded in those historical decisions, perpetuating discriminatory denial patterns even with formally neutral model inputs. The rule does not specify what testing is required, what proxy data sources are prohibited, or what documentation insurers must maintain to demonstrate compliance with anti-discrimination requirements."
+}
+CARD_CONTENT["TECH-FINC-0008"] = {
+    "stmt": "AI-driven investment advisory and robo-advisory systems must meet the same suitability and fiduciary standards applicable to human financial advisors, with clear disclosure of AI involvement, limitations, and the fee structures that may influence recommendations.",
+    "notes": "Applying fiduciary standards to AI advisory systems requires defining what 'acting in the client's best interest' means for an algorithm optimizing against a defined objective function that may not fully capture the client's actual financial interests and circumstances. Compliant robo-advisors could satisfy fiduciary requirements through disclosures that reveal fee structures and AI involvement while recommending portfolio allocations that optimize for metrics correlated with advisor revenue — assets under management, trading frequency — rather than client welfare. AI financial advisors that are trained on historical market data may recommend portfolios optimized for historical risk-return profiles that are inappropriate for current market conditions or individual client circumstances in ways that human advisors would recognize and adjust for. The rule does not address the regulatory gap between investment advisors subject to fiduciary standards under the Investment Advisers Act and broker-dealers subject to lower suitability standards where AI advisory tools are used."
+}
+CARD_CONTENT["TECH-FINC-0009"] = {
+    "stmt": "AI systems involved in housing finance — mortgage origination, property valuation, appraisal, and rental screening — must comply with the Fair Housing Act and must be tested for racial, national origin, and other protected class disparities in outcomes, with results reported to applicable federal oversight agencies.",
+    "notes": "Automated property valuation models trained on historical sale data perpetuate the legacy of discriminatory appraisal practices — the racial wealth gap in home equity is partly a function of systematically undervalued properties in majority-Black neighborhoods — unless models are specifically corrected for this historical bias. Compliant mortgage AI could pass Fair Housing Act disparate impact testing at the approval level while producing disparate outcomes in property valuation, appraisal review, or underwriting overlays applied after automated approval that reimpose racial disparities through manual processes. Rental screening AI that uses criminal history, eviction records, or income verification processes may produce disparate impact on protected classes through facially neutral criteria that are disproportionately triggered by systemic inequalities rather than actual rental risk. The rule does not specify how algorithmic appraisal and automated valuation models interact with human appraisal review processes or how disparities identified through required testing must be remediated."
+}
+CARD_CONTENT["TECH-FINC-0010"] = {
+    "stmt": "Banks and financial institutions using AI for fraud detection must implement processes to minimize false positives that disproportionately freeze, suspend, or restrict accounts belonging to vulnerable populations — including immigrants, low-income customers, and elderly customers — with rapid human review and account restoration procedures.",
+    "notes": "AI fraud detection false positives have documented disparate impacts on communities whose transaction patterns — remittances, informal economy payments, irregular income — differ from the patterns on which fraud models were trained, creating systematic over-flagging of legitimate transactions by vulnerable populations. Compliant institutions could implement human review procedures for fraud flags that nominally comply with rapid review requirements while processing times during high-volume periods result in extended account freezes that functionally deny access for days or weeks. Account restoration procedures that require substantial identity documentation may be disproportionately burdensome for customers who lack conventional documentation — recent immigrants, homeless individuals, people with non-standard employment — compounding the original harm of the false positive flag. The rule does not specify maximum freeze duration, minimum review standards, what documentation applicants can reasonably be required to provide, or what remedies applicants have when fraud flags are erroneous."
+}
+CARD_CONTENT["TECH-FINC-0011"] = {
+    "stmt": "AI systems used for financial regulatory compliance — including anti-money-laundering, suspicious activity reporting, and know-your-customer determinations — must not produce disparate regulatory burden on communities of color, immigrant communities, or small businesses through over-reporting, over-flagging, or disproportionate account termination.",
+    "notes": "Bank Secrecy Act compliance AI creates significant risks of 'derisking' — financial institutions exiting relationships with entire customer categories to minimize compliance costs — with documented impacts on immigrant communities, minority-owned businesses, and international remittance services that are unprofitable to serve. Compliant institutions could satisfy over-reporting and over-flagging requirements by demonstrating that their flagging rates are proportional to transaction volumes within each customer category, without addressing whether flagging thresholds are calibrated appropriately for the risk profiles of different transaction types. AML AI that generates high volumes of suspicious activity reports creates investigative burden for FinCEN and law enforcement while producing low-quality intelligence: the documented false positive rate in SAR filings enables bulk reporting compliance while providing limited law enforcement value. The rule does not address the systemic problem that financial institutions are incentivized to over-report to avoid regulatory penalties for under-reporting, creating pressure toward discriminatory over-surveillance regardless of model design."
+}
+CARD_CONTENT["TECH-FINC-0012"] = {
+    "stmt": "Algorithmic trading systems and high-frequency trading operations must be subject to market stability risk assessment, circuit breaker requirements, and kill-switch capabilities overseen by the SEC and CFTC, with mandatory incident reporting for automated trading events that contribute to market disruption.",
+    "notes": "Algorithmic trading market stability requirements depend on accurate characterization of what constitutes market disruption and the causal contribution of automated trading — flash crashes and market dislocations involve multiple interacting systems, making single-algorithm attribution difficult. Compliant operators could implement technical circuit breakers that trigger after market impact thresholds are reached, reducing liability exposure while not preventing the initial disruption that triggers the circuit breaker in rapidly moving markets. Kill-switch requirements may be technically sophisticated while being operationally useless if the communications infrastructure needed to activate them is the same infrastructure disrupted by the market event. The rule does not address the cross-border dimension of algorithmic trading: systems operating through offshore entities or in foreign markets may not be subject to U.S. market stability requirements even when their effects are felt in U.S. markets."
+}
+CARD_CONTENT["TECH-FINC-0013"] = {
+    "stmt": "Financial institutions must maintain human oversight capacity sufficient to detect, understand, and respond to AI system failures, unexpected behaviors, and adverse outcomes, and may not so fully automate decision-making processes that responsible human accountability for those processes is eliminated.",
+    "notes": "Human oversight capacity requirements for financial AI are undermined by the complexity and opacity of modern neural network models, which even their creators cannot fully explain or predict — humans may be nominally in the loop while lacking the expertise to evaluate or override model outputs. Compliant institutions could maintain human oversight through compliance functions that review AI outputs retrospectively after harm has occurred, satisfying oversight requirements while providing no real-time accountability for automated decisions affecting consumers. The commercial pressure to automate financial services creates strong incentives to reduce human oversight to the minimum formally required, meaning oversight requirements must be operationally specific about what kind of oversight is meaningful rather than merely procedural. The rule does not define what constitutes meaningful human oversight of AI financial systems, what expertise the overseers must have, or what authority they must possess to actually modify or override automated decisions."
+}
+CARD_CONTENT["TECH-FINC-0014"] = {
+    "stmt": "AI companies providing financial services infrastructure as a service to banks and lenders must be subject to examination by applicable financial regulators — OCC, CFPB, FDIC, Fed — as third-party service providers whose systems influence regulated financial activities.",
+    "notes": "Third-party AI service provider examination authority exists under existing banking law but has been inconsistently exercised with respect to AI vendors, creating a gap between the formal examination authority and the practical capacity of banking regulators to assess sophisticated AI systems. Compliant AI service providers could cooperate with regulatory examination while protecting proprietary model architectures under trade secret claims that limit examiners' ability to assess the substantive fairness and accuracy of the models. Financial institutions that contract out AI lending functions to third parties may argue that regulatory accountability rests with the vendor rather than the bank, and the vendor may argue accountability rests with the bank, creating responsibility gaps that benefit neither party. The rule does not address what examination standards apply to AI financial service providers that are not themselves banks, what regulatory authority applies to vendors operating across multiple regulatory jurisdictions, or how examination findings translate into remediation requirements."
+}
+CARD_CONTENT["TECH-FINC-0015"] = {
+    "stmt": "Consumers must have meaningful rights to contest automated financial determinations — including credit denial, loan pricing, insurance denial or pricing, and account restrictions — and must receive sufficiently specific explanations to understand and effectively exercise those contestation rights.",
+    "notes": "Meaningful contestation rights require that the explanation provided is specific enough to enable the consumer to identify inaccurate inputs, challenge problematic data sources, or identify discriminatory criteria — not merely a list of score components that the consumer has no capacity to verify or challenge. Compliant institutions could provide technically accurate explanations that cite proprietary score categories or model factors without disclosing the underlying data inputs, training sources, or model logic needed to conduct an effective challenge. Contestation processes that require consumers to navigate complex complaint procedures, wait extended periods for human review, and bear the burden of identifying specific model errors create effective barriers to exercising formal rights — particularly for consumers who lack legal representation or financial sophistication. The rule does not specify what the contestation process must include, what timeline applies to institution responses, or what remedies are available when a consumer's challenge is substantiated."
+}
+CARD_CONTENT["TECH-FINC-0016"] = {
+    "stmt": "AI credit-scoring systems that differ substantively from traditional credit scoring models must be independently validated for accuracy, predictive validity, and disparate impact before use in credit determinations affecting federally regulated financial activities.",
+    "notes": "Pre-use validation requirements depend on regulators having clear authority to require it and capacity to conduct or commission the validation — neither is well established for non-traditional credit scoring under current U.S. law. Compliant operators could conduct internal validation using the same data distribution as model training, which may produce favorable accuracy results that do not predict real-world performance on deployment populations that differ from training data. Predictive validity testing that measures short-term default prediction accuracy without examining equity outcomes treats discriminatory models as valid if they are statistically accurate, reflecting a framework where bias that predicts actual outcomes — themselves products of systemic inequality — validates the biased model. The rule does not specify who conducts validation, what standards constitute adequate accuracy and disparity thresholds, or what happens to existing deployed credit models that have not received pre-deployment validation."
+}
+CARD_CONTENT["TECH-FINC-0017"] = {
+    "stmt": "Operators of AI financial systems must maintain detailed audit logs of automated decisions, including input data, model version, and decision output, retained for a sufficient period to enable regulatory examination, litigation discovery, and consumer dispute resolution.",
+    "notes": "Audit log requirements for AI financial decisions face technical challenges when decisions are made by ensemble models or neural networks whose decision logic cannot be fully reconstructed from input-output logging alone, limiting the practical utility of logs for dispute resolution. Compliant institutions could maintain audit logs that satisfy retention requirements while storing data in formats that are technically inaccessible to consumers or plaintiff attorneys without specialized software and expertise, creating de facto barriers to using log data in disputes. Retention period requirements that are shorter than the statute of limitations for fair lending claims enable institutions to legally destroy log data before potential plaintiffs have discovered the harm and commenced litigation. The rule does not address what access consumers and their representatives have to audit logs, what format requirements enable practical use of the data, or how logs are secured against tampering."
+}
+CARD_CONTENT["TECH-FINC-0018"] = {
+    "stmt": "The Community Reinvestment Act framework must be updated to assess AI lending institutions' performance in serving underserved communities, with metrics that capture algorithmic lending disparities and require proactive engagement rather than passive non-discrimination.",
+    "notes": "CRA reform for AI lending faces the structural challenge that the Act was designed for geographically-situated branch banking, while AI lenders often operate without physical branches in the communities they serve — or don't serve — creating assessment geography problems. Compliant AI lenders assessed under updated CRA frameworks could meet community reinvestment obligations through aggregate lending volumes in low-and-moderate income census tracts without addressing the quality and terms of that lending, which may be less favorable than lending to higher-income borrowers. CRA examination performance ratings that are disconnected from actual lending outcome data — approval rates, interest rates, default rates, foreclosure rates by race and income — provide limited accountability for algorithmic lenders whose disparate impact is embedded in pricing rather than approval decisions. The rule does not address the interaction between CRA reform and the rapid growth of non-bank fintech lenders who originate significant volumes of consumer credit outside the CRA framework entirely."
+}
+CARD_CONTENT["TECH-FINC-0019"] = {
+    "stmt": "AI systems used in benefits and public assistance determination — including eligibility screening, fraud detection, and payment calculations — must meet due process standards equivalent to those in Mathews v. Eldridge, with meaningful notice, opportunity to respond, and human review of contested automated decisions.",
+    "notes": "Mathews v. Eldridge due process balancing, 424 U.S. 319 (1976), requires weighing the private interest affected, the risk of erroneous deprivation, and the government's interest in efficient administration — automated benefits decisions may satisfy formal Mathews analysis while providing inadequate actual opportunity to respond, particularly for applicants with limited education, language access, or disability accommodation needs. Compliant agencies could provide constitutionally adequate notice of automated benefit decisions while structuring hearing processes that are procedurally available but functionally inaccessible to benefits recipients who lack resources, transportation, or time to participate in in-person proceedings. AI fraud detection in benefits programs has a documented pattern of high false positive rates that disproportionately harm legitimate recipients — as in the Michigan unemployment insurance fraud system that wrongly accused 40,000 people — generating wrongful deprivations that satisfy no legitimate government interest. The rule does not address the systemic problem that government agencies face strong incentives to use AI fraud detection aggressively to reduce expenditures, regardless of false positive costs borne by individual recipients."
+}
+CARD_CONTENT["TECH-FINC-0020"] = {
+    "stmt": "AI systems used in gig economy and platform employment income verification for credit or benefits purposes must account for income volatility, multi-source employment, and platform-reported income accuracy, and may not penalize workers for legitimate economic realities of platform work.",
+    "notes": "Gig economy income verification through platform data creates dependency on platform self-reporting that may understate worker income — by reporting gross before platform fee deductions — or misrepresent income stability in ways that systematically disadvantage gig workers compared to traditional employees with similar earnings. Compliant credit and benefits AI could use income verification methods that technically accept alternative income documentation while applying models calibrated on traditional employment data that treat gig income volatility as a credit risk factor regardless of actual default rates for gig workers. Workers in informal economies, seasonal employment, or multiple part-time jobs — disproportionately workers of color, immigrants, and women — face income verification challenges that AI systems not specifically calibrated for their economic situations may convert into unjustified credit denials or benefits reductions. The rule does not specify what income verification standards are required for gig workers, what platform data obligations apply, or how workers can challenge income characterizations in automated credit or benefits systems."
+}
+CARD_CONTENT["TECH-FINC-0021"] = {
+    "stmt": "AI financial systems may not exploit consumer behavioral vulnerabilities — including cognitive biases, financial desperation, information asymmetry, or emotional states — through personalized interface design, timing strategies, or targeted product offers optimized for extraction rather than consumer benefit.",
+    "notes": "Behavioral exploitation by AI financial systems is difficult to define and enforce because the line between helpful personalization — presenting relevant products at opportune times — and harmful exploitation — targeting desperate consumers with predatory products — is contextual and contested. Compliant institutions could deploy AI that optimizes product presentation based on behavioral signals while framing optimization as 'improving customer experience' rather than extraction, making regulatory characterization challenging absent specific prohibited conduct definitions. Financial services AI trained to maximize conversion rates or product uptake will, absent explicit constraints, optimize for consumer psychological vulnerability — offering high-rate products when bill payment stress is highest, presenting credit in ways that minimize awareness of true cost. The rule does not provide operational definitions that distinguish permissible personalization from prohibited exploitation, creating an enforcement gap that will persist until specific prohibited practices are enumerated."
+}
+CARD_CONTENT["TECH-FINC-0022"] = {
+    "stmt": "AI systems used in actuarial modeling for insurance, pension, and annuity products must be subject to state insurance department review and actuarial standards that prevent algorithmic models from producing discriminatory rate structures under the guise of actuarial soundness.",
+    "notes": "Actuarial soundness standards for AI insurance models are contested because neural network models that are statistically accurate predictors of insurance risk may achieve accuracy through proxies for protected characteristics — neighborhood, credit score, purchasing patterns — that are themselves products of systemic discrimination rather than individual risk. Compliant insurers could submit AI actuarial models to state insurance departments for review processes that lack technical expertise to evaluate sophisticated machine learning models, receiving formal approval that does not constitute substantive review. The 'actuarial soundness' standard has historically been used by insurers to justify geographically based pricing that perpetuates redlining patterns in new forms; this rule does not address the substantive standard that actuarial soundness must meet to comply with anti-discrimination law. The rule does not specify what actuarial training, testing, and documentation requirements apply to AI models used for insurance pricing, or what role state insurance commissioners have in setting technical standards for AI actuarial compliance."
+}
+CARD_CONTENT["TECH-FINC-0023"] = {
+    "stmt": "Financial institutions may not use AI systems for employee performance monitoring, productivity scoring, or algorithmic management in ways that produce discriminatory outcomes by race, gender, disability, or protected class, and must audit algorithmic management systems for disparate impact on pay, promotion, and termination outcomes.",
+    "notes": "Algorithmic management in financial services creates a dual discrimination risk: AI systems that score employee performance on productivity metrics may disadvantage workers with caregiving responsibilities, disabilities, or non-standard work patterns in ways correlated with protected characteristics. Compliant institutions could audit algorithmic management systems for disparate impact on protected classes while declining to audit systems that produce disparate outcomes on proxies not currently recognized as protected — mental health status, caregiving status, income level — that function to disadvantage the same populations. Performance AI that generates productivity scores based on keystroke monitoring, communications analysis, or customer interaction metrics may embed discriminatory assumptions about what 'good' performance looks like that disadvantage neurodivergent workers or workers with communication styles that differ from the dominant culture. The rule does not address whether and how workers must be informed about algorithmic management systems used to evaluate their performance or what rights they have to contest performance scores generated by AI."
+}
+CARD_CONTENT["TECH-FINC-0024"] = {
+    "stmt": "Cryptocurrency exchanges, DeFi platforms, and blockchain-based financial services using AI for risk assessment, compliance, or trading must comply with equivalent consumer protection, anti-discrimination, and market integrity standards as traditional financial institutions performing equivalent functions.",
+    "notes": "Applying traditional financial regulation to cryptocurrency and DeFi platforms requires resolving jurisdictional questions about which services constitute banking, securities dealing, or commodity trading under existing law — an analysis that crypto industry participants have actively contested. Compliant crypto platforms could claim that AI risk assessment or trading functions performed through smart contracts are not subject to consumer protection laws because the smart contract is not a 'person' with legal obligations, using technology architecture to avoid regulatory coverage. DeFi platforms designed with no identifiable operator, jurisdiction, or point of enforcement present fundamental challenges to applying entity-based regulatory frameworks regardless of what AI functions they perform. The rule does not address the technical and jurisdictional challenges of applying financial regulation to decentralized systems, or specify what regulatory agency has authority to enforce equivalent standards against crypto and DeFi operators."
+}
+CARD_CONTENT["TECH-FINC-0025"] = {
+    "stmt": "AI systems used in personal financial management applications — budgeting tools, expense categorization, savings recommendations — must not share user financial data with advertisers, third-party data brokers, or affiliates without explicit user consent, and may not use behavioral profiling to target users with predatory financial products.",
+    "notes": "Personal financial management AI applications often monetize through partnerships with financial product providers whose interests may be adverse to users — directing users toward high-fee products, identifying users in financial distress for targeted lending offers — creating structural conflicts of interest that are not apparent to users. Compliant applications could obtain consent through terms of service provisions that technically authorize data sharing while being written in ways that obscure the extent of sharing from the typical user. Financial data shared with 'affiliates' under broad contractual definitions may flow to entities far outside what users would consider an acceptable financial services relationship, with minimal regulatory oversight of downstream data use. The rule does not specify what constitutes 'predatory' financial product targeting — high-interest credit offers to distressed users, payday loan recommendations — with sufficient specificity to enable enforcement against the most harmful practices."
+}
+CARD_CONTENT["TECH-FINC-0026"] = {
+    "stmt": "AI systems that make or substantially influence credit decisions must comply with the Truth in Lending Act's disclosure requirements, including effective APR disclosures and terms transparency, with additional requirements for AI-specific disclosures about automated decision involvement and explainability limitations.",
+    "notes": "TILA disclosure requirements were designed for standardized loan products and may not adequately capture the complexity of AI-priced variable-rate products, dynamic credit limits, or personalized loan terms that differ between borrowers in ways traditional TILA disclosures do not reveal. Compliant lenders could satisfy TILA disclosure requirements for AI-priced products through standardized APR calculations that are formally accurate while obscuring personalized risk premiums and the algorithmic logic that produces different rates for different borrowers. AI explainability limitations in TILA disclosures require acknowledging that automated decisions cannot be fully explained while still providing actionable information — a tension between transparency and opacity that this rule does not resolve. The rule does not address the interaction between TILA disclosures and ECOA adverse action notices for AI decisions, or specify what 'AI-specific disclosures' must contain to be meaningfully informative."
+}
+CARD_CONTENT["TECH-FINC-0027"] = {
+    "stmt": "Government use of AI for tax enforcement, audit selection, and collection must not produce racially or economically discriminatory audit rates, must provide taxpayers with plain-language explanations of AI-flagged issues, and must maintain human review of contested AI-generated tax assessments.",
+    "notes": "IRS audit selection AI trained on historical audit data will replicate the historical pattern of higher audit rates for low-income EITC claimants relative to high-income taxpayers, not because low-income filers have higher rates of noncompliance but because the IRS historically prioritized audits where automated correspondence letters were cheapest — a pattern documented by ProPublica (2022). Compliant tax enforcement AI could satisfy non-discrimination requirements by demonstrating that audit selection rates are proportional within income categories without addressing the absolute disparity — low-income taxpayers audited at rates far higher than high-income taxpayers — that characterizes current IRS practice. Plain-language explanation of AI-flagged tax issues requires translating complex model outputs into understandable notices for taxpayers who may have limited financial literacy and no professional tax assistance. The rule does not address the enforcement gap between the IRS audit capacity for complex high-income returns requiring human judgment and automated processing of simple returns, which may produce systematically different enforcement rigor across income levels."
+}
+CARD_CONTENT["TECH-FINC-0028"] = {
+    "stmt": "AI systems used in financial risk modeling — stress testing, systemic risk assessment, counterparty risk, and model risk management — must be validated against scenarios including adversarial conditions, tail risks, and model failure modes, with results subject to regulatory review under existing model risk management guidance.",
+    "notes": "Financial risk AI validation requirements face the limitation that models validated against historical stress scenarios may not perform adequately against future stress events — including correlated AI failure across multiple institutions simultaneously deploying similar models — that have no historical precedent. Compliant institutions could conduct model risk management validation using scenarios defined by the institution's risk committee, applying favorable assumptions about stress severity and correlation that produce acceptable model risk ratings without capturing actual systemic vulnerabilities. AI risk models that exhibit correlated failures across institutions using similar architectures create systemic risk that no single institution's model risk management process is designed to identify, requiring macro-prudential oversight that individual institution compliance does not provide. The rule does not address the systemic risk created when major financial institutions use similar AI models trained on similar data, creating correlated model risk that exceeds any individual institution's documented exposure."
+}
+CARD_CONTENT["TECH-FINC-0029"] = {
+    "stmt": "Banks, lenders, and financial services companies may not use AI to circumvent community reinvestment obligations, fair lending laws, or consumer financial protection regulations through technical architectures, offshore processing, or contract structures that place regulated functions in unregulated entities.",
+    "notes": "Regulatory evasion through technical architecture is a documented pattern in financial services: regulatory arbitrage using non-bank fintech partners, bank-as-a-service arrangements, and offshore data processing is specifically designed to perform regulated functions without triggering regulated entity obligations. Compliant evasion architectures could use fintech partners that originate loans under bank charters while the algorithmic credit model and underwriting logic is provided by an AI vendor with no regulated status, placing the compliance obligation on the bank while the discriminatory decisions are made by the unregulated vendor. The 'true lender' doctrine litigated in cases like CFPB v. CashCall may apply to some bank-fintech arrangements, but AI service provider relationships may be structured to avoid true lender characterization while still controlling the credit decision. The rule does not specify what contract structures, technical architectures, or service provider relationships constitute regulated function circumvention, creating interpretation space that will be exploited until specific arrangements are identified and prohibited."
+}
+
+
+# ---------------------------------------------------------------------------
+# GOVN — Government Use of AI
+# ---------------------------------------------------------------------------
+CARD_CONTENT["TECH-GOVN-0001"] = {
+    "stmt": "All government use of AI systems in decision-making processes affecting individual rights, benefits, or obligations must comply with existing administrative law requirements including notice-and-comment rulemaking, judicial review, and due process protections, without exception for technical novelty.",
+    "notes": "Administrative law compliance requirements for government AI depend on courts interpreting existing statutory frameworks to cover algorithmic decision-making — an interpretation that is not settled and that some courts have resisted by treating AI outputs as technical inputs to human decisions rather than final agency actions. Compliant agencies could structure AI use so that a human official formally makes each decision while relying entirely on AI-generated recommendations, claiming that human involvement satisfies due process while providing no independent human judgment. The APA requirement that agency action not be arbitrary and capricious requires reasoned explanation, but AI systems that cannot be explained may produce decisions that satisfy the outcome of the standard — consistent results — while being incapable of producing the reasoning explanation the standard requires. The rule does not address the specific procedural requirements that apply at each stage of AI deployment in government programs — procurement, pilot deployment, full deployment, modification — or specify what documentation agencies must maintain."
+}
+CARD_CONTENT["TECH-GOVN-0002"] = {
+    "stmt": "Federal, state, and local agencies must maintain public inventories of all AI systems used in government decision-making, including the function, population affected, vendor or developer, deployment date, and last review date, updated no less frequently than annually and published in machine-readable format.",
+    "notes": "Public AI inventories are meaningful accountability mechanisms only if they are complete, accurate, and contain sufficient information to enable meaningful public and legislative oversight — requirements that agency compliance often does not meet in practice. Compliant agencies could publish inventories that list AI systems by generic category — 'fraud detection tool,' 'benefits eligibility system' — without disclosing the specific vendor, model type, training data, or algorithmic approach in ways that enable substantive evaluation. Annual update requirements allow agencies to deploy AI systems that significantly expand in scope, are retrained on new data, or are used in new decision contexts for up to twelve months without updating the public inventory. The rule does not address what information about AI systems is sufficient for meaningful public oversight, what verification mechanisms ensure inventory accuracy, or what consequences attach to incomplete or inaccurate inventories."
+}
+CARD_CONTENT["TECH-GOVN-0003"] = {
+    "stmt": "Government AI systems used in decisions that affect individual legal rights, benefits, employment, or liberty must be subject to pre-deployment impact assessment covering accuracy, bias, privacy, due process, and civil rights implications, with assessments published before deployment.",
+    "notes": "Pre-deployment impact assessments are subject to the limitation that assessments conducted by or for the deploying agency have structural incentives toward favorable conclusions, and that assessments conducted before deployment cannot capture real-world performance on the deployment population. Compliant agencies could conduct impact assessments through internal review processes that satisfy formal requirements while lacking the independence, technical depth, or civil rights expertise needed to identify significant potential harms. Bias assessments conducted before deployment may not predict disparate impact in the actual deployment population if that population differs demographically from the testing population, and there are no requirements for ongoing monitoring to detect post-deployment disparities. The rule does not specify what methodology impact assessments must use, what expertise assessors must have, what level of identified risk is sufficient to prevent deployment, or what happens when post-deployment monitoring reveals harms not identified pre-deployment."
+}
+CARD_CONTENT["TECH-GOVN-0004"] = {
+    "stmt": "Government agencies that deploy AI systems in high-stakes decision-making must conduct ongoing post-deployment monitoring for disparate impact, accuracy degradation, and unintended harms, with results reported annually to relevant oversight bodies and published publicly.",
+    "notes": "Ongoing monitoring requirements are meaningless without specifying what metrics are monitored, at what frequency, by whom, using what comparison baseline, and with what reporting threshold for identifying actionable problems. Compliant agencies could conduct annual monitoring that captures aggregate outcome statistics without examining whether specific demographic groups are disproportionately harmed or whether individual decisions are erroneous in ways that systematic monitoring does not detect. Annual reporting to oversight bodies provides accountability once per year while harms accumulate across hundreds of thousands of affected individuals; monitoring requirements that do not include real-time alerts for threshold exceedances allow sustained harm for extended periods. The rule does not address who receives the monitoring reports, whether they have capacity and authority to require remediation, or what happens when monitoring reveals significant disparate impact or accuracy problems."
+}
+CARD_CONTENT["TECH-GOVN-0005"] = {
+    "stmt": "Individuals who are subject to government AI decisions must receive meaningful notice that AI was involved in the decision, a plain-language explanation of how the AI influenced the outcome, and information about how to request human review.",
+    "notes": "Meaningful notice requirements for government AI decisions face the explanation gap: neural network models cannot provide the factor-by-factor explanations that notice requirements contemplate, meaning either that explainability requirements drive agencies toward less capable but more explainable models, or that notice requirements are satisfied by generic disclosures that do not actually explain the specific decision. Compliant agencies could provide notice that AI was used as one input among many without specifying how determinative the AI recommendation was in practice, obscuring the actual extent of algorithmic decision-making from affected individuals. Plain-language explanation requirements are particularly challenging for government benefits and enforcement programs serving populations with limited English proficiency, where the cost and logistics of multilingual explanation requirements may create deployment barriers or inadequate translated notices. The rule does not address what language accessibility requirements apply to AI decision notices, what information about human review processes must be provided, or whether the notice must be provided before or only after the adverse decision."
+}
+CARD_CONTENT["TECH-GOVN-0006"] = {
+    "stmt": "Individuals denied benefits, services, or rights through government AI processes must have access to a prompt, meaningful human review process with a qualified human decision-maker who has authority to override the automated recommendation, with the review completed within a constitutionally adequate timeframe.",
+    "notes": "Human review requirements for government AI decisions depend on reviewers having the technical expertise to evaluate AI recommendations, access to the input data and model logic, and genuine authority and willingness to override the system — conditions that nominally compliant review processes may not satisfy. Compliant agencies could provide human review through a process where the reviewer examines the AI output and supporting documentation without understanding the model logic, effectively ratifying the automated decision rather than independently evaluating the underlying facts. Constitutional 'adequate timeframe' standards vary by the nature of the government benefit or deprivation: suspension of SNAP benefits has different constitutional timing requirements than termination of Social Security disability — and this rule does not specify timelines by program type. The rule does not address whether the human reviewer must be given explicit guidance not to defer to the AI recommendation, what materials they must consider, or what standard of review applies to the human evaluation."
+}
+CARD_CONTENT["TECH-GOVN-0007"] = {
+    "stmt": "Government AI systems may not be used to target, surveil, or investigate individuals based on protected characteristics — including race, religion, national origin, political affiliation, or union membership — under any program framing, including counter-extremism, fraud prevention, or benefits integrity.",
+    "notes": "Targeting prohibitions based on protected characteristics are routinely circumvented through program framing: counter-extremism AI that targets ideological communities, fraud prevention AI that over-scrutinizes communities with higher rates of AI false-flagging, and immigration enforcement AI that treats national origin as a risk factor all achieve protected-class targeting while formally complying with protected-class prohibitions. Compliant agencies could use AI systems that technically process only behavioral or transactional data while those data fields are so strongly correlated with protected characteristics — certain online communities, certain consumer patterns, certain geographic areas — that the system effectively functions as a protected-class targeting system. The prohibition on political affiliation targeting is particularly significant for government AI systems trained on social media, communications, or financial data that contains politically informative signals, creating potential for surveillance programs disguised as neutral analytical tools. The rule does not address what testing must be done to verify that nominally neutral government AI does not function as protected-class targeting, or what agency has authority to investigate and remediate such targeting."
+}
+CARD_CONTENT["TECH-GOVN-0008"] = {
+    "stmt": "Government procurement of AI systems must include binding contractual requirements for fairness, accuracy, transparency, and civil rights compliance, with independent audit rights, incident reporting obligations, and vendor liability for material misrepresentation of system capabilities or compliance status.",
+    "notes": "Government AI procurement requirements are only effective if contracting agencies have the technical capacity to specify, evaluate, and verify vendor compliance claims — capacity that is often absent in the agencies most dependent on commercial AI vendors. Compliant vendors could satisfy procurement fairness and accuracy requirements through contractual representations that are technically accurate in narrow senses while being materially misleading about real-world performance in the deployment context. Independent audit rights specified in contracts are valuable only if the government has the technical personnel or contracted auditor capacity to exercise them, and if the contracts specify what information vendors must make accessible for meaningful audit. The rule does not address the conflict between audit rights and vendor trade secret protections, what contractual remedies apply when AI systems perform contrary to procurement representations, or how contract requirements apply to subcontractors and third-party data providers."
+}
+CARD_CONTENT["TECH-GOVN-0009"] = {
+    "stmt": "Congress and state legislatures must exercise affirmative oversight of government AI deployments, including regular hearings, GAO assessments, and independent audits of high-risk AI systems, with mandatory executive branch reporting on AI systems used in civil and criminal law enforcement.",
+    "notes": "Legislative oversight of government AI depends on legislators and legislative staff having sufficient technical sophistication to conduct meaningful hearings and evaluate agency responses — a capacity gap that the executive branch exploits by providing technically accurate but substantively uninformative testimony. Compliant agencies could satisfy reporting requirements through annual reports that describe AI system categories and usage statistics without providing the specific information — error rates, disparate impact measurements, individual case examples — needed for meaningful legislative evaluation. GAO assessments are valuable but retrospective: they identify problems after deployment at scale while the rule does not require prospective notification to Congress before new high-stakes AI systems are deployed. The rule does not specify what the mandatory reporting on AI systems must contain, what 'high-risk' systems require additional scrutiny, or what mechanisms Congress has to require modification or discontinuation of AI systems identified as problematic."
+}
+CARD_CONTENT["TECH-GOVN-0010"] = {
+    "stmt": "Government use of AI in child welfare, juvenile justice, education, and child benefits programs must be subject to heightened scrutiny — including mandatory parental notice, specific accuracy and bias requirements, and independent judicial oversight — given the vulnerability of affected minors and the severity of child welfare interventions.",
+    "notes": "Child welfare AI, including family risk scoring systems used to predict child abuse and inform removal decisions, has documented racial disparities: Black and Indigenous families are disproportionately flagged by risk algorithms that incorporate poverty indicators that predict state response more reliably than child safety. Compliant child welfare agencies could satisfy heightened scrutiny requirements through review processes that nominally apply enhanced standards while maintaining the same algorithmic recommendations and caseworker deference to AI outputs that produce disparate family separation outcomes. Parental notice requirements for AI involvement in child welfare decisions may conflict with safety considerations when the child is the subject of the investigation, requiring nuanced frameworks that this rule's general notice requirement does not provide. The rule does not address what specific accuracy thresholds apply to child welfare AI, what judicial oversight mechanisms are required before removal decisions based partly on AI recommendations, or what bias metrics are appropriate for child welfare AI given the complexity of family risk assessment."
+}
+CARD_CONTENT["TECH-GOVN-0011"] = {
+    "stmt": "Government AI systems used in public housing, benefits, and social services must be designed with input from affected communities through structured participatory design processes, and must be subject to ongoing community oversight mechanisms with authority to flag problems for agency action.",
+    "notes": "Participatory design requirements for government social services AI are meaningful only if community input occurs at the point when design choices are still open — not after systems are already procured and being 'implemented' — and if the participating community members have access to sufficient technical information to evaluate the design choices. Compliant agencies could conduct community engagement processes that collect input and responses without documenting how that input influenced design decisions, or produce designs that reflect community input on peripheral features while maintaining algorithmic approaches that community members would reject if they understood them. Community oversight mechanisms require that community representatives have genuine standing to escalate problems — not merely advisory roles whose recommendations can be ignored by agency leadership. The rule does not specify how communities are selected for participation, what information they must receive to enable meaningful input, what authority the oversight mechanisms have, or what happens when community oversight bodies and agencies disagree."
+}
+CARD_CONTENT["TECH-GOVN-0012"] = {
+    "stmt": "Government AI systems may not be used in ways that produce de facto privatization of public decision-making, where vendor opacity, proprietary model protections, or outsourced decision authority prevent meaningful democratic accountability for outcomes affecting the public.",
+    "notes": "De facto privatization of public decision-making through AI vendor relationships is a structural problem when government agencies lack the capacity to operate without vendor systems, have signed contracts that prevent modifying or auditing those systems, and face vendor trade secret claims that limit regulatory scrutiny of systems making decisions on behalf of the public. Compliant agencies could technically maintain decision authority — a human official signs the final determination — while the algorithmic vendor recommendation is never overridden, creating formal accountability without substantive democratic control over the outcomes. Contracts that give vendors intellectual property protection over algorithmic decision-making tools deployed in public administration may be legally valid while being incompatible with democratic accountability requirements that cannot be contractually waived. The rule does not specify what government AI systems may be procured from private vendors, what access to system internals is required before procurement, or how trade secret protections are limited when AI systems make public administration decisions."
+}
+CARD_CONTENT["TECH-GOVN-0013"] = {
+    "stmt": "All federal agencies must designate a Chief AI Officer or equivalent senior official responsible for AI governance, risk management, civil rights compliance review, and accountability for AI systems deployed by the agency, with authority to pause or discontinue AI systems that pose identified civil rights or safety risks.",
+    "notes": "Chief AI Officer designations are only effective if the position has genuine authority — not merely advisory influence — over AI procurement, deployment, and discontinuation decisions, and if the officer has adequate technical expertise and staff resources to exercise that authority meaningfully. Compliant agencies could designate existing senior officials as Chief AI Officers without providing additional resources, staff, or actual authority over AI decisions, creating formal compliance with the designation requirement without substantive AI governance capacity. Authority to pause or discontinue AI systems must be coupled with agency-level procedures that give the CAIO standing to make such determinations independently of the program offices that deployed the AI and have institutional investment in its continued use. The rule does not address how CAIOs across federal agencies coordinate on AI systems that span multiple agency authorities, or what escalation path exists when a CAIO identifies a civil rights problem that agency leadership declines to address."
+}
+CARD_CONTENT["TECH-GOVN-0014"] = {
+    "stmt": "AI systems used by law enforcement for predictive policing, patrol allocation, investigative targeting, or resource deployment must be subject to independent civil rights audit, community oversight, and judicial review, and may not generate enforcement recommendations based on protected characteristics.",
+    "notes": "Predictive policing AI that generates enforcement recommendations based on historical crime data replicates patterns of selective enforcement in that data — areas historically over-policed generate higher incident records, which AI interprets as evidence of higher crime risk, directing future policing to the same areas in a self-reinforcing cycle that is not reducible to actual crime risk. Compliant law enforcement agencies could use predictive policing AI that formally excludes protected characteristics while using geographic inputs that are so strongly correlated with race that the system functions as race-based patrol allocation, satisfying the formal prohibition while achieving its practical equivalent. Community oversight of predictive policing requires that community members have access to sufficient information about AI system inputs, outputs, and outcomes to conduct meaningful evaluation, not merely attendance at presentations describing the system in general terms. The rule does not address the evidentiary implications of predictive policing AI: whether arrests or evidence developed pursuant to AI recommendations that would have been unlawful if explicitly race-based are subject to Fourth Amendment suppression analysis."
+}
+CARD_CONTENT["TECH-GOVN-0015"] = {
+    "stmt": "AI systems used in immigration enforcement — including visa adjudication, asylum claim processing, border screening, and removal determination — must comply with due process requirements, international refugee law obligations, and anti-discrimination standards, and may not make or substantially influence removal determinations without human review.",
+    "notes": "AI in immigration adjudication raises particular due process concerns because non-citizens facing removal — including asylum seekers fleeing persecution — may lack the legal status, resources, or language access to effectively challenge automated decisions that may be based on erroneous data or proxy discrimination. Compliant immigration agencies could use AI that formally functions as a 'screening tool' while structuring adjudication processes so that cases flagged for denial rarely receive meaningful human reconsideration, making the AI recommendation determinative in practice. Asylum claim processing AI trained on historical grant and denial data will replicate historical patterns in grant rates across nationality groups that may reflect prior policy priorities rather than the merits of current applications under international refugee law. The rule does not address the legal standard applicable to AI involvement in immigration decisions, what access asylum seekers have to information about AI systems used in their cases, or what accountability exists for AI-influenced removals of individuals with valid legal claims."
+}
+CARD_CONTENT["TECH-GOVN-0016"] = {
+    "stmt": "Government AI systems used in criminal sentencing, pretrial detention, probation, and parole decisions must provide defendants and counsel full access to system inputs, model logic, and error rates, and must satisfy the due process requirements of Crawford v. Washington and Mathews v. Eldridge in all uses that affect liberty.",
+    "notes": "State v. Loomis, 881 N.W.2d 749 (Wis. 2016), upheld the use of COMPAS risk assessment in sentencing while noting it could not be used as a determinative factor, but did not resolve what disclosure defendants are entitled to — and subsequent cases have not uniformly required disclosure of proprietary AI risk assessment tools used in criminal sentencing. Compliant courts and agencies could use AI risk assessment as one factor among many in formally structured decisions while in practice relying heavily on AI recommendations, and could resist disclosure of proprietary model details under trade secret claims that limit defendant access to the logic determining their liberty. ProPublica's COMPAS analysis (Angwin et al., 2016) documented Black defendants being falsely flagged as high-risk at nearly twice the rate of white defendants, illustrating the civil rights consequences of opaque AI in criminal justice. The rule does not address whether Crawford confrontation rights apply to AI-generated risk assessments, what constitutes 'full access' to model logic for defendants whose counsel may lack technical expertise to evaluate it, or what standard applies when AI error rates are disclosed."
+}
+CARD_CONTENT["TECH-GOVN-0017"] = {
+    "stmt": "Government agencies may not use AI to create or expand social credit or social scoring systems that condition access to government services, public spaces, employment, housing, or civil liberties on algorithmic assessments of individual behavior, political activity, or social association.",
+    "notes": "Social scoring prohibitions require clear definitions distinguishing prohibited government social credit systems from permitted uses of behavioral data in targeted government programs — a distinction that agencies deploying AI benefits fraud detection, safety risk scoring, and social services triage systems may contest. Compliant agencies could build AI systems that individually evaluate behavioral signals, social associations, and activity patterns to determine service eligibility without calling the outcome a 'score,' achieving equivalent social control through program-specific eligibility determinations rather than a unified score. Government AI that conditions criminal justice treatment, benefits access, and regulatory scrutiny on behavioral and social data creates a functional social credit architecture even without a single unified score, particularly when these systems share data through interoperable government databases. The rule does not address whether existing risk-scoring systems in child welfare, criminal justice, and benefits programs constitute prohibited social scoring, or what criteria distinguish permissible program-specific risk assessment from prohibited social credit."
+}
+CARD_CONTENT["TECH-GOVN-0018"] = {
+    "stmt": "AI systems used in government programs that disperse federal funds — including grants, contracts, subsidies, and loan guarantees — must be subject to audit for algorithmic bias in fund allocation, with findings reported to relevant oversight bodies and remediation plans published within six months of identification.",
+    "notes": "Federal fund allocation AI introduces discrimination risks when grant scoring systems use proxies for institutional prestige, geographic location, or applicant network connections that systematically disadvantage small organizations, rural communities, or historically excluded groups from federal funding. Compliant agencies could conduct bias audits that examine fund allocation outcomes by applicant characteristics that are available in agency records without examining race, ethnicity, or other protected characteristics not captured in federal procurement data, limiting the scope of discoverable bias. Fund allocation AI that rewards historical success metrics — prior federal grants, existing infrastructure, established research programs — will systematically favor well-resourced institutions and reinforce existing patterns of federal investment concentration. The rule does not specify what statistical methodology constitutes an adequate bias audit for fund allocation AI, what threshold of identified disparity requires remediation, or what remediation is adequate when systematic bias is documented."
+}
+CARD_CONTENT["TECH-GOVN-0019"] = {
+    "stmt": "Government agencies deploying AI in citizen-facing services must ensure equivalent service quality, accessibility, and accuracy for all populations served, including those with disabilities, limited English proficiency, low digital literacy, or limited internet access, with non-digital alternatives maintained.",
+    "notes": "Equivalent service quality requirements for AI government services require testing across the specific population groups served by each program — not generic usability testing — because accuracy, language accessibility, and interaction quality may vary substantially between demographic groups. Compliant agencies could maintain nominal non-digital alternatives — telephone lines, mail application options — while providing such degraded service quality through those channels that citizens are effectively coerced into digital AI-mediated services that may be inaccessible to them. Government AI services deployed through mobile applications without adequate broadband access requirements impose technological burden on rural and low-income communities that lack the digital infrastructure the AI service assumes. The rule does not address what testing methodology verifies equivalent service quality across populations, what 'equivalent' means when AI-mediated and non-AI-mediated service delivery produce systemically different outcomes, or how compliance is verified for each program rather than in general."
+}
+CARD_CONTENT["TECH-GOVN-0020"] = {
+    "stmt": "Emergency management and disaster response AI systems used by government must be tested for accuracy across affected population demographics, maintain interoperability with existing emergency infrastructure, and may not create dependencies that disable response capacity when AI systems fail.",
+    "notes": "Emergency management AI dependencies create critical failure modes: systems that optimize disaster resource allocation under AI control may leave response personnel without the manual knowledge and procedures to function when AI fails during the most challenging conditions — extreme weather, infrastructure disruption — when that failure is most likely to occur. Compliant emergency management agencies could conduct demographic accuracy testing using historical data distributions that may not represent the population composition of future disasters in newly urbanized or rapidly growing areas. AI-optimized emergency resource allocation systems may make efficiency-driven decisions that fail to account for equity considerations — reaching majority-population areas faster in ways that worsen outcomes for isolated or transportation-disadvantaged communities. The rule does not address what 'interoperability' with existing infrastructure requires technically, what backup procedures agencies must maintain, or what liability attaches to AI failures during declared emergencies."
+}
+CARD_CONTENT["TECH-GOVN-0021"] = {
+    "stmt": "Government agencies must publish the criteria and processes by which they select AI vendors, including evaluation of vendor civil rights track records, data security practices, and algorithmic accountability commitments, with winning bids subject to public disclosure under FOIA.",
+    "notes": "Government AI procurement disclosure requirements under FOIA are subject to vendor trade secret exemptions that may be used to withhold the specific technical information — model architecture, training data, performance specifications — most relevant to public evaluation of the procurement decision. Compliant agencies could publish procurement evaluation criteria and processes at a level of generality that satisfies disclosure requirements while not revealing the specific weights applied to civil rights versus cost factors in vendor selection, obscuring procurement priorities. Vendor civil rights track records may be difficult to assess publicly when prior AI deployments at other agencies or private sector clients involved confidential contracts and non-public performance data. The rule does not address whether agencies must apply mandatory minimum civil rights standards to AI vendor selection that function as pass/fail requirements rather than evaluation factors traded against cost."
+}
+CARD_CONTENT["TECH-GOVN-0022"] = {
+    "stmt": "Federal and state law enforcement may not use AI to conduct warrantless mass surveillance of political activity, religious practice, union organizing, or other constitutionally protected activities, regardless of whether the surveillance is conducted directly or through commercial data purchases.",
+    "notes": "Commercial data purchases that circumvent Fourth Amendment warrant requirements are an active legal controversy: agencies that buy location data, social media data, and commercial surveillance data from brokers avoid the probable cause requirement that would apply to direct government collection of the same information. Compliant agencies could use AI to analyze commercially purchased data about constitutionally protected activities, arguing that the Third Party Doctrine eliminates any Fourth Amendment protection for information voluntarily shared with commercial intermediaries — an argument that Carpenter v. United States, 138 S. Ct. 2206 (2018), has limited but not eliminated. AI surveillance of religious communities, political organizations, and labor organizing through social media analysis and commercial data aggregation creates chilling effects on protected First Amendment activity even when no specific enforcement action results. The rule does not address the interaction between Fourth Amendment protections, the Third Party Doctrine, and commercial surveillance data purchases, or specify what oversight mechanism would detect and prevent warrantless AI surveillance of protected activities."
+}
+CARD_CONTENT["TECH-GOVN-0023"] = {
+    "stmt": "AI advisory systems used by government officials — including AI-generated policy recommendations, budget modeling, risk forecasting, and constituency service tools — must be clearly labeled as AI-generated, subject to human review before action, and documented for accountability purposes.",
+    "notes": "Labeling and human review requirements for AI advisory systems used by government officials may not prevent officials from treating AI-generated recommendations as determinative if those recommendations arrive with an appearance of technical authority and the official lacks the expertise or time to independently evaluate them. Compliant officials could conduct nominal human review of AI policy recommendations that does not include substantive evaluation of the underlying data, model assumptions, or alternative analytical approaches that would constitute meaningful oversight of AI advisory systems. AI-generated budget forecasting and risk modeling may embed assumptions about resource allocation, risk tolerance, and administrative priorities that reflect the vendor's values rather than democratic deliberation — and that are invisible when presented as technical outputs rather than normative choices. The rule does not address what training officials who rely on AI advisory systems must have to conduct meaningful human review, or what documentation of AI-generated recommendations must be retained for accountability and FOIA purposes."
+}
+CARD_CONTENT["TECH-GOVN-0024"] = {
+    "stmt": "Government agencies may not use AI to impersonate human officials or agency representatives in communications with the public without clear, prominent AI disclosure, and may not use AI-generated communications to deny, minimize, or obscure individual rights or government obligations.",
+    "notes": "AI-generated government communications that impersonate human officials — chatbots designed to appear to be speaking with a caseworker, AI letters that simulate official correspondence — may mislead citizens about the legal authority and accountability of the communication, affecting whether they understand their rights and options. Compliant agencies could use AI-generated communications that include technically accurate AI disclosure in small print while the content and presentation mimics human interaction in ways that most recipients will not recognize as automated. AI communications that systematically provide incomplete information about citizen rights, appeal processes, or agency obligations — even without explicit misrepresentation — may effectively obscure those rights when recipients reasonably rely on AI communications as complete official guidance. The rule does not specify what constitutes 'prominent' AI disclosure sufficient to prevent confusion, what information AI communications must provide about rights and obligations, or what accountability attaches to AI communications that mislead citizens about their legal entitlements."
+}
+CARD_CONTENT["TECH-GOVN-0025"] = {
+    "stmt": "Government AI systems used in national security, intelligence, and defense contexts must comply with applicable legal authorities, congressional oversight requirements, and civil liberties protections, and may not be used to expand surveillance or targeting authorities beyond those established by statute and judicial decision.",
+    "notes": "National security AI programs have historically been the category most resistant to oversight, with classification claims and state secrets privilege used to limit judicial review, congressional oversight, and public accountability for programs that expand surveillance and targeting authorities beyond what Congress has explicitly authorized. Compliant agencies could implement AI capabilities within nominally authorized programs that dramatically expand the scale, intensity, and intrusiveness of surveillance beyond what those authorizations contemplated when enacted, exploiting technological gaps in statutory frameworks. AI capabilities that enable analysis of previously uncollectable data or processing of data at previously impossible scales may enable qualitatively new surveillance and targeting authorities without requiring new statutory authority, representing de facto expansion of legal powers through technological means. The rule does not address what level of judicial or congressional oversight is required before deploying new AI capabilities in national security programs, or how classification claims are balanced against oversight rights."
+}
+CARD_CONTENT["TECH-GOVN-0026"] = {
+    "stmt": "Government AI systems that affect the delivery of essential public services — including utilities, healthcare, public transit, emergency services, and social safety net programs — must maintain human-operable fallback procedures and may not create service disruption risks that exceed those of equivalent non-AI service delivery.",
+    "notes": "Service disruption risk requirements for AI in essential services depend on how 'essential public service' is defined and how disruption risk is measured — a comparison between AI-dependent and non-AI delivery that requires baseline data that may not exist for novel AI implementations. Compliant agencies could deploy AI in essential services while arguing that AI availability statistics demonstrate equivalent or superior reliability to non-AI alternatives, without accounting for the severity and irreversibility of AI failures when they occur relative to the more gradual and recoverable failures of non-AI systems. Human-operable fallback procedures require that personnel remain trained and capable of operating manual systems, a requirement that erodes when AI systems are used continuously and manual procedure knowledge deteriorates. The rule does not address how agencies verify that fallback procedures are operationally viable rather than merely documented, or what testing frequency is required to ensure personnel can actually execute fallback operations during AI service failure."
+}
+CARD_CONTENT["TECH-GOVN-0027"] = {
+    "stmt": "AI systems used in public school administration, discipline, student assessment, and educational resource allocation must comply with FERPA, IDEA, Section 504, and Title VI, and must not produce racially, disability-based, or economically discriminatory outcomes in school discipline, special education placement, or resource distribution.",
+    "notes": "School discipline AI has documented racial disparities: systems that analyze behavioral data and flag students for disciplinary intervention replicate the same disparities in subjective teacher referrals that motivated their adoption, because the training data reflects prior biased decision-making rather than neutral behavioral assessment. Compliant schools could deploy AI discipline or resource allocation systems that comply with FERPA data handling requirements while producing racially discriminatory outcomes that Title VI prohibits, treating data privacy compliance as a substitute for civil rights compliance. Special education placement AI that uses assessment data to identify disability status or service needs must comply with IDEA procedural requirements — including parental notice, consent, and dispute resolution — that were designed for IEP teams with human deliberation, not algorithmic recommendations. The rule does not address whether algorithmic recommendations in school discipline, placement, and resource allocation must be disclosed to parents and students, what procedural rights attach to AI-influenced education decisions, or how families can challenge AI recommendations they believe are discriminatory."
+}
+CARD_CONTENT["TECH-GOVN-0028"] = {
+    "stmt": "Government agencies using AI for workforce decisions — hiring, promotion, performance evaluation, disciplinary action, and termination of civil service employees — must comply with merit system principles, veteran preference requirements, equal employment opportunity law, and union contract provisions.",
+    "notes": "Government workforce AI that uses resume screening, interview scoring, or performance evaluation algorithms must comply with EEOC Uniform Guidelines on Employee Selection Procedures, which require validation studies demonstrating job-relatedness and compliance with disparate impact analysis — requirements that many commercial AI hiring tools have not undergone. Compliant agencies could use AI tools that technically comply with merit system principles by scoring candidates on ostensibly job-related criteria while those criteria are proxies for educational prestige, social capital, or network connections that systematically disadvantage candidates from underrepresented groups. Federal employee union agreements may limit agency authority to implement AI-based performance management or automated monitoring systems without bargaining, creating labor-management conflicts between AI deployment plans and negotiated employment conditions. The rule does not address how veteran preference requirements interact with AI hiring scoring systems that may not be designed to account for veteran status, military service, or the specific career development patterns of veterans returning to civilian employment."
+}
+CARD_CONTENT["TECH-GOVN-0029"] = {
+    "stmt": "All government use of generative AI — including AI-generated documents, correspondence, legal filings, policy analyses, and public communications — must be clearly disclosed, subject to human verification before official use, and may not be submitted to courts or regulatory bodies as human-authored work without disclosure.",
+    "notes": "Generative AI disclosure requirements in government are immediately practical given that agencies are actively deploying generative AI for drafting federal register notices, official correspondence, and administrative decisions — uses where the accuracy of AI-generated content and the accountability for errors is legally and ethically significant. Compliant agencies could disclose AI involvement in document generation at the agency level without specific disclosure in each AI-generated document, creating aggregate compliance with disclosure requirements while recipients of AI-generated communications cannot identify them as such. AI-generated legal filings submitted to courts by government agencies implicate Rule 11 certification requirements that counsel has reviewed and certified the factual basis of representations to the court — requirements that may be violated by AI-generated filings that contain hallucinated citations or unsupported factual claims not caught by nominal human review. The rule does not address what human verification standards are required before AI-generated content is used officially, or what liability attaches to government submissions that contain AI-generated errors not caught by human review."
+}
+
+
+# ---------------------------------------------------------------------------
+# IMMS — Immersive Technologies
+# ---------------------------------------------------------------------------
+CARD_CONTENT["TECH-IMMS-0001"] = {
+    "stmt": "Immersive technology experiences — including virtual reality, augmented reality, mixed reality, and extended reality platforms — must comply with the same consumer protection, data privacy, and accessibility standards as other digital platforms, with enhanced protections for minors and for physiological and psychological data collected through immersive interfaces.",
+    "notes": "Immersive technology platforms collect uniquely sensitive physiological and behavioral data — eye tracking, body movement, physiological arousal — that can reveal health conditions, emotional states, and psychological vulnerabilities, creating privacy risks that exceed conventional digital data collection in both intimacy and actionability. Compliant platforms could satisfy consumer protection requirements designed for conventional digital interfaces without addressing the specific risks of immersive data collection: platforms that comply with existing app store privacy policies may still collect and monetize gaze data, biometric responses, and social interaction patterns with no applicable regulatory standards. Minors in immersive environments are particularly vulnerable to manipulation through environment design that creates emotional engagement, social pressure, and reward loops calibrated to sustain attention and monetize the experience — risks that COPPA and existing child protection frameworks were not designed to address. The rule does not specify what enhanced protections apply to physiological and psychological data collected in immersive environments, what parental consent is required, or what platform design constraints prevent psychological manipulation of users in immersive settings."
+}
+CARD_CONTENT["TECH-IMMS-0002"] = {
+    "stmt": "Virtual worlds, online gaming platforms, and metaverse environments that constitute significant economic or social spaces must comply with anti-discrimination, consumer protection, content moderation, and financial regulation standards appropriate to the scale and nature of activities occurring within them.",
+    "notes": "Platforms that constitute 'significant economic or social spaces' require clear threshold definitions to prevent platforms from arguing they fall below any applicable standard despite hosting large populations and economic activity at scale. Compliant platforms could argue that virtual world consumer protection applies only to real-money transactions while treating virtual currency and digital asset transactions differently, maintaining regulatory gaps that protect platform economics at user expense. Financial regulation of virtual world economies — where platform-controlled virtual currencies, asset markets, and service fees function as de facto financial infrastructure affecting real economic outcomes — faces jurisdictional ambiguity about whether SEC, CFTC, FTC, or state consumer protection agencies have applicable authority. The rule does not specify what threshold of economic activity or social significance triggers regulatory application, or how regulations designed for physical-world activities apply to virtual-world equivalents that may have no direct physical analog."
+}
+
+# ---------------------------------------------------------------------------
+# INTL — International AI Governance
+# ---------------------------------------------------------------------------
+CARD_CONTENT["TECH-INTL-0004"] = {
+    "stmt": "The United States must actively support the development and adoption of binding international AI safety standards, governance frameworks, and human rights requirements through multilateral institutions including the United Nations, G7, G20, OECD, and ISO, and must not use trade agreements to weaken international AI governance.",
+    "notes": "U.S. engagement in international AI governance is subject to change with administrations, creating treaty and standards commitments that may be repudiated or deprioritized, limiting the reliability of U.S. leadership in multilateral AI governance frameworks. Compliant U.S. participation in international AI governance could involve supporting voluntary standards and non-binding frameworks while opposing binding international agreements that would limit AI industry flexibility, satisfying procedural participation while limiting substantive international governance. Trade agreement provisions that protect AI industry intellectual property, limit data localization requirements, or restrict algorithmic transparency mandates can effectively prevent other countries from implementing AI governance requirements more protective than U.S. standards. The rule does not specify what binding international commitments the United States must support, what trade agreement provisions must be prohibited, or what mechanisms ensure consistency between U.S. international AI governance positions and domestic AI governance standards."
+}
+CARD_CONTENT["TECH-INTL-0005"] = {
+    "stmt": "The United States must refrain from exporting AI surveillance systems, facial recognition technology, and predictive policing tools to governments that use them to repress dissent, target ethnic or religious minorities, or violate international human rights standards, with export controls enforced by the Department of Commerce.",
+    "notes": "Export controls on AI surveillance technology are undermined by the ease of relabeling general-purpose AI capabilities as non-surveillance products, the difficulty of end-use monitoring in countries with limited U.S. government presence, and the commercial pressure on U.S. AI companies to maintain export revenues in lucrative government markets. Compliant exporters could sell AI infrastructure capable of surveillance applications — GPU clusters, facial recognition components, data analysis platforms — without selling specifically labeled 'surveillance systems,' making end-use controls dependent on post-sale monitoring that the Commerce Department lacks capacity to conduct at scale. Human rights assessments of export destinations depend on State Department determinations that are subject to diplomatic and economic considerations that may override human rights concerns in relationships with strategically important countries. The rule does not specify what human rights assessment process must precede export approval, what documentation exporters must maintain, or what enforcement consequences apply to exports to governments that subsequently use AI in documented human rights violations."
+}
+CARD_CONTENT["TECH-INTL-0006"] = {
+    "stmt": "The United States must share AI safety research, bias mitigation techniques, and governance best practices with allied nations and developing countries, particularly those that lack the technical capacity to independently assess AI risks, and must support capacity building for AI governance in international development assistance programs.",
+    "notes": "AI governance capacity building commitments may conflict with industry interests in maintaining first-mover advantages in AI deployment globally, creating pressure to share AI safety research selectively in ways that limit the practical governance capacity of recipient countries. Compliant capacity-sharing programs could transfer documentation and training materials while withholding the specific datasets, testing tools, and technical expertise needed to independently audit AI systems deployed in recipient countries by U.S. companies. AI governance capacity building in developing countries may be directed toward frameworks that facilitate U.S. AI deployment rather than protective regulatory frameworks that could impose restrictions on U.S. AI companies operating in those markets. The rule does not specify what AI safety research and governance tools must be shared, through what mechanisms, at what funding levels, or how sharing commitments are protected from industry pressure to limit transfer of AI governance expertise that could be used to regulate U.S. AI exports."
+}
+CARD_CONTENT["TECH-INTL-0007"] = {
+    "stmt": "The United States must support binding international agreements establishing minimum safety, transparency, and human rights standards for AI development, prohibiting AI systems designed to violate international humanitarian law, and requiring international notification of AI safety incidents with cross-border effects.",
+    "notes": "Binding international AI agreements require Senate ratification as treaties or congressional-executive agreement processes that face significant obstacles from industry lobbying and sovereignty concerns about international regulation of a strategically important domestic industry. Compliant U.S. positions on binding international AI standards could support high-level principles documents while opposing specific requirements that would constrain AI development, weaponization, or deployment practices of U.S. government agencies and industry. International humanitarian law prohibitions on AI weapons systems that cannot comply with distinction, proportionality, and precaution requirements face resistance from major military powers whose AI weapons programs benefit from definitional ambiguity about what systems 'violate' IHL. The rule does not address the specific binding international agreements that must be negotiated, what minimum standards they must contain, how they would be enforced internationally, or how the United States would enforce its own compliance."
+}
+CARD_CONTENT["TECH-INTL-0008"] = {
+    "stmt": "U.S.-based AI companies operating internationally must comply with applicable human rights standards in all jurisdictions — not merely local law minimums — and may not use international operations to circumvent U.S. consumer protection, civil rights, or AI governance requirements through extraterritorial data processing or offshore model deployment.",
+    "notes": "Extraterritorial human rights standards for U.S. AI companies require a legal framework that does not currently exist: the Alien Tort Statute has been narrowed by Kiobel v. Royal Dutch Petroleum, and no mandatory human rights due diligence law applies to U.S. AI companies' international operations. Compliant AI companies could satisfy international human rights commitments through voluntary commitments, codes of conduct, and self-assessment processes without independent verification or legal accountability when those commitments are violated. Circumvention of U.S. AI governance through offshore processing is a structural concern: companies could process data in jurisdictions without applicable privacy or AI governance requirements while serving U.S. users through technical architectures designed to avoid legal nexus with U.S. jurisdiction. The rule does not specify what human rights standards are operative, what legal mechanisms enforce them against U.S. AI companies internationally, or what remedies exist for international communities harmed by U.S. AI company operations abroad."
+}
+CARD_CONTENT["TECH-INTL-0009"] = {
+    "stmt": "The United States must oppose unilateral AI arms races and work toward international agreements limiting autonomous weapons systems, AI-enabled mass surveillance infrastructure exports, and AI capabilities that could destabilize nuclear deterrence, crisis communication, or escalation management.",
+    "notes": "International AI arms race mitigation requires reciprocal commitments from competing AI powers — particularly China and Russia — that may be difficult to achieve given different strategic interests and the verification challenges inherent in AI capability assessments. Compliant U.S. arms control positions could support international dialogues and confidence-building measures while continuing to develop autonomous weapons systems and AI-enabled intelligence capabilities that set the terms of any arms control negotiations. AI capabilities that affect nuclear deterrence stability — including AI-enabled cyber operations against nuclear command infrastructure, AI early-warning systems with high false-positive rates, and AI decision support for nuclear-armed commanders under time pressure — represent existential risks that arms control frameworks must address specifically. The rule does not address what specific autonomous weapons systems the United States must be willing to limit, what verification mechanisms would support agreements, or how AI capabilities that are dual-use — serving both commercial and military purposes — are categorized in arms control frameworks."
+}
+
+
+# ---------------------------------------------------------------------------
+# JUDS — Judicial & Legal AI (0001–0048)
+# ---------------------------------------------------------------------------
+CARD_CONTENT["TECH-JUDS-0001"] = {
+    "stmt": "AI systems used in legal research, case analysis, document review, and litigation support must clearly disclose AI involvement, must not generate fabricated case citations, and must be subject to attorney oversight and professional responsibility standards applicable to the work product they support.",
+    "notes": "AI-generated legal hallucinations — fabricated case citations — have been filed with federal courts in multiple documented instances, resulting in sanctions against attorneys who relied on AI-generated research without verification, illustrating the professional responsibility stakes of AI in legal practice. Compliant attorneys could use AI legal research with nominal verification procedures that do not actually check all citations, satisfying formal oversight requirements while the error rates of AI legal research remain high enough to introduce material errors in legal filings. AI document review in discovery creates efficiency gains but may systematically exclude documents containing particular concepts, terminology, or languages from review sets in ways that affect discovery outcomes without disclosure to opposing counsel or the court. The rule does not address what verification is required before AI-generated legal research may be used in filings, what disclosure is owed to courts and opposing counsel, or how professional liability is allocated when AI legal tools produce inaccurate outputs."
+}
+CARD_CONTENT["TECH-JUDS-0002"] = {
+    "stmt": "Courts may not use AI risk assessment tools in bail, pretrial detention, sentencing, or parole decisions unless the tool's methodology, training data, validation studies, and error rates are fully disclosed to defendants and defense counsel and the tool is subject to cross-examination as evidence.",
+    "notes": "State v. Loomis, 881 N.W.2d 749 (Wis. 2016), upheld COMPAS use while acknowledging it could not be determinative and did not resolve the defendant's right to examine the proprietary methodology, creating a precedent that permits AI risk assessment without full transparency to defendants. ProPublica's analysis (Angwin et al., 2016) documented that COMPAS falsely flagged Black defendants as high-risk at nearly twice the rate of white defendants — a racial disparity embedded in a tool that courts use in liberty-affecting decisions without required disclosure of this bias. Defense counsel's ability to cross-examine AI risk assessment tools as evidence depends on access to the underlying methodology, training data, and validation studies that vendors protect under trade secret claims, limiting the practical right to confrontation. The rule does not address what specific information constitutes adequate disclosure for defendant evaluation of AI risk tools, or how the Confrontation Clause applies to algorithmic evidence that no individual human witness can testify to on the basis of direct knowledge."
+}
+CARD_CONTENT["TECH-JUDS-0003"] = {
+    "stmt": "Attorneys using AI for legal work must maintain professional competence under applicable bar rules, must disclose AI use to clients and, where required by court rules, to courts, and may not delegate legal judgment — including case strategy, settlement decisions, and ethics determinations — to AI systems.",
+    "notes": "Model Rule of Professional Conduct 1.1 requires attorney competence to include understanding of relevant technology, but bar rules have not yet uniformly defined what competence means for AI-assisted legal work — creating a compliance ambiguity that benefits AI tool providers more than it protects clients. Compliant attorneys could disclose AI use in engagement letters while the specific scope, nature, and limitations of AI involvement in client work are not disclosed in ways that enable clients to make informed decisions about their representation. Non-delegation of legal judgment to AI systems requires that attorneys can distinguish AI-generated recommendations from their own independent professional assessment — a distinction that becomes increasingly difficult when AI recommendations arrive with apparent confidence and the attorney lacks the expertise to evaluate the reasoning. The rule does not address what disclosure to clients is sufficient, what court disclosure requirements exist, or how attorney liability is allocated when client harm results from AI-generated work product that the attorney relied on without adequate verification."
+}
+CARD_CONTENT["TECH-JUDS-0004"] = {
+    "stmt": "Judges and court administrators may not use AI-generated analytical tools to make or substantially influence decisions on case assignment, judicial disqualification, motion disposition prioritization, or case outcome prediction without disclosure to the parties and the opportunity for objection.",
+    "notes": "AI tools used in judicial administration may systematically affect case outcomes through case assignment algorithms that direct cases to particular judges, motion management tools that prioritize certain case types, or 'AI-assisted' case disposition tools that create pressure toward particular outcomes — all without disclosure or procedural safeguards. Compliant courts could use AI administrative tools that influence which judges hear which cases, affecting outcomes systematically, while characterizing these as administrative efficiency tools not subject to disclosure requirements because they do not formally make legal decisions. Judicial impartiality requirements under the Code of Judicial Conduct may apply to AI-assisted judicial decision-support tools that judges use in case evaluation, but whether using a specific AI tool constitutes a basis for disqualification has not been resolved by most jurisdictions. The rule does not address what AI tools used in court administration must be disclosed, to whom, at what stage, or what the procedure is for challenging AI-influenced administrative decisions that affect case outcomes."
+}
+CARD_CONTENT["TECH-JUDS-0005"] = {
+    "stmt": "AI-generated evidence — including deepfake detection outputs, facial recognition matches, audio authentication analyses, and AI-forensic findings — must satisfy applicable evidentiary standards for reliability and scientific validity, must be disclosed as AI-generated, and must be subject to independent expert challenge.",
+    "notes": "AI forensic evidence lacks the decades of scientific validation and adversarial court scrutiny that supported admission of traditional forensic evidence — fingerprints, DNA, ballistics — under Daubert standards, but is being admitted in criminal and civil proceedings without equivalent foundational requirements. Compliant AI evidence presenters could characterize AI forensic analysis as 'supporting' or 'consistent with' human expert conclusions rather than as independent AI-generated evidence, limiting disclosure obligations while using AI analysis as the practical basis for expert testimony. Facial recognition AI used as forensic evidence has error rates that vary substantially by demographic group and context, but courts admitting facial recognition evidence have not uniformly required disclosure of error rates disaggregated by the defendant's demographic group. The rule does not address what foundational showing is required before AI-generated forensic evidence may be admitted, what independent expert challenge requires by way of access to model details, or how Daubert/Frye standards apply to AI forensic methods."
+}
+CARD_CONTENT["TECH-JUDS-0006"] = {
+    "stmt": "AI tools used by prosecutors — including evidence analysis, witness credibility assessment, case strength prediction, and charging recommendation systems — must be disclosed to defense counsel under Brady v. Maryland principles when those tools generate or influence evidence, assessments, or decisions used against defendants.",
+    "notes": "Brady v. Maryland disclosure obligations for AI prosecutorial tools require courts to determine whether AI-generated assessments constitute 'evidence favorable to the defendant' that must be disclosed — an analysis that has not been uniformly resolved and that prosecutors may resist by characterizing AI tools as internal analytical tools rather than evidence. AI case strength prediction systems may create systematic charging disparities if they score cases differently based on defendant characteristics — prior record, demographics — that correlate with prosecution outcomes in historically biased data, perpetuating discriminatory charging through apparently neutral algorithmic tools. AI witness credibility assessment tools — if used to evaluate victim or witness credibility before trial — raise specific due process concerns because unfavorable credibility assessments may influence case disposition before defendants have any opportunity to challenge them. The rule does not address what AI-generated analyses constitute Brady material, how defense counsel can access the AI tools themselves for testing, or what remedies are available when prosecutors fail to disclose material AI-generated analyses."
+}
+CARD_CONTENT["TECH-JUDS-0007"] = {
+    "stmt": "Public defenders and legal aid organizations must have access to the same AI legal research and case preparation tools available to prosecutors and private litigants, with government funding or technology sharing obligations sufficient to prevent AI-driven justice inequality between represented and under-represented parties.",
+    "notes": "Justice inequality driven by AI legal technology access replicates and amplifies existing resource disparities between public defenders handling unmanageable caseloads and well-resourced prosecutors or private attorneys, using technological advantage to convert resource inequality into systematic outcome inequality. Compliant jurisdictions could provide public defenders with nominal access to AI legal tools — one shared account, limited usage credits — that does not approach the access available to prosecutors with institutional tool subscriptions, satisfying the form of equal access requirements without substantive equivalence. AI legal research tools used by well-resourced litigants may find favorable precedent, challenge prosecution evidence, and prepare trial strategy at a pace impossible for public defenders without AI assistance, creating asymmetric litigation advantages that undermine adversarial system assumptions. The rule does not specify what level of AI tool access is equivalent, how funding obligations are calculated, or whether courts must ensure rough equivalence in AI litigation support before proceeding to trial."
+}
+CARD_CONTENT["TECH-JUDS-0008"] = {
+    "stmt": "AI systems used by courts for document management, translation services, case information access, and public records processing must maintain language accessibility, accommodate disability-related access needs, and must not create barriers to court access for self-represented litigants or those with limited technological literacy.",
+    "notes": "Court AI translation services that provide legally consequential document translation without human expert review may introduce translation errors in filings, notices, and orders that are binding on parties who relied on translations they could not independently verify. Compliant courts could implement AI translation and document management systems that satisfy nominal language accessibility requirements while not providing the human interpretation services — live interpreter, translated forms, accessible plain-language explanations — that people with limited English proficiency need to effectively participate in their own legal proceedings. Self-represented litigants who navigate court AI systems without legal assistance may be systematically disadvantaged when AI interfaces assume legal knowledge, use complex legal terminology, or fail to provide adequate prompts and explanations for the procedures non-attorneys are expected to follow. The rule does not address what accessibility testing is required before court AI systems are deployed, what human support alternatives must remain available, or how courts monitor AI barriers to access for underrepresented litigant populations."
+}
+CARD_CONTENT["TECH-JUDS-0009"] = {
+    "stmt": "AI systems used in legal aid eligibility screening, case prioritization, and resource allocation must not produce discriminatory outcomes by race, gender, immigration status, or disability, and must be designed with input from underserved community members and subject to ongoing community oversight.",
+    "notes": "Legal aid AI screening and prioritization systems operate in an environment of artificial scarcity — far more need than available resources — making algorithmic case selection consequential: individuals whose cases are de-prioritized by AI may lose legal claims through statutes of limitation or procedural default. Compliant legal aid AI could satisfy non-discrimination requirements through aggregate disparate impact testing that shows proportional outcomes by demographic group without examining whether specific high-priority case types — housing, benefits, immigration — are systematically underrepresented for communities with particular legal needs. AI legal aid prioritization that optimizes for case outcomes — settling difficult cases with low recovery prospects in favor of high-success cases — may systematically underserve populations whose legal problems are most severe while overserving populations whose problems are easiest to resolve algorithmically. The rule does not specify what oversight mechanisms give affected communities input into legal aid AI prioritization, or what accountability exists when AI-influenced prioritization decisions result in avoidable harm to clients."
+}
+CARD_CONTENT["TECH-JUDS-0010"] = {
+    "stmt": "Courts must adopt clear rules governing AI use by attorneys, parties, and courts themselves — including disclosure requirements, verification obligations, sanctions for AI-generated misconduct, and standards for AI-assisted legal filings — and must periodically update those rules as AI capabilities evolve.",
+    "notes": "The current regulatory gap in court rules about AI use creates inconsistency across jurisdictions: some courts have issued AI disclosure requirements while others have no applicable rules, creating an uneven compliance landscape that disadvantages attorneys who follow stricter self-imposed standards. Compliant courts could adopt AI disclosure rules that require disclosure in filings without specifying what information must be disclosed, what verification is required before disclosure, or what sanctions apply to inadequate disclosure — producing formal rules without substantive compliance standards. Periodic rule updates that require court rulemaking processes may lag AI capability changes by years, creating persistent gaps between AI capabilities being used in litigation and the rules designed to govern them. The rule does not address how courts enforce AI disclosure requirements when AI use is not disclosed, what investigative tools courts have to detect undisclosed AI use, or how sanctions are calibrated to the nature and consequences of AI-related misconduct."
+}
+CARD_CONTENT["TECH-JUDS-0011"] = {
+    "stmt": "AI systems used in immigration courts, administrative law proceedings, and regulatory enforcement hearings must satisfy equivalent due process standards as federal district court proceedings, with full disclosure to respondents of any AI involvement in evidence gathering, assessment, or recommendation.",
+    "notes": "Immigration court AI creates particular due process concerns because respondents in removal proceedings may have limited English proficiency, no right to appointed counsel, and face life-altering consequences, while AI systems used in their proceedings may be opaque, untested, and not subject to the procedural safeguards applicable in Article III courts. Compliant immigration agencies could use AI in ways that formally comply with immigration court procedural rules while those rules are less protective than Article III due process standards, exploiting the lower procedural floor in administrative proceedings to deploy AI with less oversight. Administrative law judges in immigration and regulatory proceedings may lack technical expertise to evaluate AI evidence or AI-generated recommendations, creating practical limitations on meaningful oversight even when formal oversight authority exists. The rule does not address what due process standards are specifically required for AI use in immigration courts, what training immigration judges must receive on AI evaluation, or what remedies are available to respondents harmed by AI-generated errors in their proceedings."
+}
+CARD_CONTENT["TECH-JUDS-0012"] = {
+    "stmt": "Law enforcement agencies may not use AI facial recognition to identify suspects in criminal investigations without a valid warrant unless an exception to the warrant requirement applies, and may not submit AI facial recognition identifications as evidence without disclosing error rates, demographic accuracy disparities, and the specific conditions under which the match was made.",
+    "notes": "Facial recognition law enforcement use presents Fourth Amendment questions that courts have not fully resolved: whether AI identification of a person from imagery constitutes a 'search' requiring probable cause and a warrant, and whether current facial recognition accuracy is sufficient to meet evidentiary reliability standards. Documented accuracy disparities in facial recognition systems — with Buolamwini & Gebru (2018) finding error rates for dark-skinned women up to 34.7% compared to less than 1% for light-skinned men — create substantial risks of wrongful identification when systems are used in criminal investigations without disclosure of these demographic performance gaps. Compliant law enforcement could comply with warrant requirements while using facial recognition systems whose demographic error rates are not disclosed to defense counsel, prosecutors, or courts evaluating the reliability of the identification evidence. The rule does not address what warrant requirements apply to different types of facial recognition use — real-time surveillance, retrospective database search, live match — or what specificity of error rate disclosure is adequate for defense challenge to facial recognition evidence."
+}
+CARD_CONTENT["TECH-JUDS-0013"] = {
+    "stmt": "AI systems used in child custody determination, domestic violence proceedings, and family court matters must not be used to assess parental fitness, predict child abuse risk, or make placement recommendations without disclosure to all parties, opportunity to challenge the methodology, and human professional review of AI recommendations.",
+    "notes": "Child welfare risk assessment AI in family court proceedings has documented racial and socioeconomic disparities, with systems that assess family risk using poverty indicators systematically over-predicting abuse risk for Black and Indigenous families compared to white families with equivalent circumstances. Compliant family courts could use AI risk assessment tools as one factor among many while structuring proceedings so that human professional reviewers defer to AI recommendations they cannot independently evaluate, making AI risk scores determinative in practice without formal acknowledgment. Domestic violence proceedings where AI tools assess victim credibility, threat assessment, or protective order necessity without disclosure to the petitioner may produce outcomes adverse to victims who had no opportunity to challenge the AI assessment. The rule does not address what methodology disclosure is adequate for lay parties who lack technical expertise to evaluate AI risk assessment, or what professional qualifications the human reviewer must have to provide meaningful oversight of AI family court recommendations."
+}
+CARD_CONTENT["TECH-JUDS-0014"] = {
+    "stmt": "AI legal research tools must clearly disclose their training data cutoff dates, known limitation areas, jurisdictional coverage gaps, and confidence levels for generated analyses, and must not present outputs with false confidence in areas where the tool has documented limitations.",
+    "notes": "AI legal research training cutoffs create currency gaps — recent statutory changes, new case decisions, regulatory updates — that may affect the accuracy of legal research for rapidly evolving areas of law without adequate disclosure to attorneys relying on AI-generated research. Compliant AI legal research tools could disclose training cutoffs at the platform level without flagging specific research outputs where the cutoff materially affects the currency and accuracy of the analysis, creating general awareness without specific actionable warnings for individual research outputs. False confidence in AI legal research outputs — presenting hallucinated cases with citation format indistinguishable from real citations, or characterizing contested legal questions as settled — creates professional liability risks for attorneys who rely on outputs without adequate verification. The rule does not address what technical standards govern confidence disclosure, what user interface design is required to ensure users can distinguish high-confidence from low-confidence AI legal analysis, or how verification obligations interact with client billing practices for AI-assisted research."
+}
+CARD_CONTENT["TECH-JUDS-0015"] = {
+    "stmt": "AI contract analysis and due diligence tools must clearly disclose the scope of their analysis, known limitations, and confidence levels, and may not be represented as providing legal advice or as a substitute for attorney review of contractual rights, obligations, or risks.",
+    "notes": "AI contract analysis tools are widely marketed to businesses as sufficient substitutes for attorney contract review, creating unauthorized practice of law risks when non-attorneys rely on AI analysis for legally consequential contract decisions without professional oversight. Compliant AI contract tool providers could disclaim legal advice status in terms of service while marketing the product as 'comprehensive contract analysis' and 'identifying all material risks' in ways that reasonable business users interpret as assurance of adequate review. Contract analysis AI trained on publicly available commercial contract templates may not adequately cover industry-specific provisions, regulatory requirements, or jurisdiction-specific obligations in specialized areas of law — limitations not apparent to business users who lack legal expertise to evaluate coverage gaps. The rule does not address what disclosure must accompany AI contract analysis to ensure business users understand limitations, or what liability AI contract tool providers bear when their tools fail to identify material risks that cause harm to users who reasonably relied on the analysis."
+}
+CARD_CONTENT["TECH-JUDS-0016"] = {
+    "stmt": "Class action litigation and mass tort proceedings may use AI for document review, claimant identification, and damages calculation, but must ensure that AI-driven processes do not systematically exclude or undervalue claims by particular demographic groups or communities historically underrepresented in litigation outcomes.",
+    "notes": "AI-driven class identification and damages calculation in mass tort litigation may systematically undervalue claims from communities with less documented medical history, lower baseline income for economic damages calculation, or less established legal precedent for harms disproportionately affecting historically marginalized communities. Compliant class action attorneys could satisfy court approval requirements for AI-assisted settlement administration while damages models using AI embed assumptions about economic and non-economic harm that systematically undervalue claims from lower-income claimants relative to those with higher documented earnings. AI document review in large-scale litigation may miss documents in non-English languages, informal communications channels, or technical formats that AI models were not trained to process, creating discovery gaps that disproportionately affect cases involving international actors or non-standard document custodians. The rule does not address how courts evaluate AI-assisted class administration for demographic fairness, what disclosure to class members is required, or how individual claimants may challenge AI-calculated damages estimates."
+}
+CARD_CONTENT["TECH-JUDS-0017"] = {
+    "stmt": "AI systems that analyze judicial decisions for pattern detection, outcome prediction, or judicial performance evaluation must be used transparently and may not be used to pressure, manipulate, or threaten judges based on AI-predicted decision patterns, or to influence judicial selection and appointment in ways that subvert judicial independence.",
+    "notes": "AI judicial analytics tools marketed to litigants and law firms for outcome prediction may, if used at scale, create perverse incentives for judges to adjust their decision-making in awareness of being profiled, undermining judicial independence through the chilling effect of predictive analytics on judicial behavior. Compliant use of judicial analytics for litigation strategy purposes — predicting whether a particular judge is likely to grant certain motions — does not obviously raise concerns, but the aggregated use of such information to campaign against specific judges or inform opposition research for judicial appointments implicates judicial independence concerns. AI-based judicial performance evaluation systems used by judicial disciplinary bodies or appointment commissions may embed biases in what 'good' judicial performance means — high opinion output, certain reversal rates — that do not capture the full range of values in judicial service. The rule does not address who may use AI judicial analytics for what purposes, what use constitutes prohibited manipulation of the judiciary, or what enforcement mechanism protects judicial independence from AI-enabled pressure campaigns."
+}
+CARD_CONTENT["TECH-JUDS-0018"] = {
+    "stmt": "AI-generated legal documents — including contracts, wills, trusts, corporate documents, and regulatory filings — must include clear AI-disclosure provisions, must be reviewed by licensed attorneys before execution in matters of significant legal consequence, and may not be used by non-attorneys to provide legal services without complying with applicable unauthorized practice of law requirements.",
+    "notes": "AI legal document generation creates unauthorized practice of law risks when non-lawyers use AI tools to prepare legally consequential documents for others, bypassing attorney review requirements through platforms that disclaim legal advice status while functionally providing legal document services at scale. Compliant AI legal document platforms could satisfy unauthorized practice requirements by prominently disclaiming attorney-client relationships while designing user experiences that lead non-lawyers to rely on AI-generated documents without attorney review for matters where attorney review is legally or practically essential. Wills, trusts, and estate planning documents that are defective due to AI-generated errors may not be discovered until the testator's death, when correction is impossible and the resulting harm to beneficiaries cannot be remedied. The rule does not specify what 'significant legal consequence' requires attorney review, how disclosure provisions must be structured, or what professional liability applies to AI document platform operators when AI-generated documents cause harm."
+}
+CARD_CONTENT["TECH-JUDS-0019"] = {
+    "stmt": "Alternative dispute resolution platforms using AI for case management, settlement suggestion, or dispute resolution facilitation must disclose AI involvement to all parties, must not use behavioral profiling to manipulate settlement outcomes, and must ensure that parties have access to human mediators or arbitrators upon request.",
+    "notes": "AI-facilitated settlement platforms that analyze parties' expressed positions, financial situations, and behavioral signals to generate settlement recommendations may optimize for platform-favorable outcomes — quick resolution, reduced operational costs — rather than fair outcomes for the parties, particularly weaker parties with less negotiating leverage. Compliant ADR platforms could disclose AI involvement in case management while not disclosing that the AI is analyzing behavioral signals to predict which party will accept which settlement terms, creating information asymmetry between the platform and the parties. Online dispute resolution systems that replace in-person or telephonic mediation may systematically disadvantage parties with limited digital literacy, language barriers, or disabilities that make text-based online interaction difficult. The rule does not address what behavioral profiling must be prohibited in AI-mediated dispute resolution, what human mediator access requirements are procedurally triggered, or whether AI dispute resolution outcomes are subject to same judicial review standards as human-mediated outcomes."
+}
+CARD_CONTENT["TECH-JUDS-0020"] = {
+    "stmt": "AI systems used for criminal record sealing, expungement, and background check purposes must accurately reflect current legal status, must be regularly updated when records are legally sealed, and may not perpetuate criminal history information that individuals have a legal right to have considered expunged.",
+    "notes": "Criminal background check databases lag behind court-ordered expungements and record sealings, creating persistent accuracy problems when AI screening systems rely on databases that contain records individuals have a legal right to have treated as expunged — resulting in housing denials, employment rejections, and benefits exclusions based on legally non-existent criminal history. Compliant background check AI could accurately reflect database contents without responsibility for database currency, while the legal obligation to update lies with courts and law enforcement agencies that may not have automated processes for notifying background check database operators of expungements. AI-powered background screening tools used by employers and landlords at scale may amplify the harm of database inaccuracies because individual record holders have limited ability to discover and correct errors before AI screening has already produced adverse outcomes. The rule does not address the verification obligations of AI background check operators, the timeline for database updates following expungement orders, or the remedies available to individuals harmed by AI screening systems that used outdated criminal history information."
+}
+CARD_CONTENT["TECH-JUDS-0021"] = {
+    "stmt": "AI systems used for jury selection, juror identification, or juror behavior prediction must comply with the equal protection principles of Batson v. Kentucky, must not be used to systematically exclude jurors based on demographic characteristics, and must be disclosed to opposing counsel and the court.",
+    "notes": "AI-assisted jury selection tools that analyze social media, purchasing patterns, and demographic data to predict juror sympathies may enable more sophisticated Batson violations — using AI to identify proxies for race that are technically race-neutral while achieving effective racial exclusion from juries. Compliant attorneys could use AI jury selection analysis to predict which jurors are favorable without disclosing the AI tool to opposing counsel, arguing that attorney work product privilege covers AI jury analysis performed for trial preparation purposes. Jury composition AI that improves voir dire effectiveness for well-resourced litigants — sophisticated commercial parties, well-funded prosecutors — widens the justice gap between litigants with access to AI jury analysis tools and those without. The rule does not address whether AI jury selection tools must be disclosed under Brady or work product rules, what Batson hearing procedures apply when AI jury analysis contributes to peremptory strikes, or how courts detect AI-assisted systematic exclusion of protected class jurors."
+}
+CARD_CONTENT["TECH-JUDS-0022"] = {
+    "stmt": "Legal professionals who use AI systems must be competent in the specific AI tools they employ, must understand their limitations, error modes, and jurisdictional coverage, and must maintain professional liability coverage adequate to cover harm resulting from AI-assisted work product.",
+    "notes": "Professional competence in AI legal tools requires ongoing education as AI capabilities and limitations evolve rapidly, but bar competence requirements are not currently calibrated to AI-specific skill requirements — leaving both the standard and the training pathway undefined. Compliant attorneys could satisfy general technological competence requirements under Model Rule 1.1 without specific competence in the AI tools they use, as long as they broadly understand technology in legal practice — a gap between rule requirements and the specific knowledge needed to safely use AI legal tools. Professional liability coverage adequacy for AI-assisted legal work depends on whether existing malpractice insurance covers AI-related errors, which is currently contested: some insurers exclude AI-related errors while others have not yet updated policies to address them. The rule does not specify what competence means for AI legal tools, what training is required, what professional liability coverage must include, or how malpractice claims arising from AI-assisted work are evaluated under existing negligence standards for attorney performance."
+}
+CARD_CONTENT["TECH-JUDS-0023"] = {
+    "stmt": "AI legal compliance management tools used by corporations and organizations must include audit capabilities, documentation features, and records sufficient to enable regulatory examination, discovery obligations, and board-level accountability for compliance program adequacy.",
+    "notes": "AI compliance management tools that systematically underidentify compliance violations may expose organizations to regulatory sanctions and private litigation when the inadequacy of AI-driven monitoring is discovered, particularly if organizations relied on AI compliance tools to reduce human compliance capacity. Compliant compliance AI could satisfy documentation and audit capability requirements while configuring systems to generate favorable compliance status assessments through incomplete monitoring scope, high flagging thresholds, or inadequate escalation protocols that produce clean compliance records without actually monitoring for violations. Board accountability for AI compliance management requires that board members receive meaningful compliance information — not just AI-generated green-light status — and that boards understand what the AI compliance system does and does not monitor. The rule does not address what discovery obligations extend to AI compliance monitoring records, whether attorney-client privilege applies to AI-generated compliance assessments, or what board-level oversight of AI compliance management systems satisfies fiduciary duty standards."
+}
+CARD_CONTENT["TECH-JUDS-0024"] = {
+    "stmt": "Regulatory agencies may not use AI to conduct mass regulatory surveillance of regulated entities based on protected characteristics of their owners, employees, or customers, and must ensure that AI-driven regulatory examination targeting does not produce disparate enforcement burden by race, national origin, or industry participation in protected expressive activities.",
+    "notes": "AI-driven regulatory examination targeting that uses economic performance data, geographic concentration, or business practice patterns may systematically over-examine minority-owned businesses, immigrant entrepreneurs, or industries that serve politically disfavored populations, using facially neutral selection criteria to achieve protected-class targeting. Compliant regulatory agencies could demonstrate that examination targeting AI uses only legitimate regulatory criteria without examining whether those criteria are proxies for protected characteristics when applied to the actual distribution of regulated entities. Regulatory AI that targets small and community-based businesses for examination — because they have simpler compliance programs, less legal representation, and fewer resources to challenge examination findings — may protect the interests of well-resourced regulated entities at the expense of the most vulnerable segment of regulated industries. The rule does not specify what statistical testing demonstrates non-discriminatory regulatory targeting, what access regulated entities have to information about AI selection criteria, or what procedures challenge AI-influenced examination targeting."
+}
+CARD_CONTENT["TECH-JUDS-0025"] = {
+    "stmt": "AI tools used by public prosecutors in charging decisions, plea negotiations, and case disposition must be subject to equal protection analysis, must not produce racially disparate outcomes, and must be disclosed to defendants and defense counsel when they influence prosecutorial decisions affecting criminal cases.",
+    "notes": "Prosecutorial AI tools that predict case outcomes, optimal charging strategies, or plea negotiation leverage may amplify existing racial disparities in prosecution if trained on historical charging and conviction data that reflects systemic racial bias in prosecution and sentencing. Compliant prosecutors could use AI charging and plea tools that technically exclude race as an input while using correlated variables — prior record, offense categories, geographic jurisdiction — that achieve racially disparate recommendations equivalent to explicit racial consideration. Due process disclosure obligations for AI-influenced prosecutorial decisions require courts to determine whether Giglio and Brady obligations extend to algorithmic decision tools used by prosecutors — an analysis that has not been uniformly resolved. The rule does not address what testing demonstrates that prosecutorial AI does not produce racially disparate outcomes, what disclosure format provides meaningful information to defendants about AI's role in their case, or what remedies defendants have when AI-influenced prosecutorial decisions are later shown to have been racially disparate."
+}
+CARD_CONTENT["TECH-JUDS-0026"] = {
+    "stmt": "AI systems used for electronic monitoring, ankle bracelet supervision, and parole surveillance must comply with Fourth Amendment requirements, must minimize collection of irrelevant personal data, and may not use location or behavioral monitoring beyond what is strictly necessary for the stated supervision purpose.",
+    "notes": "Electronic monitoring AI that collects granular location data, physiological signals, or behavioral patterns beyond what traditional supervision would require creates a form of pervasive surveillance inconsistent with the Fourth Amendment's particularity and reasonableness requirements even for individuals subject to supervised release conditions. Compliant electronic monitoring programs could obtain consent to monitoring conditions as a condition of release, arguing that consent satisfies Fourth Amendment requirements even when the surveillance is far more comprehensive than courts would otherwise permit — using coercive conditions of release to obtain waiver of constitutional rights. AI-analyzed electronic monitoring data collected for supervision purposes may be used in subsequent prosecutions for parole violations, immigration enforcement, or new criminal investigations in ways that extend surveillance impact far beyond the original supervision purpose. The rule does not address what Fourth Amendment analysis applies to conditions of supervised release that require comprehensive AI-mediated surveillance, or what limitations exist on secondary use of electronic monitoring data collected pursuant to supervision conditions."
+}
+CARD_CONTENT["TECH-JUDS-0027"] = {
+    "stmt": "AI systems used in employment law proceedings — including wage and hour investigations, discrimination claims, NLRB proceedings, and OSHA enforcement — must comply with due process requirements, provide respondents with full access to AI analyses used against them, and must not produce disparate enforcement outcomes by protected class.",
+    "notes": "AI-assisted wage and hour enforcement that uses payroll data analysis to identify likely underpayment may create enforcement disparities if the analysis flags industry sectors, business size categories, or geographic areas correlated with protected characteristics of the owners or workforce, directing enforcement resources in ways that function as protected-class targeting. Compliant employment law AI could satisfy due process disclosure requirements for enforcement proceedings while framing AI outputs as 'investigative leads' rather than evidence, limiting the disclosure rights that respondents may claim in subsequent enforcement actions. NLRB proceedings involving AI analysis of employer communications, bargaining unit identification, or unfair labor practice patterns may produce AI-generated evidence that unions or employers cannot effectively challenge without access to the underlying AI methodology. The rule does not address how employment law AI interacts with existing evidentiary and procedural requirements in administrative proceedings, or what discovery rights respondents have to AI tools used in investigations that precede the formal proceeding stage."
+}
+CARD_CONTENT["TECH-JUDS-0028"] = {
+    "stmt": "AI systems used in healthcare claims adjudication, prior authorization, and utilization management must comply with ERISA requirements, must provide members with specific and complete denial explanations, and may not systematically deny medically necessary care through algorithmic approaches not grounded in individualized clinical assessment.",
+    "notes": "AI prior authorization systems that apply coverage criteria more restrictively than medical necessity standards allow — denying care by applying population-level statistical models to individual patient circumstances — violate ERISA's requirement of full and fair review and the substantive medical necessity standards required by applicable plan documents. Cigna's use of AI to review and deny claims in seconds without individual physician review, documented in a ProPublica investigation (2023), illustrates how AI-driven utilization management can systematically deny care in violation of both contractual and legal requirements. Compliant insurers could use AI to flag claims for further review rather than final denial, while structuring review processes that apply AI recommendations without independent clinical evaluation of individual patient circumstances — achieving denial of care through process design rather than formal algorithmic adjudication. The rule does not address what clinical information AI prior authorization systems must consider, what physician review is required before denying care that AI has flagged for denial, or what penalties apply to AI-driven systematic denial of medically necessary care."
+}
+CARD_CONTENT["TECH-JUDS-0029"] = {
+    "stmt": "AI systems used in intellectual property prosecution, patent examination, copyright registration, and trademark review must be disclosed when used by applicants and by examining bodies, and must not systematically advantage applicants with resources to develop AI-optimized applications over individual inventors and small creators.",
+    "notes": "AI-optimized patent applications that are drafted to satisfy machine-learning models trained on approved patents may game examination AI in ways that produce approvals for applications that would fail human examination for adequate disclosure, enablement, or non-obviousness — degrading patent quality through AI arms races between applicants and examination AI. Compliant applicants could disclose AI use in application drafting while concealing the extent to which AI optimization shaped claim scope, specification language, and prosecution history in ways that affect claim interpretation and validity. Individual inventors who cannot afford AI patent prosecution tools are systematically disadvantaged compared to large corporate applicants with access to AI application optimization — creating IP access inequality that may limit participation in the patent system by independent inventors from underrepresented communities. The rule does not address what disclosure is required when AI is used in patent prosecution, how examination AI affects applicant strategies, or what fairness requirements govern the interaction between applicant AI and USPTO examination AI."
+}
+CARD_CONTENT["TECH-JUDS-0030"] = {
+    "stmt": "AI tools used in legal billing, time tracking, and client invoicing must be transparent to clients, must not inflate billable time through AI-generated entries, and must clearly disclose when AI assistance reduces time investment in ways that affect the reasonableness of billed hours.",
+    "notes": "AI legal billing tools that assist with timesheet entry may produce bloated descriptions and inflated time estimates if trained on billing data without specific safeguards against over-billing, creating liability under Model Rule 1.5 for unreasonable fees and under fraud statutes for false billing claims submitted to insurance companies or government programs. Compliant attorneys could use AI time tracking tools without disclosing to clients that AI dramatically reduced the time required for specific tasks — legal research, document review — while billing at the historical hourly rate that reflected the time cost before AI efficiency, inflating client bills relative to actual attorney time investment. The ethical obligation to bill honestly for AI-assisted work is currently unsettled: some bar associations have issued guidance while others have not, and the interaction between AI efficiency gains, client billing expectations, and attorney fee obligations is not uniformly addressed. The rule does not address what billing disclosure clients are owed when AI reduces attorney time investment, how billable hour conventions must be adjusted for AI efficiency, or what auditing of AI-generated time entries is required."
+}
+CARD_CONTENT["TECH-JUDS-0031"] = {
+    "stmt": "AI systems used in law school admissions, bar examination administration, and continuing legal education must not produce discriminatory outcomes by race, gender, disability, or socioeconomic background, and must be subject to ongoing disparate impact testing and remediation.",
+    "notes": "Law school admissions AI that uses undergraduate GPA, LSAT scores, and application materials in algorithmic ranking may perpetuate historical barriers to legal education by optimizing for credentials that correlate with socioeconomic advantage rather than potential for legal practice. Bar examination AI-assisted grading or diagnostic systems may have accuracy disparities across test-taker demographics — calibrated on historical test performance that reflects prior barriers to legal education — creating examination barriers that persist in AI form even when explicit barriers are removed. Continuing legal education AI platforms that track and verify CLE completion may produce compliance failures for attorneys with disabilities, language barriers, or limited access to technology-dependent verification systems without adequate accommodation requirements. The rule does not address what testing methodology is adequate for law school admissions AI, what demographic accuracy thresholds are required for bar examination AI, or how disparate impact in legal education AI is remediated when the training data reflects decades of systemic exclusion."
+}
+CARD_CONTENT["TECH-JUDS-0032"] = {
+    "stmt": "AI systems used in probate proceedings, estate administration, and elder law matters must include specific protections against exploitation of elderly or vulnerable adults through algorithmic processes — including undue influence detection and protection for beneficiaries with diminished capacity.",
+    "notes": "AI estate planning and probate tools that do not include undue influence detection may facilitate estate document preparation under coercive circumstances by caregivers, family members, or financial actors seeking to benefit from an elderly person's assets without the human judgment that would recognize coercive indicators. Compliant AI probate systems could flag documents prepared under circumstances suggesting potential undue influence while courts lack capacity to investigate AI-flagged concerns in the volume of probate matters they process, creating a detection function without effective follow-through. Elderly adults with diminished capacity who use AI legal tools may not understand what they are consenting to or executing, and AI tools that do not verify capacity or raise capacity concerns may facilitate legally invalid documents that are later difficult to contest. The rule does not specify what undue influence detection AI must be required in estate planning and probate contexts, what human review triggers from AI flags, or what evidence standards apply to AI-generated capacity or undue influence assessments."
+}
+CARD_CONTENT["TECH-JUDS-0033"] = {
+    "stmt": "AI systems used in court-ordered mental health evaluations, competency assessments, and involuntary commitment proceedings must be disclosed to the subject and their counsel, must not replace human clinical evaluation, and must not produce racially or disability-based disparate outcomes in proceedings that affect individual liberty.",
+    "notes": "AI mental health assessment tools used in competency and commitment proceedings operate in a context where the subject's liberty is directly at stake and where existing clinical assessment practice has documented racial and disability-based disparities that AI systems trained on that practice may replicate or amplify. Compliant courts could use AI as a screening or preliminary assessment tool without disclosing AI involvement to subjects, arguing that AI is an internal court tool rather than evidence subject to disclosure requirements — when in practice the AI assessment substantially influences the proceeding outcome. Involuntary commitment AI that uses behavioral data, social media patterns, or clinical history to predict dangerousness must account for the substantially different base rates of violence across populations before generating risk scores, a requirement that general-purpose risk assessment tools may not meet. The rule does not address what clinical training is required for human reviewers who evaluate AI mental health assessments, what standards govern the role of AI outputs in commitment proceedings, or how subjects can effectively challenge AI-generated clinical assessments they cannot examine."
+}
+CARD_CONTENT["TECH-JUDS-0034"] = {
+    "stmt": "AI systems used in environmental enforcement — emissions monitoring, permit compliance verification, and violation identification — must be calibrated for accuracy across all regulated industries and geographic areas, must disclose the basis for AI-generated violation findings, and may not produce disparate enforcement burden based on protected characteristics of regulated entities.",
+    "notes": "Environmental enforcement AI trained on historical violation data may replicate patterns of selective enforcement: if historically over-monitored industries or geographic areas generate more flagged events in training data, AI will recommend continuing to focus enforcement resources on those areas regardless of whether actual violation rates differ across regulated entities. Compliant environmental enforcement AI could satisfy non-discrimination requirements through aggregate enforcement statistics without examining whether AI-generated violation flags are disproportionately concentrated in regulated entities with protected-class ownership or in communities that have historically received less enforcement protection for their environmental interests. AI emissions monitoring that relies on remote sensing or indirect measurement may generate more false positives for regulated entities using older equipment or operating in challenging environmental conditions — creating regulatory burden that correlates with financial capacity rather than actual compliance. The rule does not address what calibration validation is required for environmental enforcement AI, what statistical testing demonstrates non-discriminatory enforcement targeting, or how regulated entities can challenge AI-generated violation findings."
+}
+CARD_CONTENT["TECH-JUDS-0035"] = {
+    "stmt": "AI systems used in immigration detention decisions — including detention risk assessment, release on recognizance determinations, and bond hearing recommendations — must comply with Fifth Amendment due process requirements, international refugee law non-refoulement obligations, and must not systematically produce racially or nationality-based disparate outcomes.",
+    "notes": "Immigration detention risk assessment AI trained on historical detention and removal data embeds assumptions derived from enforcement priorities and judicial patterns that may reflect political decisions about which nationalities to target for removal rather than individual flight risk or danger factors. Compliant immigration agencies could use AI detention risk assessment in hearings where immigration judges formally make detention decisions, while in practice deferring to AI recommendations in the vast majority of cases without independent evaluation of the underlying risk factors for each individual. Non-refoulement obligations under the 1951 Refugee Convention and the Convention Against Torture require individualized assessment of persecution risk before removal — an assessment that algorithmic detention and release tools are not designed to conduct and may actually circumvent by driving rapid processing without individualized evaluation. The rule does not address what algorithmic due process protections are required in immigration detention proceedings, how AI detention recommendations interact with asylum claim processing, or what judicial oversight of AI-influenced immigration detention decisions must exist."
+}
+CARD_CONTENT["TECH-JUDS-0036"] = {
+    "stmt": "AI systems that generate evidence of digital communications, metadata analysis, or pattern-of-life analysis must satisfy applicable rules of evidence for authentication, relevance, and reliability, and must disclose to opposing parties the full methodology, model specifications, and error rates associated with the AI analysis.",
+    "notes": "AI forensic analysis of digital communications, metadata, and behavioral patterns is being used as evidence in civil and criminal proceedings without the foundational validation — peer review, known error rates, general scientific acceptance — that Daubert requires for expert scientific testimony. Compliant parties presenting AI digital evidence could satisfy authentication requirements through affidavits from technical personnel without independent Daubert analysis of the AI methodology, treating AI evidence authentication as a technical matter rather than a scientific validity question requiring expert examination. AI pattern-of-life analysis that generates behavioral inferences from metadata — inferring mental state, intent, or relationship patterns from communication patterns — may provide unreliable evidence presented with false certainty about what behavioral data means. The rule does not address what foundational showing is required for AI digital evidence, how Daubert/Frye standards apply to AI forensic methodologies, or what opposing party access to AI forensic tools and methodologies is required for effective challenge."
+}
+CARD_CONTENT["TECH-JUDS-0037"] = {
+    "stmt": "AI systems used in child support calculation, alimony determination, and property division in family court must disclose their methodologies and assumptions, must be subject to judicial override on evidence of specific inequity, and must account for economic circumstances not captured by standard algorithmic inputs.",
+    "notes": "Family court AI for support and property division may fail to account for informal economy income, spousal economic abuse patterns, or non-standard asset structures — circumstances prevalent in families least served by conventional income documentation — producing unfair outcomes for already economically vulnerable family members. Compliant family courts could use AI financial analysis as a starting point for judicial determination while judicial override authority is rarely exercised in practice, particularly when the AI recommendation falls within a range judges consider presumptively acceptable. AI property division models that rely on market valuation data may systematically undervalue assets in communities with lower property values — including minority neighborhoods subject to historical appraisal discrimination — affecting divorce settlements in ways that compound existing economic inequalities. The rule does not address what economic circumstances must trigger judicial override of AI support and division calculations, what disclosure to parties is required when AI influences family court financial determinations, or how parties without legal representation can challenge AI financial recommendations."
+}
+CARD_CONTENT["TECH-JUDS-0038"] = {
+    "stmt": "AI systems deployed in correctional facilities — for inmate monitoring, disciplinary assessment, program eligibility, and release recommendation — must be subject to independent civil rights audit, disclosed to affected incarcerated individuals, and may not produce racially or disability-based disparate outcomes in prison conditions and release decisions.",
+    "notes": "Correctional AI for disciplinary and program eligibility determination operates in a context where incarcerated individuals have severely limited ability to challenge AI decisions — restricted access to legal representation, limited discovery rights, and institutional power dynamics that disfavor formal challenges. AI-driven prison program eligibility determination — access to educational programs, rehabilitation programs, and vocational training — affects parole readiness and release outcomes in ways that compound racial disparities in incarceration if program AI replicates the same biases as the sentencing AI that shaped initial incarceration. Inmate monitoring AI that analyzes communications, movements, and behavioral patterns may create a surveillance intensity incompatible with Constitutional prohibitions on cruel and unusual punishment by creating conditions of pervasive monitoring that are psychologically harmful. The rule does not specify what civil rights audit standards apply to correctional AI, how incarcerated individuals can access information about AI systems affecting their conditions, or what procedural rights attach to adverse correctional AI determinations."
+}
+CARD_CONTENT["TECH-JUDS-0039"] = {
+    "stmt": "AI systems used in reentry services, parole supervision, and post-release monitoring must be designed to support successful reintegration rather than to maximize technical violations, and must not use surveillance data to generate violations for behavior that does not represent genuine public safety risk.",
+    "notes": "Parole supervision AI that analyzes location data, communications, and behavioral signals to identify technical violations may generate violations for benign behavior — being in a neighborhood near a restricted zone, communicating with known contacts — in ways that maximize revocation rather than support reintegration. Compliant parole AI could satisfy supervision requirements while structuring violation detection to flag any deviation from supervision conditions regardless of public safety relevance, putting supervised individuals at technical violation risk from normal life activities that have no bearing on recidivism. AI-monitored parole conditions that restrict movement, association, and employment in ways enforced by algorithmic surveillance create barriers to employment, housing, and family reunification that increase recidivism risk while claiming to reduce it. The rule does not address what behavioral monitoring AI may conduct under parole supervision conditions, what public safety threshold must be met before a technical violation is referred for revocation proceedings, or how supervised individuals challenge AI-generated technical violation findings."
+}
+CARD_CONTENT["TECH-JUDS-0040"] = {
+    "stmt": "AI systems used in restorative justice programs, victim-offender mediation, and alternative sentencing must include specific safeguards against victimization of vulnerable parties, must ensure voluntary and informed participation, and must not use behavioral analysis to manipulate participants' decisions about mediation or settlement.",
+    "notes": "Restorative justice AI that facilitates victim-offender mediation by analyzing parties' communications and suggesting resolution frameworks may inadvertently empower stronger parties — who have more negotiating resources and less to lose — at the expense of vulnerable parties, particularly in domestic violence and intimate partner violence cases. Compliant restorative justice platforms could ensure nominal voluntary participation through consent forms while the AI-mediated process creates social pressure, time urgency, and information asymmetries that make genuine free choice difficult for parties with less power in the relationship. AI behavioral analysis in restorative processes — predicting when victims are likely to accept apologies, when offenders are minimizing, or when agreements will hold — may enable manipulative use of insights by participants who understand the AI's role while the other party does not. The rule does not address what safeguards are required in AI-assisted restorative justice, how voluntary participation is genuinely protected when AI facilitates the process, or what accountability exists when AI-facilitated restorative agreements cause harm to victims."
+}
+CARD_CONTENT["TECH-JUDS-0041"] = {
+    "stmt": "AI predictive analytics used to forecast court congestion, resource needs, and docket management must not be used to deprioritize constitutionally or legally mandated timeframes — including speedy trial rights, habeas corpus timelines, and asylum hearing schedules — based on algorithmic resource allocation.",
+    "notes": "Court docket management AI that optimizes for aggregate throughput may systematically delay cases with constitutional or statutory timing requirements when those cases are resource-intensive, violating speedy trial rights under the Sixth Amendment by treating constitutional timelines as one optimization factor among many. Compliant court AI could satisfy constitutional timing requirements in the aggregate — most cases within the relevant timeframe — while individual defendants whose cases are specifically deprioritized by AI resource allocation experience constitutional violations that are obscured by aggregate statistics. Algorithmic case prioritization that reflects historical patterns in which case types receive expedited treatment may replicate existing racial and class disparities in court access if the AI replicates historical prioritization rather than constitutional and legal requirements. The rule does not address what court docket AI must treat as non-negotiable constraints versus optimization objectives, how constitutional timing requirements interact with AI-driven scheduling optimization, or what remedy defendants have when AI-driven docket management contributes to constitutional timing violations."
+}
+CARD_CONTENT["TECH-JUDS-0042"] = {
+    "stmt": "AI systems used for surveillance and monitoring in courtrooms — facial recognition for juror or spectator identification, behavioral analysis systems, and AI monitoring of participants — must comply with Fourth Amendment requirements, must be disclosed to all present, and may not be used to chill constitutionally protected courtroom access.",
+    "notes": "Courtroom AI surveillance creates specific First and Sixth Amendment concerns: surveillance that chills public access to open trials violates the First Amendment right to attend public judicial proceedings, and surveillance that identifies or profiles jurors may interfere with jury deliberation independence. Compliant courts could use AI courtroom monitoring for stated security purposes — weapons detection, threat assessment — without disclosing the full scope of behavioral and facial recognition analysis conducted on everyone present in the courtroom. Court surveillance AI that identifies attorneys, media, and legal observers by facial recognition may create deterrence effects on legal representation and press coverage of proceedings that are inconsistent with the constitutional openness of the judicial process. The rule does not address what court security functions justify AI surveillance, what disclosure is required to courtroom participants, or how AI courtroom surveillance data may be used by law enforcement for purposes unrelated to the specific court security function that justified its collection."
+}
+CARD_CONTENT["TECH-JUDS-0043"] = {
+    "stmt": "AI tools that provide legal information to the public — legal chatbots, self-help platforms, benefits navigators, and court assistance tools — must clearly distinguish legal information from legal advice, must be regularly updated for legal currency, and must not mislead users about their rights or available legal options.",
+    "notes": "Legal information AI that is not updated promptly after legislative or regulatory changes may provide outdated information about legal rights, deadlines, and available remedies that causes users to miss legal opportunities or pursue ineffective strategies in reliance on AI guidance. Compliant legal information AI could satisfy 'information not advice' requirements through formal disclaimers while designing interfaces that prompt users to take specific actions — file this form, by this deadline, through this process — in ways that function as legal advice without formal classification as such. Legal chatbots and self-help tools that are insufficiently funded to maintain accuracy across all jurisdictions may provide jurisdiction-specific information for the wrong state, creating risk of harm to users who receive legally inaccurate guidance without any indication it may not apply to their situation. The rule does not specify what accuracy testing and currency maintenance is required for legal information AI, how disclaimers must be presented to be meaningful for non-lawyers, or what liability attaches to legal information AI providers when inaccurate guidance causes user harm."
+}
+CARD_CONTENT["TECH-JUDS-0044"] = {
+    "stmt": "AI systems used in mass civil forfeiture proceedings, administrative enforcement at scale, and bulk legal processing operations must provide individualized due process review opportunities and may not use algorithmic efficiency as a justification for eliminating meaningful individual procedural rights.",
+    "notes": "Mass administrative forfeiture and enforcement proceedings that use AI to process large volumes of cases may satisfy aggregate procedural requirements — notice published, hearing nominally available — while making individualized responses practically impossible through tight deadlines, complex procedures, and volume that overwhelms available legal assistance. Compliant agencies could use AI to increase the efficiency of mass enforcement while the rate of contested proceedings falls because affected individuals lack resources to contest, using procedural availability without practical accessibility to satisfy due process. Asset forfeiture proceedings that require property owners to navigate complex procedures — often against the same law enforcement agency that seized the property — with civil proof burdens and without right to counsel create conditions where AI-accelerated bulk processing eliminates meaningful challenge in practice even when formal challenge rights exist. The rule does not define what constitutes meaningfully individualized procedural rights in AI-processed enforcement proceedings, what staffing-to-case ratios are required for genuine individual review, or how courts evaluate the adequacy of AI-assisted bulk due process."
+}
+CARD_CONTENT["TECH-JUDS-0045"] = {
+    "stmt": "AI used in regulatory investigations, administrative subpoenas, and document collection must comply with applicable privilege protections, must not produce identifications of privileged materials as non-privileged, and must allow parties to maintain attorney-client privilege and work product protections over AI-reviewed materials.",
+    "notes": "AI privilege review in regulatory investigations and litigation discovery may systematically misclassify privileged documents as non-privileged when privileged communications do not pattern-match the AI's training data on privilege markers — creating disclosure of privileged materials that parties did not intend to waive. Compliant privilege review AI could achieve formal compliance with inadvertent disclosure requirements under Rule 502 while the frequency of AI-generated misclassification is high enough to produce regular inadvertent disclosures that are technically clawed back but substantively affect the litigation or investigation. Regulatory agencies using AI to process document productions may analyze materials after privilege designation disputes are resolved through processes that do not account for AI-specific privilege misclassification patterns, limiting the effectiveness of privilege protection for AI-reviewed productions. The rule does not address what privilege review validation testing AI must undergo before use in regulatory proceedings, what claw-back procedures are available when AI-generated misclassification causes inadvertent disclosure, or how courts evaluate claims of waiver when AI-assisted review systems contributed to disclosure."
+}
+CARD_CONTENT["TECH-JUDS-0046"] = {
+    "stmt": "AI systems used in immigration status verification, E-Verify, and employment authorization confirmation must be accurate across all authorized worker categories, must have rapid error correction mechanisms, and may not systematically deny work authorization to individuals with legal work status due to database errors or AI misclassification.",
+    "notes": "E-Verify and employment authorization AI have documented accuracy problems that disproportionately affect workers with recently obtained or complex work authorization status — refugees, asylees, H-1B holders, and workers with employment authorization documents — creating work authorization denials for legally authorized workers. Compliant employment verification AI could satisfy nominal accuracy requirements while error rates for specific authorized worker categories remain high enough to cause systematic denial of work authorization for that population, because aggregate accuracy statistics obscure category-specific failure rates. Workers who receive tentative non-confirmation from E-Verify have the right to contest the finding, but the contest process may take weeks during which employers may terminate employment, effectively using error correction procedures as barriers to employment for workers whose authorization is ultimately confirmed. The rule does not address what accuracy requirements apply by authorized worker category, what timeline is required for error correction resolution, or what remedies are available to workers who lose employment due to E-Verify AI errors."
+}
+CARD_CONTENT["TECH-JUDS-0047"] = {
+    "stmt": "AI systems used by debt collectors in skip tracing, asset location, and judgment enforcement must comply with the Fair Debt Collection Practices Act, may not use AI to locate or contact debtors through means that constitute harassment, and must disclose AI involvement in collection communications.",
+    "notes": "AI-powered skip tracing aggregates location, employment, financial, and social data from multiple sources to locate debtors with unprecedented efficiency — raising questions about whether data aggregation that reveals home address, employer, family members, and financial situation in one AI-generated dossier constitutes unlawful intrusion beyond what the FDCPA was designed to permit. Compliant debt collectors could use AI to identify optimal contact timing and location through behavioral analysis without the AI constituting direct debtor contact, maintaining that the FDCPA's contact restrictions apply only to the human-initiated contact that AI intelligence supports. AI collection contact strategies that identify the psychological state in which debtors are most likely to pay — financial distress, post-paycheck periods, times of emotional vulnerability — and calibrate contact timing and message framing to exploit those states may constitute harassment or unfair practices under the FDCPA without fitting easily into its specific prohibited conduct categories. The rule does not address what disclosure is required when AI substantially drives collection strategy and contact timing, or how FDCPA harassment standards apply to AI-optimized collection campaigns."
+}
+CARD_CONTENT["TECH-JUDS-0048"] = {
+    "stmt": "AI systems used in securities enforcement, insider trading detection, and market manipulation investigation must comply with due process requirements, must provide respondents with access to AI-generated analyses used against them, and must not produce racially or economically disparate enforcement patterns.",
+    "notes": "SEC and FINRA AI systems for market surveillance and enforcement create due process issues when AI pattern recognition identifies potential violations in trading data without disclosing the specific behavioral patterns or statistical thresholds that triggered the investigation to respondents in enforcement proceedings. Compliant securities regulators could use AI to identify enforcement priorities and gather evidence without disclosing AI's role in investigation initiation, arguing that investigative methodology is not subject to disclosure requirements at the investigation stage — while AI's influence on what matters are pursued and how they are framed is practically significant. Market surveillance AI that detects unusual trading patterns may produce false positives at higher rates for trading strategies used by smaller participants, foreign investors, or algorithmic traders with non-standard approaches, creating enforcement disparities that do not reflect actual violation rates. The rule does not address what stage of securities enforcement triggers AI methodology disclosure, what access respondents have to the specific AI-generated analyses used in investigations, or how disparate enforcement patterns by protected class would be identified in securities AI."
+}
+
+
+# ---------------------------------------------------------------------------
+# JUDS — Judicial & Legal AI (0049–0096)
+# ---------------------------------------------------------------------------
+CARD_CONTENT["TECH-JUDS-0049"] = {
+    "stmt": "AI systems used in academic research involving human subjects must comply with IRB review requirements, must not be used to circumvent research ethics protections through computational approaches, and must include privacy and data minimization standards appropriate to the sensitivity of human subject data analyzed.",
+    "notes": "AI research on human subject data — mining medical records, social media, consumer behavior, genomic databases — may circumvent IRB requirements by characterizing AI analysis as secondary analysis of existing data rather than human subjects research, even when AI enables re-identification of nominally anonymized subjects. Compliant research AI could satisfy IRB data use requirements while the analysis enables inferences about individual research subjects that they did not consent to and that the original data collection did not anticipate — inferring medical conditions from consumer behavior, inferring psychological states from social media patterns. AI research that analyzes publicly available data may not require IRB review under current federal human subjects research regulations while generating analyses of private information about identifiable individuals through aggregation and inference. The rule does not address what AI-specific considerations must inform IRB review of AI research protocols, how IRB review requirements apply to AI-enabled reidentification risks in nominally exempt secondary data research, or what research ethics standards apply to AI training on human subject data that was collected for non-research purposes."
+}
+CARD_CONTENT["TECH-JUDS-0050"] = {
+    "stmt": "AI systems used in clinical trials — including patient selection, dosage optimization, outcome analysis, and adverse event detection — must comply with FDA regulations, must use standardized data formats enabling independent analysis, and must not exclude patient populations from AI-mediated clinical research in ways that perpetuate health disparities.",
+    "notes": "Clinical trial AI that optimizes patient selection for statistical power and clean outcomes may systematically exclude patients with comorbidities, non-standard disease presentations, or demographic characteristics that complicate efficacy analysis — perpetuating the historical underrepresentation of women, elderly patients, and racial minorities in clinical research. Compliant clinical trial AI could satisfy FDA data format and submission requirements while clinical outcomes AI that analyzes trial results introduces biases in efficacy and safety conclusions that are not apparent from the analysis outputs presented to regulators. AI adverse event detection that is optimized for the patient population represented in training data may systematically under-detect adverse events for patient populations with different biological profiles — creating safety signals that emerge in post-approval use disproportionately in underrepresented communities. The rule does not address what demographic inclusion requirements apply to AI clinical trial design, what FDA review of AI methodologies is required before AI-influenced trial results can support approval decisions, or how post-approval surveillance AI must account for demographic diversity in safety monitoring."
+}
+CARD_CONTENT["TECH-JUDS-0051"] = {
+    "stmt": "AI systems used in genomic research, precision medicine, and biomarker analysis must include specific protections for genomic privacy, must not enable genetic discrimination, and must comply with GINA, ADA, and applicable state genetic privacy laws in all research, clinical, and commercial applications.",
+    "notes": "Genomic AI that analyzes genetic data to infer disease risk, drug response, and other biomarkers creates privacy risks beyond the original genetic information itself: AI can infer sensitive medical conditions from genetic data not collected or disclosed for that purpose, and shared genomic data can be used to identify family members who did not consent to research participation. Compliant genomic AI research could satisfy GINA data protection requirements for research purposes while genomic data shared in research contexts is subsequently used in commercial applications outside GINA's coverage, because GINA primarily restricts insurance and employment discrimination rather than all uses of genetic information. AI-identified genomic markers for disease risk or drug response may be used in insurance underwriting, employment decisions, or financial services under state laws that provide weaker protections than GINA — creating discrimination pathways that federal law does not close. The rule does not address how GINA's protections interact with AI's capacity to infer genetic information from phenotypic and behavioral data, or what consent requirements govern AI use of genomic data for purposes not anticipated when the genomic sample was originally collected."
+}
+CARD_CONTENT["TECH-JUDS-0052"] = {
+    "stmt": "AI systems used in tenant screening, eviction risk assessment, and rental application review must comply with the Fair Housing Act and applicable state anti-discrimination laws, must not use predictive eviction models that perpetuate housing discrimination, and must provide applicants with plain-language explanations of adverse screening decisions.",
+    "notes": "Tenant screening AI that uses credit scores, eviction records, criminal history, and income-to-rent ratios produces disparate outcomes for Black, Hispanic, and Indigenous renters — who have higher rates of rental housing instability due to systemic economic inequality — without necessarily violating the Fair Housing Act's formal requirements absent evidence of disparate impact at the algorithm level. Compliant tenant screening AI could satisfy Fair Housing Act requirements through annual disparate impact testing while deploying screening criteria that produce documented disparate outcomes without triggering enforcement because the testing methodology produces statistics that fall below enforcement thresholds selected by the operator. AI eviction prediction models trained on historical eviction data replicate patterns of eviction in which low-income renters of color in certain zip codes are disproportionately evicted regardless of payment behavior, creating predictive discrimination that justifies rejection of applicants from communities with high historical eviction rates. The rule does not address what plain-language explanation is adequate for tenant screening adverse action, what Fair Housing Act testing methodology is required for screening AI, or how applicants can effectively challenge screening decisions when proprietary AI methodology is not disclosed."
+}
+CARD_CONTENT["TECH-JUDS-0053"] = {
+    "stmt": "AI systems used in zoning, land use planning, permit processing, and environmental review must not produce racially or economically discriminatory outcomes, must be accessible to all affected community members, and must include community input mechanisms that enable meaningful participation by historically marginalized communities.",
+    "notes": "Land use planning AI that optimizes for fiscal impact, transportation efficiency, or aggregate property value may systematically recommend zoning decisions that exclude affordable housing, concentrate industrial uses in low-income communities, or privilege existing high-property-value neighborhoods in ways that perpetuate residential segregation. Compliant planning AI could satisfy community input requirements through digital public comment platforms that are inaccessible to elderly residents, non-English speakers, and residents without reliable internet access, achieving procedural compliance without inclusive participation. AI-assisted permit processing that routes applications through algorithmic review may replicate historical patterns of expedited approval for larger well-resourced applicants and delayed or denied processing for small businesses and minority-owned applicants without explicit bias in any individual decision. The rule does not address what affirmative obligations planning AI must meet to reach historically marginalized communities in the input process, or how planning AI outcomes are evaluated for racial and economic equity impacts across the range of land use decisions the AI influences."
+}
+CARD_CONTENT["TECH-JUDS-0054"] = {
+    "stmt": "AI systems used in workers' compensation claims processing, disability determination, and occupational injury assessment must be accurate across all worker populations, must not undervalue claims from low-wage workers, and must provide injured workers with specific explanations of AI-influenced claim outcomes.",
+    "notes": "Workers' compensation and disability AI trained on historical claims data may systematically undervalue claims for low-wage workers whose baseline economic loss is lower in dollar terms — even when functional impairment is equivalent — embedding economic inequality into benefit calculations through models that optimize for consistency with historical awards. Compliant claims processing AI could satisfy explanation requirements for adverse claim decisions while those explanations cite model-generated credibility scores or medical necessity assessments that injured workers cannot effectively challenge without medical or technical expertise. AI medical review in disability claims that uses evidence-based criteria applied without clinical judgment for individual circumstances may deny claims for workers with presentations that are atypical for their diagnosis — older workers, workers with multiple comorbidities, workers doing physically demanding jobs that exceed standard functional capacity assessments. The rule does not address what medical evidence AI must consider before denying disability claims, what clinical review is required before AI-influenced denial, or what rights injured workers have to information about AI models used in their claims assessment."
+}
+CARD_CONTENT["TECH-JUDS-0055"] = {
+    "stmt": "AI systems used in unemployment insurance claims processing, eligibility determination, and fraud detection must comply with due process requirements, must have rapid error correction mechanisms for false fraud flags, and may not produce racially or economically disparate denial rates.",
+    "notes": "Unemployment insurance fraud detection AI has produced catastrophic false positive problems: Michigan's MiDAS system wrongly accused approximately 40,000 people of fraud between 2013 and 2015, demanding repayment of benefits with penalties before any human review, illustrating the concrete harm AI fraud detection errors cause to economically vulnerable individuals. Compliant unemployment AI could satisfy false positive rate requirements in aggregate while specific categories of claimants — gig workers, seasonal employees, self-employed workers — experience substantially higher false positive rates that are obscured by aggregate statistics. Rapid error correction mechanisms for AI unemployment fraud flags require that agencies have sufficient staff capacity to review contested determinations within timeframes that prevent continued benefit interruption — a requirement that agencies with chronic capacity constraints may be unable to meet. The rule does not specify what error correction timelines are required to prevent irreversible harm from false fraud determinations, what false positive rate thresholds require AI redesign, or what remedies claimants have when AI-generated fraud determinations caused them financial harm before being corrected."
+}
+CARD_CONTENT["TECH-JUDS-0056"] = {
+    "stmt": "AI systems used in voting administration — voter registration verification, ballot processing, signature matching, and election security monitoring — must be subject to independent testing for accuracy and disparate impact by race and language minority status, and must include manual review mechanisms for all AI-flagged determinations that affect individual voting rights.",
+    "notes": "Ballot signature matching AI has documented racial and age-related disparities: signature recognition AI trained on data from younger, more consistent signers may systematically reject ballots from elderly voters, voters with disabilities, and voters whose signatures have changed over time, producing disparate ballot rejection rates that disenfranchise protected voters. Compliant election AI could satisfy testing requirements through pre-election accuracy assessments that do not capture real-world error rates under actual ballot variability conditions — where the range of signature variation, ballot quality, and language diversity exceeds what test datasets represent. AI voter registration verification that cross-references databases with spelling or name transliteration variations may systematically reject or flag voter registrations for voters with non-English names, creating disparate registration barriers for language minority voters. The rule does not address what testing methodology is adequate for election AI, what manual review triggers are required before AI-flagged ballots are rejected, or what election integrity requirements ensure that AI voting administration errors can be detected and corrected before results are certified."
+}
+CARD_CONTENT["TECH-JUDS-0057"] = {
+    "stmt": "AI systems used in campaign finance reporting, political advertising compliance, and campaign disclosure must accurately track contributions, expenditures, and advertising sources, and may not be used to obscure the source of political spending or facilitate circumvention of campaign finance law.",
+    "notes": "AI-generated political advertising that creates realistic-appearing synthetic media — candidate endorsements, crowds of supporters, event footage — without disclosure may facilitate campaign finance law violations when the source and authorization of the content is obscured by the synthetic generation. Compliant campaign AI could automate contribution tracking and expenditure reporting while the data entered by campaign staff is inaccurate or incomplete, producing technically automated compliance reports that do not accurately reflect the actual campaign financial activity. AI-generated small-dollar fundraising solicitations that use psychological profiling to optimize for each donor's propensity to give may constitute coordinated expenditures or in-kind contributions if used in coordination with super PACs, raising campaign finance coordination questions that existing law does not address for AI-mediated fundraising optimization. The rule does not address how campaign finance law's coordination prohibitions apply to AI tools used by both campaigns and allied outside groups, or what disclosure requirements apply to AI-generated political content."
+}
+CARD_CONTENT["TECH-JUDS-0058"] = {
+    "stmt": "AI systems used in public benefits administration — SNAP, Medicaid, housing assistance, TANF, and Social Security — must be regularly tested for accuracy and fairness, must provide applicants and recipients with due process protections, and may not use AI-driven efficiency improvements to reduce access to benefits for eligible individuals.",
+    "notes": "Public benefits AI trained on historical application and approval data will replicate historical administrative patterns — including systematic barriers to access faced by certain communities — unless specifically designed to break those patterns, producing efficiency improvements that preserve existing inequities at lower administrative cost. Compliant benefits AI could satisfy accuracy testing requirements using aggregate approval and denial rate comparisons without examining whether specific documentation requirements, income verification methods, or application pathways produce different outcomes for different demographic groups. AI-driven benefits eligibility determinations that produce denials for technically eligible individuals through stringent document verification requirements, income calculation approaches, or categorical exclusions applied without human judgment create barriers to access that may not be apparent from aggregate benefits administration statistics. The rule does not address what standard of accuracy is required for benefits AI to be permissible, what demographic equity testing is required, or what due process protections must be specifically designed into AI benefits systems rather than retrofitted after deployment."
+}
+CARD_CONTENT["TECH-JUDS-0059"] = {
+    "stmt": "AI systems used in tax law compliance guidance — chatbots, automated advice, and AI tax preparation — must be accurate across all tax situations they address, must clearly disclose limitations and coverage gaps, and must not provide tax advice that creates liability for users who relied in good faith.",
+    "notes": "AI tax advice tools that provide inaccurate guidance on deductions, credits, or filing requirements create taxpayer liability for errors made in good faith reliance on AI guidance — without the professional liability or regulatory accountability that applies to CPA or enrolled agent advice. Compliant AI tax tools could satisfy accuracy requirements for common filing situations while providing inaccurate guidance for complex or unusual situations that tax professionals recognize require specialized analysis, without disclosure that the AI's accuracy in those situations is unverified. Tax law changes that occur after AI training data cutoffs may make AI tax advice inaccurate for the current filing year without adequate disclosure to users who reasonably assume AI guidance reflects current law. The rule does not address what professional liability framework applies when AI tax advice causes user harm, how AI tax tool operators are accountable for accuracy in the current tax year, or what disclosure is required about situations where AI cannot provide reliable advice."
+}
+CARD_CONTENT["TECH-JUDS-0060"] = {
+    "stmt": "AI systems used in disability benefits determination — including SSA disability, SSDI, and SSI determinations — must comply with Mathews v. Eldridge due process requirements, must not deny benefits based solely on AI assessment without human clinical review, and must provide claimants with specific and actionable explanations of denial reasons.",
+    "notes": "SSA disability determination AI faces the same tension between administrative efficiency and individualized clinical judgment as other benefits AI — using AI to screen out claims before human review may reduce the pool of claims receiving clinical evaluation in ways that create higher denial rates for atypical presentations that AI models are not calibrated to assess. Compliant SSA AI could satisfy human review requirements by routing all AI-denied claims to an administrative law judge review process while the volume of cases and ALJ backlog means that human review for most claimants occurs years after the initial denial — during which time claimants may have experienced serious harm from benefit deprivation. Disability determination AI trained on historical approved and denied claims will perpetuate historical patterns of denial based on condition types, demographic factors, and documentation practices that have produced known inequities in SSA disability approvals. The rule does not specify what clinical expertise is required for human review of AI disability assessments, what timeframe is required for human review, or how AI-influenced denial rates by disability category are monitored for equity problems."
+}
+CARD_CONTENT["TECH-JUDS-0061"] = {
+    "stmt": "AI systems used in housing court proceedings — including eviction case management, default judgment processing, and landlord-tenant dispute resolution — must ensure that tenant due process rights are protected against AI-accelerated eviction proceedings, and must not be used to increase eviction rates through process automation.",
+    "notes": "Housing court AI that automates default judgment processing — issuing eviction orders when tenants fail to respond — may dramatically accelerate eviction timelines in ways that prevent tenants from exercising legal defenses they would have raised with more time, converting AI efficiency gains into tenant rights losses. Compliant housing courts could implement AI case management that satisfies nominal procedural requirements while the compressed timelines enabled by AI processing make it practically impossible for unrepresented tenants to secure legal assistance, gather documentation, or prepare adequate defenses. Landlord AI tools that identify optimal eviction filing strategies — timing, jurisdiction selection, fee calculation — create asymmetric legal capacity between well-resourced landlords using AI litigation optimization and unrepresented tenants navigating complex housing court procedures without assistance. The rule does not address what minimum procedural time must be preserved regardless of AI processing efficiency, what language accessibility requirements apply to AI-processed housing court proceedings, or how default judgment rates are monitored for AI-driven acceleration of eviction."
+}
+CARD_CONTENT["TECH-JUDS-0062"] = {
+    "stmt": "AI systems used in small claims court case management and online dispute resolution must maintain human access pathways for disputants who cannot effectively use digital interfaces, must provide language accessibility, and must not convert small claims efficiency gains into systematic advantages for well-resourced repeat filers.",
+    "notes": "Small claims court AI that is optimized for digital interaction creates access barriers for elderly claimants, claimants with disabilities, and claimants with limited English proficiency — who include many individuals most in need of small claims access — when accessible human alternatives are not maintained. Compliant small claims AI could satisfy language accessibility requirements through machine translation of core documents while not providing the interpretation services — for hearings, testimony, and judicial explanation — that meaningful participation in small claims proceedings requires for limited-English-proficient claimants. Well-resourced repeat filers — landlords, debt collectors, consumer businesses — may use AI to optimize small claims filing strategies, case preparation, and settlement offers in ways that systematically advantage them over individual claimants making single small claims without comparable AI support. The rule does not address what access requirements apply when digital-only small claims processes exclude non-digital populations, how language accessibility extends beyond document translation to proceeding participation, or what equity safeguards prevent AI-enhanced repeat filer advantage."
+}
+CARD_CONTENT["TECH-JUDS-0063"] = {
+    "stmt": "AI systems used in appellate brief analysis, oral argument preparation, and appellate case management must not create appellate access inequity between parties with AI assistance and those without, and must comply with court rules governing brief preparation and citation accuracy.",
+    "notes": "AI appellate brief analysis tools that identify successful argument patterns, optimal citation strategies, and favorable issue framing provide AI-resourced litigants with appellate advantage that compounds at the level where legal arguments are most consequential for precedent-setting decisions. Compliant appellate AI could satisfy court rules on brief preparation and citation accuracy while hallucinated citations that slip past attorney verification create Rule 11 and professional responsibility violations that harm the litigant and potentially contaminate appellate court analysis. AI-assisted identification of favorable circuit precedent, argument vulnerability in opposing briefs, and oral argument preparation may produce better-argued appeals by AI-resourced parties while reducing the effectiveness of oral argument by AI-resourced courts who prepare with AI tools and face parties who cannot. The rule does not address how courts manage the appellate access gap between AI-resourced and unresourced parties, or what verification requirements apply to AI-assisted brief preparation before filing with courts that do not yet have specific AI brief rules."
+}
+CARD_CONTENT["TECH-JUDS-0064"] = {
+    "stmt": "AI systems used in law enforcement body camera review, evidence analysis, and incident investigation must use standardized, validated protocols, must be disclosed to affected individuals, and may not produce racially disparate findings in use-of-force analysis or officer performance review.",
+    "notes": "Body camera AI that analyzes footage for use-of-force assessment, officer performance, or incident reconstruction may be used by law enforcement agencies to exonerate officers in ways that community oversight bodies and affected families cannot challenge because the AI analysis is not disclosed. Compliant law enforcement AI could use body camera analysis in internal affairs investigations without disclosing AI use to complainants or in subsequent civil rights litigation, limiting plaintiffs' ability to challenge AI-influenced investigation conclusions. AI use-of-force analysis trained on historical investigation conclusions — where use of force against Black and Brown community members was disproportionately found justified — may produce AI analysis that replicates this historical pattern, systematically finding that analyzed incidents are within policy for the same officer behaviors. The rule does not address when AI body camera analysis findings must be disclosed in use-of-force investigations, civil rights litigation, or criminal prosecutions arising from officer conduct, or how AI analysis outcomes are monitored for racial disparities in use-of-force findings."
+}
+CARD_CONTENT["TECH-JUDS-0065"] = {
+    "stmt": "AI systems used in private dispute resolution — including employment arbitration, consumer arbitration, and franchise dispute resolution — must provide parties with access to the AI-generated analyses that influence arbitrator decisions, must comply with due process standards equivalent to those in formal legal proceedings, and may not be used to systematically advantage repeat-player parties over one-time claimants.",
+    "notes": "Private arbitration AI that provides decision-support recommendations to arbitrators may not be disclosed to claimants, allowing AI-influenced outcomes without the transparency or challenge rights that would exist in judicial proceedings. Repeat-player advantage in arbitration — documented in the academic literature on arbitrator selection and decision patterns — may be amplified by AI tools that repeat players like employers and consumer businesses deploy for case preparation and arbitrator selection while one-time claimants lack equivalent AI support. Consumer and employment arbitration that uses AI for case screening, preliminary assessment, and settlement suggestion may resolve disputes more efficiently while systematically settling at lower values for claimants who are less able to resist AI-generated early resolution pressure. The rule does not address whether mandatory pre-dispute arbitration clauses limit the effectiveness of AI due process requirements in arbitration, how AI use by arbitration administrators is disclosed to parties, or what standards govern AI arbitrator decision support that affects binding outcomes with no appellate review."
+}
+CARD_CONTENT["TECH-JUDS-0066"] = {
+    "stmt": "AI systems used in media law — copyright detection, defamation screening, and content compliance review — must be subject to First Amendment considerations, must not produce systematic over-removal of protected speech, and must include human review pathways for disputed content determinations.",
+    "notes": "AI copyright detection systems that generate automated takedown notices for allegedly infringing content have documented over-removal patterns, taking down non-infringing content including political commentary, educational use, and original works that happen to contain copyrighted elements — suppressing protected speech at scale through automated systems with inadequate human review. Compliant AI content compliance review could satisfy DMCA safe harbor requirements through notice-and-takedown procedures while the practical effect of AI-generated notices is removal of large volumes of non-infringing content because individual counter-notices require technical and legal knowledge beyond most content creators. AI defamation screening tools that flag content for legal review based on content analysis may produce excessive conservative screening that chills publication of accurate and protected reporting on matters of public concern through systematic over-inclusive flagging. The rule does not address what First Amendment standards govern AI content compliance review, what human review is required before AI-influenced takedown or publication restriction, or how counter-notification rights are protected when AI-automated takedown systems process disputes at volume."
+}
+CARD_CONTENT["TECH-JUDS-0067"] = {
+    "stmt": "AI systems used in insurance fraud investigation must not produce racially disparate investigation rates, must comply with applicable insurance fraud statutes, and must provide policyholders with notice and opportunity to respond before claims are denied on grounds of suspected AI-identified fraud.",
+    "notes": "Insurance fraud AI trained on historical fraud investigation data replicates the historical pattern in which certain demographic groups — including racial minorities and immigrants — were disproportionately investigated for fraud regardless of actual fraud rates, creating AI systems that perpetuate discriminatory fraud investigation under facially neutral algorithmic criteria. Compliant insurance fraud AI could satisfy legal requirements for claims processing while flagging claims for fraud investigation based on demographic-correlated patterns without any specific evidence of fraud, using AI probability assessments to justify investigation delays and documentation demands that create barriers to legitimate claim payment. Notice and opportunity to respond requirements for fraud-flagged claims are meaningful only if the policyholder receives specific information about what triggered the fraud flag — not just that fraud review is occurring — and has a genuine opportunity to provide responsive information before denial. The rule does not address what threshold probability or evidence is required for AI fraud flagging to be legitimate, what documentation demands may accompany fraud investigation, or what remedies policyholders have when AI fraud flags produce wrongful claim denial."
+}
+CARD_CONTENT["TECH-JUDS-0068"] = {
+    "stmt": "AI systems used in FOIA and public records request processing must not systematically exclude responsive documents through algorithmic search limitations, must be disclosed to requesters, and may not apply exemption claims to AI-identified documents without human review of individual exemption applicability.",
+    "notes": "FOIA AI that uses semantic search and document classification to identify responsive records may systematically miss responsive records that use terminology different from AI training data, document format types the AI cannot process, or records that are responsive to the request's legal scope but not its literal search terms. Compliant FOIA AI could identify a search set that satisfies the apparent scope of FOIA requests while missing records that would be responsive under a broader legal scope analysis — allowing agencies to narrow the practical scope of document production through AI search limitations that are presented as comprehensive. Algorithmic exemption application that classifies documents as exempt from disclosure without human review may misapply exemptions in ways that suppress disclosable records — using AI overcategorization as a systematic withholding strategy. The rule does not address what testing is required to demonstrate FOIA search AI retrieves all reasonably responsive records, how requesters can challenge the scope of AI-assisted search, or what disclosure is required about FOIA processing AI systems and their known limitations."
+}
+CARD_CONTENT["TECH-JUDS-0069"] = {
+    "stmt": "AI systems used in law enforcement investigation of organized crime, human trafficking, and financial crime networks must comply with applicable constitutional requirements for network analysis evidence, must provide defendants with access to AI-generated network analyses, and must not produce false identifications of innocent individuals as network members.",
+    "notes": "AI network analysis in criminal investigations may identify individuals as connected to criminal networks based on communication, financial, or association patterns that reflect normal business or social relationships rather than criminal participation, producing false identifications that investigators treat as corroborating evidence for existing suspicions. Compliant investigators could use AI network analysis as an investigative lead without disclosure to defendants at trial, arguing that the AI tool is an investigative technique rather than evidence — while AI network identification substantially influenced investigation direction and witness interview strategies. AI financial crime network analysis that identifies transaction patterns associated with money laundering may flag legitimate commercial transactions from certain industries, countries, or business types at high rates — concentrating law enforcement attention on communities with distinctive financial patterns regardless of actual criminal activity. The rule does not address what discovery disclosure is required for AI network analysis in criminal investigations, how defendants challenge AI-generated network membership attributions, or what evidence standards govern the use of AI network analysis in criminal prosecution."
+}
+CARD_CONTENT["TECH-JUDS-0070"] = {
+    "stmt": "AI systems used in veterans' benefits determination — including VA disability ratings, healthcare eligibility, and benefits processing — must be tested for accuracy across all service-connected conditions and demographics, and must provide veterans with specific explanations of AI-influenced rating and eligibility decisions.",
+    "notes": "VA benefits AI that applies rating criteria to medical evidence for service-connected disability may systematically underrate conditions that present differently across demographics — mental health conditions that present differently in women veterans, conditions related to exposures that were historically less documented, and musculoskeletal conditions in older veterans with multiple comorbidities. Compliant VA AI could satisfy due process requirements for benefits determination while the explanation provided to veterans identifies model-generated rating categories without disclosing the specific evidence gaps or documentation requirements that explain the difference between the claimed and awarded rating. Veterans navigating AI-influenced benefits determinations without legal representation — a significant portion of VA claimants — may lack the ability to identify what additional evidence or documentation would change the AI rating recommendation, creating practical barriers to effective appeal. The rule does not address what accuracy testing is required for VA benefits AI across service-connected condition types, what information veterans must receive to meaningfully use explanation rights, or how rating decisions are monitored for demographic equity."
+}
+CARD_CONTENT["TECH-JUDS-0071"] = {
+    "stmt": "AI systems used in civil rights enforcement — including EEOC complaint processing, HUD fair housing investigations, and DOJ civil rights program review — must be calibrated to increase rather than decrease enforcement effectiveness, and must not produce disparate enforcement gaps by protected class or complaint type.",
+    "notes": "Civil rights enforcement AI that prioritizes cases based on probability of success or anticipated legal precedent value may systematically deprioritize complaints from communities with historically weaker enforcement records, compounding rather than correcting existing enforcement inequities. Compliant civil rights enforcement AI could satisfy processing efficiency requirements while the prioritization algorithm produces complaint attrition rates — cases closed without investigation — that are higher for protected classes with weaker enforcement histories and less organized legal representation. AI complaint processing that routes cases to alternative dispute resolution without adequate consideration of enforcement value may resolve individual complaints while preventing development of precedent that would protect the broader affected community. The rule does not address how civil rights enforcement AI prioritization decisions are evaluated for systematic effects on enforcement coverage across protected classes, or what oversight ensures AI enforcement tools serve civil rights goals rather than administrative efficiency goals that may be incompatible."
+}
+CARD_CONTENT["TECH-JUDS-0072"] = {
+    "stmt": "AI systems used in international arbitration and cross-border dispute resolution must comply with applicable international arbitral rules, must not produce jurisdiction-based disparate outcomes, and must disclose AI involvement to all parties regardless of their technical sophistication or familiarity with AI legal tools.",
+    "notes": "International arbitration AI used by sophisticated commercial parties may create asymmetric advantages in cross-border disputes between multinational corporations with AI legal infrastructure and smaller parties or state entities from developing countries without equivalent AI access. Compliant international arbitration AI could satisfy UNCITRAL or ICC rules governing arbitral procedure through formal compliance while substantive advantages from AI case preparation and AI-assisted arbitrator selection are not addressed by procedural rules designed before AI capabilities were relevant. AI-generated arbitral awards drafted with AI assistance may not satisfy reasoned award requirements if AI reasoning is substituted for the arbitrator's independent legal analysis — affecting enforceability under the New York Convention's requirements for valid international arbitral awards. The rule does not address how international arbitral institutions evaluate AI use in arbitral proceedings, what disclosure obligations apply to AI-assisted arbitral award preparation, or how parties from countries with limited AI access ensure equal participation in AI-influenced international arbitration."
+}
+CARD_CONTENT["TECH-JUDS-0073"] = {
+    "stmt": "AI systems used in debt collection litigation — including automated demand letter generation, default judgment applications, and settlement calculations — must comply with FDCPA requirements, must not file false or misleading court documents, and must include human attorney review before any AI-generated litigation document is filed with a court.",
+    "notes": "Automated debt collection litigation AI that generates demand letters, court filings, and default judgment applications at high volume without specific human review for each filing may submit documents containing inaccurate debt amounts, wrong defendants, inflated fees, or improperly calculated interest — producing mass filing of misleading court documents in violation of Rule 11 and the FDCPA. Compliant debt collection law firms could satisfy human attorney review requirements through nominal attorney supervision — a single attorney overseeing hundreds of AI-generated filings per day — that does not provide the meaningful review needed to detect AI errors before filing. Default judgment applications in debt collection cases are frequently granted without judicial examination of the underlying debt documentation, allowing AI-generated applications based on AI-calculated amounts to produce enforceable judgments that may be inaccurate. The rule does not address what attorney review is substantive rather than nominal for AI-generated debt collection filings, what verification of underlying debt documentation is required before AI calculates amounts, or how courts handle default judgments discovered to be based on AI-generated errors."
+}
+CARD_CONTENT["TECH-JUDS-0074"] = {
+    "stmt": "AI systems used in data breach response — including breach notification timing, scope determination, and remediation recommendation — must provide timely and complete notification to affected individuals, must comply with applicable state breach notification laws, and must not use AI to minimize breach scope assessments to reduce notification obligations.",
+    "notes": "AI breach scope assessment that uses probabilistic access analysis — determining that only some affected records were 'likely accessed' — may enable companies to argue that narrow notification is sufficient while affected individuals whose records were among those probabilistically not accessed may still face identity theft risk. Compliant breach response AI could satisfy breach notification law timing requirements through technically accurate AI-generated breach scope assessments while the AI scope analysis methodology produces systematically conservative estimates of affected individuals that minimize notification obligations. AI notification processes that handle breach notification at high volume — drafting notices, coordinating mailings, managing regulatory filings — may produce compliant aggregate breach response while individual notices contain errors about which accounts were affected, what data was compromised, and what remediation is available. The rule does not address what AI breach scope methodology is adequate to satisfy notification obligations, how affected individuals can verify that scope assessments accurately covered their accounts, or what accountability exists when AI breach scope analysis systematically underestimates affected populations."
+}
+CARD_CONTENT["TECH-JUDS-0075"] = {
+    "stmt": "AI systems used in adoption proceedings, guardianship determinations, and elder care placement must not make or substantially influence placement decisions without disclosure to affected parties, meaningful due process, and independent professional review of AI recommendations.",
+    "notes": "Adoption and guardianship AI that scores family environments, placement outcomes, or elder care need levels based on historical decision-making data will replicate historical disparities — including higher rates of family separation for communities of color, lower rates of relative placement, and elder care decisions shaped by economic rather than clinical factors. Compliant adoption and guardianship courts could use AI assessment tools as one factor in placement determinations while structuring proceedings in ways that make AI recommendations practically determinative — particularly when AI recommendations are presented to overburdened social workers with heavy caseloads who lack time for independent assessment. Elder care placement AI that recommends care settings based on cost, geographic availability, and condition severity may not adequately weight elder preferences, family proximity, language needs, or cultural factors in ways that produce placement decisions inconsistent with the elder's genuine best interests. The rule does not address what professional credentials are required for reviewers of AI adoption and guardianship recommendations, or how affected families and individuals — including elders and children — are represented in proceedings that rely on AI assessment."
+}
+CARD_CONTENT["TECH-JUDS-0076"] = {
+    "stmt": "AI systems used in environmental impact litigation, toxic tort claims, and mass environmental harm proceedings must not be used by defendants to obscure causation through AI-generated alternative causation analyses, and must be subject to independent scientific review when offered as evidence of environmental causation or the absence thereof.",
+    "notes": "Defense AI in environmental litigation that generates complex alternative causation models — using AI to identify other potential causes for plaintiffs' alleged injuries — may produce technically sophisticated analyses that outpace plaintiffs' litigation resources and create reasonable doubt about causation without constituting genuine scientific evidence. Compliant defendants could commission AI environmental causation analyses that satisfy Daubert's formal requirements — using scientific methodology, peer-reviewed techniques — while the specific analyses produced are designed to manufacture uncertainty rather than resolve scientific questions about causation. Environmental mass tort cases involving AI causation analyses raise evidentiary concerns about the transparency of AI models used to generate causation conclusions, whether those models' assumptions are validated for the specific environmental and health context, and whether courts can effectively evaluate competing AI-generated causation analyses. The rule does not address what Daubert standards specifically apply to AI environmental causation models, how plaintiffs can challenge proprietary AI defense analyses, or what scientific transparency requirements govern AI evidence in environmental litigation."
+}
+CARD_CONTENT["TECH-JUDS-0077"] = {
+    "stmt": "AI systems used in bankruptcy proceedings — including creditor claim processing, asset valuation, and debtor eligibility determination — must be accurate across all debtor financial circumstances, must provide debtors with explanations of AI-influenced determinations, and may not systematically advantage sophisticated creditors over individual debtors.",
+    "notes": "Bankruptcy AI that processes creditor claims at high volume may systematically advantage creditors who file AI-optimized claims while individual debtors navigating the bankruptcy process without legal assistance cannot effectively challenge creditor claim AI-generated amounts, creating asymmetric accuracy benefits for AI-equipped parties. Compliant bankruptcy AI could satisfy accuracy requirements for standard claim processing while AI asset valuation models that use comparable sales data undervalue certain asset types — minority-owned businesses, assets in lower-income communities, specialized professional assets — in ways that disadvantage debtors with those assets. AI eligibility determination for bankruptcy chapters — routing debtors to Chapter 7 versus Chapter 13 based on means test analysis — may be technically accurate while not accounting for individual circumstances that might support court discretion in favor of a particular chapter. The rule does not address what accuracy requirements apply to bankruptcy AI across asset types and debtor demographics, how debtors without legal representation can challenge AI-generated valuations and eligibility determinations, or what oversight ensures AI bankruptcy tools serve the Code's fresh-start policy."
+}
+CARD_CONTENT["TECH-JUDS-0078"] = {
+    "stmt": "AI systems used in tribal court proceedings, federal Indian law matters, and treaty rights adjudication must respect tribal sovereignty, must not impose federal AI governance frameworks on tribal legal systems without tribal consent, and must be developed in consultation with affected tribes.",
+    "notes": "Federal AI governance frameworks applied to tribal court proceedings without tribal consent raise sovereignty concerns under the federal trust responsibility and tribal self-governance rights that federal law recognizes — imposing AI standards that tribes have not adopted and that may be inconsistent with tribal legal traditions and values. Compliant federal Indian law AI could satisfy federal statutory requirements while not addressing the specific legal and procedural frameworks of tribal courts, which differ from federal and state court systems in ways that generic AI legal tools may not accommodate. Treaty rights adjudication AI that analyzes historical treaty text and interpretation may embed interpretive frameworks that have historically disadvantaged tribal treaty rights, replicating in AI form the same interpretive asymmetries that courts have applied to narrow treaty protections. The rule does not address how tribal consent is obtained before AI legal tools are deployed in tribal court contexts, what standards govern AI development processes that include tribal consultation, or how AI treaty rights analysis accounts for the principle of liberal construction of ambiguous treaty terms in favor of tribes."
+}
+CARD_CONTENT["TECH-JUDS-0079"] = {
+    "stmt": "AI systems used in class certification analysis, class membership determination, and aggregate settlement distribution must be subject to judicial oversight, must not systematically exclude class members through algorithmic identification processes, and must provide a mechanism for excluded individuals to challenge AI-based exclusion decisions.",
+    "notes": "Class membership identification AI that uses transactional or behavioral data to identify class members in consumer or employment class actions may systematically exclude individuals with incomplete or non-standard records — recent immigrants, cash transaction users, individuals with disrupted employment histories — who are often the most harmed class members. Compliant class action AI could satisfy the adequacy requirements for class definition and member identification through technically sound algorithmic approaches while not accounting for the portion of the injured class whose records are absent from the databases AI searches. Settlement distribution AI that calculates individual damages or settlement shares based on AI analysis of class member records may produce systematically undervalued payments for class members with records that AI processes less accurately or that were collected under adverse conditions. The rule does not address what record coverage validation is required for class membership AI, how class members can challenge AI exclusion determinations, or how courts evaluate AI-assisted settlement distribution for adequacy in the approval process."
+}
+CARD_CONTENT["TECH-JUDS-0080"] = {
+    "stmt": "AI systems used in international trade compliance — including import classification, duty calculation, sanctions screening, and export control compliance — must comply with applicable federal agency requirements, must be accurate across all product and transaction types, and must provide importers and exporters with access to AI-generated compliance determinations.",
+    "notes": "Trade compliance AI that misclassifies goods under harmonized tariff schedule codes — whether through AI error or intentional AI manipulation by the importer — may create systematic customs duty evasion or over-payment that neither customs agencies nor importers can effectively audit at the volume of international trade transactions. Compliant trade compliance AI could satisfy export control and sanctions screening requirements while AI sanctions screening false positives prevent legitimate international trade transactions from proceeding — creating trade barriers that disproportionately affect small and mid-sized businesses without resources to resolve AI-generated compliance flags. AI import classification systems controlled by importers create systematic tension between accurate classification — higher duties — and importer-favorable classification — lower duties — that AI incentive alignment may resolve in favor of lower classification when accuracy is not independently verified. The rule does not address how customs agencies validate AI classification accuracy, what penalties apply to AI-generated misclassification, or how importers and exporters can effectively challenge AI compliance determinations that block legitimate transactions."
+}
+CARD_CONTENT["TECH-JUDS-0081"] = {
+    "stmt": "AI systems used in legal compliance monitoring — including corporate compliance programs, regulatory compliance tracking, and legal risk assessment — must include sufficient human oversight to identify compliance failures that AI does not detect, and may not serve as a substitute for substantive compliance programs that actively prevent violations.",
+    "notes": "AI compliance monitoring programs may be marketed and used as sufficient compliance measures while actually providing only the appearance of compliance oversight — AI that monitors for known violation patterns will not detect novel compliance risks, creative evasion, or violations that pattern-match to compliant behavior in the training data. Compliant corporations could implement AI compliance monitoring to demonstrate good faith compliance efforts while internal actors who understand AI monitoring criteria design conduct that satisfies the monitoring criteria while achieving the prohibited outcome through nominally compliant means. Corporate compliance AI that generates clean compliance dashboards may inhibit board-level attention to compliance risks by providing AI-generated assurances that mask underlying compliance failures until they become enforcement actions or litigation. The rule does not address what substantive compliance program requirements AI monitoring cannot substitute for, how board fiduciary duty requires active engagement with compliance rather than AI monitoring delegation, or what enforcement credit is available to companies that used AI compliance programs in good faith."
+}
+CARD_CONTENT["TECH-JUDS-0082"] = {
+    "stmt": "AI systems used in legal strategy, case outcome prediction, and settlement valuation must disclose to clients when AI is influencing significant strategic decisions, must not be the sole basis for recommending settlement or abandoning legal claims, and must clearly communicate prediction uncertainty and model limitations.",
+    "notes": "AI case outcome prediction tools that provide confidence intervals for trial outcomes may be used by attorneys to recommend settlement on terms that do not reflect the actual strength of the client's case — using AI-generated settlement valuation to deprioritize litigation in ways that serve attorney efficiency interests rather than client interests. Compliant attorneys could satisfy AI strategy disclosure requirements by informing clients that AI tools were consulted while not disclosing specific AI predictions about case outcome, settlement value, or opponent strategy that materially influenced the attorney's recommendations. AI settlement valuation tools that calculate expected value based on historical settlement data in the relevant jurisdiction may systematically undervalue claims from communities whose damages awards and settlement values have historically been lower — perpetuating economic inequality in access to tort remedies. The rule does not address what information about AI predictions and model limitations clients must receive to make informed decisions about settlement and litigation strategy, or how the attorney-client relationship is affected when AI case predictions substantially influence attorney judgment."
+}
+CARD_CONTENT["TECH-JUDS-0083"] = {
+    "stmt": "AI systems used in regulatory approval processes — FDA drug approval, FCC licensing, SEC registration, and equivalent federal and state regulatory pathways — must be disclosed when used by applicants, must be subject to agency validation review, and may not enable regulatory arbitrage through AI-optimized application strategies.",
+    "notes": "AI regulatory application optimization that analyzes approved applications to identify the specific representations, data presentations, and documentation formats most likely to receive approval may enable sophisticated applicants to game regulatory processes — satisfying approval criteria through AI-calibrated submissions rather than genuine merit. Compliant applicants could disclose AI assistance in application preparation while not disclosing that AI analysis of prior approved applications influenced the substantive content and framing of the current application — making disclosure technically accurate while obscuring AI's role in application strategy. Regulatory AI used by agencies to process applications may introduce consistency across like cases while systematically underweighting legitimate scientific, policy, or individual consideration factors that AI models do not adequately represent. The rule does not address what applicant AI use must be disclosed, how agencies evaluate AI-optimized applications for genuine compliance versus AI-calibrated representation of compliance, or what regulatory arbitrage through AI application optimization is prohibited."
+}
+CARD_CONTENT["TECH-JUDS-0084"] = {
+    "stmt": "AI systems used in legislative drafting, policy analysis, and regulatory rulemaking must be disclosed when used, must be subject to human expert review before any AI-generated legal text is proposed, enacted, or published, and may not introduce technical artifacts of AI generation into legally binding text.",
+    "notes": "AI-generated legislative and regulatory text may contain provisions that are technically coherent but legally unworkable, internally inconsistent, or that create unintended legal consequences that expert legislative drafters would have avoided — risks that are difficult to detect without deep substantive expertise in the relevant legal domain. Compliant legislative drafting AI use could produce AI-generated draft text that receives nominal expert review while the volume and pace of AI-assisted drafting exceeds the expert review capacity of legislative staff, resulting in technically reviewed but substantively inadequate text entering the legislative process. AI regulatory text generation that draws on existing regulatory language may perpetuate existing regulatory flaws, outdated statutory references, or prior interpretive errors embedded in the training corpus rather than identifying and correcting them. The rule does not address what disclosure to the public is required when AI is used in regulatory rulemaking, whether AI-generated text in proposed rules satisfies notice-and-comment requirements, or how courts evaluate rules where AI drafting introduced legal ambiguities."
+}
+CARD_CONTENT["TECH-JUDS-0085"] = {
+    "stmt": "AI systems used in professional licensing — including medical licensing, bar admission, engineering certification, and teacher certification — must be tested for accuracy and fairness across all applicant demographics, must not produce credential recognition barriers for internationally trained professionals, and must include human review of adverse licensing recommendations.",
+    "notes": "Professional licensing AI that evaluates credentials, work history, and examination performance may systematically disadvantage internationally trained professionals whose credentials do not pattern-match training data based on U.S.-trained practitioners, creating credential recognition barriers that reduce labor force participation of qualified professionals. Compliant licensing AI could satisfy accuracy testing for domestic licensing pathways while not addressing the specific accuracy gaps for internationally trained professionals — physicians, engineers, attorneys — who represent a significant portion of licensing applicants with distinctively different credential documentation patterns. AI licensing examination scoring that is calibrated on historical test-taker performance may reflect historical barriers to entry for certain demographic groups — including the effects of unequal educational preparation — in ways that embed historical inequity into ostensibly objective AI scoring. The rule does not address what international credential recognition methodology AI licensing systems must use, how accuracy testing must cover internationally trained applicants, or what remediation is required when AI licensing barriers are found to produce discriminatory outcomes."
+}
+CARD_CONTENT["TECH-JUDS-0086"] = {
+    "stmt": "AI systems used in healthcare fraud investigations — billing audit, Medicare fraud detection, and clinical practice pattern analysis — must not produce racially disparate investigation rates by healthcare provider or patient population, must be disclosed to investigated providers, and must include human clinical review before adverse findings are referred for enforcement.",
+    "notes": "Healthcare fraud AI trained on billing pattern data may flag billing practices common in communities that treat high proportions of low-income or complex patients — higher rates of certain diagnoses, more intensive billing codes, less standardized documentation — as potentially fraudulent, directing fraud investigation toward providers who serve communities most in need of healthcare access. Compliant CMS or OIG fraud detection AI could satisfy disclosure requirements for formal investigation referrals while the AI analysis that triggers investigation prioritization is not disclosed, limiting providers' ability to understand or challenge why they were selected for investigation. Human clinical review before enforcement referral is meaningful only if reviewers understand the clinical context of the investigated billing practices — that certain populations have higher rates of certain diagnoses, that certain practice types require certain billing codes — rather than applying standard fraud criteria without clinical adjustment for patient mix. The rule does not address what testing methodology demonstrates non-discriminatory fraud investigation targeting, how providers challenge AI-influenced investigation prioritization, or what liability attaches to enforcement actions based on AI fraud findings later shown to be products of training data bias."
+}
+CARD_CONTENT["TECH-JUDS-0087"] = {
+    "stmt": "AI systems used in occupational licensing reform, licensing barrier analysis, and regulatory streamlining must include equity analysis ensuring that deregulation through AI-assisted reform does not eliminate protections that benefit workers, patients, or communities while preserving burdens that primarily serve incumbent industry interests.",
+    "notes": "AI-assisted occupational licensing reform that identifies 'unnecessary' barriers may replicate libertarian economic frameworks that treat all licensing requirements as friction without adequately distinguishing consumer protection requirements from anticompetitive incumbency protections. Compliant licensing reform AI could identify licensing barriers for elimination based on economic analysis that treats competition and entry barriers as the primary analysis without adequately weighting consumer safety, worker protection, and equity considerations that licensing requirements serve. Licensing reform that reduces entry requirements may benefit aspirational workers seeking to enter professions while also reducing quality standards, accountability mechanisms, and malpractice protections for consumers of licensed services — particularly in healthcare, childcare, and construction. The rule does not address how AI licensing reform analysis must balance economic efficiency against consumer protection and equity considerations, or what community input is required before AI-recommended licensing reform is adopted."
+}
+CARD_CONTENT["TECH-JUDS-0088"] = {
+    "stmt": "AI systems used in intellectual property enforcement — including content ID, automated DMCA processing, and algorithmic IP protection programs — must not systematically suppress legitimate fair use, transformative works, or First Amendment expression through over-broad IP enforcement, and must provide robust human review for contested automated takedowns.",
+    "notes": "Automated IP enforcement AI produces over-inclusive takedowns of fair use, criticism, commentary, and transformative works because AI pattern matching identifies copyrighted content without ability to evaluate the legal fair use factors — creating systematic suppression of protected expression at the scale and speed of AI processing. Compliant platforms could satisfy DMCA safe harbor requirements through notice-and-takedown AI implementation while the practical effect of AI takedown volumes — hundreds of thousands of takedowns per day on major platforms — is suppression of significant protected speech because human review processes cannot keep pace with AI volume. AI content ID systems operated by major platforms create private IP enforcement infrastructure with more reach than the legal IP enforcement system, applying algorithmic copyright determinations without the judicial oversight, due process protections, or statutory limitations that federal IP law imposes on government enforcement. The rule does not address what standards govern AI IP enforcement by platforms, how fair use must be evaluated before automated takedown, or how platform IP enforcement AI is accountable for the cumulative effects of over-inclusive takedown on public discourse."
+}
+CARD_CONTENT["TECH-JUDS-0089"] = {
+    "stmt": "AI systems used in securities class action identification, plaintiff recruitment, and securities fraud investigation must comply with PSLRA requirements, must accurately identify class members and damages calculations, and may not be used to suppress meritorious securities fraud claims through AI-optimized early settlement at inadequate recoveries.",
+    "notes": "Securities class action AI used by plaintiff firms to identify potential class actions through pattern analysis of trading data, price movements, and corporate disclosures may enable meritorious claim identification — but also generate strike suit pressure through automated claim filing in cases that AI identifies as pattern-matching fraud signals that do not constitute actual fraud. Compliant plaintiff securities AI could satisfy PSLRA lead plaintiff and adequacy requirements through technically compliant processes while AI-driven plaintiff recruitment and case aggregation creates institutional plaintiff dynamics that may not align with individual class member interests. Defense securities AI that calculates optimal early settlement values may generate settlement pressure that resolves meritorious securities fraud claims at recoveries below what litigation would produce — using AI settlement optimization to suppress accountability for corporate misconduct. The rule does not address how PSLRA's procedural requirements interact with AI-driven securities litigation, what oversight ensures AI settlement valuation serves class members rather than defendant interests, or how courts evaluate the adequacy of AI-calculated securities class action settlements."
+}
+CARD_CONTENT["TECH-JUDS-0090"] = {
+    "stmt": "AI systems used in law enforcement geofencing warrants, tower dump orders, and mass digital surveillance must comply with Fourth Amendment particularity requirements, and may not use AI to identify suspects from mass data collections without individualized suspicion and court authorization.",
+    "notes": "Geofencing warrants that compel disclosure of all devices located in a specific geographic area at a specific time produce mass surveillance of innocent individuals who happened to be present, and AI analysis of the resulting data to identify suspects applies sophisticated pattern matching to data collected without individualized suspicion in ways that may not satisfy Fourth Amendment particularity requirements. Compliant law enforcement could satisfy technical Fourth Amendment requirements for geofencing warrants — geographic area, time period, suspect connection to location — while AI analysis of the resulting mass data set conducts more extensive profiling of innocent bystanders than courts anticipated when the warrant was issued. Tower dump AI analysis that identifies persons of interest from mass cellular location data collected through orders that are less protective than traditional warrants creates law enforcement intelligence from non-targeted surveillance that the Fourth Amendment was designed to prevent. The rule does not address what Fourth Amendment standards apply to AI analysis of data collected through geofencing and tower dump orders, how particularity requirements constrain AI analysis beyond the original collection scope, or what suppression remedies are available when AI identifies suspects from unconstitutionally overbroad data collection."
+}
+CARD_CONTENT["TECH-JUDS-0091"] = {
+    "stmt": "AI systems used in judicial performance evaluation, bar discipline proceedings, and judicial selection committees must not use AI profiling of judicial opinions, recusal patterns, or social connections to predict judicial attitudes or create pressure on judicial decision-making that compromises judicial independence.",
+    "notes": "AI judicial profiling tools that identify judicial ideological tendencies, predict decision patterns in particular case types, or map judicial social networks may enable litigants, appointment commissions, or political actors to engage in judicial targeting that compromises the independence that Article III and state judicial selection processes are designed to protect. Compliant use of AI judicial analytics by litigants for case assignment strategy or settlement prediction does not obviously raise First Amendment concerns — litigants may use available information for litigation strategy — but the cumulative effect of sophisticated AI judicial profiling on judicial behavior through anticipated evaluation may create chilling effects on judicial independence. AI judicial discipline screening that identifies patterns in recusal decisions, appellate reversals, or complaint rates may provide disciplinary bodies with AI-generated profiling of judges that is not admitted as evidence but influences investigation prioritization. The rule does not address when AI judicial profiling becomes prohibited pressure on judicial independence, what standards govern AI use in judicial selection processes, or how judicial independence is protected from AI-enabled profiling that is technically lawful but institutionally corrosive."
+}
+CARD_CONTENT["TECH-JUDS-0092"] = {
+    "stmt": "AI systems used in legal research for constitutional litigation — civil rights cases, First Amendment claims, and due process challenges — must be tested for accuracy in the specific domains of constitutional law, must not embed political or ideological bias in legal analysis, and must clearly identify areas of constitutional law where AI accuracy is limited.",
+    "notes": "AI legal research in constitutional litigation may encode interpretive frameworks — originalism, living constitutionalism, various balancing tests — from training data that reflect historical legal writing patterns rather than neutral doctrine, influencing constitutional research outputs in ideologically consistent directions without disclosure. Compliant constitutional AI legal research could accurately report existing precedent while not disclosing that training data overrepresentation of certain interpretive approaches shapes the framing of constitutional analysis outputs in ways that favor some legal theories over others. Constitutional litigation where AI legal research guides argument development may produce briefs that reflect AI training data patterns rather than the most persuasive available arguments for clients whose constitutional claims differ from the case types well-represented in training data. The rule does not address how ideological bias in AI constitutional legal research is identified and disclosed, what training data standards would produce more neutral constitutional law AI, or how attorneys can evaluate whether AI constitutional analysis is accurately capturing relevant doctrine across interpretive approaches."
+}
+CARD_CONTENT["TECH-JUDS-0093"] = {
+    "stmt": "AI systems used in judicial management of complex litigation — multidistrict litigation, mass tort proceedings, and nationwide class actions — must provide all parties with transparent information about AI-assisted case management decisions, and may not use AI to create structural advantages for well-resourced parties in managing large-scale litigation.",
+    "notes": "MDL and mass tort AI case management tools used by transferee judges may introduce systematic effects on case outcomes through scheduling decisions, settlement encouragement practices, and discovery management that AI-equipped parties better anticipate and position for than unequipped parties. Compliant MDL courts could use AI administrative tools for scheduling and docket management without disclosure to parties, arguing that administrative case management does not require disclosure — while the AI tools shape litigation dynamics in ways that affect the settlement pressure and strategic options available to each side. AI-assisted global settlement calculations in mass tort MDL proceedings may produce settlement values that systematically undervalue the claims of certain plaintiff categories based on AI-calculated damages models that apply historical settlement data rather than full tort remedy potential. The rule does not address what disclosure of AI case management tools to parties in MDL and complex litigation is required, how party rights to challenge AI-influenced case management decisions are protected, or what equity review of AI mass tort settlement calculations is required before judicial approval."
+}
+CARD_CONTENT["TECH-JUDS-0094"] = {
+    "stmt": "AI systems used in legal expense review and litigation budget management — including AI-powered billing review, e-discovery cost prediction, and litigation finance AI — must be accurate across all matter types, must disclose AI involvement to clients, and may not produce systematic fee undervaluation for legal work in communities with less established billing rate data.",
+    "notes": "Legal billing review AI trained on BigLaw market billing rates may systematically undervalue legal work in jurisdictions and practice areas where billing rates are lower but work quality is equivalent — creating fee disputes and billing audits that disadvantage attorneys serving underserved communities and reducing incentives for legal services in those markets. Compliant billing review AI could satisfy accuracy requirements using jurisdiction-specific billing rate benchmarks that reflect local market conditions while those benchmarks are themselves products of market dynamics that undervalue legal services in communities historically underserved by the legal profession. Litigation finance AI that evaluates case investment potential may systematically underinvest in claims that are meritorious but represent markets where AI predicts lower recoveries — concentrating litigation finance in high-value commercial claims while systematically underfunding civil rights, employment discrimination, and consumer protection litigation. The rule does not address how legal billing AI accuracy is tested across legal markets, what disclosure clients receive about AI billing review, or how litigation finance AI investment patterns affect access to justice across different claim types."
+}
+CARD_CONTENT["TECH-JUDS-0095"] = {
+    "stmt": "AI systems used in legislative redistricting analysis must not produce racially gerrymandered map proposals, must comply with the Voting Rights Act Section 2 requirements, and when used by legislative bodies must be disclosed to the public with methodology transparency sufficient to enable independent analysis.",
+    "notes": "Redistricting AI can be used both to identify VRA-compliant district configurations and to optimize partisan advantage while remaining within legal constraints — the same technical capability serves both accountability and manipulation purposes depending on the objectives specified by the operators. Compliant redistricting AI could generate maps that satisfy standard racial gerrymandering metrics — majority-minority district requirements, racial compactness standards — while optimizing heavily for partisan advantage in ways that courts have struggled to address under existing constitutional doctrine. AI redistricting tools that draw districts based on voter registration, demographic, and partisan data can produce maps that are technically race-neutral while achieving partisan outcomes that effectively dilute minority voting power in jurisdictions where race and partisanship are highly correlated. The rule does not address how VRA Section 2 compliance is evaluated for AI-generated redistricting maps, what methodology transparency is sufficient for independent analysis of AI redistricting tools, or what role AI plays in judicial challenges to enacted AI-generated districts."
+}
+CARD_CONTENT["TECH-JUDS-0096"] = {
+    "stmt": "AI systems used in judicial education, legal professional training, and law school curricula must include accurate information about AI limitations, ethical obligations, and civil rights implications of AI legal tools, and must not be developed or provided exclusively by AI vendors with commercial interests in AI adoption.",
+    "notes": "AI legal education curricula developed by AI vendors — through bar association partnerships, law school programs, and CLE content — may emphasize AI adoption and capability while underemphasizing AI limitations, ethical risks, and the civil rights implications of AI legal tools, creating systematic bias in legal professional education toward AI-favorable perspectives. Compliant legal AI education could satisfy CLE ethics requirements for AI-related content through programs that address professional responsibility basics while not providing the specific technical understanding of AI capabilities and limitations needed to use AI tools safely in legal practice. Law schools that integrate AI tools into legal education through vendor partnerships may create dependencies on specific AI platforms that shape graduates' professional practices in ways that serve vendor interests rather than client interests. The rule does not address what independence requirements apply to legal AI education curricula, what technical content is required for AI CLE to meet professional competence standards, or how AI educational programs are evaluated for accuracy, completeness, and freedom from commercial bias."
+}
+
+
+# ---------------------------------------------------------------------------
+# LABS — Labor & Workplace AI
+# ---------------------------------------------------------------------------
+CARD_CONTENT["TECH-LABS-0001"] = {
+    "stmt": "Employers may not use AI to surveil, monitor, or record workers' communications, locations, or biometric data beyond what is directly and demonstrably necessary for legitimate operational safety or compliance purposes, and must disclose all monitoring to workers in advance.",
+    "notes": "Workplace monitoring AI that continuously tracks keystrokes, mouse movements, communications, and facial expressions creates psychological burden equivalent to constant supervisor scrutiny — with documented effects on worker stress, autonomy, and wellbeing that go beyond what legitimate operational needs require. Compliant employers could satisfy disclosure requirements by including monitoring terms in employment contracts without specific ongoing disclosure about the scope, nature, or actual use of monitoring data — satisfying technical disclosure while not providing workers with usable information about how they are being observed. 'Directly and demonstrably necessary' standards for workplace monitoring depend on operational context that employers control, and absent independent verification requirements, employers may characterize expansive surveillance as necessary for vague operational purposes. The rule does not define what 'legitimate operational purposes' justify specific monitoring modalities, what safety operations require biometric surveillance versus less intrusive alternatives, or how workers can challenge employer characterizations of surveillance necessity."
+}
+CARD_CONTENT["TECH-LABS-0002"] = {
+    "stmt": "Algorithmic management systems that set worker productivity quotas, pace, routing, and performance targets must be calibrated to safe, human-sustainable work rates, must be disclosed to workers, and may not be used to ratchet up productivity demands through continuous algorithmic intensification without worker or union consultation.",
+    "notes": "Algorithmic management in warehousing and delivery creates documented physical harm — higher injury rates, unsustainable pace, inadequate rest time — when productivity targets are set at the margin of human capacity and continuously optimized upward without safety constraints or worker input. Compliant employers could satisfy safe work rate requirements through annual ergonomic assessments while algorithmic productivity targets are adjusted continuously in ways that exceed safe rates between assessments, exploiting the lag between assessment and enforcement. Productivity ratcheting through algorithmic management — raising targets when workers consistently exceed them — creates a race to the bottom in which the most physically capable workers set the standard that all workers are then required to meet, regardless of age, physical condition, or accommodation needs. The rule does not address how safe work rates are set independently of algorithmic productivity optimization, what role workers and unions have in setting rate standards, or how algorithmic intensification is detected and stopped before causing harm."
+}
+CARD_CONTENT["TECH-LABS-0003"] = {
+    "stmt": "Employers using AI in hiring, promotion, and performance evaluation must comply with Title VII, the ADA, the ADEA, and applicable state employment discrimination laws, and must conduct regular disparate impact audits of AI employment systems, with findings disclosed to applicable EEOC enforcement authorities.",
+    "notes": "Title VII disparate impact analysis for AI hiring and promotion systems requires comparing outcomes for protected class members against a relevant comparator population — an analysis that requires detailed demographic data that many employers do not collect and that AI vendors may not provide in disaggregated form. Compliant employers could conduct internal disparate impact audits using favorable methodology or limited demographic scope that produces acceptable results without detecting real disparate impact — using audit processes that the employer controls to validate the employer's systems. AI promotion and performance evaluation systems that use criteria correlated with dominant cultural communication styles, educational credentials, or professional network membership may produce disparate outcomes by race, gender, and national origin without any individual discriminatory intent. The rule does not specify what audit methodology is adequate for AI employment systems, what disclosure to EEOC is required before versus after disparate impact is identified, or what remediation timeline applies when disparate impact is found."
+}
+CARD_CONTENT["TECH-LABS-0004"] = {
+    "stmt": "Workers have the right to be informed about AI systems used in their evaluation, scheduling, and employment decisions, including the general criteria used and how AI outputs affect their pay, hours, assignments, and continued employment.",
+    "notes": "Worker information rights about AI employment systems are meaningful only if workers receive information specific enough to understand how AI is affecting their individual employment outcomes — not just generic descriptions of AI tools the employer uses. Compliant employers could satisfy information disclosure requirements through general descriptions of AI evaluation criteria in employee handbooks without specific information about how AI scored the worker's specific performance, how AI influenced specific scheduling or assignment decisions, or what actions the worker could take to improve their AI evaluation. Workers in contingent and gig employment relationships may not have contractual information rights at all, and employment-at-will doctrine combined with independent contractor classification enables employers to use AI for employment decisions with no disclosure obligations. The rule does not address what specific information workers must receive, how timely that information must be, or whether workers have a right to receive individualized AI evaluation information rather than generic system descriptions."
+}
+CARD_CONTENT["TECH-LABS-0005"] = {
+    "stmt": "Workers and their representatives have the right to collectively bargain over the introduction, scope, and parameters of AI management systems, algorithmic scheduling, and AI-driven performance evaluation systems, and employers must bargain in good faith before implementing AI systems that substantially affect working conditions.",
+    "notes": "NLRA good faith bargaining obligations for AI management systems require that AI implementation affecting wages, hours, and working conditions constitutes a mandatory subject of bargaining — an obligation that some employers have contested by characterizing AI as a management prerogative not subject to bargaining. Compliant employers could engage in nominal bargaining over AI system implementation while refusing to provide unions with the specific information — algorithmic criteria, productivity targets, performance scoring methodology — needed to evaluate and negotiate over AI impacts on working conditions. AI scheduling systems implemented through third-party vendors may allow employers to argue that scheduling outcomes are determined by neutral AI rather than employer decisions, limiting union ability to bargain effectively over scheduling systems when the union cannot influence the AI vendor's algorithm. The rule does not address what information employers must provide to unions about AI systems to enable meaningful bargaining, what constitutes good faith bargaining over AI implementation, or how unfair labor practice charges are evaluated when employers implement AI systems without bargaining."
+}
+CARD_CONTENT["TECH-LABS-0006"] = {
+    "stmt": "Employers may not use AI to identify, track, or suppress worker organizing activities, union drives, or collective action, including through monitoring of worker communications, social media, or off-duty activities for union-related content.",
+    "notes": "AI monitoring of worker communications for union-related content constitutes surveillance of NLRA-protected Section 7 activity and violates the NLRA's prohibition on employer interference with union organizing — yet AI-enabled employer union surveillance has been documented across multiple industries including Amazon, where the company monitored internal communications and hiring platforms for union-related keywords. Compliant employers could monitor worker communications for general productivity and compliance purposes while the monitoring captures union communications as a predictable byproduct, arguing that the monitoring was not targeting union activity — exploiting the gap between prohibited intent and permitted monitoring that incidentally captures protected activity. AI social media monitoring tools used in hiring and employment can identify workers' union affiliations, labor movement connections, or organizing activities from social media profiles and use that information in employment decisions without explicit references to union activity. The rule does not address how Section 7 protections apply to AI-enabled employer monitoring systems that are nominally for non-union purposes but are used to identify and act against workers engaged in protected organizing activities."
+}
+CARD_CONTENT["TECH-LABS-0007"] = {
+    "stmt": "AI-driven gig platform systems that control worker task assignment, pricing, and deactivation must comply with minimum labor standards applicable to the employment relationship — including wage floors, anti-discrimination protections, and due process before account deactivation — regardless of worker classification status.",
+    "notes": "Gig platform AI that controls the material terms of work — task availability, pay rates, deactivation decisions — creates employment-like control without employment classification, enabling platform operators to set work conditions while denying workers the protections that employment relationship creates. Compliant platforms could argue that algorithmic task assignment, rate setting, and deactivation are automated functions without employer decision-making involved, treating AI control of work conditions as legally distinct from employer control — an argument that courts have inconsistently evaluated. Account deactivation AI that terminates workers' access to their income source based on algorithmic assessment — without specific rule violations, human review, or appeal processes — constitutes an economically severe adverse action without any of the due process protections that employment termination provides. The rule does not address what standard of review applies before AI-driven account deactivation, what anti-discrimination protections apply to AI gig platform decisions when workers are classified as independent contractors, or how minimum wage protections apply to AI-set pay rates."
+}
+CARD_CONTENT["TECH-LABS-0008"] = {
+    "stmt": "AI-driven scheduling systems must comply with fair scheduling laws in applicable jurisdictions — including advance schedule notice, minimum rest periods, and on-call pay requirements — and must not use algorithmic flexibility to circumvent scheduling protections that state and local laws require.",
+    "notes": "Fair scheduling law compliance for AI scheduling systems requires that the AI is specifically programmed to respect statutory advance notice, minimum rest, and on-call pay requirements — not merely that the employer has legal obligations that human schedulers would comply with, because AI optimization may find scheduling configurations that violate legal requirements more profitably. Compliant scheduling AI could satisfy advance schedule notice requirements by providing schedules within the required notice period while using 'flexible' scheduling provisions — shift swaps, voluntary on-call pools — that create de facto on-call obligations not technically subject to advance notice requirements. AI scheduling that continuously adjusts shift assignments, lengths, and timing based on real-time business conditions creates unpredictability inconsistent with fair scheduling law purposes even when individual schedule disclosures are technically timely. The rule does not address how AI scheduling systems must be tested for compliance with applicable scheduling laws, what audit mechanisms ensure that AI optimization does not circumvent scheduling protections, or how workers enforce scheduling rights against AI systems that generate violations through automated adjustments."
+}
+CARD_CONTENT["TECH-LABS-0009"] = {
+    "stmt": "Workers subject to AI surveillance and monitoring have the right to access data collected about them, to correct inaccurate records, and to contest AI-generated performance assessments or decisions that affect their employment status, pay, or working conditions.",
+    "notes": "Worker data access rights for AI employment systems are meaningful only if workers can access the specific data underlying AI evaluations of their performance — keystroke logs, location data, communication records — not just summary evaluation scores. Compliant employers could satisfy access rights by providing workers with AI performance scores without the underlying data that generated those scores, satisfying nominal access rights while preventing workers from identifying the specific inputs that produced adverse evaluations. Correction rights for inaccurate AI employment records depend on workers having the technical knowledge to identify inaccuracies in data that is often collected automatically and that workers have no independent means to verify against their own recollection. The rule does not address what data format is required for worker access requests, what timeframe applies to access and correction responses, or how workers prove and correct inaccuracies in automated data collection systems where employer-controlled data is presumed accurate."
+}
+CARD_CONTENT["TECH-LABS-0010"] = {
+    "stmt": "AI systems used in severance determination, layoff selection, and workforce reduction decisions must comply with WARN Act requirements, must not produce selection criteria that have disparate impact by protected class, and must include human review of AI-generated layoff cohorts before decisions are finalized.",
+    "notes": "Layoff selection AI trained on historical performance data may produce demographic disparities in selected workers if performance metrics that drive AI scores are themselves products of workplace discrimination, managerial bias, or assignment patterns that limited advancement opportunities for certain groups. Compliant employers could use AI for layoff selection while arguing that WARN Act ERISA-governed pension and benefits implications apply to the human implementation of AI recommendations rather than to the AI analysis that generated the recommendations — limiting WARN compliance obligations to the notification stage rather than the selection stage. Human review of AI layoff cohort recommendations may not satisfy disparate impact requirements if the reviewer examines the specific cohort without statistical testing for protected class concentration in the selected group. The rule does not address what statistical analysis is required before AI-selected layoff cohorts are implemented, what information affected workers have about the AI criteria used to select them, or how WARN Act obligations interact with AI-generated organizational restructuring analyses."
+}
+CARD_CONTENT["TECH-LABS-0011"] = {
+    "stmt": "AI systems used to identify, analyze, and predict worker unionization risk or employee sentiment must not be used to suppress protected collective action, must not provide employers with information used to target union organizers for adverse employment action, and may not substitute for good-faith dialogue with worker representatives.",
+    "notes": "Employer AI tools marketed as 'employee sentiment analysis' or 'early warning systems' for labor relations may function as union suppression tools by identifying workers with high pro-union sentiment for targeted management engagement, positive treatment, or — when management responses fail — pretextual adverse employment action. Compliant employers could use AI sentiment analysis for stated human resources purposes — improving worker satisfaction, identifying retention risks — while the AI analysis enables precise targeting of organizing activity in ways that are not disclosed to workers or acknowledged in subsequent unfair labor practice proceedings. AI labor relations consulting tools that identify the specific workers most likely to vote yes in union elections enable employer anti-union campaigns to focus persuasion resources on the highest-impact workers with precision that was previously impossible — qualitatively expanding the employer's capacity to interfere with organizing. The rule does not address what uses of AI sentiment analysis violate NLRA Section 8(a) prohibitions on employer interference with organizing, how workers can challenge AI-enabled employer targeting, or how labor boards evaluate AI labor relations tools in unfair labor practice proceedings."
+}
+CARD_CONTENT["TECH-LABS-0012"] = {
+    "stmt": "AI systems used in workplace injury detection, ergonomic monitoring, and occupational health surveillance must be used to prevent harm to workers, must not be used to identify injury risk as a basis for adverse employment action against workers, and must comply with OSHA general duty clause requirements.",
+    "notes": "Workplace injury risk AI that identifies workers with higher predicted injury risk creates an information asymmetry that can be used adversarially — assigning high-risk workers to lower-productivity roles, denying accommodations because accommodation costs exceed worker predicted tenure, or selecting high-risk workers for layoff before injuries occur and workers' compensation obligations arise. Compliant employers could use ergonomic monitoring AI for stated safety purposes while the data collected enables adverse employment decisions based on injury risk prediction that are structured to avoid FMLA, ADA, and workers' compensation retaliation claims through facially neutral justifications. OSHA's general duty clause requires employers to provide a workplace free from recognized hazards — AI-identified ergonomic hazards are recognized hazards — but enforcement of general duty clause obligations based on employer AI data that employers control creates evidence challenges. The rule does not address how workers can access workplace safety AI data about their own risk assessments, what adverse action prohibitions specifically protect workers identified as high-injury-risk by AI, or how OSHA enforces general duty clause obligations identified by employer-controlled safety AI."
+}
+CARD_CONTENT["TECH-LABS-0013"] = {
+    "stmt": "AI systems used in workers' competency assessment, training evaluation, and credential verification for safety-critical roles — including healthcare, aviation, nuclear, and transportation — must be validated for the specific safety context, must meet applicable regulatory standards, and may not substitute for hands-on evaluation in high-stakes competency areas.",
+    "notes": "AI competency assessment for safety-critical roles creates patient, passenger, and public safety risks if AI-validated competency does not predict actual performance under realistic conditions — particularly for rare high-stakes scenarios that are underrepresented in AI training data but that safety-critical role-holders must handle correctly. Compliant safety-critical employers could satisfy regulatory training and competency requirements through AI-validated training completion records while hands-on and practical competency evaluation is reduced in favor of AI efficiency — producing workers who have completed training AI records without demonstrating actual competency. Simulation AI and AI-graded competency assessment may not adequately evaluate the judgment, situational awareness, and adaptive response that safety-critical roles require in high-uncertainty, high-stakes scenarios that simulation does not fully replicate. The rule does not address what validation studies are required for safety-critical competency AI, what specific competency domains require hands-on evaluation that AI cannot substitute for, or how regulatory agencies validate AI competency assessment tools for industries under their jurisdiction."
+}
+CARD_CONTENT["TECH-LABS-0014"] = {
+    "stmt": "AI systems used in immigration-based employment verification — including enhanced E-Verify, I-9 auditing AI, and worksite enforcement tools — must have rapid correction mechanisms for U.S. citizen and authorized worker false positive flags, and may not be used to discriminate against workers based on protected characteristics.",
+    "notes": "Immigration employment verification AI that produces false positive flags for authorized workers — particularly those with recently obtained authorization, complex immigration histories, or names with non-standard transliterations — may cause legal workers to lose employment through verification system errors before corrections can be processed. Compliant employers could use enhanced E-Verify AI while error correction timelines exceed the period during which employers are required to maintain employment pending reverification — creating a gap in which workers lose employment during the correction period despite having legal work authorization. AI I-9 auditing tools that flag document combinations as potentially fraudulent based on pattern matching may produce disparate audit pressure on workers from certain national origins, creating de facto national origin discrimination through nominally neutral AI document verification. The rule does not address what maximum timeframe is permitted for false positive correction before employment must be maintained, how employer liability is allocated when AI verification errors cause wrongful employment termination, or how immigration enforcement AI disparate impact by national origin is detected and remediated."
+}
+CARD_CONTENT["TECH-LABS-0015"] = {
+    "stmt": "AI-powered remote work monitoring systems — including webcam monitoring, activity tracking, and productivity surveillance of remote workers — must comply with applicable state wiretapping, privacy, and electronic surveillance laws, and must be disclosed to remote workers with meaningful opt-out alternatives.",
+    "notes": "Remote work surveillance AI creates privacy violations of particular severity because monitoring occurs in workers' homes — capturing living environment, family members, and domestic activities that are legally and normatively distinct from workplace monitoring. Compliant employers could satisfy state electronic surveillance disclosure requirements through employment contract provisions that technically notify workers of monitoring while not providing meaningful alternatives, converting disclosure into consent by conditioning employment on monitoring acceptance. Remote monitoring AI that captures continuous video, microphone feeds, or screen recording creates surveillance records of home environments that are sensitive far beyond work productivity data — and that employers may retain, share with insurers, or use in non-employment contexts without adequate consent. The rule does not address what state law protections limit remote workplace monitoring in workers' homes, what limits apply to the retention and use of remote worker surveillance data, or how workers with disabilities, caregiving responsibilities, or privacy concerns can exercise meaningful opt-out rights."
+}
+CARD_CONTENT["TECH-LABS-0016"] = {
+    "stmt": "Employers using AI for shift bidding, shift assignment, and flexible scheduling must ensure that AI-generated schedules do not produce racially, gender-based, or disability-based disparate access to desirable shifts, and must disclose scheduling AI criteria to workers and their representatives.",
+    "notes": "AI shift assignment systems that use seniority, prior shift acceptance rates, or schedule reliability metrics may embed historical workforce dynamics in which certain worker groups had less access to desirable shift selections, perpetuating prior discriminatory patterns through AI criteria that are formally neutral but historically loaded. Compliant employers could satisfy non-discrimination requirements for scheduling AI through aggregate demographic analysis of shift distributions that shows acceptable overall patterns without examining whether specific shift categories — highest-paying, most predictable, best benefits — are disproportionately assigned to particular demographic groups. Schedule flexibility AI that assigns scheduling priority based on workers' ability to pick up additional shifts or make last-minute changes may systematically disadvantage workers with caregiving responsibilities — disproportionately women and single parents — in ways that produce gender-based schedule disparities without explicit gender consideration. The rule does not address what testing methodology is adequate for scheduling AI disparate impact analysis, what scheduling criteria constitute prohibited proxies for protected characteristics, or how workers challenge AI scheduling decisions they believe are discriminatory."
+}
+CARD_CONTENT["TECH-LABS-0017"] = {
+    "stmt": "AI systems used in workplace disability accommodation processes — request evaluation, accommodation identification, and implementation tracking — must comply with the ADA interactive process requirements, must not substitute for individualized assessment, and must not use efficiency optimization to deny reasonable accommodations.",
+    "notes": "ADA interactive process requirements mandate good-faith employer engagement with each individual employee's specific accommodation needs and functional limitations — a requirement that AI accommodation evaluation may not satisfy if it routes accommodation requests through standardized assessment pathways that do not account for individual variation. Compliant employers could use AI to identify accommodation options and cost estimates while the AI analysis is determinative of whether accommodations are granted without the individualized assessment and dialogue the ADA requires. AI accommodation cost-effectiveness analysis that denies accommodations based on predicted productivity impact or accommodation cost may violate ADA reasonable accommodation requirements when the accommodation would not impose undue hardship — creating a gap between AI efficiency criteria and the legal standard for denial. The rule does not address how ADA interactive process obligations interact with AI accommodation systems, what individualized assessment must occur that AI cannot perform, or how accommodation denial decisions based on AI efficiency analysis are evaluated in ADA enforcement proceedings."
+}
+CARD_CONTENT["TECH-LABS-0018"] = {
+    "stmt": "AI-generated workplace performance improvement plans, disciplinary actions, and termination decisions must include specific, documented behavioral criteria, must be reviewed by human supervisors with actual knowledge of the worker's performance, and may not be based solely on algorithmic scores without individualized assessment.",
+    "notes": "AI-generated performance improvement plans that cite algorithmic productivity scores as the basis for improvement requirements may not provide workers with sufficient specificity to understand what changed behavior is required — if the AI produced a score without explaining which behaviors drove the score, workers cannot know what to do differently. Compliant employers could structure AI-generated PIPs with human supervisor signature while the human reviewer has no knowledge of the worker's actual performance context and is signing documents drafted entirely by AI based on algorithmic scores. Termination decisions based solely on AI productivity scoring may not satisfy the 'legitimate non-discriminatory reason' requirement in disparate treatment discrimination analysis if the AI score cannot be explained or contextualized by anyone with actual knowledge of the worker's job performance. The rule does not address what individualized assessment must supplement AI performance scoring before disciplinary action, what documentation of human supervisor independent judgment is required, or how workers challenge AI-generated disciplinary actions in employment discrimination litigation."
+}
+CARD_CONTENT["TECH-LABS-0019"] = {
+    "stmt": "AI systems used in truck, delivery, and logistics routing must comply with hours of service regulations, must not optimize routes that require drivers to exceed legal driving time limits, and may not be used to pressure drivers to violate hours of service rules through algorithmic performance targets.",
+    "notes": "Logistics AI that optimizes delivery routes and time windows without explicit hours of service constraints may generate route plans that require drivers to exceed federal hours of service limits to meet delivery expectations — creating algorithmic pressure to violate safety regulations that technically originates from AI optimization rather than explicit employer instruction. Compliant logistics operators could implement AI routing with hours of service constraints while performance evaluation AI measures driver efficiency against route time standards that assume violations, creating incentive structures that reward hours of service violations indirectly. AI route optimization that assigns impossible delivery windows — requiring more deliveries than hours of service permit — shifts compliance risk to individual drivers who face algorithmic performance consequences for regulatory compliance that reduces their delivery count. The rule does not address how FMCSA hours of service enforcement applies to AI-generated route plans that produce systematic pressure to exceed driving time limits, or how driver liability is evaluated when AI route plans were the proximate cause of hours of service violations."
+}
+CARD_CONTENT["TECH-LABS-0020"] = {
+    "stmt": "AI systems used in call center management — including real-time script guidance, sentiment monitoring, interaction quality scoring, and agent performance evaluation — must comply with applicable labor standards, must not create psychologically harmful working conditions, and must disclose AI evaluation criteria to workers.",
+    "notes": "Call center AI that monitors conversations in real time and prompts agents with scripted responses while simultaneously scoring agent adherence creates simultaneous performance pressure from multiple AI systems — script compliance, sentiment management, quality scoring, productivity targets — that research links to elevated burnout, anxiety, and voice disorders. Compliant employers could satisfy labor standard requirements for call center AI through ergonomic assessments and break requirements while not addressing the psychological burden of continuous AI-mediated performance pressure, which may constitute a working condition covered by OSHA general duty clause obligations. AI quality scoring of call center interactions that evaluates agent tone, pace, and word choice as objective performance metrics may produce disparate evaluation outcomes for agents who do not conform to dominant communication norms — particularly agents for whom English is a second language or who have communication styles reflecting different cultural backgrounds. The rule does not address what psychological health protections apply to AI-intensive call center work environments, how worker burnout from AI performance pressure creates OSHA obligations, or what disclosure of AI evaluation criteria call center workers must receive."
+}
+CARD_CONTENT["TECH-LABS-0021"] = {
+    "stmt": "AI systems used in agricultural labor management — including field worker productivity monitoring, piece-rate calculation, and crew assignment — must comply with the Migrant and Seasonal Agricultural Worker Protection Act, applicable state labor laws, and must not use AI to enable wage theft through inaccurate productivity calculation.",
+    "notes": "Agricultural AI productivity monitoring that calculates piece-rate pay based on sensor or GPS data may systematically undercount worker productivity if monitoring systems fail to capture all qualifying activity — time traveling between rows, rest periods required by law, equipment maintenance — enabling AI-facilitated wage underpayment that is obscured by algorithmic calculation. Compliant agricultural employers could satisfy AWPA record-keeping requirements through AI-generated time and productivity records while the AI calculation methodology contains systematic errors that understated worker productivity that workers — particularly those with limited English and no access to payroll review resources — cannot detect or challenge. Agricultural worker productivity AI that tracks individual worker output by GPS and sensor data creates surveillance of worker location and activity level that, combined with employer control over housing, creates conditions of debt bondage and coercive labor practices that AI-enabled precision monitoring intensifies. The rule does not address how piece-rate AI calculations are audited for accuracy, what disclosure agricultural workers receive about how AI calculates their pay, or how wage theft through systematic AI productivity undercount is detected and prosecuted."
+}
+CARD_CONTENT["TECH-LABS-0022"] = {
+    "stmt": "AI-powered employee assistance program chatbots and mental health support tools used by employers must maintain strict confidentiality of worker mental health disclosures, may not share disclosure information with employer HR systems, and must comply with HIPAA and applicable mental health privacy protections.",
+    "notes": "Employer-provided mental health AI tools that are operationally controlled by the employer — even when nominally confidential — create structural concerns about information flows: enterprise software relationships, data sharing agreements, and de-identification techniques that may not adequately protect workers' mental health disclosures from downstream employer access. Compliant EAP AI could satisfy contractual confidentiality requirements with the employer while the AI platform vendor's data practices — including aggregate reporting, de-identified analytics, and behavioral modeling — may provide employer-level insights about workforce mental health that are commercially valuable but not anticipated by workers using the tool. Workers who disclose mental health conditions through employer AI tools may face disability discrimination based on information employers obtained through de-identified or aggregate data that nonetheless identifies the disclosing worker. The rule does not address what audit mechanisms verify that confidentiality protections are actually maintained, how workers can verify that their mental health disclosures have not reached the employer, or what remedies are available when employer EAP AI confidentiality is violated."
+}
+CARD_CONTENT["TECH-LABS-0023"] = {
+    "stmt": "AI systems used in apprenticeship, vocational training, and workforce development programs must be designed to expand access for historically excluded groups — including women in non-traditional trades, workers of color, formerly incarcerated workers, and workers with disabilities — not to replicate historical exclusion patterns.",
+    "notes": "Workforce development AI that uses predictive models for apprenticeship candidate selection may replicate historical barriers to entry for non-traditional candidates if trained on historical apprenticeship acceptance data that reflects decades of exclusion from craft unions and skilled trades. Compliant workforce development programs could use AI for apprenticeship screening while satisfying equal opportunity program requirements through aggregate demographic reporting that shows acceptable pipeline diversity at early stages without tracking through to completion, apprenticeship placement, and journeyman status outcomes. AI skills assessment and training completion tracking in workforce development may systematically underassess competencies of workers who learned through informal means, community-based learning, or employment in lower-paying sectors — disadvantaging workers without formal credentialing in the sectors AI training data over-represents. The rule does not address what design requirements ensure workforce development AI actively overcomes historical exclusion rather than passively replicating historical outcomes, what equity metrics track outcomes at each stage of training and placement, or how formerly incarcerated workers are supported in workforce development AI that uses background screening."
+}
+CARD_CONTENT["TECH-LABS-0024"] = {
+    "stmt": "Employers using AI for bonus allocation, commission calculation, and incentive pay determination must provide workers with transparent, auditable records of the AI calculation methodology, must conduct regular audits for discriminatory outcomes, and must not use AI opacity to obscure compensation decisions that workers have a right to challenge.",
+    "notes": "AI bonus and commission calculation systems in financial services, technology, and sales environments may apply discretionary adjustments through algorithmic processes that are not disclosed to workers — embedding management discretion in algorithmic form that is presented as objective and auditable while actually preserving subjective pay determination. Compliant employers could satisfy transparency requirements by disclosing general AI compensation criteria without providing the specific variable values and weights applied to each worker's AI compensation calculation, preventing workers from verifying whether AI calculation accurately reflects their performance. EPA equal pay requirements that apply to compensation disparities by gender may be difficult to enforce against AI compensation systems if the AI calculation methodology produces systematic gender pay gaps through ostensibly neutral factors — productivity metrics, bonus eligibility criteria — that are themselves products of gendered work assignment patterns. The rule does not address what disclosure enables workers to effectively audit AI compensation calculations, how AI-generated pay disparities trigger equal pay law analysis, or what burden of proof applies when workers challenge AI bonus calculations they cannot independently verify."
+}
+
+
+# ---------------------------------------------------------------------------
+# MHCS — Mental Health & AI
+# ---------------------------------------------------------------------------
+CARD_CONTENT["TECH-MHCS-0001"] = {
+    "stmt": "AI mental health assessment tools used in clinical settings must be validated for clinical accuracy across diverse patient populations — including racial minorities, LGBTQ+ individuals, elderly patients, and people with disabilities — before clinical deployment, and must be used to support rather than replace clinical judgment.",
+    "notes": "AI mental health screening validated on clinical populations that overrepresent white, educated, English-speaking patients may perform poorly for patients whose cultural expression of psychological distress, symptom reporting norms, and diagnostic language differ from the training population. Compliant clinical AI could satisfy pre-deployment validation requirements through studies on available clinical datasets that do not represent the diversity of populations seeking mental health care, producing validation evidence that does not predict real-world clinical accuracy for underrepresented groups. AI tools used to support clinical judgment may become effectively determinative in settings where clinicians are overburdened and lack time for independent assessment, converting AI support tools into primary assessment tools without formal acknowledgment. The rule does not address what population diversity requirements apply to clinical mental health AI validation studies, how validation findings must be disclosed to clinical users, or what ongoing accuracy monitoring is required after deployment in diverse clinical settings."
+}
+CARD_CONTENT["TECH-MHCS-0002"] = {
+    "stmt": "AI systems that analyze social media, digital behavior, and communication patterns for mental health assessment, suicide risk prediction, or mental illness screening must comply with HIPAA and applicable mental health privacy laws, must require informed consent, and must be held to validated clinical standards rather than marketed accuracy claims.",
+    "notes": "Behavioral data mental health AI that predicts suicide risk or mental illness from social media patterns may generate clinical mental health assessments from data that was never shared with a healthcare provider and was not collected for clinical purposes — creating privacy violations and clinical assessments outside HIPAA's consent and accuracy requirements. Compliant behavioral AI mental health tools could seek consent for data analysis while the consent process does not adequately explain that AI will generate clinical-level mental health assessments from social media behavior, leaving individuals without informed consent to clinical screening. Suicide risk prediction AI marketed to schools, employers, and platforms based on vendor accuracy claims that have not been subject to independent clinical validation may produce high false positive and false negative rates that cause harm — unnecessary psychiatric interventions for false positives, missed prevention opportunities for false negatives. The rule does not address how clinical validation standards apply to non-clinical AI mental health tools, what informed consent is required before behavioral data is analyzed for mental health assessment, or how HIPAA applies to AI mental health screening that occurs outside the healthcare system."
+}
+CARD_CONTENT["TECH-MHCS-0003"] = {
+    "stmt": "AI systems used in crisis intervention, suicide prevention helplines, and emergency mental health services must be backed by qualified human support, must not substitute AI responses for human crisis intervention, and must have immediate escalation protocols that connect callers to human counselors without delays caused by AI routing.",
+    "notes": "Crisis intervention AI that routes callers through automated assessment before human connection may introduce delays of minutes that are critical in acute suicide crisis situations — where immediate human connection and clinical assessment are the documented effective intervention. Compliant crisis services could use AI for call routing and preliminary triage while the triage process introduces escalation delays or produces mis-routing that delays connection to appropriate human resources in ways that harm callers in acute crisis. AI chatbots deployed in mental health peer support contexts may inadvertently provide crisis intervention responses without the clinical training, supervision, and emergency escalation protocols that crisis counselors require, creating safety risks for users in acute distress. The rule does not address what maximum AI routing delay is permissible before human crisis connection, what clinical competency requirements apply to AI crisis systems, or how crisis service AI performance is monitored for calls where delayed connection may have contributed to harm."
+}
+CARD_CONTENT["TECH-MHCS-0004"] = {
+    "stmt": "AI-powered mental health apps and digital therapeutics marketed for therapeutic or diagnostic purposes must meet FDA medical device standards appropriate to their clinical claims, must disclose their clinical evidence basis, and may not be marketed for clinical purposes without adequate clinical trial evidence.",
+    "notes": "Mental health app AI is marketed in a largely unregulated commercial space where vendors make clinical efficacy claims that would require FDA clearance if made by a medical device but that are structured to fall below FDA regulatory thresholds — creating a gap between the clinical benefits marketed and the regulatory evidence required. Compliant mental health AI apps could satisfy FDA regulatory status by avoiding explicit diagnostic or therapeutic claims while using implicit clinical framing — 'science-backed,' 'evidence-based' — that reasonable consumers interpret as clinical endorsement without regulatory accountability. App-based digital therapeutics that charge subscription fees for services marketed with clinical-adjacent language divert users from seeking evidence-based clinical care, delay treatment for serious mental health conditions, and may produce harms when AI therapy substitutes for clinical assessment. The rule does not address what clinical evidence standard applies to mental health AI apps marketed with efficacy language below the FDA medical device threshold, how marketing claims are evaluated for clinical representation, or what accountability exists when mental health AI apps cause harm through inadequate clinical support."
+}
+CARD_CONTENT["TECH-MHCS-0005"] = {
+    "stmt": "AI systems used in school-based mental health screening, early warning systems, and student support referral must include robust privacy protections for student mental health information, must comply with FERPA and IDEA, and may not be used to disproportionately refer students from protected groups for discipline rather than mental health support.",
+    "notes": "School mental health AI that uses behavioral signals — attendance, discipline referrals, academic performance — to predict mental health risk will amplify existing racial disparities in school discipline if the AI conflates behavioral indicators of discipline disproportionality with mental health risk indicators, producing racialized mental health screening outputs. Compliant schools could use AI mental health screening while satisfying FERPA confidentiality requirements in ways that do not prevent mental health referral information from being shared with school discipline administrators, creating de facto pipelines from mental health screening to discipline. AI early warning systems that combine mental health signals with academic and behavioral data may generate student profiles that are retained in school records and shared with law enforcement or future educational institutions without the specific consent and notice that FERPA requires for mental health information. The rule does not address how the referral pipeline from AI mental health screening must be designed to prioritize support over discipline, what IDEA procedural requirements apply to AI mental health referrals, or how FERPA's mental health information protections interact with school AI systems that aggregate multiple data sources."
+}
+
+# ---------------------------------------------------------------------------
+# MILS — Military & Defense AI
+# ---------------------------------------------------------------------------
+CARD_CONTENT["TECH-MILS-0001"] = {
+    "stmt": "The United States must not deploy fully autonomous lethal weapon systems — systems that can select and engage human targets without meaningful human control over each individual lethal engagement decision — and must establish binding policy requiring meaningful human control over lethal force consistent with DoD Directive 3000.09.",
+    "notes": "DoD Directive 3000.09 requires 'appropriate levels of human judgment over the use of force' but does not define 'meaningful human control' with specificity, leaving open the question of what human involvement in weapons system operation satisfies the directive's requirements for autonomous and semi-autonomous lethal systems. Compliant weapons systems could be described as maintaining human control through operator pre-authorization of target categories, geographic engagement zones, and engagement windows — allowing AI to select and engage specific individuals without additional human decision-making while technically satisfying 'appropriate levels' language. International humanitarian law's requirements of distinction, proportionality, and precaution in attack require case-by-case targeting decisions that cannot be reliably made by AI systems that select targets based on pattern recognition without the situational awareness and judgment that human commanders exercise. The rule does not define what 'meaningful' human control requires — whether continuous operator engagement, target-by-target authorization, or some other standard — leaving the operative requirement undefined in ways that military AI developers will exploit."
+}
+CARD_CONTENT["TECH-MILS-0002"] = {
+    "stmt": "AI systems used in military targeting must comply with international humanitarian law requirements of distinction, proportionality, and precaution in attack, must be capable of accounting for civilian presence and protected status, and must maintain human commander responsibility for targeting decisions consistent with the law of armed conflict.",
+    "notes": "AI military targeting that uses pattern-of-life analysis to identify combatants based on behavioral characteristics may misidentify civilians engaged in activities that pattern-match combatant behavior — creating distinction failures that are not apparent to operators who rely on AI targeting recommendations without independent verification. Compliant AI targeting could satisfy nominal IHL compliance through targeting validation processes that apply proportionality and precaution criteria to AI-identified targets while the underlying pattern identification — who is a valid military objective — is performed by AI without the legal and contextual analysis IHL requires. AI weapons employed in complex environments with civilian populations present will produce civilian casualties unless the AI is both technically accurate in its targeting identification and constrained by proportionality requirements that current AI systems cannot reliably apply to novel tactical situations. The rule does not address what technical standards AI targeting systems must meet to demonstrate IHL compliance, how civilian casualty incidents from AI targeting are investigated, or what accountability exists when AI targeting failures result in unlawful civilian casualties."
+}
+CARD_CONTENT["TECH-MILS-0003"] = {
+    "stmt": "AI systems used in military logistics, supply chain management, intelligence analysis, and operational planning must maintain human authority over final operational decisions, must have clear failure modes and fallback procedures, and must not create single-point-of-failure dependencies in critical military infrastructure.",
+    "notes": "Military AI logistics and planning dependencies create adversarial attack surfaces: AI systems that manage supply chain routing, maintenance scheduling, or operational resourcing can be targeted by adversaries through data poisoning, spoofing, or denial-of-service attacks that are specifically designed to degrade military operational capability. Compliant military AI systems could satisfy human authority requirements through nominal human approval of AI-generated operational plans without providing commanders with the information and time needed to independently evaluate complex AI analyses before approval, making AI recommendations effectively determinative through time pressure and information advantage. AI operational planning systems that optimize across multiple competing priorities — speed, logistics, risk — may produce plans that satisfy individual optimization criteria while creating operational vulnerabilities that experienced human planners would recognize but that the AI was not trained to consider. The rule does not address how adversarial AI vulnerability in military systems is assessed and protected against, what fallback procedures are required to maintain operational capability when AI systems fail or are compromised, or how human authority requirements are operationally defined."
+}
+CARD_CONTENT["TECH-MILS-0004"] = {
+    "stmt": "AI systems used in nuclear weapons management, early warning, and command and control must comply with all applicable safeguards, must not reduce or circumvent human authorization requirements for nuclear weapons employment, and must not introduce failure modes or AI-generated alerts that increase nuclear escalation risk.",
+    "notes": "AI in nuclear command and control creates existential risk scenarios when AI early warning systems generate false alerts — as nearly occurred in 1983 with the Soviet Serpukhov-15 incident and could occur more rapidly with AI-accelerated alert processing — or when AI-enabled cyber operations against adversary nuclear command and control create pre-launch vulnerability perceptions that drive escalation. Compliant nuclear weapons AI could satisfy formal authorization requirement preservation while AI-generated threat assessments, enemy capability analyses, or decision support tools create time pressure that effectively limits human deliberation in ways that the authorization process was designed to prevent. AI-enhanced cyber capabilities that threaten adversary nuclear command and control systems — even when used for conventional military operations — may create nuclear escalation risks because adversaries cannot distinguish AI-enabled degradation of nuclear versus conventional C2 in real time. The rule does not address how human authorization requirements in nuclear weapons employment are specifically protected against AI-generated time pressure, what AI capabilities in nuclear systems are prohibited because they increase escalation risk, or how nuclear AI safety is validated independently of military and defense contractor development processes."
+}
+CARD_CONTENT["TECH-MILS-0006"] = {
+    "stmt": "Military AI development and procurement must include robust safety testing, validation for operational environments, red-team adversarial testing, and failure mode analysis before deployment, with independent review of AI systems used in lethal or high-consequence military applications.",
+    "notes": "Military AI safety testing faces unique challenges: testing AI systems for performance in actual combat environments is impossible without operational deployment, and simulation-based testing cannot fully replicate the adversarial conditions, sensor degradation, and novel situations that deployed military AI will encounter. Compliant military AI development programs could satisfy formal testing requirements through simulation-based testing and red team exercises that do not expose systematic failure modes that only appear in operational conditions — producing favorable pre-deployment test results that do not predict operational performance. Independent review of military AI systems requires reviewers with both AI technical expertise and military operations knowledge — a combination rare outside of defense contractor and military employment contexts that creates structural challenges to genuinely independent assessment. The rule does not address what independence standard applies to military AI review, how classified system constraints interact with independent safety review requirements, or what authority independent reviewers have to delay or prevent deployment of AI systems that fail safety standards."
+}
+CARD_CONTENT["TECH-MILS-0007"] = {
+    "stmt": "The United States must work through international diplomatic channels to establish norms, confidence-building measures, and ultimately binding agreements limiting the development and deployment of destabilizing military AI applications, particularly autonomous lethal systems, AI-enabled cyber weapons, and AI in nuclear domains.",
+    "notes": "International military AI governance faces the structural challenge that major AI powers — including the United States, China, and Russia — have strong national security interests in maintaining AI military advantages that bilateral and multilateral agreements would limit, reducing incentives for binding commitments. Compliant U.S. diplomatic positions could engage in international AI military governance dialogues while resisting binding commitments on the specific AI capabilities — autonomous targeting, AI-enabled cyber weapons — where the United States has the greatest military advantage. International confidence-building measures for military AI require verification mechanisms that are technically and operationally feasible without compromising national security — a challenge that has not been solved for AI systems that may be indistinguishable from conventional software in deployed systems. The rule does not address what specific binding commitments the United States must be willing to accept, what verification mechanisms are available for AI military agreements, or how U.S. national security interests are balanced against stability and arms control obligations."
+}
+CARD_CONTENT["TECH-MILS-0008"] = {
+    "stmt": "Military and intelligence agencies must not use AI systems to conduct mass surveillance of U.S. persons without appropriate legal authorization, and must comply with applicable FISA, Title 18, and Fourth Amendment requirements for surveillance activities regardless of whether AI is used in data collection or analysis.",
+    "notes": "AI analysis of previously collected signals intelligence may constitute 'surveillance' of U.S. persons if the analysis enables government to generate intelligence about individuals from data originally collected for other purposes — creating AI-enabled surveillance effects from previously lawful collection that was not intended to cover current AI analytical capabilities. Compliant agencies could use AI to analyze metadata, aggregate signals, and generate pattern-of-life assessments about U.S. persons based on incidentally collected data, arguing that AI analysis of existing data does not constitute new collection requiring FISA authorization. Mass surveillance AI that identifies persons of interest from communications patterns or location data affects First and Fourth Amendment interests of persons who did not expect their data to be analyzed at scale by AI systems — creating surveillance effects that existing legal frameworks may not adequately address. The rule does not address how FISA Section 702 collection used as AI training data is evaluated under Fourth Amendment minimization requirements, what AI analysis authorities are covered by existing FISA orders, or how oversight of AI intelligence analysis is structured to protect civil liberties."
+}
+CARD_CONTENT["TECH-MILS-0009"] = {
+    "stmt": "Defense contractors and military AI developers must comply with applicable export control regulations for AI systems, algorithms, and dual-use AI capabilities that could enhance foreign military, intelligence, or surveillance capabilities, with technology transfer controls enforced by the Department of Defense and Commerce Department.",
+    "notes": "AI export control enforcement faces technical challenges because many AI capabilities that have significant military applications — computer vision, natural language processing, optimization algorithms — are also commercially available technologies, making export control of specific algorithms difficult when the same capability is available through commercial channels. Compliant defense AI developers could maintain export control compliance for classified AI systems while participating in commercial AI markets that transfer equivalent algorithmic capabilities to foreign purchasers — exploiting the commercial availability of dual-use AI to achieve technology transfer that classified export controls prohibit. Technology transfer through AI researcher employment mobility, academic collaboration, and open-source publication creates pathways for military-relevant AI capability transfer that formal export control frameworks do not address. The rule does not address how export controls apply to AI capabilities that are commercially available but militarily significant, what research publication restrictions are appropriate for militarily relevant AI research, or how technology transfer through employment and collaboration is regulated."
+}
+CARD_CONTENT["TECH-MILS-0010"] = {
+    "stmt": "AI systems used in military cybersecurity — including threat detection, vulnerability assessment, and offensive cyber operations — must be subject to legal review under applicable domestic and international law, must have human authorization for offensive cyber operations, and must include safeguards against unintended escalation.",
+    "notes": "Military cyber AI that conducts vulnerability scanning and threat detection in real time may create automated offensive responses — patching-by-exploitation, neutralization of detected threats — that constitute cyberattacks on adversary systems without the human authorization that international law's war nexus requirements and domestic covert action authorities require. Compliant cyber AI systems could satisfy legal review requirements through pre-authorized playbooks developed by human legal reviewers, while actual cyber operation execution — targeting, timing, scope — is determined by AI without additional human authorization. AI-enabled cyber operations that are faster than human response cycles create escalation dynamics where adversary responses to AI-initiated actions must be answered by further AI-initiated countermeasures without meaningful human deliberation at each escalation step. The rule does not address how Legal Review under the DoD Cyber Law of War Manual applies to AI-enabled cyber capabilities, what human authorization standard applies before AI-executed offensive cyber operations, or how unintended escalation from AI cyber operations is attributed and managed diplomatically."
+}
+CARD_CONTENT["TECH-MILS-0011"] = {
+    "stmt": "Veterans and service members have the right to know whether AI systems were used in disability determination, benefits assessment, or healthcare allocation decisions that affect their benefits, with human review of adverse AI-influenced determinations available upon request.",
+    "notes": "VA AI systems that influence disability ratings, healthcare priority assignments, or benefits determinations affect millions of veterans who may have no knowledge that AI influenced their case outcomes and no ability to challenge AI-generated recommendations that human reviewers accept without independent assessment. Compliant VA AI could provide formal disclosure of AI use in benefits processing at the system level while individual claimants do not receive specific notice that AI influenced their particular case outcome, limiting the practical utility of systemic disclosure for individual veterans seeking to challenge specific determinations. AI disability rating tools trained on historical VA rating decisions may perpetuate historical VA underrating patterns for certain service-connected conditions — including mental health conditions and conditions associated with specific conflicts or exposures — producing AI recommendations that systematically underrate the same conditions that human raters historically underrated. The rule does not address what specific disclosure veterans must receive about AI involvement in their benefits determinations, what human review process is triggered upon request, or how VA AI tools are audited for accuracy across condition types and demographic groups."
+}
+CARD_CONTENT["TECH-MILS-0012"] = {
+    "stmt": "AI systems used in military personnel management — assignment, promotion, fitness report analysis, and discharge determination — must comply with equal opportunity requirements, must not produce racially, gender-based, or disability-based discriminatory outcomes, and must include human review of AI-influenced personnel decisions.",
+    "notes": "Military personnel management AI that uses fitness report language analysis, assignment history, and performance data to predict promotion potential may perpetuate historical patterns of unequal access to career-enhancing assignments, leadership opportunities, and evaluation standards that have produced documented racial and gender disparities in military promotion outcomes. Compliant military personnel AI could satisfy equal opportunity requirements through aggregate demographic reporting while not examining whether AI-generated promotion probability scores systematically disadvantage protected groups in ways that compound rather than correct historical promotion inequities. AI-generated fitness report analysis that evaluates language used in evaluations may reflect evaluator bias — gendered language in performance evaluations, different promotion endorsement rates by race — in ways that AI amplifies rather than corrects when trained on historical evaluation data. The rule does not specify what disparate impact testing is required for military personnel AI, how service members can challenge AI-influenced personnel decisions, or what accountability exists when military personnel AI produces discriminatory outcomes."
+}
+CARD_CONTENT["TECH-MILS-0013"] = {
+    "stmt": "AI systems used in military contracting, procurement, and vendor selection must comply with equal opportunity and small business contracting requirements, must not produce racially or gender-based disparate outcomes in contract award recommendations, and must be subject to audit by the DoD IG and applicable oversight bodies.",
+    "notes": "Defense procurement AI that evaluates technical proposals, past performance records, and financial capacity may systematically disadvantage small businesses, minority-owned firms, and veteran-owned businesses if trained on historical contract award data that reflects decades of concentrated procurement with large defense primes. Compliant defense procurement AI could satisfy small business contracting requirements by segmenting AI recommendations to satisfy set-aside thresholds while the AI evaluation criteria for set-aside competitions still disadvantage historically underrepresented businesses through capacity, past performance, and technical depth criteria calibrated to large contractor profiles. DoD IG audit authority for procurement AI requires auditors with AI technical expertise to evaluate algorithmic evaluation criteria, weighting schemes, and outcome patterns — expertise that may not currently exist in sufficient depth within oversight bodies to conduct meaningful AI procurement audits. The rule does not address how DoD IG audit authority specifically applies to proprietary AI procurement evaluation tools, what testing methodology demonstrates non-discriminatory contracting AI, or how small business program requirements are enforced against AI procurement recommendations."
+}
+CARD_CONTENT["TECH-MILS-0014"] = {
+    "stmt": "Military AI systems that affect civilian infrastructure, civilian populations, or critical systems in non-combat contexts — including AI used in NORTHCOM domestic operations, disaster response, and border security — must comply with Posse Comitatus Act limitations, applicable civil rights requirements, and must have civilian oversight.",
+    "notes": "Military AI in domestic operations creates Posse Comitatus concerns when AI-enabled military surveillance, analysis, or operational support is applied to law enforcement functions that the Act prohibits the military from performing, through technical architectures that share data with civilian law enforcement in ways that exceed the Act's exceptions. Compliant NORTHCOM AI could satisfy Posse Comitatus limitations by characterizing domestic operational AI as support for civil authorities rather than direct law enforcement, while the substantive effect of military AI surveillance analysis and operational data sharing is indistinguishable from direct law enforcement participation. Military AI in border security operations may operate in a legal gray zone between military and law enforcement functions, with Posse Comitatus limitations contested when the same AI system serves both counter-narcotics and immigration enforcement functions. The rule does not address how Posse Comitatus limitations apply to military AI data sharing, analysis, and operational support in domestic contexts, or what civilian oversight mechanisms govern military AI operations that affect domestic populations."
+}
+CARD_CONTENT["TECH-MILS-0015"] = {
+    "stmt": "The Department of Defense must develop and publicly release AI ethics principles, use case governance frameworks, and responsible AI implementation standards, and must comply with applicable congressional oversight and reporting requirements for military AI programs.",
+    "notes": "DoD AI ethics principles and governance frameworks are only meaningful if they are operationally implemented in actual acquisition, development, and deployment processes — not merely stated in policy documents that do not constrain program decisions. Compliant DoD could develop and publish AI ethics principles that satisfy congressional reporting requirements while those principles have limited operational force in specific acquisition decisions, with program offices applying AI ethics requirements selectively based on operational urgency and program priority. Congressional oversight of military AI programs faces classification barriers that limit congressional access to specific program details, technical capabilities, and performance assessments that are most relevant to oversight evaluation. The rule does not address how DoD AI ethics principles are operationalized in acquisition and program management, what congressional access to classified AI program details is required for meaningful oversight, or how DoD AI ethics compliance is verified by independent assessment rather than self-reporting."
+}
+CARD_CONTENT["TECH-MILS-0016"] = {
+    "stmt": "AI systems used in military intelligence — including SIGINT analysis, HUMINT processing, and open-source intelligence — must comply with applicable minimization requirements for U.S. person information, must not produce discriminatory targeting based on protected characteristics, and must maintain human analyst accountability for intelligence assessments.",
+    "notes": "AI intelligence analysis that processes large volumes of communications, transaction data, and open-source information may generate intelligence assessments about U.S. persons from incidentally collected data without specific authorization, creating surveillance effects that minimization requirements designed for pre-AI collection methods may not adequately address. Compliant intelligence AI could satisfy formal minimization requirements through procedural compliance while AI analysis of retained data generates assessments about U.S. persons that substantively exceed what minimization procedures were designed to prevent. AI HUMINT processing tools that evaluate source reporting, reliability assessment, or handler evaluation may produce discriminatory assessments that reflect demographic stereotypes embedded in training data about source reliability by nationality, religion, or other protected characteristics. The rule does not address how FISA minimization procedures specifically apply to AI analysis of incidentally collected U.S. person data, how discriminatory intelligence AI targeting is identified and remediated, or what accountability human analysts bear for AI-generated intelligence assessments they adopt without independent verification."
+}
+CARD_CONTENT["TECH-MILS-0017"] = {
+    "stmt": "AI systems used in military medical triage, battlefield medicine, and clinical care for wounded service members must be validated for accuracy across the range of combat injuries and patient demographics, must support rather than replace clinical judgment, and must have fail-safe protocols when AI systems malfunction under battlefield conditions.",
+    "notes": "Military medical AI operating under battlefield conditions faces sensor quality, connectivity, and power constraints that are not present in the clinical validation settings where the AI was tested, creating systematic risks that AI performance in combat medical scenarios diverges significantly from pre-deployment accuracy assessments. Compliant military medical AI could satisfy validation requirements through combat simulation studies that replicate some battlefield conditions while not capturing the full range of degraded performance conditions — communications interruption, sensor damage, multiple casualty scenarios — that produce AI failures in actual combat medicine. Triage AI that allocates limited medical resources under mass casualty conditions makes life-and-death decisions across multiple patients simultaneously — a context where AI training on historical triage outcomes may embed implicit priority frameworks that do not align with military medical ethics or individual patient interests. The rule does not address what validation methodology is required for battlefield medical AI under degraded conditions, what fail-safe procedures maintain medical care capability when AI fails, or how triage AI decisions are reviewed for compliance with military medical ethics when battlefield conditions preclude real-time oversight."
+}
+CARD_CONTENT["TECH-MILS-0018"] = {
+    "stmt": "AI systems used in military training, simulation, and readiness assessment must accurately represent the conditions service members will face in deployment, must not create overconfidence in AI capabilities or lead trainees to rely on AI in ways that create operational risk when AI systems are unavailable.",
+    "notes": "Military training AI that creates highly realistic simulations of combat environments may develop trainee expectations about operational AI support that are not met in actual deployment, creating overreliance on AI capabilities that do not exist or do not perform as modeled in training. Compliant military training programs could use AI simulation for realistic scenario training while not systematically training for scenarios in which AI systems fail — producing service members who have trained extensively for AI-augmented operations but have limited practice in degraded AI or no-AI operational scenarios. AI readiness assessment tools that evaluate unit performance in AI-augmented training exercises may produce readiness assessments that overstate actual operational readiness when deployed conditions differ from AI-augmented training conditions. The rule does not address how military training curricula balance AI-augmented and AI-degraded training scenarios, what readiness assessment standards account for operational environments with degraded or unavailable AI, or how service member AI training literacy is developed and evaluated."
+}
+CARD_CONTENT["TECH-MILS-0019"] = {
+    "stmt": "Military AI research and development programs must include robust ethics review, legal compliance review, and safety engineering as core program requirements from inception rather than afterthoughts, with program managers accountable for AI ethics and safety outcomes throughout the acquisition lifecycle.",
+    "notes": "Defense acquisition AI programs that treat ethics and legal compliance as late-stage review items rather than design requirements may develop costly capabilities that fail ethics and legal review after significant investment — creating program manager incentives to minimize ethics and legal concerns rather than address them substantively. Compliant military AI programs could satisfy formal ethics review requirements through program documentation that passes acquisition milestone reviews while operational ethics concerns — how the AI will be used in combat, what IHL compliance looks like, how civilian casualty risk is managed — are not resolved before deployment. Program manager accountability for AI ethics outcomes requires evaluation criteria and career incentives that reward ethics and safety outcomes rather than program cost, schedule, and capability performance metrics that currently dominate acquisition program management evaluation. The rule does not address what authority ethics reviewers have to delay or terminate programs that fail ethics or legal review, how IHL compliance assessment is integrated into requirements development, or how program manager ethics accountability is evaluated in DoD performance systems."
+}
+CARD_CONTENT["TECH-MILS-0020"] = {
+    "stmt": "AI systems used in military recruitment and retention must comply with equal opportunity requirements, must not produce racially, gender-based, or socioeconomically disparate outcomes in candidate assessment, and may not use AI to target recruitment toward or away from specific demographic communities.",
+    "notes": "Military recruitment AI that targets digital advertising toward specific demographic communities based on predicted receptivity may produce recruitment pools that do not reflect the national demographic composition — concentrating recruitment in economically vulnerable communities while reducing recruitment outreach to more affluent communities, raising both equity and civil-military representation concerns. Compliant military recruitment AI could satisfy equal opportunity requirements through demographic composition goals while the AI targeting strategy directs recruitment resources in ways that replicate historical patterns of concentrated recruitment in communities with fewer civilian economic opportunities. AI candidate assessment tools used in military recruitment — including AI interview analysis, cognitive assessment AI, and physical fitness prediction AI — may produce disparate pass rates across demographic groups in ways that existing military equal opportunity requirements prohibit. The rule does not address how equal opportunity requirements specifically apply to AI targeting in military recruitment digital advertising, what demographic representation standards govern AI recruitment program design, or how AI recruitment outcomes are monitored for compliance with military equal opportunity programs."
+}
+CARD_CONTENT["TECH-MILS-0021"] = {
+    "stmt": "AI systems used in military space operations — including satellite tracking, space domain awareness, and space-based weapons systems — must comply with applicable international space law, must maintain human control over anti-satellite weapons employment, and must not increase space debris or create uncontrolled escalation risks.",
+    "notes": "Military space AI that automatically responds to adversary satellite operations — maneuvering to avoid apparent antisatellite attacks, deploying countermeasures — may create autonomous action in space that has no equivalent in terrestrial military doctrine, where time and distance constraints make human-loop control operationally difficult. Compliant space operations AI could satisfy nominal human control requirements while operational tempo in space — satellite passes, orbital mechanics, threat response windows — creates practical pressure for AI autonomy that reduces meaningful human deliberation before space weapons employment. Anti-satellite weapons employment that destroys satellites in low earth orbit creates debris fields that persist for decades, threatening all space users' satellite operations and impeding future space activity — harms that space operations AI must be specifically designed to consider in engagement decisions. The rule does not address how applicable human control requirements are defined for space weapons AI under international space law, what debris risk requirements constrain anti-satellite weapon AI, or how space operations AI escalation risks are managed in crisis scenarios."
+}
+CARD_CONTENT["TECH-MILS-0022"] = {
+    "stmt": "Military AI systems that collect, process, or transmit sensitive national security information must meet applicable cybersecurity standards, must be specifically tested for adversarial data poisoning, model inversion, and extraction attacks, and must have security review commensurate with the sensitivity of the information they handle.",
+    "notes": "Military AI systems are high-value adversary targets for data poisoning attacks — introducing subtly corrupted training data to cause systematic AI failures in specific operational scenarios — that may not be detected during standard testing and may only manifest under adversarial operational conditions. Compliant military AI cybersecurity review could satisfy NIST and CMMC framework requirements while those frameworks were not specifically designed for AI-specific attack vectors — adversarial examples, model extraction, membership inference — that require specialized AI security testing beyond standard information security compliance. AI model extraction attacks that reconstruct a military AI model's behavior through repeated queries could enable adversaries to replicate or defeat classified AI capabilities without accessing the model directly, creating AI capability proliferation risks from operational AI that standard classification controls do not address. The rule does not address what AI-specific security testing is required beyond standard information security frameworks, how adversarial AI attacks are incorporated into military AI security requirements, or how extracted AI model capabilities are protected from proliferation through operational use."
+}
+CARD_CONTENT["TECH-MILS-0023"] = {
+    "stmt": "AI systems developed or deployed by the Department of Defense must not be transferred to, shared with, or made accessible to foreign military forces or intelligence services without compliance with applicable export control regulations, technology transfer controls, and security assessments.",
+    "notes": "Military AI technology transfer through allied partner programs — Five Eyes intelligence sharing, NATO interoperability requirements, foreign military sales — may transfer AI capabilities without the security assessments and technology transfer controls applicable to direct sales, exploiting programmatic channels to achieve capability transfer. Compliant DoD AI technology sharing programs could satisfy formal export control requirements through classified exception processes while not specifically assessing whether shared AI capabilities could be further transferred by partner nations to third countries or adversaries. AI capability sharing through joint exercises, technical exchanges, and interoperability programs may enable foreign partner access to sensitive AI training data, model architectures, or operational concepts that transfer value beyond the specific AI outputs formally shared. The rule does not address how technology transfer controls apply to AI capability sharing in classified military programs, what security assessments are required before AI sharing with specific foreign partners, or how AI capability secondary transfer by partner nations is monitored and prevented."
+}
+CARD_CONTENT["TECH-MILS-0024"] = {
+    "stmt": "The Department of Defense must maintain human expertise, manual operating procedures, and non-AI fallback capabilities for all critical military functions, ensuring that AI system failures do not degrade military operational effectiveness below the baseline capability that existed before AI implementation.",
+    "notes": "Military AI dependency creates operational brittleness when AI systems are disrupted: adversarial cyber operations that target military AI infrastructure could degrade AI-dependent operational capabilities in ways that exceed the tactical impact of physical attacks on equivalent non-AI systems. Compliant DoD programs could maintain documented non-AI fallback procedures while the personnel who execute those procedures lack current training and operational proficiency in non-AI methods — creating nominal fallback capability that is not operationally credible. Human expertise atrophy in AI-dependent military operations is a documented risk in aviation and other AI-augmented domains, where automation reduces human proficiency over time such that manual fallback capabilities deteriorate even when they are nominally maintained. The rule does not address what operational proficiency standards must be maintained in manual fallback capabilities, how fallback capability degradation is detected and arrested, or what investment in non-AI operational capacity is required to maintain credible non-AI fallback alongside AI-primary capabilities."
+}
+CARD_CONTENT["TECH-MILS-0025"] = {
+    "stmt": "AI systems used in military decision support — including battle management, operational planning, and commander's estimate processes — must clearly indicate the confidence level and uncertainty range of AI recommendations, must not present AI analysis as more certain than the underlying data and models support, and must include human expert review of AI analysis before it influences significant operational decisions.",
+    "notes": "Military AI decision support that presents recommendations with false certainty — overconfident probability assessments, artificial precision in uncertain operational environments — may lead commanders to accept AI recommendations without the healthy skepticism that would lead them to apply their own judgment or seek additional information. Compliant battle management AI could indicate uncertainty ranges through confidence intervals while the AI's interface presentation — colors, urgency indicators, clear recommendation format — leads commanders to anchor on the AI recommendation rather than the uncertainty range, effectively presenting certain recommendations despite nominal uncertainty disclosure. AI-generated intelligence assessments that feed battle management systems may carry uncertainty from the source intelligence collection through analytical layers in ways that are not transparently communicated to commanders, who receive final battle management AI output without adequate insight into the uncertainty that compounds through the analysis chain. The rule does not address what uncertainty communication standards apply to military AI decision support, how commander training must address AI confidence calibration, or what review process is required before AI analysis influences decisions with irreversible operational consequences."
+}
+CARD_CONTENT["TECH-MILS-0026"] = {
+    "stmt": "AI systems used in military information operations — including influence operations, counter-disinformation, and strategic communications — may not be used to manipulate the domestic information environment, must comply with applicable prohibitions on domestic propaganda, and may not target U.S. persons with AI-generated influence content.",
+    "notes": "Military AI information operations capabilities — synthetic media generation, influence narrative optimization, targeted message delivery — may be deployed in ways that affect the domestic information environment as a side effect of foreign-directed operations, or that are deliberately repurposed for domestic audiences in violation of applicable prohibitions. Compliant military information operations AI could satisfy nominal prohibitions on domestic targeting while AI-generated narratives designed for foreign audiences circulate in domestic information environments through organic sharing without military direction — creating plausible deniability about domestic effect while achieving domestic influence. DoD influence operations AI capabilities developed for foreign theater applications create dual-use risk: the same AI that targets adversary information environments may be available to domestic political actors through personnel connections, private sector partnerships, or capability transfer to domestic agencies. The rule does not address how domestic targeting prohibitions are enforced against information operations AI that has cross-border effect, how military AI influence capabilities are protected from domestic political misuse, or what oversight prevents military information operations AI from being used against protected domestic political activity."
+}
+CARD_CONTENT["TECH-MILS-0027"] = {
+    "stmt": "AI systems used in prisoner of war handling, detainee screening, and detention management must comply with the Geneva Conventions, applicable regulations, and U.S. law, and must not be used to automate detention decisions, interrogation processes, or status determinations that international humanitarian law requires to be made by competent tribunals.",
+    "notes": "AI detainee screening and status determination in conflict zones creates IHL compliance risks when AI pattern recognition influences decisions about combatant versus civilian status, POW versus unlawful combatant characterization, or interrogation subject identification without the competent tribunal process that Geneva Convention Article 5 requires. Compliant detention management AI could satisfy formal IHL compliance through documentation of human review at each detention determination stage while the AI-generated classification influences what questions reviewers ask, what status they expect, and what evidence they treat as relevant — making AI recommendations substantively determinative through framing effects. AI-enabled interrogation approaches — behavioral analysis, deception detection, psychological vulnerability assessment — may facilitate coercive interrogation practices that are prohibited under the Convention Against Torture and applicable U.S. law regardless of whether AI directly conducts the interrogation. The rule does not address how IHL competent tribunal requirements apply to AI-assisted status determinations, what evidence standards govern AI-supported detention classification, or how AI detention tools are evaluated for compliance with CAT and U.S. prohibition on torture and cruel, inhuman, or degrading treatment."
+}
+CARD_CONTENT["TECH-MILS-0028"] = {
+    "stmt": "AI systems used in military transportation, logistics, and supply chain may not create operational dependencies that compromise readiness in adversarial degraded-environment scenarios, and must be designed to maintain mission-critical functions under contested electromagnetic, cyber, and communications environments.",
+    "notes": "Military logistics AI that depends on GPS positioning, cloud connectivity, and continuous network access to function creates operational vulnerabilities in contested environments where adversaries may deny or degrade these services — producing logistics failures specifically in the high-threat scenarios where logistics performance is most critical. Compliant logistics AI could satisfy contested environment requirements through documentation of degraded operations modes while the operational implementation of those modes has not been tested under realistic contested conditions, producing nominal resilience that has not been demonstrated. AI supply chain optimization that achieves efficiency through just-in-time delivery and minimal inventory buffers creates brittleness under disrupted conditions — where AI optimization has eliminated the redundancy that provides resilience. The rule does not address what contested environment performance requirements must be included in military logistics AI requirements documents, how degraded operations capability is tested and validated, or what inventory and logistics buffer standards are required to maintain resilience alongside AI efficiency optimization."
+}
+CARD_CONTENT["TECH-MILS-0029"] = {
+    "stmt": "AI systems used in military forensics — including evidence collection, DNA analysis, digital forensics, and incident investigation — must meet applicable evidentiary standards, must be disclosed when used in subsequent legal proceedings, and must maintain chain of custody requirements for AI-processed evidence.",
+    "notes": "Military AI forensics capabilities that process biometric, digital, and physical evidence in combat and occupation environments operate in conditions far from the laboratory settings in which forensic AI was validated, creating reliability concerns that are not apparent from pre-deployment testing. Compliant military forensics AI could satisfy chain of custody requirements for formal evidentiary purposes while the AI analysis influences operational decisions — targeting, detention, lethal force — before legal proceedings where chain of custody protections apply, creating an accountability gap for AI forensic analysis that shapes operational rather than evidentiary outcomes. AI biometric collection and matching used for battlefield identification may produce misidentifications under battlefield conditions that cause lethal force to be directed against incorrectly identified individuals without the evidentiary standards applicable in legal proceedings. The rule does not address what validation standards apply to military forensic AI in operational environments, how AI forensic analysis influences operational decisions before legal proceedings apply, or what chain of custody requirements must be maintained from AI forensic collection through operational use."
+}
+CARD_CONTENT["TECH-MILS-0030"] = {
+    "stmt": "The Department of Defense must maintain meaningful civilian oversight of military AI programs through congressional reporting, IG review, and civilian political leadership authority over AI acquisition and deployment, and must not allow military AI programs to operate outside the civilian oversight structures applicable to defense programs.",
+    "notes": "Civilian oversight of military AI depends on civilian officials having sufficient technical understanding of AI capabilities to exercise meaningful oversight — not just process compliance — over AI programs whose capabilities may exceed what non-technical civilian overseers can independently evaluate. Compliant DoD AI programs could satisfy congressional reporting requirements through classified briefings that satisfy formal oversight while limiting congressional ability to act on concerns about specific AI capabilities due to classification restrictions on disclosure. IG review of military AI programs requires IG offices with AI technical expertise that may not currently exist at the scale needed for comprehensive oversight of the expanding portfolio of military AI programs. The rule does not address what technical expertise requirements apply to civilian AI oversight positions, how classification is balanced against meaningful civilian oversight, or what authority civilian oversight bodies have to require modification or termination of military AI programs that raise ethical, legal, or safety concerns."
+}
+CARD_CONTENT["TECH-MILS-0031"] = {
+    "stmt": "AI systems used by the National Guard and Reserve components in both federal and state missions must comply with the same AI governance requirements as active duty forces, and must not be used in state missions in ways that circumvent federal restrictions on military domestic operations.",
+    "notes": "National Guard AI capabilities developed under federal funding and training programs may be available for state-directed domestic operations that exceed what federal law allows active duty forces to do, exploiting the Guard's dual state-federal status to access military AI capabilities for law enforcement applications that Posse Comitatus limits for active duty. Compliant National Guard AI use could satisfy formal federal funding and training requirements while state governors deploy Guard AI capabilities in domestic law enforcement missions that apply military-grade surveillance and analytical capabilities to civilian populations. AI capabilities developed for federal military missions may be retained and used by Guard units for state domestic missions without the federal oversight and civil liberties review that federal military operations require. The rule does not address how AI governance requirements apply to National Guard units in state-directed missions, what federal oversight applies to Guard AI capabilities when used in state roles, or how state governments are held accountable for Guard AI use in domestic operations."
+}
+CARD_CONTENT["TECH-MILS-0032"] = {
+    "stmt": "Military AI systems that process sensitive personally identifiable information of U.S. service members, veterans, and their families must comply with the Privacy Act, applicable DoD regulations, and must not retain or share PII beyond what is necessary for authorized purposes.",
+    "notes": "Military AI systems that aggregate personnel data for readiness assessment, health management, and benefits processing may create comprehensive data profiles of service members and veterans that exceed what the Privacy Act authorizes, through system integration that combines data across authorized systems to enable AI analysis not covered by existing privacy notices. Compliant military AI could satisfy Privacy Act requirements through approved system of records notices while the AI analytical capabilities that the system enables — behavioral prediction, health risk profiling, loyalty assessment — are not described in the notices that cover the underlying data collection. Data retention in military AI training datasets may perpetuate PII beyond authorized retention periods because removing data from AI training sets is technically difficult once a model has been trained on that data. The rule does not address how Privacy Act requirements specifically apply to AI training data, what the permissible analytical purposes of military PII aggregation in AI systems are, or how service members and veterans can exercise Privacy Act access and correction rights against AI systems holding their information."
+}
+CARD_CONTENT["TECH-MILS-0033"] = {
+    "stmt": "AI systems used in Department of Defense administrative adjudications — military justice proceedings, adverse personnel actions, and administrative boards — must comply with applicable due process requirements, must not substitute for human fact-finding in credibility determinations, and must be disclosed to affected service members.",
+    "notes": "Military justice AI that assists in investigation, case processing, or sentencing recommendations in courts-martial proceedings may influence outcomes in ways that affect the Article 32 investigation process, charging decisions, and adjudicative fairness in ways that are not subject to the same constitutional due process protections available in civilian criminal proceedings. Compliant military justice AI could satisfy disclosure requirements through general notification that AI is used in case processing without specific notice to accused service members of AI involvement in their particular case outcome, limiting the ability to challenge AI-influenced determinations. Administrative board AI that evaluates fitness for duty, security clearances, or retention determinations based on AI pattern analysis may produce adverse personnel actions that affect service members' careers and benefits without the individualized assessment that adverse action fairness requires. The rule does not address what Due Process Clause protections apply to AI-influenced military administrative proceedings, how disclosure enables meaningful challenge to AI-generated determinations, or what review of AI military justice recommendations occurs before they influence case disposition."
+}
+CARD_CONTENT["TECH-MILS-0034"] = {
+    "stmt": "AI systems used in military health — including PTSD screening, traumatic brain injury assessment, and behavioral health monitoring — must be validated for accuracy in combat-exposed veteran populations, must not produce false negatives that deny care to service members in need, and must comply with applicable health privacy requirements.",
+    "notes": "Military mental health AI trained on general clinical populations may not accurately assess PTSD, TBI, and moral injury presentations in combat-exposed service members, whose symptom profiles, cultural context, and treatment-seeking barriers differ substantially from clinical training populations — producing AI assessments that systematically underdiagnose conditions prevalent in combat veterans. Compliant military health AI could satisfy validation requirements through studies using available military health data while that data underrepresents service members who never received diagnosis or treatment — compounding the underdiagnosis problem by validating AI on an already biased sample of documented cases. Military health AI false negatives — failing to identify service members with PTSD, TBI, or suicidality — have direct safety consequences: the military suicide crisis involves service members who were not identified by existing mental health monitoring systems, and AI that replicates those failures continues to miss the most at-risk individuals. The rule does not address what false negative rate is acceptable for military health AI, how accuracy is monitored in the specific military health context, or what integration with treatment systems ensures that AI-identified needs are connected with actual care."
+}
+CARD_CONTENT["TECH-MILS-0035"] = {
+    "stmt": "Defense AI development must not concentrate across a small number of large technology vendors in ways that create market dependency, reduce innovation, compromise security through concentration of sensitive military AI development in few entities, or enable vendor leverage over critical military capabilities.",
+    "notes": "Defense AI concentration creates security risks when a small number of vendors have access to highly classified military AI requirements, training data, and operational parameters — and when vendor relationships give private entities leverage over military capability timelines, pricing, and interoperability through proprietary systems. Compliant DoD acquisition could satisfy competition requirements through procurement processes that attract multiple vendors for initial contracts while contract structures — large IDIQ vehicles, platform-specific AI development, proprietary data formats — concentrate actual program execution in incumbent vendors over time. AI vendor concentration in defense gives private companies with access to classified military systems influence over both commercial AI development and national security AI that creates conflicts of interest and accountability gaps not present in traditional defense contracting relationships. The rule does not address what market structure safeguards are required to prevent defense AI concentration, how proprietary data and model format lock-in are prevented in defense AI contracting, or how the security implications of concentrated access to classified defense AI development are evaluated and managed."
+}
+CARD_CONTENT["TECH-MILS-0036"] = {
+    "stmt": "AI systems used in military environmental monitoring, installation management, and hazardous material handling must comply with applicable environmental law, must not be used to minimize documented environmental compliance obligations, and must maintain accurate records of environmental conditions, hazardous material inventories, and contamination events.",
+    "notes": "Military installation environmental monitoring AI that maintains environmental compliance records has a potential conflict of interest when the same systems that track environmental violations influence compliance reporting to regulatory agencies — creating incentives for AI systems to minimize environmental incident documentation rather than accurately record the full scope of environmental conditions. Compliant military environmental AI could satisfy EPA and state regulatory reporting requirements through accurate AI-generated reports while installation commanders who review reports for potential adverse consequences to installation operations may intervene to shape AI-generated compliance documentation before external reporting. AI hazardous material inventory systems that enable precise tracking of controlled substances also create comprehensive records of environmental liability exposure that DoD may seek to control through AI access restrictions that limit independent environmental assessment. The rule does not address how EPA and state environmental agency oversight applies to AI environmental monitoring systems on military installations, how environmental compliance AI is protected from internal pressure to minimize reported violations, or how environmental AI records are made available for independent environmental audit."
+}
+CARD_CONTENT["TECH-MILS-0037"] = {
+    "stmt": "Military AI acquisition programs must include independent verification and validation requirements proportionate to system risk, with IV&V conducted by parties independent of the developing contractor and with sufficient technical access to evaluate claimed capabilities, limitations, and failure modes.",
+    "notes": "Military AI IV&V conducted by DoD internal entities may not provide adequate independence when program offices have contractual relationships with developing contractors and career incentives tied to program success, creating structural pressure toward validation conclusions that support program continuation regardless of technical findings. Compliant IV&V requirements could satisfy independence standards by designating a different DoD office as IV&V authority while shared institutional culture, classification constraints, and limited AI technical expertise within DoD limit the substantive independence of internal IV&V. Independent IV&V that requires contractor cooperation for technical access creates leverage for contractors to limit what IV&V reviewers can examine, particularly for proprietary model architectures, training data, and operational parameters that contractors claim as trade secrets. The rule does not address what independence standard applies to military AI IV&V, how proprietary contractor claims are balanced against IV&V access requirements, or what authority IV&V findings have to delay program milestones when IV&V identifies material capability or safety concerns."
+}
+CARD_CONTENT["TECH-MILS-0038"] = {
+    "stmt": "AI systems used in veteran benefits, transition services, and military family support programs must be designed to maximize access to entitled benefits, must not use AI efficiency to restrict eligibility determinations, and must be regularly tested for accuracy across all eligible population segments.",
+    "notes": "Veterans' benefits AI that optimizes for processing efficiency may systematically produce denial recommendations for claims that require additional documentation or non-standard evidence — claims from veterans with complex exposure histories, mental health conditions with difficult documentation requirements, or conditions that developed gradually after service — creating efficiency-driven denial patterns that exceed the legal basis for denial. Compliant veterans' benefits AI could satisfy accuracy testing requirements through aggregate approval rate assessments without examining whether AI recommendations systematically deny specific categories of service-connected conditions — particularly mental health, TBI, and toxic exposure conditions that have historically faced greater denial rates. AI transition services tools that route veterans to training and employment programs based on algorithmically predicted success may concentrate resources on veterans who are easiest to place — those with sought-after credentials, strong work histories, and civilian-transferable skills — rather than veterans with the greatest transition challenges who need the most support. The rule does not address how AI benefits accuracy is tested across condition types and demographic groups, what override mechanisms exist for AI-generated denial recommendations, or how VA AI systems are monitored for systematic under-service of entitled populations."
+}
+CARD_CONTENT["TECH-MILS-0039"] = {
+    "stmt": "AI systems used in military simulation, war gaming, and operational research must accurately model adversary AI capabilities, represent uncertainty in AI performance projections, and must not lead to strategic overconfidence based on simulated AI capabilities that have not been validated in operational environments.",
+    "notes": "Military war gaming AI that models adversary capabilities based on AI performance projections may enable strategic planning that assumes U.S. AI superiority in scenarios where adversary AI development has advanced beyond what simulation models represent — creating strategic surprise when operational AI performance diverges from simulation results. Compliant military simulation could satisfy accuracy requirements through documented model assumptions and uncertainty ranges while the operational planning that incorporates simulation results treats AI capability projections as more certain than the simulation assumptions support. AI simulation that accurately represents likely AI performance may still produce strategic overconfidence if planners focus on the favorable tail of the uncertainty distribution — scenarios where U.S. AI performs best and adversary AI performs worst — without adequately planning for unfavorable AI performance scenarios. The rule does not address how AI uncertainty is represented in military simulation and war gaming, how strategic planning that relies on AI capability projections is validated against independent analysis, or what accountability exists when AI-confident strategies fail because operational AI performance diverged from simulation projections."
+}
+CARD_CONTENT["TECH-MILS-0040"] = {
+    "stmt": "All military AI programs with potential for lethal or liberty-affecting applications must have a designated legal reviewer responsible for ongoing compliance assessment throughout the program lifecycle, with authority to flag legal concerns to civilian leadership and to document legal review conclusions.",
+    "notes": "Military AI legal review requirements are only effective if legal reviewers have sufficient technical understanding of AI systems to identify when operational AI capabilities have evolved beyond what the original legal review covered — a challenge given the pace of AI development and the limited AI technical expertise in most JAG offices. Compliant programs could satisfy legal reviewer designation requirements through assignment of JAG attorneys with limited AI technical background whose reviews satisfy the formal requirement without providing substantive legal analysis of novel AI-specific issues — IHL compliance for autonomous targeting, Fourth Amendment analysis for AI surveillance. Legal reviewer authority to flag concerns requires meaningful access to civilian leadership with authority to act on legal concerns — an authority chain that may be obscured in programs where legal review is integrated into program management structures that prioritize schedule and cost. The rule does not address what AI technical training is required for military AI legal reviewers, how legal review conclusions are documented and retained, or what authority legal reviewers have to require program modification when they identify material legal compliance concerns."
+}
+CARD_CONTENT["TECH-MILS-0041"] = {
+    "stmt": "AI systems used in special operations forces — including target identification, pattern of life analysis, and raid planning support — must comply with applicable LOAC requirements, must have human authorization for each use of lethal force, and must maintain documentation of AI role in mission planning and execution sufficient for post-mission accountability review.",
+    "notes": "Special operations AI target identification and pattern of life analysis creates accountability gaps when AI-influenced targeting decisions produce civilian casualties: if AI generated the target identification without adequate human verification, accountability for wrongful targeting is diffused between the AI system, program developers, operators, and commanders in ways that prevent effective post-mission review. Compliant SOF AI could satisfy human authorization requirements through pre-mission approval processes that authorize engagement based on AI-generated target packages without specific human verification of the target identification methodology at the point of engagement. SOF mission documentation of AI role may be classified or compartmentalized in ways that prevent effective external accountability review — including congressional oversight, IG review, and civilian casualty investigation — of AI-influenced targeting decisions with life-or-death consequences. The rule does not address what documentation is required for AI role in SOF targeting decisions, how human authorization requirements apply to time-compressed SOF operational scenarios, or what post-mission review process is required for AI-supported SOF operations that result in civilian casualties."
+}
+CARD_CONTENT["TECH-MILS-0042"] = {
+    "stmt": "Military AI programs must not use AI to evade, circumvent, or obscure statutory limitations on military activities — including restrictions on surveillance of U.S. persons, limitations on military law enforcement, and congressional prohibitions on specific operational activities.",
+    "notes": "AI technical capabilities may enable circumvention of statutory military activity limitations: AI analysis of commercially purchased surveillance data may achieve the surveillance effect that FISA prohibits through direct collection; AI-enabled information operations may achieve domestic propaganda effects prohibited by the Smith-Mundt Act through AI that allows denial of intentional domestic targeting. Compliant military AI programs could comply with statutory limitations on specific activities while using AI to achieve equivalent effects through technically different methods — purchasing commercial surveillance data rather than conducting SIGINT collection, using AI to amplify foreign media rather than creating domestic propaganda. Congressional prohibitions on specific operational activities may be written in terms of specific technical methods that AI-enabled equivalents do not satisfy literally, creating gaps between statutory intent and statutory text that AI capabilities exploit. The rule does not address how statutory military activity limitations are interpreted to cover AI-enabled equivalents of specifically prohibited activities, what oversight mechanism detects AI circumvention of statutory limitations, or how intent-based statutory analysis applies to AI programs."
+}
+CARD_CONTENT["TECH-MILS-0043"] = {
+    "stmt": "AI systems used in combat casualty care, trauma surgery, and acute care for wounded service members must be developed with input from combat medical specialists, must be validated in settings that approximate forward combat medical conditions, and must not reduce the quality of care available to wounded service members.",
+    "notes": "Combat casualty care AI developed primarily by civilian technologists without integration of combat medicine specialist requirements may address non-priority technical challenges while failing to address the specific constraints — limited equipment, time pressure, limited information, multi-casualty scenarios — that define forward combat medical care quality. Compliant combat medicine AI could satisfy technical validation requirements through laboratory-accurate performance studies while combat forward settings involve degraded sensor quality, limited power, communication constraints, and multi-casualty complexity that produces substantially different AI performance than laboratory validation predicts. AI that reduces care quality by generating incorrect treatment recommendations, producing overconfidence in AI assessment that displaces clinical judgment, or creating technology dependencies that fail under field conditions may cause preventable mortality among wounded service members despite satisfying formal accuracy requirements. The rule does not address what forward operating environment testing is required before combat casualty AI is deployed, how AI performance under degraded conditions is validated, or how military medical doctrine incorporates AI limitations in training and treatment protocols."
+}
+CARD_CONTENT["TECH-MILS-0044"] = {
+    "stmt": "Military AI systems that operate in joint, combined, or allied operations must comply with data sharing restrictions, classification requirements, and applicable international agreements governing information sharing, and must not expose classified AI capabilities, training data, or model parameters to unauthorized access through interoperability arrangements.",
+    "notes": "Joint and combined operations AI interoperability creates classification challenges when allied partners have different classification systems, security clearance equivalences, and information handling requirements — and when AI systems optimized for U.S. operations must be adjusted for allied access without disclosing underlying capabilities. Compliant combined operations AI could satisfy bilateral information sharing agreements while AI system architecture — shared training infrastructure, common APIs, model parameter access — provides allied personnel with access to AI capabilities beyond what information sharing agreements specifically authorize. AI interoperability requirements for NATO and partner force operations may create pressure to share AI capabilities and systems that represent significant U.S. technological advantages, creating tension between interoperability and protecting AI military advantage. The rule does not address how classification requirements specifically apply to AI model sharing in combined operations, what technical safeguards prevent unauthorized AI capability access through interoperability arrangements, or how AI technology transfer through operational interoperability is monitored and managed."
+}
+CARD_CONTENT["TECH-MILS-0045"] = {
+    "stmt": "AI systems used in military physical security, base access control, and installation protection must comply with applicable privacy protections for personnel and visitors, must have documented error rates for the specific populations processed, and may not use AI to profile individuals based on protected characteristics in security screening.",
+    "notes": "Military installation access control AI that uses facial recognition, behavioral analysis, or credential verification may produce disparate false rejection rates for service members and visitors from certain demographic groups — creating security screening disparities that are simultaneously operational security vulnerabilities and civil rights concerns. Compliant installation security AI could satisfy privacy requirements through general disclosure of AI use in security screening while not providing the specific error rate information by demographic group that would reveal whether protected groups face systematically different screening outcomes. AI behavioral profiling in military installation security that identifies individuals as security concerns based on behavioral signals correlated with protected characteristics may create security screening practices equivalent to prohibited profiling under applicable military equal opportunity requirements. The rule does not address what demographic accuracy testing is required for installation security AI, how false rejection rates are monitored and corrected, or what accommodation and appeals processes are available to individuals who are incorrectly flagged by military installation security AI."
+}
+CARD_CONTENT["TECH-MILS-0046"] = {
+    "stmt": "AI systems used in military legal proceedings — including courts-martial, administrative discharge boards, and security clearance adjudications — must provide parties with access to AI analyses used against them, must not substitute AI risk scores for individualized legal findings, and must maintain human decision-maker accountability for all final legal determinations.",
+    "notes": "Military justice AI that generates risk scores or predictive assessments for courts-martial proceedings creates the same disclosure and confrontation rights issues as civilian criminal justice AI — defendants' rights to examine evidence against them may require access to AI methodology — in a system where service members already have fewer constitutional protections than civilian defendants. Compliant military legal AI could satisfy formal disclosure requirements while AI-generated assessments that influence sentencing or administrative outcomes are characterized as decision support rather than evidence, limiting disclosure rights that apply specifically to evidence. Administrative discharge AI that evaluates service records, fitness reports, and incident history to recommend characterization of discharge affects veteran benefits eligibility in ways that have major economic consequences — VA benefits depend on discharge characterization — without the due process protections that civilian administrative actions of equivalent consequence would require. The rule does not address how confrontation and due process rights apply to AI analyses in military proceedings, what individualized legal standard must supplement AI risk scores, or how human decision-maker independence from AI recommendation is verified in military legal proceedings."
+}
+CARD_CONTENT["TECH-MILS-0047"] = {
+    "stmt": "Defense AI programs must include congressional notification before initial operational capability for AI systems used in lethal applications, before significant capability expansion of fielded AI systems, and upon discovery of significant AI system failures in operational settings, with notifications unclassified to the maximum extent possible.",
+    "notes": "Congressional notification requirements for military AI depend on clear definitions of what constitutes initial operational capability, significant capability expansion, and significant system failure — definitions that program offices may interpret narrowly to minimize notification obligations for programs where congressional interest might slow deployment or require program restructuring. Compliant notification programs could satisfy formal notification requirements through classified briefings that limit the congressional members and staff who receive notification — reducing the practical scope of oversight — while the program proceeds on the basis of nominal compliance with reporting requirements. AI system failures in operational settings may be difficult to attribute specifically to AI versus human error or adversary action, creating ambiguity about whether operational incidents constitute AI system failures that trigger notification requirements. The rule does not address how notification requirements are defined with sufficient specificity to prevent evasion through narrow interpretation, what unclassified notification content is required, or how Congress exercises meaningful oversight based on notifications that are often classified."
+}
+CARD_CONTENT["TECH-MILS-0048"] = {
+    "stmt": "Military AI systems used in remotely piloted aircraft operations, strike coordination, and intelligence preparation of the battlefield must maintain human authority over engagement decisions, must not delegate targeting authority to AI, and must include post-mission review of AI-influenced targeting decisions.",
+    "notes": "Remotely piloted aircraft AI that processes sensor data to recommend targets, calculate engagement parameters, and assess battle damage enables increasingly automated strike operations in which the human 'in the loop' is responsible for ever-shorter deliberation windows over AI-optimized engagement recommendations. Compliant RPA AI could satisfy human authority requirements through formal operator engagement acknowledgment while operational tempo, fatigue, and information overload create conditions in which human operators rubber-stamp AI targeting recommendations without the deliberation needed for meaningful authority. Battle damage assessment AI that evaluates strike outcomes influences subsequent targeting decisions in ways that compound initial AI recommendations — if AI-assessed damage is underestimated, further strikes may be recommended — creating an AI-to-AI feedback loop in targeting decisions with attenuated human evaluation. The rule does not address what deliberation time and information is required for human RPA targeting authority to be meaningful, how post-mission review of AI-influenced targeting is conducted and documented, or what accountability exists for targeting decisions where AI recommendations were adopted without adequate human evaluation."
+}
+CARD_CONTENT["TECH-MILS-0049"] = {
+    "stmt": "Military AI programs must maintain documentation of AI system capabilities, limitations, known failure modes, and operational performance sufficient to enable effective congressional oversight, inspector general review, and accountability for outcomes attributable to AI system performance.",
+    "notes": "Military AI program documentation requirements face the challenge that AI system capabilities and limitations are technically complex and may evolve through ongoing training and deployment in ways that documentation processes designed for conventional software do not capture. Compliant documentation programs could satisfy formal requirements through program documentation that accurately describes design specifications while operational performance that diverges from specifications is not systematically documented unless it produces an incident requiring official reporting. AI system failure modes discovered in operational use may be treated as sensitive military capabilities information — disclosure of how an AI system can be defeated provides adversary advantage — creating tension between failure mode transparency required for oversight and operational security that limits disclosure. The rule does not address what documentation format is required for AI failure mode and limitation documentation, how operational performance monitoring is required to update static pre-deployment documentation, or how classified failure mode documentation is made accessible for oversight reviews that require security clearances."
+}
+CARD_CONTENT["TECH-MILS-0050"] = {
+    "stmt": "AI systems used in military border security operations must comply with constitutional requirements applicable to U.S. persons, must not be used to circumvent immigration court due process requirements, and must maintain human authority over detention, enforcement, and use-of-force decisions.",
+    "notes": "Military AI in border security — deployed under authority short of Posse Comitatus exceptions or statutory border security authorizations — may perform surveillance, data collection, and analytical functions that provide enforcement information to civilian agencies without direct military law enforcement activity, achieving surveillance effects that might otherwise require judicial authorization. Compliant border security AI operations could satisfy formal legal authority requirements while the AI data collection, analysis, and sharing with CBP enables enforcement actions that would not be constitutionally permissible if the military conducted them directly — using AI interoperability to transfer military surveillance capabilities to civilian enforcement. AI systems in border security that identify individuals for detention or enforcement action based on behavioral profiling may produce protected characteristic-based targeting when the behavioral patterns the AI was trained to flag correlate with race, national origin, or religion. The rule does not address how constitutional requirements specifically apply to military AI border security operations, how data sharing between military AI systems and civilian enforcement is regulated, or what human authority requirements govern military AI-influenced enforcement referrals."
+}
+CARD_CONTENT["TECH-MILS-0051"] = {
+    "stmt": "AI systems used in military personnel fitness and readiness assessment must comply with the ADA for service members with disabilities, must account for individual accommodation needs, and may not use AI to systematically identify and discharge service members with documented or predicted medical conditions without compliance with applicable disability law.",
+    "notes": "Military fitness AI that evaluates physical performance metrics and medical records to identify service members who may not meet fitness standards may systematically flag service members with documented disabilities or accommodation needs for administrative action — effectively using AI to discharge service members who are performing assigned duties effectively with accommodations. Compliant military fitness AI could satisfy ADA requirements for service members covered by the Act while military fitness standards create broader grounds for discharge than ADA requires — producing AI systems that comply with ADA-specific requirements while using other fitness criteria to achieve equivalent outcomes for service members with medical conditions. AI medical records analysis that predicts future service-limiting conditions before those conditions are documented may identify service members for non-promotion or discharge based on AI predictions rather than actual fitness limitations, creating adverse action on the basis of disability prediction that precedes actual impairment. The rule does not address how ADA reasonable accommodation requirements interact with military fitness AI systems, what standard must be met before AI predicted fitness limitations justify adverse action, or how service members contest AI fitness assessments that they believe are inaccurate."
+}
+CARD_CONTENT["TECH-MILS-0052"] = {
+    "stmt": "AI systems used in military awards, decorations, and recognition processing must not produce racially, gender-based, or rank-based disparate outcomes in award recommendation rates, and must be subject to regular equity analysis by appropriate oversight authorities.",
+    "notes": "Military awards processing AI trained on historical nomination and approval data will replicate historical disparities in awards: the documented under-decoration of Black and Hispanic service members for valor — addressed legislatively for WWII veterans through PL 113-66 — reflects historical bias that AI trained on historical awards data would embed. Compliant military awards AI could satisfy formal processing requirements while the nomination pipeline — who nominates, for what actions, with what documentation — produces disparate award rates by race and gender that the AI accurately reflects without correction. Awards recognition AI that evaluates nomination language and documentation quality may systematically disadvantage service members whose accomplishments are documented by supervisors with less writing proficiency or less familiarity with award standards — correlating award outcomes with supervisor quality rather than service member accomplishment. The rule does not address how equity analysis of military awards AI is conducted, what disparate outcome thresholds trigger corrective action, or how historical disparities in military awards are corrected through AI design rather than merely replicated."
+}
+CARD_CONTENT["TECH-MILS-0053"] = {
+    "stmt": "AI systems used in military housing allocation, food service, and other quality of life programs must not produce racially, gender-based, or rank-based disparate outcomes in resource allocation, and must be disclosed to affected service members and subject to command equity review.",
+    "notes": "Military housing allocation AI that uses priority criteria — rank, family size, time on waiting list — may produce racially disparate outcomes if historical patterns of rank distribution by race interact with housing priority systems in ways that systematically disadvantage junior enlisted service members from disproportionately represented racial groups. Compliant housing allocation AI could satisfy non-discrimination requirements through color-blind allocation criteria while the combination of rank-based priority and racial composition of rank categories produces disparate access to desirable housing without any explicitly race-based criteria. AI resource allocation in military quality of life programs that optimizes for efficiency — reducing waitlist times, minimizing empty units — may achieve efficiency by concentrating resources in locations with highest demand without considering equity implications for service members assigned to locations with lower resource density. The rule does not address what equity analysis housing and quality of life AI must undergo, what override mechanisms ensure that AI allocation decisions respect equity requirements, or how service members appeal AI-influenced quality of life resource allocation decisions."
+}
+CARD_CONTENT["TECH-MILS-0054"] = {
+    "stmt": "AI systems used in military judicial and administrative proceedings must maintain complete records of AI involvement, including system version, inputs, outputs, and operator actions, to enable post-proceeding review of AI influence on the outcome and to support any appeals or administrative review.",
+    "notes": "Records of AI involvement in military judicial and administrative proceedings must capture sufficient detail to enable meaningful review of whether AI recommendations were appropriately used or whether AI outputs influenced proceedings in ways that were not disclosed to parties — a documentation requirement that current military record-keeping systems may not be designed to capture. Compliant proceedings could maintain general records that proceedings used AI tools without specific documentation of which AI output influenced which stage of the proceeding and how, preventing retrospective analysis of AI influence on specific adverse determinations. Appeals and administrative review of military proceedings may be limited by access to AI system version information — AI models are updated, retrained, and modified, meaning the model used at the time of a proceeding may no longer exist for examination in a subsequent appeal. The rule does not address what format AI involvement records must be maintained in, how records of discontinued AI systems are preserved for potential future review, or how record preservation requirements apply to classified AI systems used in military proceedings."
+}
+CARD_CONTENT["TECH-MILS-0055"] = {
+    "stmt": "Military AI systems used in base and installation management — including energy management, maintenance scheduling, and facility operations — must maintain human operator capability for all critical installation functions, and must not create installation management dependencies that compromise safety or security when AI systems fail.",
+    "notes": "Installation management AI dependencies create safety risks when AI controls heating, cooling, power, water, or access systems without adequate manual override capability — creating scenarios where AI failure disables life-safety systems at installations housing thousands of service members and their families. Compliant installation management AI could satisfy manual override requirements through documented override procedures while installation personnel lack training and familiarity with override systems, because AI-managed operations have never required manual operation in practice. Smart installation AI that integrates building management, security, and utilities into a single AI-managed system creates a single attack surface for adversarial cyber operations targeting installation infrastructure. The rule does not address what manual operation capability and personnel training must be maintained alongside AI installation management, how safety-critical installation systems are isolated from cybervulnerable AI management systems, or what resilience testing is required for AI-managed installation systems."
+}
+CARD_CONTENT["TECH-MILS-0056"] = {
+    "stmt": "AI systems used in military chaplaincy, religious accommodations, and conscience-based service objector processing must protect service members' First Amendment free exercise rights, must not use AI profiling to predict religious or conscientious objector status, and must preserve human discretion in religious accommodation determinations.",
+    "notes": "AI chaplaincy and religious accommodation systems that analyze service member records, communication patterns, or behavioral data to identify religious practice patterns may create surveillance of protected First Amendment free exercise activity — tracking religious observance, prayer patterns, or religious association in ways that service members would not expect from religious support programs. Compliant military AI could satisfy religious accommodation requirements through AI-assisted processing while profiling service member religious practice and belief as a byproduct of administrative processing, creating religious surveillance data that may influence subsequent security clearance or fitness determinations. AI processing of conscientious objector claims may introduce bias from training data reflecting historical patterns of approval and denial rates that do not reflect genuinely individualized assessment of conscience — as required by United States v. Seeger — perpetuating AI patterns rather than individual moral consideration. The rule does not address how First Amendment free exercise protections limit AI data collection on service members' religious practice, what profiling of religious belief is prohibited in military AI systems, or how conscientious objector AI is evaluated for compliance with Seeger's genuineness requirement."
+}
+CARD_CONTENT["TECH-MILS-0057"] = {
+    "stmt": "AI systems that control or substantially assist in controlling weapons systems must include conspicuous human-readable status indicators, clear engagement mode displays, and unambiguous identification of when AI is autonomous versus when it is operating under human direction, to prevent confusion about weapon system operational status.",
+    "notes": "Weapons system AI interface design that obscures whether a system is in autonomous, semi-autonomous, or manual mode creates operator confusion that may result in unintended lethal force — when operators believe they are controlling a weapon directly but AI is executing autonomous engagement logic, or when operators believe AI is engaged when they have sole control. Compliant weapons system interfaces could satisfy status indicator requirements through technical displays that are interpretable by trained operators but that cannot be read under operational stress, fatigue, or degraded sensor conditions that characterize actual combat environments. Autonomous engagement mode creep — where AI progressively handles more engagement decisions while the human-in-loop interface maintains the appearance of human control — may result in AI systems that operate effectively autonomously while satisfying nominal human authorization requirements through interface design that creates the appearance of human engagement with AI recommendations. The rule does not address what interface design standards specifically prevent autonomous mode confusion, how autonomous versus semi-autonomous engagement is meaningfully distinguished in interface design, or what fail-safe mode defaults apply when status indicators are ambiguous or compromised."
+}
+
+
+# MILS-0058
+CARD_CONTENT["TECH-MILS-0058"] = {
+    "stmt": "The military cyber branch must operate in alignment with international efforts to establish norms, agreements, and treaties governing responsible state behavior in cyberspace, including prohibitions on attacks against civilian critical infrastructure, humanitarian organizations, and electoral systems, and must report violations by foreign actors to civilian oversight bodies.",
+    "notes": "A gap exists for non-state actors — the rule binds the military but cannot directly bind private offensive cyber contractors acting under classified agreements. Verification of compliance is inherently difficult given the classified nature of most offensive cyber operations, creating a potential for the rule to exist on paper while covert operations proceed contrary to treaty obligations. A loophole risk arises if 'alignment' is interpreted to permit activity the U.S. has not formally prohibited while withholding treaty ratification — making the rule conditional on diplomatic choices that undermine it. Adversarial states may exploit declared restraint as an intelligence advantage, arguing U.S. forces must be deterred from legitimate defensive operations. Any cyber norms framework must be accompanied by genuine multilateral enforcement mechanisms, not merely declaratory commitments, to have practical effect.",
+}
+
+# OVRG
+CARD_CONTENT["TECH-OVRG-0001"] = {
+    "stmt": "All government AI surveillance systems must be registered in a publicly accessible registry disclosing: the agency operating the system, its legal authorization, the population it monitors, the data sources it accesses, accuracy and error rate data, and civil liberties impact assessments, with the registry updated when systems are materially changed and reviewed annually by an independent oversight body.",
+    "notes": "A gap exists for contractor-operated surveillance systems that technically belong to private vendors but are used exclusively for government purposes — these must be covered by the registry or agencies will outsource to evade disclosure. Classification claims may exempt national security systems from registry requirements, creating a permanent loophole for federal intelligence agencies to avoid any oversight requirement the rule imposes. 'AI surveillance system' must be defined to include algorithmic scoring tools, predictive analytics, and data aggregation systems — not only facial recognition cameras. An abuse path arises if registries omit operational detail in the name of security, making disclosures formally present but substantively empty. Independent oversight must have genuine subpoena authority and public reporting obligations to prevent registries from becoming administrative theater.",
+}
+
+CARD_CONTENT["TECH-OVRG-0002"] = {
+    "stmt": "Every authorized government AI surveillance system must undergo mandatory independent audits at intervals not exceeding two years, covering: legal compliance with the authorization under which the system operates; accuracy rates disaggregated by demographic group; civil liberties impacts including disparate targeting of protected classes; and data retention and access practices, with audit results published in full except for narrowly defined national security redactions subject to judicial review.",
+    "notes": "A gap exists for surveillance systems that are retired and replaced before the two-year audit cycle completes, allowing agencies to evade audit by cycling system names. Audit independence is compromised if auditors are selected by the audited agency — the rule must specify that auditors are selected by an independent oversight body or the Inspector General, not by the operating agency. Demographic accuracy data is ineffective if the system's training population is classified, preventing auditors from assessing structural bias in how the system was built. A loophole arises if 'national security redactions' are applied so broadly that the published audit contains only boilerplate conclusions. Audit findings must trigger corrective action requirements with enforcement authority, not merely advisory reports that agencies may ignore.",
+}
+
+CARD_CONTENT["TECH-OVRG-0003"] = {
+    "stmt": "All government AI surveillance programs must carry statutory expiration dates not exceeding five years, and may be reauthorized only through affirmative legislative action following public notice, an independent audit, and a civil liberties review; executive agencies may not extend expiration through administrative reinterpretation, emergency declarations, or classification decisions, and all previously authorized programs must undergo sunset review within three years of this rule's enactment.",
+    "notes": "A gap exists for legacy programs operating under pre-existing authorizations — without explicit retroactive application of sunset requirements, the rule will not constrain the most entrenched surveillance systems. Emergency declaration authority is a potential abuse path: if the President can invoke emergency powers to extend surveillance authority outside the reauthorization process, sunset provisions become advisory. The rule must define what constitutes a 'material change' to a reauthorized system to prevent agencies from reauthorizing a program and then expanding it substantially without triggering a new review. Legislative reauthorization can itself be captured by executive branch advocacy with little genuine civil liberties scrutiny — independent civil liberties review must have standing to present findings to the legislature and the public. Sunset requirements must apply to classified programs reviewed by the FISA Court or equivalent, not only to programs with public-facing authorizations.",
+}
+
+
+# PRIV
+CARD_CONTENT["TECH-PRIV-0001"] = {
+    "stmt": "Individuals have a legally protected right to access legal websites, online services, and digital platforms without being required to submit to identity verification or provide government-issued identification as a precondition of access; age verification requirements must be implemented through privacy-preserving technical means that do not require disclosure of identity to the platform or to intermediaries.",
+    "notes": "A significant loophole arises if 'legal services' is not defined to encompass services providing information about legal activity in other jurisdictions — platforms may invoke legality concerns to demand ID for information they prefer to restrict. The rule must address the infrastructure layer: even if platforms do not require identification, ISPs, DNS providers, and CDN operators can be compelled to identify users — making the rule incomplete without upstream carrier protections. Anonymity for platform access does not prevent surveillance through metadata, traffic analysis, or device fingerprinting — the rule must specify that these techniques cannot substitute for prohibited identification requirements. A gap exists for minors: legitimate age-restricted content creates a real tension with anonymity that must be resolved through privacy-preserving technical standards rather than wholesale identity collection. Bad actors may exploit anonymity protections to harass, distribute illegal content, or evade accountability — the rule must acknowledge this tension and specify what lawful enforcement mechanisms are preserved.",
+}
+
+CARD_CONTENT["TECH-PRIV-0002"] = {
+    "stmt": "Individuals have a protected right to use the internet anonymously or under a pseudonym; no law, platform policy, or government program may require real-name identification as a condition of online expression, access to information, or participation in online communities, except in contexts requiring genuine identity verification for legally mandated purposes such as financial services or licensed professional practice.",
+    "notes": "Real-name requirements have been documented to suppress political speech, suppress LGBTQ+ expression, and endanger people fleeing domestic violence or persecution — the rule must acknowledge these documented harms as the rationale for protection. A loophole arises if platforms require 'verified' identities under the guise of trust and safety programs, allowing de facto real-name regimes dressed in terms-of-service language. The 'legally mandated purposes' exception must be interpreted narrowly — there will be pressure to expand it to cover content moderation, advertising, and national security — and the rule should enumerate permitted exceptions rather than relying on an open standard. A gap exists for workplace and institutional networks: employers and schools often operate private networks where anonymity is not available — the rule should specify its scope clearly. International legal frameworks differ: this rule must operate in tension with Germany's NetzDG and the EU's approaches to online accountability — its enforcement can only be asserted within U.S. jurisdiction.",
+}
+
+
+# SURS (0001 has no rule-stmt — process() handles with plain.insert_after)
+CARD_CONTENT["TECH-SURS-0001"] = {
+    "stmt": "Mass surveillance of the public — defined as the bulk collection of communications content, metadata, location data, or behavioral information without individualized suspicion and judicial authorization — is prohibited; no government agency may operate programs that collect data on individuals who are not the subject of an individualized, judicially authorized investigation, and existing programs inconsistent with this rule must be terminated within eighteen months.",
+    "notes": "The NSA's PRISM and Section 215 bulk telephony metadata programs illustrate the core harm this rule addresses: after Snowden's 2013 disclosures, PCLOB concluded these programs operated outside lawful bounds with minimal demonstrated security benefit. A gap exists for 'incidentally collected' data on U.S. persons during lawful foreign intelligence surveillance — agencies claim this is not 'mass surveillance' even when retention and querying of incidental data is functionally equivalent. The 'individualized suspicion' standard must be defined to require meaningful judicial review, not rubber-stamp FISA Court approvals based on agency-drafted applications without adversarial challenge. A loophole arises if foreign intelligence agencies share U.S. person data collected under foreign law with U.S. agencies — defeating the warrant requirement through intelligence-sharing arrangements. The eighteen-month wind-down provision must include reporting requirements to verify compliance, with independent technical review of claimed terminations.",
+}
+
+CARD_CONTENT["TECH-SURS-0002"] = {
+    "stmt": "AI-powered surveillance systems that scan or monitor public spaces — including facial recognition, gait analysis, object detection, behavioral analytics, and continuous video monitoring using AI — are prohibited except under narrowly defined emergency conditions that require: a declared public safety emergency by a designated authority, a judicial warrant naming the specific location and duration, independent civil liberties oversight, automatic expiration no later than seventy-two hours, and public disclosure within thirty days of any deployment.",
+    "notes": "Facial recognition in public spaces has documented failure rates of up to 34.7% for dark-skinned women (Buolamwini & Gebru, 2018), meaning the rule's emergency exception, if exercised, will generate disproportionate false identification of Black and brown people. A loophole arises if 'AI-powered' is defined narrowly to exclude human-operated video monitoring that uses AI for indexing and post-hoc analysis — the rule must cover retrospective AI analysis of surveillance footage, not only real-time systems. Law enforcement may attempt to circumvent the prohibition by contracting with private entities that operate in the same public spaces — the rule must apply based on the end use of surveillance data, not the identity of the system operator. A gap exists for airports, federal buildings, and other federally controlled spaces where TSA and other agencies assert independent authority. Emergency exceptions will be invoked routinely if the threshold for 'emergency' is not rigorously defined and judicially enforced — 'public safety' is broad enough to encompass almost any government action.",
+}
+
+CARD_CONTENT["TECH-SURS-0003"] = {
+    "stmt": "Government agencies are prohibited from using AI to track the persistent location of individuals, to link location records across different data sources to reconstruct an individual's movements over time, or to assemble location-derived profiles of individuals' associations, religious practices, political activities, or daily patterns without an individualized warrant based on probable cause issued by an Article III court.",
+    "notes": "Carpenter v. United States, 585 U.S. 296 (2018), established that prolonged cell-site location surveillance requires a warrant — this rule extends that principle to AI-enhanced location fusion across all data sources, including commercial databases. A critical gap exists for national security applications: the rule must specify whether it binds the FBI, NSA, and DHS equally or whether classified programs can continue under FISA authority with lower warrant standards. AI location stitching can create highly revealing profiles of religious practice, political organizing, and medical care even without entering any protected category — the rule must address the inferred sensitive information problem, not only the collection of location data itself. A loophole arises if law enforcement obtains location fusion data through administrative subpoenas or information sharing from commercial data brokers — the rule must close the third-party doctrine gap explicitly. Without data minimization requirements specifying how long location data can be retained, even compliant collection under warrant creates long-term surveillance risk if databases are retained indefinitely.",
+}
+
+CARD_CONTENT["TECH-SURS-0004"] = {
+    "stmt": "Government agencies — including federal, state, and local law enforcement and intelligence agencies — are prohibited from purchasing surveillance data from commercial data brokers as a substitute for constitutionally required warrants; data lawfully obtained through commercial purchase may not be used in criminal proceedings, civil penalty determinations, or immigration enforcement actions, and agencies that have made such purchases must disclose the purchases, destroy the data, and report on how it was used.",
+    "notes": "The practice of government agencies purchasing commercially available surveillance data to evade Fourth Amendment warrant requirements has been documented by the ACLU, EFF, and PCLOB — DHS, ICE, and FBI have all purchased location data from commercial brokers. A loophole arises if agencies claim purchased data is used only for 'lead generation' and not formally introduced as evidence — allowing warrant-circumvention while maintaining formal compliance with evidentiary rules. The destruction requirement must be technically verified — agencies have a pattern of retaining data in backup systems or sharing it with contractors who are not covered by the destruction order. A gap exists for intelligence agencies not subject to Fourth Amendment constraints with respect to foreign persons — purchases for intelligence purposes could be used to build profiles on U.S. persons under national security exceptions. The data broker industry that enables this evasion must also be regulated — seller liability and restrictions on government sales would be more effective than relying solely on agency compliance.",
+}
+
+CARD_CONTENT["TECH-SURS-0005"] = {
+    "stmt": "Any government access to communications content or surveillance data — including stored communications, real-time intercepts, location records, and AI-analyzed behavioral data — must be authorized by a warrant issued by an Article III court based on probable cause; warrants must include minimization procedures limiting collection to data specified in the warrant, expiration dates not exceeding ninety days, and detailed audit log requirements; and all warrant applications must be subject to adversarial judicial review with a court-appointed advocate representing privacy interests.",
+    "notes": "The FISA Court's non-adversarial process — in which only the government presents arguments — has produced approval rates exceeding 99% historically, making it structurally incapable of providing independent judicial oversight of national security surveillance. The adversarial review requirement is essential but will be resisted by intelligence agencies claiming that public disclosure of warrant applications compromises sources and methods — the rule must specify that the privacy advocate has security clearance and can review classified materials without public disclosure. A loophole arises if agencies use administrative subpoenas (pen register orders, NSLs) for data that would otherwise require a warrant, arguing these are not 'surveillance' — the rule must define scope to include all government access to data about individuals. Minimization procedures have historically been drafted by the collecting agencies with minimal judicial oversight of compliance — independent audits of minimization compliance must be required. The ninety-day limit must include a 'no extension without new application' requirement to prevent rolling authorizations that effectively permit indefinite surveillance.",
+}
+
+CARD_CONTENT["TECH-SURS-0006"] = {
+    "stmt": "AI-based predictive policing systems — including systems that assign risk scores to individuals, predict the likelihood that specific persons will commit future crimes, or generate lists of individuals for enhanced police attention based on algorithmic analysis — are prohibited when they rely on opaque scoring models, when training data reflects racially or socioeconomically biased historical enforcement patterns, or when scores are used to justify stops, searches, arrests, or enhanced surveillance without independent probable cause.",
+    "notes": "ProPublica's COMPAS analysis (2016) found Black defendants were falsely flagged as future criminals at nearly twice the rate of white defendants — documenting the structural harm that predictive policing rules must address. A loophole arises if agencies replace explicit risk scores with nominally different 'analytical tools' that produce equivalent outputs under different names — the rule must cover functional equivalents, not only products explicitly marketed as predictive policing. The rule's prohibition on opaque scoring must include a definition of opacity: vendors routinely claim trade secret protection for model weights and training data — as held in State v. Loomis, 881 N.W.2d 749 (Wis. 2016), which permitted use of a COMPAS score defendants could not challenge. A gap exists for 'hot spot policing' using aggregate area-level predictions rather than individual risk scores — area-level predictions with high spatial granularity are functionally equivalent to individual targeting. Discontinuing existing predictive policing contracts will face significant vendor lobbying and sunk-cost resistance from law enforcement agencies already integrated into vendor platforms.",
+}
+
+CARD_CONTENT["TECH-SURS-0007"] = {
+    "stmt": "Government agencies are prohibited from deploying AI tools that assign suspicion scores, threat ratings, risk classifications, or behavioral abnormality assessments to members of the public engaged in ordinary daily activities in public spaces, transportation networks, or online environments; any existing programs that generate such scores for general population monitoring must be terminated and affected persons notified of any records created.",
+    "notes": "Mass suspicion scoring systems like TSA's Automated Targeting System and DHS's Analytical Framework for Intelligence have operated with minimal public awareness or legal challenge — this rule addresses programs that exist and continue to expand. A gap exists for systems operated by contractors for government clients: if the scoring algorithm is owned by a private vendor and the government only queries results, agencies may argue they are not 'deploying' the system. Notification requirements for affected persons will be resisted on national security grounds — the rule must specify a minimum disclosure standard and a process for classified programs to be reviewed by an inspector general who reports aggregate statistics publicly. A loophole arises if agencies argue that scoring systems only flag 'anomalies' rather than assigning suspicion, using terminology to circumvent the rule while maintaining functionally identical capabilities. The rule must address data retention: even suspended scoring systems generate records that can be reinstated or shared — a retention prohibition must accompany the deployment prohibition.",
+}
+
+CARD_CONTENT["TECH-SURS-0008"] = {
+    "stmt": "All surveillance authorities — including legislative authorizations, executive orders, agency directives, and FISA Court orders authorizing ongoing surveillance programs — must carry expiration dates not exceeding three years; surveillance authorities may not be extended through emergency declarations, administrative reinterpretation, or classification without affirmative legislative reauthorization following a public civil liberties review; and any surveillance program operating without a current valid authorization must cease operations immediately.",
+    "notes": "Section 702 of FISA illustrates the risk this rule addresses: its temporary authorization has been renewed repeatedly with minimal substantive reform due to national security pressure on legislators, with each renewal accompanied by pledges of reform that were not enforced. The emergency declaration loophole is particularly dangerous: if the President can declare a national security emergency to extend surveillance authority, sunset provisions become contingent on executive restraint rather than legislative control. A gap exists for surveillance programs operating under executive authority alone without any legislative authorization — these programs may not be covered by automatic expiration requirements if they were never authorized by statute. Reauthorization processes must be designed to survive executive branch lobbying: independent civil liberties bodies must have standing to present evidence to Congress and to release declassified summaries publicly before votes occur. 'Any surveillance program operating without current authorization must cease immediately' must be enforced with criminal penalties for senior officials who knowingly continue operations past authorization expiry.",
+}
+
+CARD_CONTENT["TECH-SURS-0009"] = {
+    "stmt": "AI systems may not be used to map individuals' political affiliations, religious beliefs or practices, labor organizing activities, social networks, romantic or sexual relationships, or community associations — whether from public or private data sources — without individualized probable cause and a judicial warrant; data collected for other lawful purposes may not be analyzed or retained for association mapping purposes.",
+    "notes": "Association mapping using AI can reveal membership in political movements, religious communities, and LGBTQ+ networks from social media, financial transactions, and location data without collecting any expressly protected information — the inferred sensitive data problem is as serious as the direct collection problem. FBI and DHS have historically mapped Muslim communities, Black Lives Matter networks, and environmental activist groups under 'community outreach' or 'threat assessment' programs that fell short of the probable cause standard — this rule is designed to prohibit those programs explicitly. A loophole arises if agencies acquire association graphs from social media companies under terms of service agreements or through national security letters that purport to authorize collection without individualized warrant — the rule must specify that the warrant requirement applies to all acquisition methods. A gap exists for foreign intelligence programs targeting foreign nationals in the U.S. — FISA-authorized association mapping of foreign persons may incidentally capture U.S. persons' associations, and the minimization procedures must address this. Chilling effects on political and religious association are a concrete harm even when no enforcement action follows — the mere knowledge that association mapping exists has been documented to suppress political participation.",
+}
+
+CARD_CONTENT["TECH-SURS-0010"] = {
+    "stmt": "AI-enabled surveillance of journalists, their confidential sources, attorneys, or attorney-client communications requires judicial authorization under the highest available standard — probable cause reviewed by an Article III judge with adversarial representation — and must be approved by the Attorney General personally with written findings; any surveillance of journalists or attorneys must trigger automatic notification to the Department of Justice Inspector General and independent media freedom oversight, and incidentally collected privileged communications must be destroyed and may not be reviewed by prosecutors.",
+    "notes": "The 2021 revelation that the Trump and Biden DOJs seized records of journalists and Members of Congress under national security subpoenas illustrates the real enforcement risk these provisions address. A loophole arises if surveillance targets a source rather than the journalist directly — agencies can achieve equivalent press surveillance by monitoring the journalist's contacts rather than the journalist. Attorney-client privilege protections depend entirely on taint team procedures that are self-administered by the collecting agency — independent judicial review of taint team decisions is necessary for the privilege protection to be genuine. A gap exists for foreign intelligence surveillance of journalists working internationally: FISA Section 702 can capture journalists' foreign-source communications without individual warrant requirements. The Attorney General personal approval requirement has historical precedent but has not prevented past overreach — the requirement must be accompanied by OIG pre-approval review, not only post-hoc accountability.",
+}
+
+
+# SYNS
+CARD_CONTENT["TECH-SYNS-0001"] = {
+    "stmt": "AI-generated media — including images, audio, video, and text — may not be used to deceive the public about the statements, actions, appearance, or positions of real people in ways that cause material harm, manipulate elections, violate personal dignity, or incite violence; civil and criminal liability attaches to the creator, distributor, and hosting platform when synthetic media is used with intent to deceive and causes demonstrable harm.",
+    "notes": "Sensity AI research (2023) found that 96–98% of all deepfakes online depicted women without their consent, primarily for sexual degradation — the rule must address this dominant harm pattern explicitly rather than treating deceptive synthetic media as a primarily political concern. A loophole arises if 'intent to deceive' is interpreted to require proof of subjective intent, which is difficult to establish and allows malicious actors to claim carelessness — a recklessness standard or strict liability for certain categories (electoral content, non-consensual sexual content) would be more effective. Platform hosting liability must be designed carefully: Section 230 of the Communications Decency Act currently immunizes platforms from third-party content liability — the rule must specify the legal mechanism for overriding that immunity for synthetic media harms. A gap exists for synthetic media distributed through private channels (messaging apps, encrypted platforms) where hosting platform liability may not apply. The rule must define 'material harm' to include reputation damage, safety risk, dignitary harm, and documented psychological injury — not only quantifiable economic loss.",
+}
+
+CARD_CONTENT["TECH-SYNS-0002"] = {
+    "stmt": "Using AI-generated images, audio, video, or text to impersonate a specific real person for purposes of fraud, financial gain, unauthorized access to computer systems or financial accounts, identity theft, or obtaining services or benefits under a false identity is a federal offense subject to criminal penalty; this prohibition applies regardless of whether the synthetic content is labeled as AI-generated if the impersonation is designed to deceive the target.",
+    "notes": "AI voice cloning has already been used in documented scams impersonating family members in emergency 'grandparent scam' calls — the rule must ensure it covers voice-only impersonation, not only video or visual content. A loophole arises if impersonation is conducted using real audio or video clips of the target person rather than fully synthetic content — the rule must extend to materially edited authentic content used for impersonation purposes. A gap exists for automated impersonation at scale: the rule must address AI agents that impersonate real identities in thousands of simultaneous interactions, which creates fraud risk disproportionate to any individual impersonation event. The criminal penalty must attach to the developer of impersonation tools marketed for fraud, not only to individual users — platform and tool liability is essential for deterrence. Technical measures like audio watermarking for AI-generated voice content should be required as a complement to criminal liability.",
+}
+
+CARD_CONTENT["TECH-SYNS-0003"] = {
+    "stmt": "AI-generated synthetic identities, documents, images, or media may not be used to bypass identity verification systems, including facial recognition, liveness detection, document authentication, or biometric verification systems; the creation, distribution, or sale of tools or services designed to enable synthetic identity fraud is a federal offense, and identity verification system operators must implement and regularly update defenses against known synthetic identity attack vectors.",
+    "notes": "Synthetic identity fraud using AI-generated documents and faces has already been used in large-scale financial fraud schemes — the FTC has documented billions in annual losses from synthetic identity fraud, and AI dramatically lowers the cost of creating convincing fake identities. A loophole arises if the prohibition covers the use of synthetic media but not the underlying tools — the creation and distribution of 'deepfake identity kits' designed for verification bypass must be independently criminalized. The rule creates obligations for identity verification system operators to update defenses — but without specifying standards or audit requirements, operators may claim compliance while deploying systems known to be vulnerable to attacks they chose not to patch. A gap exists for biometric verification systems that rely on static face images: as 3D face synthesis improves, liveness detection requirements must be continuously updated — the rule must require operators to maintain defenses against state-of-the-art attack methods, not only known past attack vectors. Attribution — establishing that a specific actor used synthetic media for a specific verification bypass — is technically challenging, which may limit criminal enforcement and increase the importance of civil liability and technical prevention.",
+}
+
+CARD_CONTENT["TECH-SYNS-0004"] = {
+    "stmt": "Creating, distributing, hosting, or profiting from AI-generated sexually explicit content that depicts a real, identifiable person without that person's explicit, informed, and current consent is prohibited; this prohibition applies regardless of whether the content is labeled as AI-generated; persons depicted without consent have a private right of action for injunctive relief, damages, and attorney's fees; platforms must remove non-consensual AI sexual content within forty-eight hours of notice and maintain mechanisms for victims to report content without creating an account.",
+    "notes": "Research has documented that the overwhelming majority of non-consensual deepfake sexual content targets women, and victims experience documented harms including job loss, relationship damage, psychological trauma, and safety risks — the rule must be designed to provide fast, effective relief, not merely formal legal rights. A loophole arises if content depicts a 'fictional' character designed to closely resemble a real person — the rule must cover realistic likenesses even when creators claim fictional intent. Platform takedown timelines must be enforceable with per-day penalties for non-compliance after the forty-eight-hour window — absent financial consequences, platforms have insufficient incentive to invest in efficient content removal infrastructure. A gap exists for content hosted on foreign platforms and accessed via VPN: the rule can provide U.S.-based remedies against U.S. platforms but cannot compel foreign takedown. The consent standard must specify that consent is revocable and that historical consent (e.g., past explicit content creation) does not authorize current synthetic depictions.",
+}
+
+CARD_CONTENT["TECH-SYNS-0005"] = {
+    "stmt": "Creating or distributing AI-generated content that realistically depicts a real, identifiable person doing or saying things that are false and that could expose them to public hatred, damage their professional reputation, cause third parties to shun or harm them, or place them in danger of physical harm constitutes AI-enabled defamation and is actionable under civil law; the existing negligence and actual malice standards apply based on whether the subject is a private individual or public figure.",
+    "notes": "Traditional defamation law was designed for human authors and has not been authoritatively applied to AI-generated content — the rule must specify how AI authorship affects the defamation analysis, particularly when the 'author' is a model rather than a person with subjective intent. The actual malice standard for public figures (New York Times v. Sullivan, 1964) requires knowledge of falsity or reckless disregard — AI systems do not have subjective states, raising questions about whether the standard can be met by the deployer rather than the AI. A loophole arises if deepfake defamation is distributed through anonymous accounts — without a traceable author, civil remedies require platform liability, which is currently limited by Section 230. A gap exists for defamatory synthetic content targeting private individuals, who may lack resources to pursue litigation even when entitled to relief — small claims court jurisdiction or administrative complaint mechanisms should supplement civil litigation. Requiring platforms to preserve evidence of reported defamatory synthetic content is essential — otherwise, removals destroy the evidence needed for litigation.",
+}
+
+CARD_CONTENT["TECH-SYNS-0006"] = {
+    "stmt": "Using AI-generated synthetic media in political advertising — including any content that puts fabricated words, statements, actions, or images into the mouth or likeness of a real candidate, officeholder, or political figure — is prohibited; political advertisers must certify that all media content is authentic or disclose AI-generated or AI-altered elements with prominent labeling meeting FEC specifications; violations are subject to civil penalties and constitute grounds for disqualification from federal matching funds.",
+    "notes": "State laws addressing deepfakes in political advertising (California AB 602, Texas SB 751) have had limited enforceability and narrow scope — federal legislation is necessary for consistent standards in federal elections. A loophole arises if synthetic media is distributed through non-advertising channels (social media organic posts, forwarded messages, 'grassroots' networks) that fall outside the FEC's existing advertising framework — the rule must address paid amplification and organic distribution separately. The certification requirement must be technically verifiable: a candidate claiming certification for authentic content must be able to produce evidence on request — the rule should specify what documentation is required. A gap exists for foreign actors producing and distributing AI political content targeting U.S. elections: FARA and existing campaign finance law do not effectively reach distributed synthetic media disinformation campaigns. The FEC lacks jurisdiction over some forms of political communication — the rule must specify whether enforcement authority is vested in FEC alone or shared with DOJ and FTC.",
+}
+
+CARD_CONTENT["TECH-SYNS-0007"] = {
+    "stmt": "Creating, distributing, or amplifying AI-generated synthetic media that falsely represents a public official's statements, health status, physical location, official actions, or authority — with the intent or likely effect of misleading the public about matters of public governance — is prohibited; this prohibition applies to domestic and foreign actors, and platforms must implement mechanisms to detect and label synthetic content impersonating government officials.",
+    "notes": "The specific risk of synthetic media depicting a president or military commander issuing false orders during a crisis — a known 'liar's dividend' scenario — justifies treating this category as distinct from general synthetic media harm. A loophole arises if synthetic content depicts an official saying things consistent with their known positions but attributed to a different context — the falsity requirement may not cover misleadingly recontextualized authentic-sounding synthetic content. The foreign actor prohibition requires international enforcement mechanisms: prosecution of foreign-based content creators requires either extradition or platform enforcement against content regardless of origin — the rule should specify both pathways. A gap exists for satirical content about officials that crosses into misleading political impersonation — the rule must preserve satire that cannot be reasonably mistaken for authentic official statements while targeting content designed to deceive. Platform detection requirements must specify accuracy standards and audit requirements — absent technical specifications, platforms may deploy detection systems with high false positive and negative rates without accountability.",
+}
+
+CARD_CONTENT["TECH-SYNS-0008"] = {
+    "stmt": "Coordinated campaigns using AI-generated synthetic media to deceive the public about real events, election results, public health emergencies, natural disasters, or threats to public safety — regardless of whether the campaign is domestic or foreign in origin — are prohibited; platforms must maintain detection and response capabilities for coordinated synthetic media deception campaigns and must report detected campaigns to the Cybersecurity and Infrastructure Security Agency within twenty-four hours.",
+    "notes": "Coordination detection requires distinguishing organic viral content from manufactured campaigns — the technical definition of 'coordinated' must be specified to avoid over-reaching to legitimate political organizing or mass sharing of authentic content. A loophole arises if coordination is achieved through indirect means — providing synthetic media assets to independent actors who then distribute them autonomously, so no single entity 'coordinates' the campaign in a traceable way. Platform reporting to CISA creates a potential surveillance infrastructure risk: requiring platforms to report to a government security agency about domestic content campaigns could be repurposed for political monitoring — the scope of required reporting must be strictly limited to synthetic media deception, not to organic political content. A gap exists for private communication channels where coordinated distribution occurs outside public platform monitoring — encrypted messaging coordination may be functionally impossible to detect. CISA's role must be limited to threat awareness and public notification — the rule must explicitly prohibit CISA from using reported data to target individuals for political views expressed through organic means.",
+}
+
+CARD_CONTENT["TECH-SYNS-0009"] = {
+    "stmt": "Media that is substantially generated by AI — including AI-generated video, audio, images, and text presented as authentic journalism or factual representation of real events — must carry clear, prominent, and technically specified disclosures identifying the content as AI-generated or substantially AI-altered; disclosure must be embedded in the content metadata and displayed to the viewer in a format meeting FTC disclosure standards, and disclosure may not be hidden behind a link, tooltip, or fine print.",
+    "notes": "FTC guidance on disclosure already establishes that deceptive omissions in commercial contexts violate the FTC Act — the rule extends this principle to AI-generated media in all contexts, not only advertising. A gap exists for partial AI generation: if a video is 30% AI-generated footage and 70% authentic, disclosure requirements must specify the threshold for 'substantially AI-generated' in a way that prevents gaming through minimal human input. A loophole arises if platforms receive a disclosure in metadata but display it only to API users rather than to general audience viewers — the rule must specify that disclosure must be visible to ordinary viewers in the primary viewing experience. Discovery enforcement is technically complex: metadata disclosures can be stripped when content is re-shared, screenshot, or downloaded — the rule must require both embedded provenance and human-visible labeling that persists through common re-sharing paths. The FTC disclosure standards must be specified by rulemaking with technical precision rather than being left to general guidance — without specific requirements, compliance will be uneven and largely unenforced.",
+}
+
+CARD_CONTENT["TECH-SYNS-0010"] = {
+    "stmt": "AI-generated video and audio content must include technically specified, tamper-resistant provenance markers identifying the content as AI-generated; provenance markers must comply with open interoperability standards, must persist through common re-encoding, resizing, and format conversion operations, and must be verifiable using freely available tools; AI content generation platforms must implement provenance marking as a mandatory default that cannot be disabled by users.",
+    "notes": "The C2PA (Coalition for Content Provenance and Authenticity) content credentials standard represents a leading industry approach to provenance marking — the rule should reference open standards-based frameworks rather than mandating proprietary solutions. A core technical gap exists: no current provenance marking technology is fully tamper-resistant across all processing pipelines — the rule must acknowledge this limitation and require that markers be as tamper-resistant as feasible while also requiring market investment in improving marker robustness. A loophole arises if provenance marking requirements apply only to the original generation platform and not to processing pipelines that re-encode content — downstream processors must be required to preserve or re-mark content they process. Mandatory default marking may be circumvented by operators offering alternative generation services that disable marking — criminal liability for deliberate marker removal is essential. Open interoperability standards must be maintained by a standards body with public representation, not captured by a single large vendor — government participation in standards development is appropriate.",
+}
+
+CARD_CONTENT["TECH-SYNS-0011"] = {
+    "stmt": "Detection tools for AI-generated content provenance markers must be freely available to the public under open-source licenses; no patent, trade secret, or licensing restriction may be used to prevent independent journalists, researchers, regulators, or individuals from independently verifying whether content carries AI provenance markers; government agencies must fund the development and maintenance of open-source detection tools and make them accessible through public digital infrastructure.",
+    "notes": "If detection capability is concentrated in a small number of proprietary tools, those tools become chokepoints that can be captured, commercialized, or selectively applied — open-source detection is necessary for verification to be meaningful and independent. A gap exists for individuals who cannot use command-line or technical tools: open-source detection must be available in accessible formats (web interfaces, browser extensions) that do not require technical expertise. A loophole arises if only provenance marker detection is open-sourced but general AI content detection models remain proprietary — without the ability to detect unmarked AI content, provenance marking detection alone creates a false assurance. Government funding requirements must be accompanied by technical standards specifying that funded tools meet accuracy, accessibility, and open licensing requirements — not simply that government money flowed to 'detection research.' The rule must specify that open-source tools must be maintained and updated as AI generation methods evolve — a tool that was accurate in 2025 and not maintained will be ineffective by 2027.",
+}
+
+CARD_CONTENT["TECH-SYNS-0012"] = {
+    "stmt": "Developers and operators of AI content generation platforms must implement reasonable technical safeguards to prevent users from removing, disabling, or circumventing provenance markers on AI-generated content; developers who knowingly design or offer features specifically enabling marker removal, or who fail to implement available safeguards, are liable for the resulting harms caused by unmarked AI-generated content; platforms must document their safeguards annually and submit documentation to federal oversight.",
+    "notes": "Reasonable safeguards are undefined — the rule must either specify minimum technical standards or empower a regulatory body to define them, otherwise 'reasonable' becomes whatever a platform chooses to implement. A loophole arises if marker removal capability is not explicitly built into a platform but is trivially achievable using third-party tools that developers know are widely used — the rule must address constructive knowledge and foreseeability of circumvention. Liability for harms caused by unmarked content requires proof of causation between the missing marker and the specific harm — establishing that harm would not have occurred if a marker were present is likely to be contested in litigation. A gap exists for re-upload of content through platforms other than the original generation platform: if a user exports AI content and re-uploads to a different platform, the re-upload platform has no way to verify original provenance — technical solutions must address this cross-platform provenance gap. Annual documentation requirements must include independent technical audit, not self-certification — self-reported safeguard documentation has limited value without external verification.",
+}
+
+CARD_CONTENT["TECH-SYNS-0013"] = {
+    "stmt": "AI-generated parody, satire, and artistic expression are permitted provided the content would not reasonably be mistaken for a factual account of real events or statements by a reasonable person in the target audience, or is clearly and prominently labeled as satire or artistic expression; this exception does not apply to content designed to appear authentic while being labeled as satire only in obscured or downstream disclosures.",
+    "notes": "The 'reasonable person in the target audience' standard will produce inconsistent results across different audiences — content that is obviously satirical to a politically engaged audience may be indistinguishable from news to audiences with less information context. A loophole arises if content is created as synthetic media without satirical framing, distributed deceptively, and only later labeled satire after viral spread — the rule must address timing and context of disclosure, not only the presence of a satire label somewhere. A gap exists for political satire that depicts real officials in fabricated scenarios that are harmful to their reputation — satire has historically protected such content, but AI-generated photorealistic depictions present greater deception risk than text or cartoon satire. The rule must be interpreted in light of First Amendment protections for satire (Hustler Magazine v. Falwell, 485 U.S. 46, 1988) — any enforcement mechanism must include a satire defense and must not be structured to chill legitimate political commentary. International application of satire protections varies significantly — content that qualifies as protected satire under U.S. standards may create liability under EU or UK defamation law.",
+}
+
+CARD_CONTENT["TECH-SYNS-0014"] = {
+    "stmt": "Journalists and documentary filmmakers may use AI-generated or AI-reconstructed content for legitimate reporting or storytelling — including historical reconstruction, illustrating reported events, or visualizing described phenomena — provided they clearly disclose the AI-generated or reconstructed nature of the content to their audience, do not use AI-generated content to fabricate statements or events that did not occur, and do not present AI-generated reconstruction as documentary evidence of specific historical events without corroboration from independent sources.",
+    "notes": "Documentary use of AI reconstruction presents genuine historical education value — the rule must not prohibit AI reconstruction of historical events that are well-documented and cannot be photographed, such as depicting historical testimony or reconstructing destroyed cultural sites. A loophole arises if 'reconstruction' is used to fill in ambiguous historical moments in ways that favor a particular narrative — AI reconstruction of events where the facts are disputed should require prominent disclosure of the factual uncertainty, not only of the AI generation. The corroboration requirement for AI reconstruction used as 'documentary evidence' must be rigorously defined: reconstructed footage presented as illustrative should be clearly labeled as illustrative, not as evidentiary. A gap exists for documentary subjects who appear in AI-reconstructed sequences: even with editorial disclosure, subjects may not have consented to their likeness being used in AI-generated sequences — consent from living subjects should be required. The rule must not be weaponized to challenge factually accurate journalism that uses AI tools in production — the distinction between AI-assisted reporting tools and AI-generated deceptive content must be preserved.",
+}
+
+CARD_CONTENT["TECH-SYNS-0015"] = {
+    "stmt": "AI-generated content depicting a real, identifiable person is permitted when that person has given explicit, informed, current, and revocable consent to being depicted in the specific manner in which they appear; consent is not transferable, consent to one type of depiction does not constitute consent to others, consent obtained through deception or coercion is void, and past content creation does not constitute consent to future synthetic depictions.",
+    "notes": "Consent in commercial content creation may be embedded in broad contracts — talent and performer contracts must not contain blanket synthetic media consent clauses, and such consent must be separately negotiated, time-limited, and scope-specific. A loophole arises if consent is obtained for a 'limited use' but the contract includes transfer rights that allow synthetic depiction in unlimited future applications — the rule must require that consent documents specify the scope of permitted synthetic depiction with particularity. The revocability requirement is critical for dignity protection but creates commercial complexity: if consent can be revoked after a production is complete, producers face retroactive voidance of finished work — the rule should specify notice periods and remedies rather than treating revocation as immediately effective in all cases. A gap exists for deceased persons: estates may consent to synthetic depictions of deceased individuals, but the deceased cannot consent — the rule should address posthumous synthetic depiction separately, with particular protections against sexual or reputationally harmful depictions. Non-consensual synthetic sexual content is already covered under TECH-SYNS-0004; this provision covers the broader affirmative consent framework for all synthetic depictions.",
+}
+
+
+# HARS
+CARD_CONTENT["TECH-HARS-0001"] = {
+    "stmt": "Digital platforms with more than five million monthly active users must implement effective, consistently enforced systems to detect, prevent, and remediate targeted harassment campaigns, coordinated abuse networks, non-consensual intimate image distribution, and sustained hate-based attacks against individuals; enforcement must be applied consistently across political viewpoints; platforms must report to users on actions taken regarding reported harassment and must maintain appeal processes with human review.",
+    "notes": "Research by the Anti-Defamation League and PEN America documents that women, journalists, researchers, and members of marginalized communities face disproportionate levels of online harassment that drive them from public participation — the rule must recognize this documented harm and require systems specifically calibrated to address it. A loophole arises if 'effective systems' is interpreted to require only nominal detection tools that produce high false-negative rates in practice — the rule must specify accuracy standards and require platforms to publish error rates. Consistent enforcement across political viewpoints is a contentious standard: platforms that enforce harassment rules against some political communities more than others will face accusations of bias regardless of whether enforcement is in fact consistent — transparency reporting must include demographic breakdowns. A gap exists for cross-platform harassment that originates on one platform and migrates to others — no single platform's detection system can fully address coordinated campaigns that span multiple services. Appeal processes with human review are resource-intensive: the rule must specify turnaround times and reviewer qualifications to prevent appeals from being processed by automated systems relabeled as 'human review.'",
+}
+
+CARD_CONTENT["TECH-HARS-0002"] = {
+    "stmt": "Platform algorithmic systems — including recommendation engines, trending topic systems, and content amplification tools — may not materially amplify, recommend, or distribute content that constitutes targeted harassment, coordinated abuse, hate-based attacks on individuals, or non-consensual intimate images; platforms must conduct regular audits of their algorithmic systems to assess whether amplification patterns disproportionately spread harassing content and must remediate identified problems within defined timeframes.",
+    "notes": "There is documented evidence that platform recommendation systems have amplified harassment campaigns against specific individuals — YouTube's recommendation engine and Twitter's trending topics have both been cited in documented harassment amplification cases. A critical tension exists between amplification prohibition and content moderation: if platforms are liable for amplifying harassing content but cannot effectively identify it at scale without both false positives and false negatives, they may be driven toward over-restriction or platform-wide suppression of contested content categories. The rule's prohibition on material amplification requires a definition of 'material': algorithmic systems do not have binary amplification decisions — they adjust relative distribution across users continuously. A loophole arises if platforms use 'organic reach' framing to deny that algorithmic choices constitute amplification — the rule must cover all system decisions that affect content visibility, not only explicit promotion features. Audit requirements must specify who conducts audits, what methodology is used, and what publication requirements apply — self-audits lack credibility without independent verification.",
+}
+
+CARD_CONTENT["TECH-HARS-0003"] = {
+    "stmt": "Victims of coordinated online harassment — defined as targeted campaigns involving three or more individuals acting in concert against a specific person — have enforceable rights to: prompt platform response and content removal; escalated human review of harassment reports; temporary protective measures including account-level filtering and demotion of coordinated attackers; transparency about actions taken; and civil remedies against identifiable harassers whose conduct constitutes tortious interference, intentional infliction of emotional distress, or stalking.",
+    "notes": "Defining 'coordinated' campaigns is technically challenging — genuine organic outrage and manufactured harassment campaigns may look identical in aggregate metrics, creating a risk of protecting bad actors by treating their coordination as organic. Platform 'temporary protective measures' must be designed so that they cannot be used to suppress legitimate criticism: the line between coordinated harassment and coordinated political opposition is disputed, and tools designed for one can be easily repurposed for the other. A gap exists for anonymous or pseudonymous harassers: the right to civil remedies is meaningful only if victims can identify their harassers — the rule must address the process for unmasking coordinated harassers through judicial process without exposing their identities to the victim prematurely. Response time standards must be specified: 'prompt' is inadequate without defined timelines — active harassment campaigns cause measurable harm within hours, and response within seventy-two hours may come too late to limit the harm. The rule should explicitly preserve victims' rights under state anti-stalking, anti-harassment, and anti-NCII laws — federal civil rights provisions should supplement, not preempt, stronger state protections.",
+}
+
+
+# PUBL (0002-0003; 0001 already included)
+CARD_CONTENT["TECH-PUBL-0002"] = {
+    "stmt": "AI systems used in core government services — including benefits administration, permitting, tax processing, immigration adjudication, licensing, and public safety — must use auditable, non-proprietary systems wherever technically and economically feasible; where proprietary systems are used, agencies must maintain independent access to training data, model documentation, decision logs, and audit interfaces sufficient to allow government technical staff and independent oversight bodies to verify system behavior and reproduce outcomes.",
+    "notes": "Government procurement of proprietary AI systems for core public services creates vendor lock-in and accountability gaps — the rule's auditability requirement is designed to ensure that government retains the ability to verify what it is operating even when it cannot open-source the code. A loophole arises if 'wherever technically and economically feasible' is interpreted to always favor proprietary systems because open alternatives are claimed to be technically inferior or more expensive — the rule must require documented cost-benefit analysis with independent review before procuring non-auditable proprietary systems. A gap exists for agency AI systems that are managed through cloud providers under contracts that limit government access to model internals — SaaS AI contracts must be reviewed to ensure they satisfy auditability requirements or must be renegotiated. The rule must specify what 'audit interfaces sufficient for independent oversight' means technically — access to aggregate performance metrics is insufficient; access to individual decision logs and model explanation outputs is required. Security reviews of open or auditable government AI systems must be rigorous to prevent adversaries from using audit access to identify and exploit vulnerabilities.",
+}
+
+CARD_CONTENT["TECH-PUBL-0003"] = {
+    "stmt": "When AI systems are deployed in publicly funded services, productivity gains resulting from AI deployment must be shared equitably with workers and the public; agencies and publicly funded contractors must not use AI-driven productivity gains solely to reduce headcount without investing equivalent value in worker transition, retraining, or service expansion; workforce impact assessments must be conducted before AI deployment in publicly funded services and must be made publicly available.",
+    "notes": "The rule addresses a documented pattern: AI deployment in publicly funded services has historically been used primarily to reduce labor costs rather than to improve service quality or expand access — the public interest requires a different allocation of productivity gains. A loophole arises if 'publicly funded services' is defined narrowly to cover only direct government operations and not government contractors, grant recipients, or regulated public utilities — the rule must specify its coverage scope to prevent contracting-out as evasion. 'Equitably shared' is ambiguous: the rule must specify what proportion of productivity gains must be reinvested in workers and service expansion versus permitted to accrue to the funding agency's budget. Workforce impact assessments must be conducted by independent parties with worker representation, not solely by management — assessments conducted by the deploying agency or its consultants will systematically underestimate displacement harms. The rule must address the time dimension: productivity gains from AI deployment may take years to materialize while workforce reductions happen immediately — the sharing obligation must be tied to actual realized gains, not projected future benefits that may not occur.",
+}
+
+
+# MKTS
+CARD_CONTENT["TECH-MKTS-0001"] = {
+    "stmt": "The use of shared algorithmic pricing systems, common pricing software, or AI-mediated price coordination mechanisms among competing entities — including competitors using the same third-party pricing platform that results in coordinated above-competitive pricing — constitutes a per se violation of Section 1 of the Sherman Antitrust Act, 15 U.S.C. § 1, regardless of whether the competitors communicated directly; this rule applies to housing, labor, consumer goods, and all markets subject to federal antitrust jurisdiction.",
+    "notes": "DOJ and FTC have brought actions against RealPage's algorithmic rent-setting system, which prosecutors alleged enabled coordinated rent increases across competing landlords who all subscribed to the same pricing platform — this rule would codify the enforcement theory. A significant legal question exists about whether algorithmic coordination without explicit human agreement constitutes a 'conspiracy' under existing Sherman Act doctrine — the rule proposes treating it as per se illegal, but courts have not uniformly adopted this interpretation and the rule may require new legislation rather than reinterpretation. A loophole arises if competitors use separate AI pricing systems that are trained on similar data and arrive at similar prices through independent optimization — the rule's coverage of 'coordinated above-competitive pricing' must be defined to cover tacit coordination through algorithmic design, not only explicit data sharing. A gap exists for wage-setting: employers using AI tools to set wages based on labor market benchmarks from shared data services may be engaging in equivalent coordination — the rule must apply symmetrically to labor markets. The per se standard removes the balancing test that might otherwise justify price coordination for efficiency reasons — this is appropriate for naked price-fixing but may need to account for genuine pro-competitive algorithmic benefits in some contexts.",
+}
+
+CARD_CONTENT["TECH-MKTS-0002"] = {
+    "stmt": "AI pricing and wage-setting systems used in markets for housing, employment, healthcare, essential goods, or any market with documented inelastic consumer demand must be subject to Federal Trade Commission review and approval before deployment; operators of such systems must register with the FTC, disclose how the system affects pricing outcomes relative to competitive benchmarks, and submit to ongoing monitoring for anti-competitive effects; systems found to produce above-competitive prices or below-competitive wages must be modified or withdrawn.",
+    "notes": "Pre-deployment FTC review is a novel requirement that extends beyond existing antitrust enforcement — the rule would require the FTC to develop new review processes and technical capacity it does not currently have at scale, which must be resourced if the requirement is to be more than aspirational. A loophole arises if 'essential goods' and 'inelastic demand' are interpreted narrowly, excluding markets where consumers technically have choices but practically cannot substitute — housing is the clearest case, but healthcare, childcare, and utilities qualify and must be specified. FTC technical capacity to review AI pricing systems is limited: the rule must require deployers to provide meaningful disclosure of system design and outcomes, not merely file a registration form — substantive review requires substantive disclosure obligations. A gap exists for markets where AI pricing systems are deployed internationally by companies with U.S. operations: the FTC's jurisdiction is territorial, and international pricing strategies may affect domestic markets through intermediaries not covered by registration requirements. Monitoring for anti-competitive effects must be ongoing and not limited to pre-deployment review — pricing algorithms are updated continuously and a system that passed initial review may develop anti-competitive properties through later updates.",
+}
+
+
+# FMDS
+CARD_CONTENT["TECH-FMDS-0001"] = {
+    "stmt": "Developers of foundation AI models above a defined capability threshold — based on training compute, performance on standardized capability benchmarks, or demonstrated ability to perform tasks in dual-use domains including biological design, chemical synthesis, cyberweapons development, and mass persuasion — must, before public deployment: register with a designated federal AI oversight body; disclose the categories and sources of training data; publish pre-deployment safety evaluation results; and report post-deployment safety incidents, emergent capabilities, or significant misuse events within defined timeframes.",
+    "notes": "Defining the capability threshold is the central technical and governance challenge: if set too high, the most dangerous systems escape review; if set too low, the regulatory burden falls on systems posing minimal risk and may concentrate the market in well-resourced incumbents. A loophole arises if foundation models are deployed as 'research previews' or under restricted API access that is then progressively opened — the rule must specify that the capability threshold triggers review regardless of access controls at the time of initial deployment. Training data disclosure will be resisted on trade secret grounds: the rule must specify the level of disclosure required (categories and sources, not necessarily full dataset reproduction) and establish that compliance does not require disclosure that undermines copyright claims or exposes personally identifiable information. Post-deployment incident reporting requirements must specify timelines, incident definitions, and public disclosure versus confidential government notification paths — a well-designed incident reporting system learns from incidents; a poorly designed one creates liability incentives to classify incidents narrowly. The oversight body must be technically staffed and independent of industry — without expert technical capacity, registration requirements will produce compliance theater rather than substantive safety review.",
+}
+
+CARD_CONTENT["TECH-FMDS-0002"] = {
+    "stmt": "Developers of foundation AI models must, in publicly accessible documentation, disclose whether training data included copyrighted works used without license, personal data subject to privacy law, data scraped from platforms in violation of terms of service, or data obtained from individuals without informed consent; must maintain technically feasible mechanisms for copyright holders and data subjects to request removal of their data from training datasets or correction of model outputs; and must demonstrate compliance with applicable copyright, privacy, and data protection law before receiving federal AI research funding or government procurement contracts.",
+    "notes": "Training data provenance is often poorly documented even within AI development organizations — the rule's disclosure requirement may reveal that developers genuinely do not know what their training data contained, raising questions about what 'technically feasible' data removal means when the data was ingested without documentation. A loophole arises if developers train foundation models using contractors or subsidiary companies and claim the developer entity did not directly use the data — corporate structure may be used to create distance between the legal entity receiving the procurement contract and the entity that trained on unlicensed data. A critical technical gap exists: current technical methods for removing individual data from trained neural networks are limited — 'machine unlearning' is an active research area but not yet reliably feasible at scale, which may make data removal requests effectively unenforceable. Government procurement leverage is the rule's primary enforcement mechanism — conditioning federal contracts on compliance creates incentives for major AI developers who depend on government customers, but has no leverage over developers who do not seek government business. Copyright holders' data removal requests raise questions about authorship: web scraped content may include billions of works — enforcement must specify a practical process for handling the volume of claims that would be generated.",
+}
+
+CARD_CONTENT["TECH-FMDS-0003"] = {
+    "stmt": "Foundation AI models designated as high-capability — based on standardized benchmarks or demonstrated capabilities in domains affecting public safety, critical infrastructure, biological knowledge, chemical synthesis, or mass persuasion — must undergo mandatory red-team adversarial safety evaluation by independent parties before deployment; evaluation results and model documentation must be submitted to a federal AI safety oversight body; and the model may not be deployed until the oversight body has confirmed receipt and published a summary of the disclosed safety evaluation.",
+    "notes": "Independent red-teaming requires evaluators with domain expertise in the specific capability domains being tested — biological safety red-teaming requires biosecurity expertise, not just AI expertise, and the supply of qualified evaluators is limited. A loophole arises if 'high-capability' designation is applied based on current performance benchmarks, allowing developers to deploy models that are near-threshold capabilities while claiming they have not yet met the threshold — the rule must include forward-looking assessment of capabilities that are plausibly achievable through fine-tuning of the evaluated model. Red-team evaluation methods are not standardized: without a defined evaluation protocol, different evaluators will produce incomparable results, making oversight body review difficult and potentially allowing developers to select evaluators likely to produce favorable results. A gap exists for open-source foundation models: mandatory registration and evaluation requirements will be challenging to enforce for models distributed as weights that can be freely run by anyone — the rule must address open-weight model deployment specifically. Publication of safety evaluation summaries may reveal model vulnerabilities to adversarial actors — the oversight body must specify what information is published versus held confidentially, balancing transparency with security.",
+}
+
+CARD_CONTENT["TECH-FMDS-0004"] = {
+    "stmt": "Entities deploying foundation AI models in high-risk applications — including healthcare decision support, legal advice, educational assessment, financial services, law enforcement, immigration adjudication, and government benefits administration — must conduct application-specific risk assessments before deployment; implement monitoring and incident detection systems; report significant harms, failures, or misuse events to the federal AI oversight body and to affected persons within defined timeframes; and maintain documentation sufficient for post-incident investigation and liability determination.",
+    "notes": "Defining 'high-risk applications' creates significant boundary disputes: AI systems deployed at the margins of listed categories will generate compliance uncertainty, and developers will be incentivized to frame applications as falling outside high-risk categories to avoid assessment requirements. Application-specific risk assessments must be conducted by assessors with domain expertise in the specific deployment context — a risk assessment of AI in healthcare must include clinicians; an assessment of AI in criminal justice must include legal experts and affected community representatives. A gap exists for incremental deployment: systems deployed initially for low-stakes uses may be gradually applied to higher-stakes decisions without triggering a new assessment — the rule must require reassessment when deployment scope or application domain changes materially. Incident reporting to affected persons is essential for accountability but must be designed carefully: over-reporting of minor incidents may cause alarm, while under-reporting of serious harms perpetuates opacity — the rule must specify harm severity thresholds for individual versus regulatory notification. Documentation requirements must specify retention periods and access rights: post-incident investigators must be able to access decision logs that predate the incident, which requires that retention periods extend well beyond immediate operational needs.",
+}
+
+
+# NEUS
+CARD_CONTENT["TECH-NEUS-0001"] = {
+    "stmt": "Neural data — defined as any data directly derived from measurement of brain or central nervous system activity, including EEG, fMRI, and implanted device recordings, as well as data indirectly derived from behavioral or physiological signals through which brain states can be inferred — must be classified as the highest-sensitivity category of personal data; collection, processing, storage, sale, or sharing of neural data without explicit, specific, informed, and revocable consent is prohibited.",
+    "notes": "Neural data can reveal information about cognitive state, emotional response, attention, belief, and potentially intent — its sensitivity extends beyond all existing special categories of personal data and requires treatment commensurate with its capacity to expose the contents of thought itself. A gap exists for consumer neurotechnology devices: EEG headbands, emotion-detection wearables, and biofeedback devices generate neural-adjacent data that vendors may claim is not 'neural data' under a narrow technical definition — the rule must cover inferential signals, not only direct neural recordings. A loophole arises if neural data is processed 'on-device' and only derived insights are transmitted — the derived insights may reveal equivalent sensitive information while technically bypassing collection restrictions. The rule must address neural data in research contexts: IRB oversight is currently the primary protection for research participants, but this rule must ensure research collection is covered by consent requirements regardless of IRB approval. International regulatory frameworks are nascent: Chile enacted the first constitutional neurorights protections in 2021, and the EU is developing neurodata standards — U.S. leadership in defining rigorous protections would help establish global norms.",
+}
+
+CARD_CONTENT["TECH-NEUS-0002"] = {
+    "stmt": "Neural data collected from any source may not be used to make or inform decisions regarding employment, hiring, promotion, or termination; law enforcement actions, criminal investigation, or prosecutorial decisions; insurance underwriting, pricing, or coverage determinations; political micro-targeting, voter profiling, or electoral manipulation; or any other high-stakes decision about individuals' rights, opportunities, or treatment; these prohibited uses apply regardless of how the neural data was originally collected or consented to.",
+    "notes": "The listed prohibited uses represent areas where neural data could be most severely misused — employment decisions based on neural indicators of cognitive state, emotional stability, or political belief, or law enforcement use of neural data as evidence of criminal intent, present profound civil liberties risks. A loophole arises if neural data is first converted into a derived score or category that is then used in a prohibited decision — the rule must cover decisions informed by neural-derived inferences, not only direct use of raw neural data. Consent to neural data collection in one context (healthcare, research) must not be interpreted to permit use in prohibited high-stakes decision contexts — consent cannot authorize prohibited uses. The prohibition on political micro-targeting using neural data must be interpreted broadly: AI systems could use neural responses to media content to infer political beliefs or susceptibility to persuasion without collecting explicit political data. Enforcement in the context of employer-mandated wellness programs or insurance that incentivizes sharing of health-connected neural data requires attention to structural coercion — consent that is practically required for employment or affordable coverage is not genuinely voluntary.",
+}
+
+CARD_CONTENT["TECH-NEUS-0003"] = {
+    "stmt": "Brain-computer interface devices — including implanted and external devices that communicate bidirectionally with the nervous system — must meet pre-market safety and informed consent standards reviewed and approved by the FDA; operators of BCI devices may not modify device functionality, data collection scope, transmission protocols, or stimulation parameters after implantation without affirmative re-consent from the device user; device manufacturers must provide source code escrow, interoperability guarantees, and data export mechanisms ensuring users are not permanently dependent on a single vendor.",
+    "notes": "Elon Musk's Neuralink and competing BCI developers are progressing toward implanted consumer-facing devices — the rule addresses a concrete near-term governance gap before widespread implantation creates a fait accompli regulatory situation. The re-consent requirement for post-implantation modifications raises a critical practical problem: if firmware updates are required for device safety, requiring full re-consent for every update may be impractical and could compromise patient safety — the rule must distinguish safety-critical updates from functional scope changes and data collection expansions. A vendor lock-in risk is acute for implanted devices: if a BCI manufacturer ceases operations, users with implanted devices could be left without support — the source code escrow and interoperability requirements address this but must specify the escrow conditions and activation triggers precisely. Neural stimulation capabilities in bidirectional BCIs present novel security risks: unauthorized modification of stimulation parameters is a physical harm risk that cannot be remediated by software patch after implantation — security requirements for BCI devices must exceed standards applied to conventional medical devices. The FDA regulatory framework was not designed for devices that connect the human nervous system to networked computing infrastructure — new regulatory categories and expertise are necessary, and the rule should mandate their development.",
+}
+
+
+# PRTS
+CARD_CONTENT["TECH-PRTS-0001"] = {
+    "stmt": "Users have a legally enforceable right to download and receive all personal data held by any digital platform in a structured, commonly used, machine-readable, and portable format; data export must be provided free of charge within thirty days of request; export must include all data the platform holds about the user, including inferred data, behavioral profiles, and data used to generate recommendations or advertisements, not only data the user explicitly provided.",
+    "notes": "GDPR Article 20 established data portability rights in the EU, but U.S. law currently provides no equivalent enforceable right — the rule would fill a significant gap documented in numerous FTC and congressional studies. A loophole arises if 'inferred data' and 'behavioral profiles' are defined narrowly to exclude ad targeting categories, engagement scores, and recommendation features that are commercially valuable and drive platform revenue — platforms will resist including this data in export packages and will challenge its inclusion if not explicitly mandated. The 'commonly used, machine-readable format' standard must specify interoperability requirements: a ZIP archive of JSON files meets the technical standard but may be unusable by most consumers — the rule should require formats that can be imported by competing services without custom integration. A gap exists for group or collective data: much platform data is derived from behavioral comparisons across users — a user's 'similarity score' to other users is personal data that may be difficult to isolate and export without revealing information about other users. Thirty-day response windows are commercially feasible but may create a perverse incentive for platforms to delay processing exports to maximize the time users remain locked to the platform — a seven-day standard for straightforward exports should be considered.",
+}
+
+CARD_CONTENT["TECH-PRTS-0002"] = {
+    "stmt": "Digital platforms with more than ten million monthly active users must support standardized interoperability protocols that allow users to: communicate with users on other services without requiring both parties to hold accounts on the same platform; follow content from accounts on other platforms; and receive content from connected services in their primary platform feed; interoperability standards must be open, non-proprietary, and governed through a multi-stakeholder standards process.",
+    "notes": "The ActivityPub protocol, which powers Mastodon and is being adopted by Threads and other platforms, demonstrates that interoperability is technically feasible at scale — the rule should be informed by and consistent with existing open protocol work. A loophole arises if large platforms implement nominal interoperability that is technically present but practically dysfunctional: slow federation, selective content filtering, or rate limiting that makes interoperability unusable are forms of evasion that the rule must address through performance standards. Platform business models depend on keeping users inside a closed ecosystem — interoperability requirements directly threaten network effect moats, and platforms will use content moderation concerns as a justification for blocking or filtering federated content in ways that effectively negate interoperability. A gap exists for private messaging: requiring interoperability for direct messages raises end-to-end encryption compatibility issues and security risks — the rule must address open versus private communication contexts separately. The standards governance requirement is important: without multi-stakeholder control over interoperability standards, large platforms could participate in standards bodies and then drive standards toward designs that are nominally compliant but practically advantageous only to incumbents.",
+}
+
+CARD_CONTENT["TECH-PRTS-0003"] = {
+    "stmt": "Digital platforms may not impose technical, contractual, legal, or economic barriers that prevent users from migrating their accounts and social connections to competing services; platforms may not degrade the functionality or reliability of APIs accessed by competing services for the purpose of user data export or contact migration; platforms may not use intellectual property claims, terms of service provisions, or the Computer Fraud and Abuse Act as tools to prevent users from moving their data to competing services they have chosen.",
+    "notes": "Facebook's blocking of Power.com (Facebook v. Power Ventures, 2012) and subsequent use of CFAA claims against data portability services illustrate how platforms use legal tools to entrench lock-in — the rule must directly address CFAA weaponization as an anti-portability strategy. A loophole arises if platforms allow data export but prevent contact list migration: knowing which of your contacts uses a platform is necessary for migrating social networks, and if this data is withheld, portability of your own data does not enable genuine migration. API degradation for competitors is technically difficult to distinguish from neutral platform operations changes: the rule must specify that degradation of competitor-facing API performance relative to internal performance is presumptively anti-competitive and requires justification. A gap exists for platform mergers and acquisitions: if a competing service is acquired by the incumbent platform, portability requirements designed to protect competition are defeated — anti-portability tactics must be evaluated in merger review. The CFAA weaponization prohibition must be carefully scoped to apply to acts taken for anti-competitive purposes by the platform against users exercising portability rights, not to override legitimate CFAA enforcement against bad-faith scraping or intrusion.",
+}
+
+
+# LIAS
+CARD_CONTENT["TECH-LIAS-0001"] = {
+    "stmt": "AI developers and entities deploying AI systems in high-risk applications — including healthcare, legal decision-making, financial services, education, employment, criminal justice, and government benefits — bear strict civil liability for physical, economic, psychological, and dignitary harms caused by AI systems in those applications; this strict liability standard applies without requiring the harmed party to prove negligence, and liability may not be contractually disclaimed in consumer or employment contexts.",
+    "notes": "Strict liability without negligence proof is appropriate for high-risk AI applications because: the AI system operator is best positioned to prevent harm; the opacity of AI decision-making makes it practically impossible for harmed individuals to prove specific negligence; and the public interest in accountability outweighs the efficiency arguments for negligence standards. A gap exists for defining the scope of 'high-risk applications': the listed categories cover major areas but will be contested at the margins — a regulatory body must have authority to add categories as new high-stakes AI use cases emerge. A loophole arises if developers structure corporate entities so that the entity that develops the AI is separate from the entity that deploys it, with the deploying entity being judgment-proof — the rule must impose joint and several liability on developers and deployers in high-risk contexts. Strict liability without contributory negligence defenses may be challenged as overreaching in cases where the harmed party participated in creating the harm (e.g., provided false information to an AI system) — the rule should preserve comparative fault reduction of damages but not complete negligence-based defenses. The 'no contractual disclaimer' requirement must survive challenge under the Federal Arbitration Act and existing consumer contract doctrine — the rule likely requires explicit statutory override of FAA to prevent mandatory arbitration from defeating class action liability.",
+}
+
+CARD_CONTENT["TECH-LIAS-0002"] = {
+    "stmt": "When AI system opacity makes it difficult or impossible for a harmed party to establish causation — including when the AI system's decision logic is proprietary, technically complex, or not disclosed — courts must apply a rebuttable presumption that the AI system caused or materially contributed to the harm if the harmed party demonstrates: that the AI system was involved in the relevant decision; that the decision caused the claimed harm; and that the harm is within the category of risks the AI system was designed or deployed to affect.",
+    "notes": "The burden-shifting mechanism addresses a fundamental asymmetry: AI developers have full access to their system's logic and can investigate causation, while harmed parties often cannot access the model, training data, or decision logs needed to prove how the AI reached its conclusion — placing the presumption burden on the party with information access is justified. A loophole arises if the rebuttable presumption can be defeated through confidential disclosure of model details to a court without public access — defendants may claim trade secret protection for the rebuttal evidence, preventing adversarial testing of their causation defense. A gap exists for multi-system harms: when a decision results from a chain of AI systems (a recommendation engine feeds a risk scorer that informs a human decision), the rebuttable presumption must address attribution across a system chain, not only to a single identifiable AI. The three-part showing required to trigger the presumption must be detailed enough to prevent abuse — harmed parties cannot simply claim AI was involved in any decision they dislike and expect a presumption to shift all liability. Expert testimony standards for AI causation evidence must be developed — existing Daubert standards for scientific evidence may need to be adapted to address the specific epistemic challenges of neural network decision attribution.",
+}
+
+CARD_CONTENT["TECH-LIAS-0003"] = {
+    "stmt": "AI developers and deployers in covered high-risk applications must maintain comprehensive incident logs recording individual AI-assisted decisions, input data, model version, and output for a retention period of not less than seven years; must report annually to the federal AI oversight body with aggregate data on harm incidents, error rates, and demographic disparities in outcomes; and must preserve all records relevant to any reported safety incident, regulatory inquiry, or litigation hold, with spoliation sanctions applicable to any destruction of required records.",
+    "notes": "Seven-year retention is consistent with financial record-keeping requirements and with the typical statute of limitations for civil claims — but for AI systems affecting physical safety or long-term rights, a longer retention period may be necessary. A loophole arises if 'individual AI-assisted decisions' are defined narrowly to exclude intermediate decisions that aggregate into final outputs — a risk scoring system that produces thousands of sub-scores before generating a final recommendation must log the final output, not only aggregate statistics. Aggregate annual reporting is valuable for regulatory oversight but is insufficient for individual harm accountability: regulators need both aggregate patterns and the ability to investigate specific incidents — the rule must preserve incident-level access for oversight bodies. Spoliation sanctions must apply to automated log rotation and deletion practices that are not adjusted to preserve records relevant to known incidents — routine data management cannot be used as a defense for destroying records after a harm is reported. Privacy protections for persons whose data appears in AI decision logs must be designed carefully: long-term retention of individual decision logs creates secondary privacy risks that must be addressed through access controls, encryption, and use restrictions.",
+}
+
+
+def process() -> None:
+    """Transform all status-missing cards in technology-and-ai.html."""
+    html = TARGET.read_text(encoding="utf-8")
+    soup = BeautifulSoup(html, "html.parser")
     processed = 0
-
-    for card in missing_cards:
+    skipped: list[str] = []
+    for card in soup.find_all("div", class_="policy-card"):
+        if "status-missing" not in card.get("class", []):
+            continue
         card_id = card.get("id", "")
-        # Strip the leading 'JUST-' prefix to get the lookup key
-        suffix = card_id.removeprefix("JUST-")
-        content = CARD_CONTENT.get(suffix)  # None for class-only cards
-        process_card(card, content, soup)
+        if card_id not in CARD_CONTENT:
+            skipped.append(card_id)
+            continue
+        content = CARD_CONTENT[card_id]
+        # Change class
+        classes = [c for c in card.get("class", []) if c != "status-missing"]
+        card["class"] = classes + ["status-included"]
+        # Change badge
+        badge = card.find("span", class_="rule-badge")
+        if badge:
+            badge.string = "Included"
+        # Replace or add rule-stmt
+        stmt = card.find("p", class_="rule-stmt")
+        if stmt:
+            stmt.string = content["stmt"]
+        else:
+            # SURS-0001 has no rule-stmt — insert after rule-plain
+            new_stmt = soup.new_tag("p", attrs={"class": "rule-stmt"})
+            new_stmt.string = content["stmt"]
+            plain = card.find("p", class_="rule-plain")
+            if plain:
+                plain.insert_after(new_stmt)
+        # Add rule-notes (only if not already present)
+        existing_notes = card.find("p", class_="rule-notes")
+        if not existing_notes:
+            notes_tag = soup.new_tag("p", attrs={"class": "rule-notes"})
+            notes_tag.string = content["notes"]
+            card.append(notes_tag)
         processed += 1
-
-    HTML_FILE.write_text(str(soup), encoding="utf-8")
-    print(f"Processed {processed} status-missing cards.")
-
-    # Verify
-    remaining = str(soup).count('class="status-missing"')
-    included = str(soup).count('class="status-included"')
-    print(f"Remaining status-missing: {remaining}")
-    print(f"Total status-included: {included}")
+    TARGET.write_text(str(soup), encoding="utf-8")
+    print(f"Processed: {processed}")
+    if skipped:
+        print(f"Skipped ({len(skipped)}): {skipped}")
+    else:
+        print("No cards skipped.")
 
 
 if __name__ == "__main__":
-    main()
+    process()
