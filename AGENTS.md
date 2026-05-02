@@ -100,6 +100,7 @@ Before writing any commit message, ask: *does this change affect anything in the
 | DB schema changes | `policy/catalog/README.md` + `system_rules.md` |
 | New architectural decisions | `.github/copilot-instructions.md` + `.github/current-state.md` |
 | New scripts or tooling | `README.md` (Scripts section) |
+| Platform state changes (new pillars, firm positions, open questions, foundations) | `policy/briefing-pack.md`, `policy/claude-project-instructions.md` |
 | Known issues resolved | `.github/current-state.md` Known issues/open items |
 | Any other repo behavior or state change | Whichever of the files below is affected |
 
