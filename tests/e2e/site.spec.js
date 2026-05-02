@@ -756,51 +756,34 @@ test.describe('About Us page', () => {
   test.beforeEach(async ({ page }) => { await page.goto('/about-us.html'); });
 
   test('has correct page title', async ({ page }) => {
-    await expect(page).toHaveTitle(/About Us.*Freedom and Dignity/i);
+    await expect(page).toHaveTitle(/About.*Freedom and Dignity/i);
   });
 
-  test('displays the founder name', async ({ page }) => {
-    await expect(page.locator('.profile-name')).toBeVisible();
-    await expect(page.locator('.profile-name')).toHaveText('Alice Thomas');
+  test('hero leads with movement, not founder', async ({ page }) => {
+    // Hero h1 should be about the movement, not introduce Alice
+    const heroText = await page.locator('header.page-hero-standard h1').textContent();
+    expect(heroText.toLowerCase()).not.toContain('alice');
+    expect(heroText.toLowerCase()).not.toContain('founder');
   });
 
-  test('mentions Northwest Whitfield High School', async ({ page }) => {
-    await expect(page.locator('text=Northwest Whitfield High School')).toBeVisible();
+  test('has main-content landmark for accessibility', async ({ page }) => {
+    await expect(page.locator('#main-content')).toBeAttached();
   });
 
-  test('mentions Southern Polytechnic State University', async ({ page }) => {
-    await expect(page.locator('text=Southern Polytechnic State University')).toBeVisible();
+  test('founder is mentioned for transparency', async ({ page }) => {
+    const bodyText = await page.locator('body').textContent();
+    expect(bodyText).toMatch(/Alice/);
   });
 
-  test('faith section is present', async ({ page }) => {
-    await expect(page.locator('text=Grove Level Baptist Church')).toBeVisible();
+  test('links to join.html for contribution CTA', async ({ page }) => {
+    await expect(page.locator('a[href*="join.html"]').first()).toBeAttached();
   });
 
-  test('faith section includes key scripture references', async ({ page }) => {
-    const body = await page.locator('.about-body').textContent();
-    expect(body).toMatch(/Matthew 22:37/);
-    expect(body).toMatch(/1 Corinthians 13/);
-    expect(body).toMatch(/1 John 4/);
-    expect(body).toMatch(/Matthew 25:40/);
-  });
-
-  test('values list has 4 items', async ({ page }) => {
-    await expect(page.locator('.values-list li')).toHaveCount(4);
-  });
-
-  test('mentions the dogs Chipper and Riley', async ({ page }) => {
-    const text = await page.locator('.about-body').textContent();
-    expect(text).toMatch(/Chipper/);
-    expect(text).toMatch(/Riley/);
-  });
-
-  test('contributor notice is present and links to about-ai', async ({ page }) => {
-    await expect(page.locator('.contrib-notice')).toBeVisible();
+  test('contributor and funding notice links to about-ai', async ({ page }) => {
     await expect(page.locator('.contrib-notice a[href*="about-ai"]')).toBeAttached();
   });
 
-  test('nav has get-involved link visible', async ({ page }) => {
-    // about-us is no longer a nav item; verify core nav links still present
+  test('nav has get-involved link', async ({ page }) => {
     await expect(page.locator('.nav-links a[href*="join"]')).toBeAttached();
   });
 
@@ -811,7 +794,7 @@ test.describe('About Us page', () => {
   });
 
   test('letter from the founder link is present', async ({ page }) => {
-    await expect(page.locator('a[href*="letter-from-the-founder"]')).toBeAttached();
+    await expect(page.locator('a[href*="letter-from-the-founder"]').first()).toBeAttached();
   });
 });
 
