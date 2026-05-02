@@ -2274,6 +2274,8 @@ details.design-logic .design-body li { font-size: .93rem; line-height: 1.65; mar
 .ai-pullquote p { font-family: "Playfair Display", serif; font-style: italic; font-size: 1.1rem; color: var(--navy); line-height: 1.7; margin: 0; }
 .ai-note { background: var(--sky); border: 1px solid var(--rule); padding: 1.2rem 1.5rem; margin: 2rem 0; font-size: .88rem; color: var(--mid); line-height: 1.7; font-family: "Libre Franklin", sans-serif; }
 .ai-note strong { color: var(--navy); }
+.ai-phase-out-notice { background: #1a2a4a; border-left: 5px solid #bf0a30; padding: 1.25rem 1.5rem; margin: 0 0 2rem; color: #f0ece4; font-size: 1rem; line-height: 1.75; font-family: "Libre Franklin", sans-serif; }
+.ai-phase-out-notice strong { color: #fff; font-family: 'Oswald', sans-serif; font-size: 1.1rem; text-transform: uppercase; letter-spacing: .04em; display: block; margin-bottom: .5rem; }
 .ai-safeguards { display: flex; flex-direction: column; gap: 1.2rem; margin: 1.5rem 0 2rem; }
 .ai-sg-item { display: flex; gap: 1rem; align-items: flex-start; padding: 1rem 1.25rem; background: var(--parchment); border-left: 3px solid var(--gold); }
 .ai-sg-icon { color: var(--gold); font-size: 1.1rem; flex-shrink: 0; margin-top: .1rem; }
