@@ -3426,3 +3426,152 @@ body:has(.site-tree.st-open) .st-overlay { display: block; }
 /* Foundations section */
 .prob-foundations-intro { max-width: 640px; margin-bottom: 2.25rem; }
 .prob-foundations-cta { margin-top: 2.25rem; }
+
+/* ── PLATFORM PAGE ── */
+
+/* fo-fullview subtitle (extracted from inline) */
+.fo-fv-subtitle {
+  color: var(--mid);
+  font-size: .9rem;
+  max-width: 560px;
+}
+
+/* Bottom "Go Further" CTA section (extracted from inline) */
+.platform-go-further {
+  padding: 3.5rem 0;
+  text-align: center;
+}
+.platform-cta-desc {
+  color: rgba(255,255,255,.75);
+  max-width: 540px;
+  margin: 0 auto 1.75rem;
+  font-size: .95rem;
+}
+.platform-cta-btns {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Values section prose */
+.platform-values-prose {
+  max-width: 760px;
+}
+.platform-values-prose p {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  margin-bottom: 1.25rem;
+}
+.platform-values-prose p:last-child { margin-bottom: 0; }
+
+/* Section intro (Bills of Rights lede) */
+.section-intro {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--mid);
+  max-width: 760px;
+  margin-bottom: 2.5rem;
+}
+
+/* Amendment items */
+.amendment-item {
+  margin-bottom: 2.75rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+.amendment-item:last-of-type { border-bottom: none; margin-bottom: 0; }
+
+.amendment-num {
+  font-family: 'Oswald', sans-serif;
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-bottom: .35rem;
+}
+
+.amendment-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--navy);
+  margin-bottom: .5rem;
+}
+
+.amendment-oneliner {
+  font-size: .95rem;
+  font-weight: 600;
+  font-style: italic;
+  color: var(--mid);
+  margin-bottom: 1.1rem;
+  line-height: 1.6;
+  max-width: 720px;
+}
+
+.amendment-floor-duty {
+  max-width: 760px;
+}
+.amendment-floor-duty p {
+  font-size: .9rem;
+  line-height: 1.75;
+  margin-bottom: .75rem;
+  color: var(--ink);
+}
+.amendment-floor-duty p:last-child { margin-bottom: 0; }
+
+/* PolicyOS section */
+.platform-policyos-intro {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  max-width: 760px;
+  margin-bottom: 2rem;
+}
+
+.platform-policyos-values {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2.25rem;
+}
+
+.platform-policyos-value {
+  background: var(--cream);
+  border-left: 3px solid var(--red);
+  padding: 1rem 1.25rem;
+}
+.platform-policyos-value p {
+  font-size: .9rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.platform-policyos-kern { margin-bottom: 2rem; }
+
+.platform-kern-heading {
+  font-family: 'Oswald', sans-serif;
+  font-size: .9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--navy);
+  margin-bottom: .75rem;
+}
+
+.platform-kern-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.platform-kern-list li {
+  font-size: .9rem;
+  line-height: 1.7;
+  padding: .6rem .75rem;
+  border-bottom: 1px solid var(--rule);
+}
+.platform-kern-list li:last-child { border-bottom: none; }
+
+.platform-policyos-cta { margin-top: 1.75rem; }

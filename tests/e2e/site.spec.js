@@ -567,6 +567,38 @@ test.describe('Platform page', () => {
   test('footer Perspectives link is present', async ({ page }) => {
     await expect(page.locator('.footer-links a[href*="compare"]')).toBeAttached();
   });
+
+  test('has correct og:title', async ({ page }) => {
+    const ogTitle = await page.locator('meta[property="og:title"]').getAttribute('content');
+    expect(ogTitle).toBe('The Platform');
+  });
+
+  test('has values section', async ({ page }) => {
+    await expect(page.locator('#platform-values, [id*="values"]').first()).toBeAttached();
+  });
+
+  test('has Bills of Rights section with anchor id', async ({ page }) => {
+    await expect(page.locator('#bills-of-rights')).toBeAttached();
+    // Should show all 10 amendments
+    await expect(page.locator('#bills-of-rights .amendment-item, #bills-of-rights [class*="amendment"]').first()).toBeAttached();
+  });
+
+  test('has PolicyOS section with anchor id', async ({ page }) => {
+    await expect(page.locator('#policyos')).toBeAttached();
+  });
+
+  test('has CTA to policy library (proposals.html)', async ({ page }) => {
+    await expect(page.locator('a[href*="proposals.html"]').first()).toBeAttached();
+  });
+
+  test('Bills of Rights anchor is directly navigable', async ({ page }) => {
+    await page.goto('/platform.html#bills-of-rights');
+    await expect(page.locator('#bills-of-rights')).toBeInViewport({ ratio: 0.1 });
+  });
+
+  test('main content wrapper has id="main-content" on <main> element', async ({ page }) => {
+    await expect(page.locator('main#main-content')).toBeAttached();
+  });
 });
 
 // ── ROADMAP PAGE ──────────────────────────────────────────────────────────────
