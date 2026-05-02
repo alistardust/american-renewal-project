@@ -3392,15 +3392,7 @@ body:has(.site-tree.st-open) .st-overlay { display: block; }
 
 /* ── JOIN PAGE ── */
 .join-entry-section .wrap { padding: 3rem 2rem; }
-.join-section-label {
-  font-family: 'Oswald', sans-serif;
-  font-size: .62rem;
-  font-weight: 600;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--mid);
-  margin-bottom: .35rem;
-}
+.join-entry-section .m-label { margin-bottom: .35rem; }
 .join-section-heading {
   font-family: 'Oswald', sans-serif;
   font-size: clamp(1.4rem, 3vw, 1.9rem);
