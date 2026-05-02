@@ -257,7 +257,6 @@ section { padding: 4.5rem 0; }
   padding: .25rem .5rem;
 }
 @media (max-width: 600px) {
-  .nav-hamburger { display: block; }
   .nav-links {
     display: none; flex-direction: column; gap: 0;
     position: absolute; top: 63px; left: 0; right: 0;

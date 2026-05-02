@@ -467,8 +467,8 @@ test.describe('Problem page', () => {
     await expect(page.locator('.footer-links a[href*="problem"]')).toBeAttached();
   });
 
-  test('footer Rights link is present', async ({ page }) => {
-    await expect(page.locator('.footer-links a[href*="rights"]')).toBeAttached();
+  test('footer Rights & Civil Liberties link is present', async ({ page }) => {
+    await expect(page.locator('.footer-links a[href*="rights-and-civil-liberties"]')).toBeAttached();
   });
 
   test('renders 5 foundation cards', async ({ page }) => {
@@ -476,8 +476,8 @@ test.describe('Problem page', () => {
     await expect(page.locator('.fo-fv-grid .fo-fv-card')).toHaveCount(5);
   });
 
-  test('nav has About AI link', async ({ page }) => {
-    await expect(page.locator('.nav-links a[href*="about-ai"]')).toBeAttached();
+  test.skip('nav has About AI link', async ({ page }) => {
+    // TODO(alice): About AI removed from primary nav — accessible via site tree and footer — Task 3
   });
 
   test('references section is present', async ({ page }) => {
