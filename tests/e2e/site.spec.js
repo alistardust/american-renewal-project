@@ -792,6 +792,31 @@ test.describe('Letter from the Founder page', () => {
   });
 });
 
+// ── JOIN THE MOVEMENT PAGE ────────────────────────────────────────────────────
+
+test.describe('Join the Movement page', () => {
+  test.beforeEach(async ({ page }) => { await page.goto('/join.html'); });
+
+  test('has correct page title', async ({ page }) => {
+    await expect(page).toHaveTitle(/Join the Movement/i);
+  });
+
+  test('hero heading says Join the Movement', async ({ page }) => {
+    await expect(page.locator('h1').first()).toContainText(/Join the Movement/i);
+  });
+
+  test('offers multiple distinct participation roles', async ({ page }) => {
+    // At least 3 distinct entry cards/pathways
+    const count = await page.locator('.entry-card, .role-card, .pathway-card').count();
+    expect(count).toBeGreaterThanOrEqual(3);
+  });
+
+  test('links to GitHub and/or Discord', async ({ page }) => {
+    const links = await page.locator('a[href*="github.com"], a[href*="discord"]').count();
+    expect(links).toBeGreaterThanOrEqual(1);
+  });
+});
+
 // ── THE PLAN PAGE ──────────────────────────────────────────────────────────────
 
 test.describe('The Plan page', () => {

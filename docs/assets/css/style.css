@@ -2683,7 +2683,9 @@ summary.pil-foundation-bar::-webkit-details-marker { display: none; }
   font-size: .78rem;
   color: var(--red);
   font-weight: 600;
-  margin-top: .5rem;
+  margin-top: auto;
+  display: block;
+  text-align: center;
 }
 /* When .entry-card-cta is combined with a button class, the button's own
    color and background rules must win. The specificity of .entry-card-cta's
@@ -3387,3 +3389,29 @@ body:has(.site-tree.st-open) .st-overlay { display: block; }
 
 /* Footer AI-disclosure link */
 .footer-note a.plan-footer-ai-link { opacity: .7; }
+
+/* ── JOIN PAGE ── */
+.join-entry-section .wrap { padding: 3rem 2rem; }
+.join-section-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: .62rem;
+  font-weight: 600;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-bottom: .35rem;
+}
+.join-section-heading {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--navy);
+  margin: 0 0 .5rem;
+}
+.join-section-intro {
+  color: var(--mid);
+  margin-bottom: 2rem;
+}
+.gi-dev-cta { margin-top: 2rem; }
