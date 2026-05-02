@@ -440,17 +440,17 @@ test.describe('Mission page', () => {
 
   test('nav Mission link is present', async ({ page }) => {
     // Mission link is baked into the HTML nav as "Problem"
-    const link = page.locator('.nav-links a[href*="mission"]');
+    const link = page.locator('.nav-links a[href*="problem"]');
     await expect(link).toBeAttached();
   });
 
   test('nav Mission link is marked active on mission page', async ({ page }) => {
-    const link = page.locator('.nav-links a[href*="mission"].active');
+    const link = page.locator('.nav-links a[href*="problem"].active');
     await expect(link).toBeAttached();
   });
 
   test('footer Mission link is present', async ({ page }) => {
-    await expect(page.locator('.footer-links a[href*="mission"]')).toBeAttached();
+    await expect(page.locator('.footer-links a[href*="problem"]')).toBeAttached();
   });
 
   test('footer Rights link is present', async ({ page }) => {
@@ -591,7 +591,7 @@ test.describe('Roadmap page', () => {
   });
 
   test('nav has Mission and Roadmap links', async ({ page }) => {
-    await expect(page.locator('.nav-links a[href*="mission"]')).toBeAttached();
+    await expect(page.locator('.nav-links a[href*="problem"]')).toBeAttached();
     await expect(page.locator('.nav-links a[href*="roadmap"]')).toBeAttached();
   });
 });
@@ -634,7 +634,7 @@ test.describe('Mission nav link from all page types', () => {
   for (const { url, label } of pages) {
     test(`${label} has Mission/Problem in nav`, async ({ page }) => {
       await page.goto(url);
-      const link = page.locator('.nav-links a[href*="mission"]');
+      const link = page.locator('.nav-links a[href*="problem"]');
       await expect(link).toBeAttached();
       const href = await link.getAttribute('href');
       await page.goto(href.startsWith('http') ? href : new URL(href, page.url()).toString());
@@ -678,7 +678,7 @@ test.describe('Get Involved page', () => {
   });
 
   test('nav has Get Involved as active link', async ({ page }) => {
-    const link = page.locator('.nav-links a[href*="get-involved"]');
+    const link = page.locator('.nav-links a[href*="join"]');
     await expect(link).toBeAttached();
     await expect(link).toHaveClass(/active/);
   });
@@ -734,7 +734,7 @@ test.describe('About Us page', () => {
 
   test('nav has get-involved link visible', async ({ page }) => {
     // about-us is no longer a nav item; verify core nav links still present
-    await expect(page.locator('.nav-links a[href*="get-involved"]')).toBeAttached();
+    await expect(page.locator('.nav-links a[href*="join"]')).toBeAttached();
   });
 
   test('funding disclosure is present', async ({ page }) => {
@@ -793,12 +793,12 @@ test.describe('Letter from the Founder page', () => {
 
   test('nav has mission link visible', async ({ page }) => {
     // letter-from-the-founder is no longer a nav item; verify core nav links still present
-    await expect(page.locator('.nav-links a[href*="mission"]')).toBeAttached();
+    await expect(page.locator('.nav-links a[href*="problem"]')).toBeAttached();
   });
 
   test('nav and footer are injected', async ({ page }) => {
     // app.js injects nav links and footer — verify both are present
-    await expect(page.locator('.nav-links a[href*="mission"]')).toBeAttached();
+    await expect(page.locator('.nav-links a[href*="problem"]')).toBeAttached();
     await expect(page.locator('.site-footer')).toBeVisible();
   });
 
