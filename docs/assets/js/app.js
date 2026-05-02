@@ -24,20 +24,20 @@
     const base = inSubdir ? '../' : '';
     const aboutUsHref = base + 'about-us.html';
     const aiHref = base + 'about-ai.html';
-    const missionHref = base + 'mission.html';
+    const problemHref = base + 'problem.html';
     const rightsHref = base + 'rights.html';
     const classificationHref = base + 'classification.html';
-    const getInvolvedHref = base + 'get-involved.html';
+    const joinHref = base + 'join.html';
     const roadmapHref    = base + 'roadmap.html';
     const letterHref     = base + 'letter-from-the-founder.html';
     const isAiPage = pageName === 'about-ai';
     const isLetterPage = pageName === 'letter-from-the-founder';
     const isRoadmapPage = pageName === 'roadmap';
-    const isMissionPage = pageName === 'mission';
+    const isProblemPage = pageName === 'problem';
     const isRightsPage = pageName === 'rights';
     const isAboutUsPage = pageName === 'about-us';
     const isClassificationPage = pageName === 'classification';
-    const isGetInvolvedPage = pageName === 'get-involved';
+    const isJoinPage = pageName === 'join';
     const approachHref = base + 'approach.html';
     const isApproachPage = pageName === 'approach';
     const proposalsHref = base + 'proposals.html';
@@ -46,7 +46,7 @@
     const isPlatformPage = pageName === 'platform';
     if (navList && !navList.querySelector('a[href*="mission"]')) {
       const li = document.createElement('li');
-      li.innerHTML = `<a href="${missionHref}"${isMissionPage ? ' class="active"' : ''}>Problem</a>`;
+      li.innerHTML = `<a href="${problemHref}"${isProblemPage ? ' class="active"' : ''}>Problem</a>`;
       navList.appendChild(li);
     }
 
@@ -64,7 +64,7 @@
 
     if (navList && !navList.querySelector('a[href*="get-involved"]')) {
       const li = document.createElement('li');
-      li.innerHTML = `<a href="${getInvolvedHref}"${isGetInvolvedPage ? ' class="active"' : ''}>Get Involved</a>`;
+      li.innerHTML = `<a href="${joinHref}"${isJoinPage ? ' class="active"' : ''}>Get Involved</a>`;
       navList.appendChild(li);
     }
 
@@ -99,7 +99,7 @@
     }
     if (footerLinks && !footerLinks.querySelector('a[href*="mission"]')) {
       const fli = document.createElement('li');
-      fli.innerHTML = `<a href="${missionHref}">Problem</a>`;
+      fli.innerHTML = `<a href="${problemHref}">Problem</a>`;
       footerLinks.appendChild(fli);
     }
     if (footerLinks && !footerLinks.querySelector('a[href*="approach"]')) {
@@ -114,7 +114,7 @@
     }
     if (footerLinks && !footerLinks.querySelector('a[href*="get-involved"]')) {
       const fli = document.createElement('li');
-      fli.innerHTML = `<a href="${getInvolvedHref}">Get Involved</a>`;
+      fli.innerHTML = `<a href="${joinHref}">Get Involved</a>`;
       footerLinks.appendChild(fli);
     }
     if (footerLinks && !footerLinks.querySelector('a[href*="roadmap"]')) {
