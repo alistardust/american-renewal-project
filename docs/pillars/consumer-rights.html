@@ -1172,39 +1172,45 @@
 <span class="family-count">0/4 active</span>
 </div>
 <div class="rule-grid">
-<div class="policy-card status-missing" id="CNSR-DRKS-0001">
+<div class="policy-card status-included" id="CNSR-DRKS-0001">
 <div class="rule-header">
 <code class="rule-id">CNSR-DRKS-0001</code>
-<span class="rule-badge">Proposed</span>
+<span class="rule-badge">Included</span>
 </div>
 <p class="rule-title">Deceptive interface design that manipulates consumer choices is prohibited</p>
 <p class="rule-plain">Companies cannot design websites or apps to trick or manipulate you into choices you didn't mean to make — like fake countdown timers, hidden cancel buttons, or confusing opt-out flows. Manipulative design is prohibited.</p>
 <p class="rule-stmt">Interface designs that deliberately manipulate consumer choices through misdirection, false urgency, hidden options, confusing visual hierarchy, or other deceptive techniques are prohibited as unfair or deceptive acts or practices under consumer protection law.</p>
+<p class="rule-notes">The FTC's 2022 report "Bringing Dark Patterns to Light" documented manipulation through misdirection, false urgency, and confusing opt-out flows across major consumer platforms; <em>FTC v. Epic Games</em> ($245M, 2022) established that deceptive interface design constitutes an actionable UDAP violation under 15 U.S.C. § 45. <!-- [VERIFY] --> Adversarial review: The term "deceptive" is contested — companies regularly argue that interface choices reflect legitimate UX and conversion-rate decisions rather than intent to manipulate, and without objective design standards, enforcement becomes case-by-case litigation with unpredictable outcomes. Iterative A/B testing allows design teams to optimize for manipulation outcomes without any single identifiable deliberate deceptive act, exploiting any intent-based framing in the rule. Platforms operating outside U.S. jurisdiction can continue to serve U.S. consumers without compliance, creating a competitive disadvantage for domestic firms and leaving a significant coverage gap. Small businesses face the same compliance obligations as dominant platforms despite far smaller consumer harm potential; no proportionality threshold is specified. <!-- [VERIFY] --> Enforcement at the scale of the modern web requires automated dark-pattern detection capabilities that current FTC funding and staffing levels do not support. <!-- [VERIFY] --></p>
 </div>
-<div class="policy-card status-missing" id="CNSR-DRKS-0002">
+<div class="policy-card status-included" id="CNSR-DRKS-0002">
 <div class="rule-header">
 <code class="rule-id">CNSR-DRKS-0002</code>
-<span class="rule-badge">Proposed</span>
+<span class="rule-badge">Included</span>
 </div>
 <p class="rule-title">Cancellation of any subscription or service must be as easy as enrollment</p>
 <p class="rule-plain">If you can sign up for a subscription online, you must be able to cancel it the same way. Companies cannot force you to call a phone number or navigate to a buried page to cancel.</p>
 <p class="rule-stmt">Cancellation of any subscription, recurring billing, or service agreement must be achievable through a process no more complex or time-consuming than the enrollment process, including online cancellation when online enrollment is offered.</p>
+<p class="rule-notes">The FTC filed suit against Amazon in 2023 specifically targeting the "Iliad flow" — a cancellation process for Amazon Prime requiring numerous navigational steps — as a dark pattern, contrasting it with the one-click enrollment path. <!-- [VERIFY] --> FTC v. Publishers Clearing House ($18.5M, 2023) also involved cancellation barriers as deceptive practices. <!-- [VERIFY] --> Adversarial review: The "no more complex than enrollment" standard can be gamed by degrading the enrollment experience to match a burdensome cancellation process, technically achieving parity while still burdening consumers. The rule does not set an absolute maximum number of steps or time limit, leaving open the possibility of multiple confirmation screens that mirror a slow enrollment flow. Hybrid enrollment scenarios — enrolled by phone, theoretically cancellable online — expose definitional ambiguity that companies will exploit. Physical-location and telephone-only businesses with subscription models are implicitly excluded, leaving meaningful coverage gaps for gym memberships and similar high-complaint subscription categories. Persistent "save offers" that extend the cancellation flow beyond enrollment complexity may not be clearly prohibited.</p>
 </div>
-<div class="policy-card status-missing" id="CNSR-DRKS-0003">
+<div class="policy-card status-included" id="CNSR-DRKS-0003">
 <div class="rule-header">
 <code class="rule-id">CNSR-DRKS-0003</code>
-<span class="rule-badge">Proposed</span>
+<span class="rule-badge">Included</span>
 </div>
 <p class="rule-title">Pre-selected options and default choices must default to the consumer’s financial interest</p>
+<p class="rule-plain">When a company pre-selects options on a form or checkout page, those defaults must favor your financial interests — not the company’s. Higher-cost, higher-commitment, or more data-invasive options may not be pre-selected for you.</p>
 <p class="rule-stmt">Checkboxes, default plan selections, and pre-populated form options must not default to the higher-cost, higher-commitment, or more data-sharing option; defaults must serve the consumer’s financial interest unless the consumer affirmatively selects otherwise.</p>
+<p class="rule-notes">Behavioral economics research on default effects documents that default settings in digital products systematically increase consumer spending and data sharing beyond expressed preferences, with pre-checked add-on boxes identified as among the most common checkout dark patterns. <!-- [VERIFY] --> The FTC-ICPEN-GPEN 2024 study of 642 subscription services found that 81% used auto-renewal techniques and 70% failed to provide clear cancellation information, with default enrollment contributing substantially to those outcomes. <!-- [VERIFY] --> Adversarial review: The “consumer’s financial interest” standard is ambiguous — companies will argue that pre-selecting a more comprehensive (higher-cost) plan reflects what most consumers prefer and therefore serves their interest, providing a definitional escape route. The rule covers checkboxes and pre-populated selections but does not address visual emphasis, font size, color contrast, or option ordering that influences choice without technically pre-selecting an option; these design nudges can reproduce the same manipulation while facially complying. Products where the primary harm is data exposure rather than financial cost may not be clearly covered by a “financial interest” framing. Frequent UI redesigns mean enforcement requires continuous monitoring rather than one-time audits.</p>
 </div>
-<div class="policy-card status-missing" id="CNSR-DRKS-0004">
+<div class="policy-card status-included" id="CNSR-DRKS-0004">
 <div class="rule-header">
 <code class="rule-id">CNSR-DRKS-0004</code>
-<span class="rule-badge">Proposed</span>
+<span class="rule-badge">Included</span>
 </div>
 <p class="rule-title">False urgency, fabricated scarcity, and fake social proof are prohibited</p>
+<p class="rule-plain">Fake countdown timers, made-up "only 2 left" warnings, and phony popularity indicators that pressure you into buying are prohibited. Companies can only claim urgency or scarcity when it is real.</p>
 <p class="rule-stmt">Displays of countdown timers, limited supply indicators, fake real-time demand counters, or false social proof signals that create artificial urgency or social pressure to complete purchases are prohibited deceptive practices when the underlying scarcity or demand is fabricated or exaggerated.</p>
+<p class="rule-notes">The FTC's 2022 "Bringing Dark Patterns to Light" report flagged fake urgency and fabricated scarcity among the most prevalent commercial manipulation techniques; online travel and accommodation platforms have faced enforcement in the EU for fake "only 1 room left" and countdown displays under consumer protection directives. <!-- [VERIFY] --> Adversarial review: The "fabricated or exaggerated" threshold is inherently contested — companies will defend countdown timers that perpetually reset as "representing a real promotional window" even when the promotion never expires, exploiting the absence of a frequency or reset standard. Dynamic inventory means actual stock may fluctuate in real time, making it difficult to prove any specific "only 2 left" display was false at the precise moment shown; companies will invest in real-time inventory dashboards that technically comply while remaining manipulative in practice. Social proof signals derived from selectively curated actual user data (e.g., displaying only the highest recent review count) may not qualify as "fabricated" under a strict reading. The rule addresses purchase-completion pressure but does not cover urgency patterns in consent flows, data-sharing requests, or account upgrade prompts, leaving non-transactional manipulation unaddressed.</p>
 </div>
 </div>
 </div>
@@ -1215,32 +1221,35 @@
 <span class="family-count">0/7 active</span>
 </div>
 <div class="rule-grid">
-<div class="policy-card status-missing" id="CNSR-CRDS-0001">
+<div class="policy-card status-included" id="CNSR-CRDS-0001">
 <div class="rule-header">
 <code class="rule-id">CNSR-CRDS-0001</code>
-<span class="rule-badge">Proposed</span>
+<span class="rule-badge">Included</span>
 </div>
 <p class="rule-title">Credit reports must be accurate and disputes must be meaningfully investigated</p>
 <p class="rule-plain">Credit reporting agencies must keep your file accurate, genuinely investigate when you dispute an error — not just rubber-stamp what the creditor says — and promptly correct verified mistakes.</p>
 <p class="rule-stmt">Credit reporting agencies must maintain accurate consumer files, must conduct genuine investigations of consumer disputes rather than cursory procedural reviews, and must promptly correct verified errors within a timeline that primarily serves consumers rather than furnishers.</p>
+<p class="rule-notes">A 2013 FTC study of 1,001 consumers found that 26% identified at least one potentially material error in their credit files, with approximately 5% of participants having errors significant enough to affect their credit terms — extrapolating to an estimated 10 million consumers with distorting errors. <!-- [VERIFY] --> The CFPB’s Supervisory Highlights have repeatedly documented that bureau dispute investigations often consist of forwarding the dispute to the original furnisher and accepting their response without independent review. <!-- [VERIFY] --> Adversarial review: The accuracy and genuine-investigation standards impose duties on bureaus, but furnisher liability is addressed separately; a bureau that conducts a genuine investigation of an inaccurate item that the furnisher re-confirms may technically comply while the inaccuracy persists indefinitely. Credit damage accrued during the investigation period is not addressed by this rule, meaning even successful disputes leave a gap in consumer remediation. Consumers facing systemic identity theft with multiple furnishers confirming fraudulent accounts face compounded harm that the per-item dispute framework does not efficiently resolve. The rule imposes reinvestigation requirements for disputed items but does not require proactive accuracy monitoring for non-disputed errors that a bureau should reasonably detect.</p>
 </div>
-<div class="policy-card status-missing" id="CNSR-CRDS-0002">
+<div class="policy-card status-included" id="CNSR-CRDS-0002">
 <div class="rule-header">
 <code class="rule-id">CNSR-CRDS-0002</code>
-<span class="rule-badge">Proposed</span>
+<span class="rule-badge">Included</span>
 </div>
 <p class="rule-title">Medical debt may not be reported on consumer credit reports</p>
 <p class="rule-plain">Medical bills cannot appear on your credit report. Getting sick and receiving care should not damage your credit score.</p>
 <p class="rule-stmt">Unpaid medical debt may not be reported to consumer credit bureaus or factored into consumer credit scores, as medical debt is not a reliable predictor of creditworthiness and its reporting causes disproportionate harm to consumers facing health crises through no fault of their own.</p>
+<p class="rule-notes">The three major credit bureaus agreed in 2022 to remove paid medical debt and debt under $500 from reports and to delay reporting of unpaid medical debt by one year; the CFPB issued a proposed rule in 2024 to prohibit all medical debt from credit reports, citing CFPB research showing medical debt is a poor predictor of future payment behavior. <!-- [VERIFY] --> Adversarial review: Removing medical debt may modestly reduce lenders’ predictive accuracy in narrow edge cases; the full evidence base on predictive value — which the CFPB has assessed as marginal — should be transparently cited when this rule is challenged. <!-- [VERIFY] --> The credit reporting ban reduces one form of pressure but does not address medical debt collection itself; providers and collectors may intensify other collection tactics (lawsuits, wage garnishment) to compensate for reduced credit reporting leverage. The distinction between voluntary consumer debt and involuntary medical debt may erode over time as structured payment plans and medical credit cards reclassify medical obligations as consumer credit, potentially narrowing the prohibition’s practical scope. An affirmative definition of “medical debt” is needed to prevent reclassification gaming.</p>
 </div>
-<div class="policy-card status-missing" id="CNSR-CRDS-0003">
+<div class="policy-card status-included" id="CNSR-CRDS-0003">
 <div class="rule-header">
 <code class="rule-id">CNSR-CRDS-0003</code>
-<span class="rule-badge">Proposed</span>
+<span class="rule-badge">Included</span>
 </div>
 <p class="rule-title">Consumers must have free, ongoing access to their credit reports and scores</p>
 <p class="rule-plain">You have the right to see your own credit report and score for free, on an ongoing basis — not just once a year. Knowing what lenders see about you is your right.</p>
 <p class="rule-stmt">Consumers must have free, continuous access to their credit reports and scores from all bureaus holding data about them, with real-time dispute filing and tracking, and must be notified of significant changes to their files.</p>
+<p class="rule-notes">The Fair Credit Reporting Act currently provides one free annual credit report from each of the three major bureaus through AnnualCreditReport.com; the major bureaus voluntarily offered weekly free reports during and after the COVID-19 pandemic, establishing the technical feasibility of continuous access. <!-- [VERIFY] --> Adversarial review: “Continuous access” and “real-time” dispute tracking impose significant ongoing infrastructure costs that smaller regional bureaus may be unable to absorb, potentially accelerating consolidation toward the existing oligopoly. The “significant changes” notification requirement is undefined; without a regulatory threshold, bureaus will set notification triggers high enough to exclude many materially harmful changes. Free score access does not address the proliferation of different scoring models (FICO 8, FICO 9, VantageScore, industry-specific models) — the score a consumer sees for free may not match the score a specific lender actually uses, limiting the practical value of the disclosure. Lenders who pull consumer reports have no reciprocal real-time disclosure obligation under this rule, leaving gaps in a consumer’s ability to understand when and why their data is being accessed.</p>
 </div>
 <div class="policy-card proposal" id="CNSR-CRDS-0004">
 <div class="rule-header">
@@ -1295,32 +1304,35 @@
 <span class="family-count">0/4 active</span>
 </div>
 <div class="rule-grid">
-<div class="policy-card status-missing" id="CNSR-DBRS-0001">
+<div class="policy-card status-included" id="CNSR-DBRS-0001">
 <div class="rule-header">
 <code class="rule-id">CNSR-DBRS-0001</code>
-<span class="rule-badge">Proposed</span>
+<span class="rule-badge">Included</span>
 </div>
 <p class="rule-title">Data brokers must register, disclose their sources, and honor opt-out requests</p>
 <p class="rule-plain">Companies that compile and sell consumer profiles must register with a federal authority, disclose where they get their data and who they sell it to, and honor deletion and opt-out requests.</p>
 <p class="rule-stmt">Commercial data brokers that compile, sell, or share consumer profiles must register with a federal authority, disclose the categories of data they collect and the sources from which they collect it, and must honor consumer requests to opt out of data compilation and sale.</p>
+<p class="rule-notes">The FTC’s 2014 data broker study found nine of the largest brokers collectively held approximately 1.4 billion consumer transaction records, 700 billion data elements, and in one case over 3,000 data points per individual consumer. <!-- [VERIFY] --> Vermont (2018) was the first state to require data broker registration with a state authority, establishing a legislative precedent. <!-- [VERIFY] --> Adversarial review: A public federal registry, without access controls, could itself be used by bad actors to identify which brokers hold sensitive data categories and target them for data acquisition, creating a secondary harm from the transparency requirement. “Categories of data collected” disclosure allows brokers to use vague categorical descriptions (e.g., “consumer interests,” “lifestyle data”) without meaningful transparency into specific data points, inference methodologies, or source identities. Opt-out rights bind the registered broker but do not prevent data already sold to downstream purchasers from continuing to circulate; a retroactive data-purge obligation on purchasers is absent. Companies that acquire consumer data primarily for internal use (social media platforms, loyalty programs) may fall outside a “data broker” definition, and brokers can exploit this through affiliate structures that maintain a nominal first-party relationship.</p>
 </div>
-<div class="policy-card status-missing" id="CNSR-DBRS-0002">
+<div class="policy-card status-included" id="CNSR-DBRS-0002">
 <div class="rule-header">
 <code class="rule-id">CNSR-DBRS-0002</code>
-<span class="rule-badge">Proposed</span>
+<span class="rule-badge">Included</span>
 </div>
 <p class="rule-title">Data brokers may not sell data that enables discrimination, stalking, or targeting of vulnerable individuals</p>
 <p class="rule-plain">Data brokers cannot sell information that could be used to discriminate against people, stalk them, or target vulnerable individuals. The data market cannot be a tool for harm.</p>
 <p class="rule-stmt">Data brokers may not sell or share consumer data that is used or reasonably foreseeable to be used for discriminatory targeting, stalking, location tracking, or targeting individuals based on their health, reproductive choices, or political activities.</p>
+<p class="rule-notes">The FTC’s 2023 commercial surveillance report documented data brokers selling lists identifying individuals who visited abortion providers, cancer treatment centers, weight loss clinics, and addiction treatment facilities using mobile device location data, all without consumer knowledge or consent. <!-- [VERIFY] --> Adversarial review: The “reasonably foreseeable use” standard is inherently contested — brokers will argue they cannot control downstream application of data they sell to aggregators or advertising networks and that foreseeable harm to specific individuals is not predictable at the point of sale. Categorical definitions of prohibited uses will become outdated as new data types and inference capabilities emerge; a purposes-based prohibition tied to harm outcomes would be more durable than an enumerated-categories approach. Geographic location data that reveals home addresses can enable stalking even when not explicitly labeled as location tracking; the rule must cover precise geolocation aggregation even in nominally anonymized datasets. Data sold before this rule’s effective date may continue to circulate in existing broker and purchaser databases, requiring a retroactive purge obligation for the prohibition to be fully effective.</p>
 </div>
-<div class="policy-card status-missing" id="CNSR-DBRS-0003">
+<div class="policy-card status-included" id="CNSR-DBRS-0003">
 <div class="rule-header">
 <code class="rule-id">CNSR-DBRS-0003</code>
-<span class="rule-badge">Proposed</span>
+<span class="rule-badge">Included</span>
 </div>
 <p class="rule-title">Data broker compilations used for consumer screening must comply with FCRA requirements</p>
 <p class="rule-plain">When data brokers compile profiles used to make decisions about jobs, credit, or housing, they must follow the same rules that apply to credit bureaus under federal law (the FCRA).</p>
 <p class="rule-stmt">Any data broker compilation used to make or inform decisions about consumers’ eligibility for credit, housing, employment, insurance, or other benefits must comply with Fair Credit Reporting Act accuracy, dispute, and adverse action notification requirements.</p>
+<p class="rule-notes">The FCRA defines consumer reporting agencies broadly, but data brokers typically evade that definition by structuring their products as “marketing databases” rather than consumer reports; <em>FTC v. Spokeo, Inc.</em> (2012, $800K settlement) established that people-search products used for employment screening are subject to FCRA, but definitional evasion remains widespread. <!-- [VERIFY] --> Adversarial review: Brokers will structure sales as raw data products rather than screening tools and claim they do not control whether purchasers use the data for FCRA-covered decisions, creating a deniability shield that shifts compliance liability to data purchasers with fewer resources to honor it. FCRA compliance requires accuracy, dispute rights, and adverse action notices but does not require consumer consent for covered uses; sensitive data can still be used in screening decisions without the consumer’s knowledge as long as procedural FCRA requirements are technically met. Proprietary risk scores derived from broker data — which may be the actual input to a credit, employment, or housing decision — may not themselves constitute a “consumer report” under FCRA, leaving the most influential data product in the system unregulated. A private right of action for broker FCRA violations is necessary but not specified in this rule.</p>
 </div>
 <div class="policy-card proposal" id="CNSR-DBRS-0004">
 <div class="rule-header">
@@ -1342,32 +1354,35 @@
 <span class="family-count">0/4 active</span>
 </div>
 <div class="rule-grid">
-<div class="policy-card status-missing" id="CNSR-ALGO-0001">
+<div class="policy-card status-included" id="CNSR-ALGO-0001">
 <div class="rule-header">
 <code class="rule-id">CNSR-ALGO-0001</code>
-<span class="rule-badge">Proposed</span>
+<span class="rule-badge">Included</span>
 </div>
 <p class="rule-title">Algorithmic pricing and offers may not discriminate based on protected characteristics</p>
 <p class="rule-plain">Pricing systems and targeting tools cannot produce discriminatory outcomes based on race, national origin, disability, or other protected characteristics — even if the algorithm never explicitly uses those labels.</p>
 <p class="rule-stmt">Pricing algorithms, personalized offer systems, and consumer targeting tools may not produce discriminatory outcomes based on protected characteristics—including race, color, national origin, sex, disability, or religion—and companies using such systems bear affirmative responsibility for auditing and correcting discriminatory outcomes regardless of algorithmic intent.</p>
+<p class="rule-notes">The CFPB has issued guidance applying ECOA’s disparate impact prohibition to algorithmic credit decisions, and HUD has addressed algorithmic housing discrimination under the Fair Housing Act; the FTC has signaled concern about AI-driven consumer discrimination under its UDAP authority. <!-- [VERIFY] --> Adversarial review: The affirmative auditing obligation does not specify methodology, frequency, or independence standards; self-auditing by interested parties is structurally inadequate, and without required third-party auditors with model access, the obligation becomes procedural compliance rather than substantive protection. Auditing for disparate impact on protected classes requires access to demographic data about consumers, which companies typically do not retain in their transaction records; this creates tension between the audit obligation and data minimization principles. The line between lawful “personalization” and unlawful “discrimination” is contested: ZIP code-based pricing is economically equivalent to racial discrimination in practice but may not facially violate protected-class rules, creating a durable circumvention path. Individual consumers lack access to aggregated demographic pricing data and therefore cannot independently establish disparate impact, making private enforcement dependent on regulatory investigation rather than self-advocacy.</p>
 </div>
-<div class="policy-card status-missing" id="CNSR-ALGO-0002">
+<div class="policy-card status-included" id="CNSR-ALGO-0002">
 <div class="rule-header">
 <code class="rule-id">CNSR-ALGO-0002</code>
-<span class="rule-badge">Proposed</span>
+<span class="rule-badge">Included</span>
 </div>
 <p class="rule-title">Price personalization systems may not exploit vulnerability signals</p>
 <p class="rule-plain">Companies cannot use pricing algorithms that charge more to people who appear financially desperate or otherwise vulnerable. Exploiting someone's hardship to extract higher prices is prohibited.</p>
 <p class="rule-stmt">Consumer pricing and offer systems may not use indicators of financial distress, health conditions, or personal vulnerability to extract higher prices or worse terms from consumers who have less ability or freedom to comparison-shop or decline.</p>
+<p class="rule-notes">Academic research and investigative reporting have documented algorithmic pricing systems that charge higher prices to consumers searching from mobile devices (correlated with lower income), to consumers exhibiting urgency signals such as one-way flight searches, and to consumers in lower-income ZIP codes. <!-- [VERIFY] --> Adversarial review: “Indicators of financial distress” and “personal vulnerability” are undefined; companies will argue their signals (device type, search behavior, session frequency) measure price sensitivity and consumer willingness to pay rather than distress, framing differential pricing as economically efficient rather than exploitative. The prohibition may inadvertently reach broadly accepted price differentiation practices such as student discounts, senior discounts, and geographic pricing that are not directed at extracting higher prices from the vulnerable; clear scope limits are needed to avoid unintended breadth. Health condition data feeding into pricing algorithms may already be subject to HIPAA or ADA frameworks in some contexts, but this rule’s interaction with those overlapping regulatory frameworks is not specified. Algorithmic pricing operates at transaction speed and scale across millions of simultaneous sessions; real-time enforcement against individual pricing events is not achievable with current regulatory tools, making audit-based prospective enforcement the only practical approach. <!-- [VERIFY] --></p>
 </div>
-<div class="policy-card status-missing" id="CNSR-ALGO-0003">
+<div class="policy-card status-included" id="CNSR-ALGO-0003">
 <div class="rule-header">
 <code class="rule-id">CNSR-ALGO-0003</code>
-<span class="rule-badge">Proposed</span>
+<span class="rule-badge">Included</span>
 </div>
 <p class="rule-title">Consumers have the right to know when algorithmic systems affect their consumer options</p>
 <p class="rule-plain">You have the right to know when a company is using automated systems to shape what options you see or what prices you are offered. Algorithmic personalization must be disclosed.</p>
 <p class="rule-stmt">When algorithmic systems produce personalized prices, offers, or terms materially different from standard offerings, consumers must be informed that personalization is occurring and must have the right to request review of algorithmically driven adverse decisions.</p>
+<p class="rule-notes">The FTC has asserted that undisclosed personalization can constitute a deceptive practice under 15 U.S.C. § 45; ECOA’s adverse action notice requirement (15 U.S.C. § 1691(d)) covers credit decisions but does not extend to personalized pricing in non-credit consumer markets. <!-- [VERIFY] --> Adversarial review: “Materially different from standard offerings” requires the existence of a baseline standard price, but in platforms where every consumer receives a personalized price there may be no standard offering against which to measure; the rule’s scope could collapse to zero in fully individualized pricing environments. The disclosure requirement informs consumers that personalization is occurring but does not require disclosure of which factors drive the personalization or by how much, providing nominal transparency without actionability. The right to “request review” of algorithmically driven adverse decisions is procedural and does not require that the review result in any particular outcome or that the reviewer have authority to override the algorithm; nominal compliance is easy. Companies may satisfy disclosure obligations by burying algorithmic personalization notices in terms-of-service consent flows consumers have already accepted, making disclosure technically present but practically invisible.</p>
 </div>
 <div class="policy-card proposal" id="CNSR-ALGO-0004">
 <div class="rule-header">
