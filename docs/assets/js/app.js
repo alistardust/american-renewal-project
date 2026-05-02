@@ -101,8 +101,10 @@
       a.href = item.href;
       a.className = 'st-item-link st-leaf';
       a.textContent = item.label;
-      a.setAttribute('role', 'none');
+      a.setAttribute('role', 'treeitem');
+      a.setAttribute('aria-level', String(level));
       a.addEventListener('click', closeTree);
+      li.setAttribute('role', 'none');
       li.appendChild(a);
     }
     return li;
