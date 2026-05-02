@@ -73,6 +73,7 @@ Every page on the site, organized hierarchically. Primary nav items at the top l
 - Clicking a leaf node navigates and closes the hamburger
 - On navigation, the hamburger closes automatically
 - Keyboard: arrow keys navigate, Enter activates, Escape closes
+- The hamburger icon is always present — on both desktop and mobile — alongside the horizontal primary nav
 - Mobile: full-height overlay, same tree structure
 
 ---
