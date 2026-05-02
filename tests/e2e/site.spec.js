@@ -44,9 +44,9 @@ test.describe('Homepage', () => {
     await expect(page.locator('.entry-grid .entry-card')).toHaveCount(4);
   });
 
-  test('nav has 7 links (6 static + About AI injected by app.js)', async ({ page }) => {
-    // 6 static: Home, Problem, Approach, Proposals, Get Involved, Roadmap + 1 injected: About AI
-    await expect(page.locator('.nav-links a')).toHaveCount(7);
+  test('nav has 5 links (Home, The Problem, The Plan, The Platform, Join the Movement)', async ({ page }) => {
+    // 5 hardcoded items — app.js no longer injects into nav-links
+    await expect(page.locator('.nav-links a')).toHaveCount(5);
   });
 
   test('name notice banner is present and dismissible', async ({ page }) => {

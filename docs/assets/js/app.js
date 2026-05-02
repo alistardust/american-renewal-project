@@ -3,131 +3,216 @@
   'use strict';
 
 
-  (function () {
-    const page = location.pathname.split('/').pop() || 'index.html';
-    // Normalize: strip .html for comparison (serve redirects clean URLs, so
-    // /about-ai.html becomes /about-ai, making page = 'about-ai' not 'about-ai.html')
-    const pageName = page.replace(/\.html$/, '') || 'index';
-    document.querySelectorAll('.nav-links a').forEach(a => {
-      const href = a.getAttribute('href');
-      const hrefName = href ? href.replace(/\.html$/, '').replace(/^\.\.\//, '') : '';
-      if (hrefName === pageName || (pageName === 'index' && href === 'index.html')) {
-        a.classList.add('active');
+/* ── ACTIVE NAV LINK ─────────────────────────────── */
+(function () {
+  const page = location.pathname.split('/').pop() || 'index.html';
+  const pageName = page.replace(/\.html$/, '') || 'index';
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    const href = a.getAttribute('href') || '';
+    const hrefName = href.replace(/\.html$/, '').replace(/^\.\.\//, '');
+    if (hrefName === pageName || (pageName === 'index' && href === 'index.html')) {
+      a.classList.add('active');
+    }
+  });
+})();
+
+/* ── HAMBURGER SITE TREE ─────────────────────────── */
+(function () {
+  const inSubdir = /\/(pillars|compare)\//.test(location.pathname);
+  const base = inSubdir ? '../' : '';
+
+  function buildTree() {
+    const foundations = (window.siteData && siteData.foundations) ? siteData.foundations : [];
+    const comparePages = [
+      { label: 'Republican Party',                  href: base + 'compare/republican-party.html' },
+      { label: 'Democratic Party',                  href: base + 'compare/democratic-party.html' },
+      { label: 'Green Party',                       href: base + 'compare/green-party.html' },
+      { label: 'Libertarian Party',                 href: base + 'compare/libertarian-party.html' },
+      { label: 'Working Families Party',            href: base + 'compare/working-families-party.html' },
+      { label: 'Democratic Socialists of America',  href: base + 'compare/dsa.html' },
+    ];
+    const policyLibraryChildren = foundations.map(f => ({
+      label: f.title,
+      href: base + 'proposals.html#' + f.id,
+    }));
+
+    return [
+      { label: 'Home',             href: base + 'index.html' },
+      { label: 'The Problem',      href: base + 'problem.html' },
+      { label: 'The Plan',         href: base + 'plan.html' },
+      { label: 'The Platform', children: [
+        { label: 'Bills of Rights',        href: base + 'platform.html#bills-of-rights' },
+        { label: 'PolicyOS',               href: base + 'platform.html#policyos' },
+        { label: 'Policy Library',         href: base + 'proposals.html',
+          children: policyLibraryChildren },
+        { label: 'How the Platform Works', href: base + 'classification.html' },
+      ]},
+      { label: 'Join the Movement', href: base + 'join.html' },
+      { label: 'Roadmap',           href: base + 'roadmap.html' },
+      { label: 'About', children: [
+        { label: 'Letter from the Founder', href: base + 'letter-from-the-founder.html' },
+        { label: 'On the Use of AI',        href: base + 'about-ai.html' },
+      ]},
+      { label: 'Compare Platforms', children: comparePages },
+    ];
+  }
+
+  function makeTreeNode(item, level) {
+    const li = document.createElement('li');
+    li.className = 'st-node' + (item.children && item.children.length ? ' st-parent' : '');
+    li.setAttribute('role', 'treeitem');
+    li.setAttribute('aria-level', level);
+    if (item.children && item.children.length) {
+      li.setAttribute('aria-expanded', 'false');
+      const btn = document.createElement('button');
+      btn.className = 'st-toggle';
+      btn.setAttribute('aria-label', 'Expand ' + item.label);
+      const labelSpan = document.createElement('span');
+      labelSpan.className = 'st-label';
+      if (item.href) {
+        const a = document.createElement('a');
+        a.href = item.href;
+        a.textContent = item.label;
+        a.className = 'st-item-link';
+        labelSpan.appendChild(a);
+      } else {
+        labelSpan.textContent = item.label;
+      }
+      const chevron = document.createElement('span');
+      chevron.className = 'st-chevron';
+      chevron.setAttribute('aria-hidden', 'true');
+      chevron.textContent = '›';
+      btn.appendChild(labelSpan);
+      btn.appendChild(chevron);
+      li.appendChild(btn);
+      const ul = document.createElement('ul');
+      ul.className = 'st-children';
+      ul.setAttribute('role', 'group');
+      item.children.forEach(child => ul.appendChild(makeTreeNode(child, level + 1)));
+      li.appendChild(ul);
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const expanded = li.getAttribute('aria-expanded') === 'true';
+        li.setAttribute('aria-expanded', String(!expanded));
+        btn.setAttribute('aria-label', (expanded ? 'Expand ' : 'Collapse ') + item.label);
+      });
+    } else {
+      const a = document.createElement('a');
+      a.href = item.href;
+      a.className = 'st-item-link st-leaf';
+      a.textContent = item.label;
+      a.setAttribute('role', 'none');
+      a.addEventListener('click', closeTree);
+      li.appendChild(a);
+    }
+    return li;
+  }
+
+  function closeTree() {
+    const panel = document.querySelector('.site-tree');
+    const burger = document.querySelector('.nav-hamburger');
+    if (panel) panel.classList.remove('st-open');
+    if (burger) {
+      burger.setAttribute('aria-expanded', 'false');
+      burger.setAttribute('aria-label', 'Open site menu');
+    }
+  }
+
+  function buildPanel() {
+    const nav = document.querySelector('.site-nav');
+    if (!nav) return;
+    const panel = document.createElement('nav');
+    panel.id = 'site-tree';         // required — aria-controls is an IDREF
+    panel.className = 'site-tree';
+    panel.setAttribute('aria-label', 'Site navigation tree');
+    // No role="tree" on the <nav> — that overrides its landmark semantics.
+    // The role="tree" belongs only on the <ul> below.
+
+    const header = document.createElement('div');
+    header.className = 'st-header';
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'st-close';
+    closeBtn.setAttribute('aria-label', 'Close site menu');
+    closeBtn.textContent = '✕';
+    closeBtn.addEventListener('click', closeTree);
+    header.appendChild(closeBtn);
+    panel.appendChild(header);
+
+    const ul = document.createElement('ul');
+    ul.className = 'st-root';
+    ul.setAttribute('role', 'tree');
+    buildTree().forEach(item => ul.appendChild(makeTreeNode(item, 1)));
+    panel.appendChild(ul);
+
+    const overlay = document.createElement('div');
+    overlay.className = 'st-overlay';
+    overlay.addEventListener('click', closeTree);
+
+    document.body.appendChild(overlay);
+    nav.insertAdjacentElement('afterend', panel);
+  }
+
+  buildPanel();
+
+  // Wire hamburger button to toggle the site-tree panel
+  const burger = document.querySelector('.nav-hamburger');
+  if (burger) {
+    burger.setAttribute('aria-expanded', 'false');
+    burger.setAttribute('aria-controls', 'site-tree');
+    burger.addEventListener('click', function () {
+      const panel = document.querySelector('.site-tree');
+      const open = panel && panel.classList.toggle('st-open');
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      burger.setAttribute('aria-label', open ? 'Close site menu' : 'Open site menu');
+      if (open) {
+        const firstLink = panel.querySelector('.st-item-link, .st-toggle');
+        if (firstLink) firstLink.focus();
       }
     });
+  }
 
-    // Inject nav links (path-aware for subdirectories)
-    const navList = document.querySelector('ul.nav-links');
-    // Check for actual subdirectory pages (pillars/, compare/) not just path depth.
-    // Depth-counting breaks on GitHub Pages because the repo base path adds a segment.
-    const inSubdir = /\/(pillars|compare)\//.test(location.pathname);
-    const base = inSubdir ? '../' : '';
-    const aboutUsHref = base + 'about-us.html';
-    const aiHref = base + 'about-ai.html';
-    const problemHref = base + 'problem.html';
-    const rightsHref = base + 'rights.html';
-    const classificationHref = base + 'classification.html';
-    const joinHref = base + 'join.html';
-    const roadmapHref    = base + 'roadmap.html';
-    const letterHref     = base + 'letter-from-the-founder.html';
-    const isAiPage = pageName === 'about-ai';
-    const isLetterPage = pageName === 'letter-from-the-founder';
-    const isRoadmapPage = pageName === 'roadmap';
-    const isProblemPage = pageName === 'problem';
-    const isRightsPage = pageName === 'rights';
-    const isAboutUsPage = pageName === 'about-us';
-    const isClassificationPage = pageName === 'classification';
-    const isJoinPage = pageName === 'join';
-    const approachHref = base + 'approach.html';
-    const isApproachPage = pageName === 'approach';
-    const proposalsHref = base + 'proposals.html';
-    const isProposalsPage = pageName === 'proposals';
-    const platformHref = base + 'platform.html';
-    const isPlatformPage = pageName === 'platform';
-    if (navList && !navList.querySelector('a[href*="mission"]')) {
-      const li = document.createElement('li');
-      li.innerHTML = `<a href="${problemHref}"${isProblemPage ? ' class="active"' : ''}>Problem</a>`;
-      navList.appendChild(li);
-    }
+  // Keyboard navigation
+  document.addEventListener('keydown', function (e) {
+    const panel = document.querySelector('.site-tree.st-open');
+    if (!panel) return;
+    if (e.key === 'Escape') { closeTree(); burger && burger.focus(); return; }
+    const focusable = Array.from(panel.querySelectorAll('.st-item-link, .st-toggle'));
+    const idx = focusable.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') { e.preventDefault(); focusable[(idx + 1) % focusable.length].focus(); }
+    if (e.key === 'ArrowUp')   { e.preventDefault(); focusable[(idx - 1 + focusable.length) % focusable.length].focus(); }
+  });
 
-    if (navList && !navList.querySelector('a[href*="approach"]')) {
-      const li = document.createElement('li');
-      li.innerHTML = `<a href="${approachHref}"${isApproachPage ? ' class="active"' : ''}>Approach</a>`;
-      navList.appendChild(li);
-    }
+  // Close on outside click
+  document.addEventListener('click', function (e) {
+    const panel = document.querySelector('.site-tree.st-open');
+    if (!panel) return;
+    if (!panel.contains(e.target) && e.target !== burger) closeTree();
+  });
+})();
 
-    if (navList && !navList.querySelector('a[href*="proposals"]')) {
-      const li = document.createElement('li');
-      li.innerHTML = `<a href="${proposalsHref}"${isProposalsPage ? ' class="active"' : ''}>Proposals</a>`;
-      navList.appendChild(li);
-    }
+// Inject links into footer-links (path-aware)
+(function () {
+  const inSubdir = /\/(pillars|compare)\//.test(location.pathname);
+  const base = inSubdir ? '../' : '';
+  const footerLinks = document.querySelector('ul.footer-links');
+  if (!footerLinks) return;
 
-    if (navList && !navList.querySelector('a[href*="get-involved"]')) {
-      const li = document.createElement('li');
-      li.innerHTML = `<a href="${joinHref}"${isJoinPage ? ' class="active"' : ''}>Get Involved</a>`;
-      navList.appendChild(li);
-    }
-
-    if (navList && !navList.querySelector('a[href*="roadmap"]')) {
-      const li = document.createElement('li');
-      li.innerHTML = `<a href="${roadmapHref}"${isRoadmapPage ? ' class="active"' : ''}>Roadmap</a>`;
-      navList.appendChild(li);
-    }
-
-    if (navList && !navList.querySelector('a[href*="about-ai"]')) {
-      const li = document.createElement('li');
-      li.innerHTML = `<a href="${aiHref}"${isAiPage ? ' class="active"' : ''}>About AI</a>`;
-      navList.appendChild(li);
-    }
-
-    // Inject links into footer-links
-    const footerLinks = document.querySelector('ul.footer-links');
-    if (footerLinks && !footerLinks.querySelector('a[href*="platform"]')) {
-      const fli = document.createElement('li');
-      fli.innerHTML = `<a href="${platformHref}">Platform</a>`;
-      footerLinks.appendChild(fli);
-    }
-    if (footerLinks && !footerLinks.querySelector('a[href*="rights"]')) {
-      const fli = document.createElement('li');
-      fli.innerHTML = `<a href="${rightsHref}">Rights</a>`;
-      footerLinks.appendChild(fli);
-    }
-    if (footerLinks && !footerLinks.querySelector('a[href*="proposals"]')) {
-      const fli = document.createElement('li');
-      fli.innerHTML = `<a href="${proposalsHref}">Proposals</a>`;
-      footerLinks.appendChild(fli);
-    }
-    if (footerLinks && !footerLinks.querySelector('a[href*="mission"]')) {
-      const fli = document.createElement('li');
-      fli.innerHTML = `<a href="${problemHref}">Problem</a>`;
-      footerLinks.appendChild(fli);
-    }
-    if (footerLinks && !footerLinks.querySelector('a[href*="approach"]')) {
-      const fli = document.createElement('li');
-      fli.innerHTML = `<a href="${approachHref}">Approach</a>`;
-      footerLinks.appendChild(fli);
-    }
-    if (footerLinks && !footerLinks.querySelector('a[href*="rights"]')) {
-      const fli = document.createElement('li');
-      fli.innerHTML = `<a href="${rightsHref}">Rights</a>`;
-      footerLinks.appendChild(fli);
-    }
-    if (footerLinks && !footerLinks.querySelector('a[href*="get-involved"]')) {
-      const fli = document.createElement('li');
-      fli.innerHTML = `<a href="${joinHref}">Get Involved</a>`;
-      footerLinks.appendChild(fli);
-    }
-    if (footerLinks && !footerLinks.querySelector('a[href*="roadmap"]')) {
-      const fli = document.createElement('li');
-      fli.innerHTML = `<a href="${roadmapHref}">Roadmap</a>`;
-      footerLinks.appendChild(fli);
-    }
-    if (footerLinks && !footerLinks.querySelector('a[href*="about-ai"]')) {
-      const fli = document.createElement('li');
-      fli.innerHTML = `<a href="${aiHref}">About AI</a>`;
-      footerLinks.appendChild(fli);
-    }
-  })();
+  const links = [
+    ['platform.html', 'The Platform'],
+    ['problem.html',  'The Problem'],
+    ['plan.html',     'The Plan'],
+    ['join.html',     'Join the Movement'],
+    ['roadmap.html',  'Roadmap'],
+    ['about-ai.html', 'About AI'],
+  ];
+  links.forEach(([file, label]) => {
+    const selector = 'a[href*="' + file.replace('.html','') + '"]';
+    if (footerLinks.querySelector(selector)) return;
+    const li = document.createElement('li');
+    li.innerHTML = '<a href="' + base + file + '">' + label + '</a>';
+    footerLinks.appendChild(li);
+  });
+})();
 
   /* ── SKIP LINK ───────────────────────────────────── */
   (function () {
@@ -150,16 +235,6 @@
       firstSection.insertAdjacentElement('beforebegin', anchor);
     }
   })();
-
-  /* ── HAMBURGER ────────────────────────────────────── */
-  const burger = document.querySelector('.nav-hamburger');
-  const navList = document.querySelector('.nav-links');
-  if (burger && navList) {
-    burger.addEventListener('click', () => navList.classList.toggle('open'));
-    document.addEventListener('click', e => {
-      if (!burger.contains(e.target) && !navList.contains(e.target)) navList.classList.remove('open');
-    });
-  }
 
   /* ── PILLAR FILTER + RENDER ───────────────────────── */
   const pillarGrid = document.getElementById('pillar-grid');
