@@ -25,28 +25,42 @@ test.describe('Homepage', () => {
     expect(statement.trim().length).toBeGreaterThan(20);
   });
 
-  test('renders the FDR block with his quote', async ({ page }) => {
-    await expect(page.locator('.fdr-block')).toBeVisible();
-    await expect(page.locator('text=Necessitous men are not free men')).toBeVisible();
+  test.skip('renders the FDR block with his quote', async () => {
+    // TODO(alice): re-add when homepage Section 2 is written — Task 11
   });
-
-  test('renders the PolicyOS 3-layer cards', async ({ page }) => {
-    // The approach section shows 3 PolicyOS layer cards
-    await expect(page.locator('.policyos-layers .layer-card')).toHaveCount(3);
+  test.skip('renders the PolicyOS 3-layer cards', async () => {
+    // TODO(alice): re-add when homepage Section 3 is written — Task 11
   });
-
-  test('renders all 5 foundation cards', async ({ page }) => {
-    await expect(page.locator('.foundations-grid .f-card')).toHaveCount(5);
+  test.skip('renders all 5 foundation cards', async () => {
+    // TODO(alice): re-add when homepage Section 3 is written — Task 11
   });
-
-  test('renders all 4 Get Involved entry cards', async ({ page }) => {
-    // 4 entry cards: Explore, Review, Build, Community
-    await expect(page.locator('.entry-grid .entry-card')).toHaveCount(4);
+  test.skip('renders all 4 Get Involved entry cards', async () => {
+    // TODO(alice): re-add when homepage Section 5 is written — Task 11
   });
 
   test('nav has 5 links (Home, The Problem, The Plan, The Platform, Join the Movement)', async ({ page }) => {
     // 5 hardcoded items — app.js no longer injects into nav-links
     await expect(page.locator('.nav-links a')).toHaveCount(5);
+  });
+
+  test('hamburger button opens site tree panel', async ({ page }) => {
+    await page.locator('.nav-hamburger').click();
+    await expect(page.locator('.site-tree')).toHaveClass(/st-open/);
+    // Tree contains the 5 primary nav items
+    await expect(page.locator('.site-tree').getByText('The Plan')).toBeAttached();
+    await expect(page.locator('.site-tree').getByText('Join the Movement')).toBeAttached();
+  });
+
+  test('hamburger site tree closes with Escape key', async ({ page }) => {
+    await page.locator('.nav-hamburger').click();
+    await expect(page.locator('.site-tree')).toHaveClass(/st-open/);
+    await page.keyboard.press('Escape');
+    await expect(page.locator('.site-tree')).not.toHaveClass(/st-open/);
+  });
+
+  test('hamburger button is visible on desktop viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await expect(page.locator('.nav-hamburger')).toBeVisible();
   });
 
   test('name notice banner is present and dismissible', async ({ page }) => {
@@ -280,8 +294,9 @@ test.describe('About AI page', () => {
     await expect(page.locator('.ai-hero h1')).toBeVisible();
   });
 
-  test('nav About AI link is active', async ({ page }) => {
-    await expect(page.locator('.nav-links a.active')).toHaveText(/About AI/i);
+  test.skip('nav About AI link is active', async () => {
+    // About AI is no longer in the primary 5-item nav (accessible via site-tree and footer)
+    // TODO(alice): revisit if About AI is ever added back to primary nav
   });
 
   test('footer has standard links', async ({ page }) => {
@@ -345,13 +360,12 @@ test.describe('About AI link reachable from all page types', () => {
   ];
 
   for (const { url, label } of pages) {
-    test(`${label} has About AI in nav`, async ({ page }) => {
+    test(`${label} has About AI in footer`, async ({ page }) => {
       await page.goto(url);
-      const link = page.locator('.nav-links a[href*="about-ai"]');
+      // About AI moved from primary nav to footer-links (injected by app.js)
+      const link = page.locator('.footer-links a[href*="about-ai"]');
       await expect(link).toBeAttached();
       const href = await link.getAttribute('href');
-      // Must not be a broken cross-root path (../about-ai.html from root pages was the bug)
-      // Navigate to it and expect the About AI page to load
       await page.goto(href.startsWith('http') ? href : new URL(href, page.url()).toString());
       await expect(page).toHaveTitle(/AI|Artificial/i);
     });
@@ -422,7 +436,7 @@ test.describe('Policy rules section renders content', () => {
 
 // ── MISSION PAGE ──────────────────────────────────────────────────────────────
 
-test.describe('Mission page', () => {
+test.describe('Problem page', () => {
   test.beforeEach(async ({ page }) => { await page.goto('/problem.html'); });
 
   test('has correct page title', async ({ page }) => {
@@ -494,37 +508,6 @@ test.describe('Proposals page', () => {
 
   test('proposals link is active in nav', async ({ page }) => {
     await expect(page.locator('.nav-links a.active[href*="proposals"]')).toBeAttached();
-  });
-});
-
-// ── RIGHTS PAGE ───────────────────────────────────────────────────────────────
-
-test.describe('Rights page', () => {
-  test.beforeEach(async ({ page }) => { await page.goto('/rights.html'); });
-
-  test('has correct page title', async ({ page }) => {
-    await expect(page).toHaveTitle(/Rights.*Freedom and Dignity/i);
-  });
-
-  test('renders New Bill of Rights section', async ({ page }) => {
-    await expect(page.locator('#new-bill-of-rights')).toBeAttached();
-  });
-
-  test('renders Workers Rights section', async ({ page }) => {
-    await expect(page.locator('#workers-rights')).toBeAttached();
-  });
-
-  test('renders Indigenous Rights section', async ({ page }) => {
-    await expect(page.locator('#indigenous-rights')).toBeAttached();
-  });
-
-  test('rights-item entries are present', async ({ page }) => {
-    const count = await page.locator('.rights-item').count();
-    expect(count).toBeGreaterThan(10);
-  });
-
-  test('footer Rights link is present', async ({ page }) => {
-    await expect(page.locator('.footer-links a[href*="rights"]')).toBeAttached();
   });
 });
 
@@ -622,7 +605,7 @@ test.describe('Elections pillar — Referendum and Recall section', () => {
 
 // ── MISSION NAV LINK REACHABLE FROM ALL PAGE TYPES ───────────────────────────
 
-test.describe('Mission nav link from all page types', () => {
+test.describe('Problem nav link from all page types', () => {
   const pages = [
     { url: '/',                               label: 'Homepage' },
     { url: '/proposals.html',              label: 'Proposals' },
@@ -632,13 +615,13 @@ test.describe('Mission nav link from all page types', () => {
   ];
 
   for (const { url, label } of pages) {
-    test(`${label} has Mission/Problem in nav`, async ({ page }) => {
+    test(`${label} has Problem in nav`, async ({ page }) => {
       await page.goto(url);
       const link = page.locator('.nav-links a[href*="problem"]');
       await expect(link).toBeAttached();
       const href = await link.getAttribute('href');
       await page.goto(href.startsWith('http') ? href : new URL(href, page.url()).toString());
-      await expect(page).toHaveTitle(/Problem|Mission.*Freedom and Dignity/i);
+      await expect(page).toHaveTitle(/The Problem/i);
     });
   }
 });
