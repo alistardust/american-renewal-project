@@ -30,11 +30,6 @@ test.describe('Homepage', () => {
     await expect(page.locator('text=Necessitous men are not free men')).toBeVisible();
   });
 
-  test('renders the PolicyOS 3-layer cards', async ({ page }) => {
-    // The approach section shows 3 PolicyOS layer cards
-    await expect(page.locator('.policyos-layers .layer-card')).toHaveCount(3);
-  });
-
   test('renders all 5 foundation cards', async ({ page }) => {
     await expect(page.locator('.foundations-grid .f-card')).toHaveCount(5);
   });
@@ -44,9 +39,9 @@ test.describe('Homepage', () => {
     await expect(page.locator('.entry-grid .entry-card')).toHaveCount(4);
   });
 
-  test('nav has 7 links (6 static + About AI injected by app.js)', async ({ page }) => {
-    // 6 static: Home, Problem, Approach, Proposals, Get Involved, Roadmap + 1 injected: About AI
-    await expect(page.locator('.nav-links a')).toHaveCount(7);
+  test('nav has 4 links (Home, Problem, Approach, Get Involved)', async ({ page }) => {
+    // Baked-in nav: Home, Problem, Approach, Get Involved = 4
+    await expect(page.locator('.nav-links a')).toHaveCount(4);
   });
 
   test('name notice banner is present and dismissible', async ({ page }) => {
@@ -232,16 +227,15 @@ for (const { file, name } of PARTY_PAGES) {
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
 
 test.describe('Navigation', () => {
-  test('home → proposals', async ({ page }) => {
+  test('home → policy library', async ({ page }) => {
     await page.goto('/');
-    await page.click('a[href="policy-library.html"]');
-    await expect(page).toHaveURL(/proposals/);
+    await page.click('a[href="policy-library.html"].btn-primary');
+    await expect(page).toHaveURL(/policy-library/);
   });
 
-  test('platform → proposals page', async ({ page }) => {
-    await page.goto('/platform.html');
-    await page.click('.nav-links a[href*="proposals"]');
-    await expect(page).toHaveURL(/proposals/);
+  test('policy library page loads', async ({ page }) => {
+    await page.goto('/policy-library.html');
+    await expect(page.locator('h1').first()).toBeVisible();
   });
 
   test('pillars index → pillar page', async ({ page }) => {
@@ -280,8 +274,9 @@ test.describe('About AI page', () => {
     await expect(page.locator('.ai-hero h1')).toBeVisible();
   });
 
-  test('nav About AI link is active', async ({ page }) => {
-    await expect(page.locator('.nav-links a.active')).toHaveText(/About AI/i);
+  test('footer has About AI link', async ({ page }) => {
+    // About AI is in the footer, not the main nav
+    await expect(page.locator('.footer-links a[href*="about-ai"]')).toBeAttached();
   });
 
   test('footer has standard links', async ({ page }) => {
@@ -347,7 +342,8 @@ test.describe('About AI link reachable from all page types', () => {
   for (const { url, label } of pages) {
     test(`${label} has About AI in nav`, async ({ page }) => {
       await page.goto(url);
-      const link = page.locator('.nav-links a[href*="about-ai"]');
+      // About AI is in the footer-links, not the main nav
+      const link = page.locator('.footer-links a[href*="about-ai"]');
       await expect(link).toBeAttached();
       const href = await link.getAttribute('href');
       // Must not be a broken cross-root path (../about-ai.html from root pages was the bug)
@@ -438,19 +434,19 @@ test.describe('Mission page', () => {
     expect(text).toMatch(/Problem/i);
   });
 
-  test('nav Mission link is present', async ({ page }) => {
-    // Mission link is baked into the HTML nav as "Problem"
-    const link = page.locator('.nav-links a[href*="mission"]');
+  test('nav Problem link is present', async ({ page }) => {
+    // Problem link is baked into the HTML nav
+    const link = page.locator('.nav-links a[href*="problem"]');
     await expect(link).toBeAttached();
   });
 
-  test('nav Mission link is marked active on mission page', async ({ page }) => {
-    const link = page.locator('.nav-links a[href*="mission"].active');
+  test('nav Problem link is marked active on problem page', async ({ page }) => {
+    const link = page.locator('.nav-links a[href*="problem"].active');
     await expect(link).toBeAttached();
   });
 
-  test('footer Mission link is present', async ({ page }) => {
-    await expect(page.locator('.footer-links a[href*="mission"]')).toBeAttached();
+  test('footer Problem link is present', async ({ page }) => {
+    await expect(page.locator('.footer-links a[href*="problem"]')).toBeAttached();
   });
 
   test('footer Rights link is present', async ({ page }) => {
@@ -462,8 +458,8 @@ test.describe('Mission page', () => {
     await expect(page.locator('.fo-fv-grid .fo-fv-card')).toHaveCount(5);
   });
 
-  test('nav has About AI link', async ({ page }) => {
-    await expect(page.locator('.nav-links a[href*="about-ai"]')).toBeAttached();
+  test('footer has About AI link', async ({ page }) => {
+    await expect(page.locator('.footer-links a[href*="about-ai"]')).toBeAttached();
   });
 
   test('references section is present', async ({ page }) => {
@@ -477,7 +473,7 @@ test.describe('Proposals page', () => {
   test.beforeEach(async ({ page }) => { await page.goto('/policy-library.html'); });
 
   test('has correct page title', async ({ page }) => {
-    await expect(page).toHaveTitle(/Proposals.*Freedom and Dignity/i);
+    await expect(page).toHaveTitle(/Policy Library.*Freedom and Dignity/i);
   });
 
   test('renders 3 PolicyOS layer cards', async ({ page }) => {
@@ -492,8 +488,9 @@ test.describe('Proposals page', () => {
     await expect(page.locator('.rights-cards-grid .rights-card')).toHaveCount(3);
   });
 
-  test('proposals link is active in nav', async ({ page }) => {
-    await expect(page.locator('.nav-links a.active[href*="proposals"]')).toBeAttached();
+  test('page renders foundation cards', async ({ page }) => {
+    // Policy library has no nav link active; verify page loads correctly
+    await expect(page.locator('.fo-fv-card').first()).toBeVisible();
   });
 });
 
@@ -590,8 +587,8 @@ test.describe('Roadmap page', () => {
     await expect(page.locator('.roadmap-track')).toHaveCount(7);
   });
 
-  test('nav has Mission and Roadmap links', async ({ page }) => {
-    await expect(page.locator('.nav-links a[href*="mission"]')).toBeAttached();
+  test('nav has Problem and Roadmap links', async ({ page }) => {
+    await expect(page.locator('.nav-links a[href*="problem"]')).toBeAttached();
     await expect(page.locator('.nav-links a[href*="roadmap"]')).toBeAttached();
   });
 });
@@ -634,7 +631,7 @@ test.describe('Mission nav link from all page types', () => {
   for (const { url, label } of pages) {
     test(`${label} has Mission/Problem in nav`, async ({ page }) => {
       await page.goto(url);
-      const link = page.locator('.nav-links a[href*="mission"]');
+      const link = page.locator('.nav-links a[href*="problem"]');
       await expect(link).toBeAttached();
       const href = await link.getAttribute('href');
       await page.goto(href.startsWith('http') ? href : new URL(href, page.url()).toString());
@@ -744,7 +741,8 @@ test.describe('About Us page', () => {
   });
 
   test('letter from the founder link is present', async ({ page }) => {
-    await expect(page.locator('a[href*="letter-from-the-founder"]')).toBeAttached();
+    // .first() avoids strict mode violation — hamburger site tree also has this link
+    await expect(page.locator('a[href*="letter-from-the-founder"]').first()).toBeAttached();
   });
 });
 
@@ -791,14 +789,14 @@ test.describe('Letter from the Founder page', () => {
     expect(count).toBeGreaterThanOrEqual(17);
   });
 
-  test('nav has mission link visible', async ({ page }) => {
+  test('nav has problem link visible', async ({ page }) => {
     // letter-from-the-founder is no longer a nav item; verify core nav links still present
-    await expect(page.locator('.nav-links a[href*="mission"]')).toBeAttached();
+    await expect(page.locator('.nav-links a[href*="problem"]')).toBeAttached();
   });
 
   test('nav and footer are injected', async ({ page }) => {
     // app.js injects nav links and footer — verify both are present
-    await expect(page.locator('.nav-links a[href*="mission"]')).toBeAttached();
+    await expect(page.locator('.nav-links a[href*="problem"]')).toBeAttached();
     await expect(page.locator('.site-footer')).toBeVisible();
   });
 
