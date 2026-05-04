@@ -1,7 +1,7 @@
 # BNPL Policy Family Design Spec
 
 **Date:** 2026-05-03
-**Status:** Approved for implementation
+**Status:** Reviewed and revised — ready for implementation
 **Author:** Sam (GitHub Copilot) / Ali
 **Research source:** `policy/research/bnpl/bnpl_policy_overview.md`
 
@@ -103,7 +103,7 @@ installment credit products -- constitute consumer credit subject to the Truth i
 without exception based on product structure, term length, number of payments, or fee model.
 BNPL products are classified into two tiers: Tier 1 (four or fewer payments and four weeks or
 fewer in duration) and Tier 2 (more than four payments or more than four weeks in duration).
-Tier 1 lenders must comply with Sections 0002, 0004, 0005, 0006, 0007, and 0008. Tier 2
+Tier 1 lenders must comply with Sections 0002, 0004, 0005, 0006, 0007, 0008, and 0009. Tier 2
 lenders must comply with all sections including 0003. No BNPL lender may initiate or continue
 debt collection activity on a disputed transaction while a consumer dispute is pending
 resolution under TILA Section 170 or ECOA. Violations give rise to private rights of action
@@ -167,7 +167,7 @@ BNPL loan; and (3) confirm that total debt obligations do not exceed 43% of veri
 gross income (DTI cap). The lender must retain affordability assessment documentation for a
 minimum of three years from origination and must provide it to the CFPB or state regulator
 upon request. Originating a Tier 2 loan without documented affordability assessment
-constitutes an unfair, deceptive, and abusive act or practice under 12 U.S.C. § 5531.
+constitutes an unfair, deceptive, or abusive act or practice under 12 U.S.C. § 5531.
 
 **Rule-notes:**
 BNPL approval rates increased from 56% to 79% between 2019 and 2022 through "counteroffers,"
@@ -195,8 +195,10 @@ payment, regardless of how that fee is labeled or structured. This prohibition a
 Tier 1 and Tier 2 products and may not be waived by contract or by borrower agreement.
 Default consequences are limited to: adverse credit bureau reporting under Section 0002,
 suspension or closure of the borrower's BNPL account, and civil collection action permitted
-under applicable state law. Charging a prohibited fee constitutes an unfair, deceptive, and
-abusive act or practice under 12 U.S.C. § 5531 and gives rise to a private right of action.
+under applicable state law. Charging a prohibited fee constitutes an unfair, deceptive, or
+abusive act or practice under 12 U.S.C. § 5531. Prohibited fees that constitute an
+impermissible finance charge under TILA also give rise to a private right of action under
+TILA § 130 (15 U.S.C. § 1640).
 
 **Rule-notes:**
 Late fees represented 13% of BNPL industry revenue in 2021 and grew 42% in a single year for
@@ -250,11 +252,11 @@ monthly, your payments cannot be set to weekly. You choose the schedule at the s
 
 **Rule-stmt:**
 Before originating any BNPL loan, the lender must document the borrower's income payment
-cycle (weekly, bi-weekly, or monthly) and set payment due dates aligned to that cycle. The
-lender may not impose a payment frequency that does not correspond to the borrower's
-documented pay cycle. Borrowers must be offered the option to choose weekly, bi-weekly, or
-monthly payment schedules at origination; this choice must be confirmed in writing and must
-appear in the loan agreement. Payment frequency may not be modified by the lender after
+cycle (weekly, bi-weekly, semi-monthly, or monthly) and set payment due dates aligned to that
+cycle. The lender may not impose a payment frequency that does not correspond to the borrower's
+documented pay cycle. Borrowers must be offered the option to choose weekly, bi-weekly,
+semi-monthly, or monthly payment schedules at origination; this choice must be confirmed in
+writing and must appear in the loan agreement. Payment frequency may not be modified by the lender after
 origination without the borrower's written consent. Pay cycle documentation is retained as
 part of the origination record and subject to CFPB examination.
 
@@ -284,14 +286,19 @@ code. Every origination must be reported to the registry within one hour of clos
 In the event of a documented registry system outage, lenders may proceed on a 24-hour delayed
 reporting basis, with the outage documented in lender records and reported to the CFPB.
 The registry is non-public and accessible only to BNPL lenders for origination query purposes.
-A federal default aggregate limit of $2,500 applies to borrowers with a FICO score below 620
-or equivalent; originating a loan that would exceed this limit without affirmative documented
-underwriting justification constitutes an unfair, deceptive, and abusive act or practice.
+A federal default aggregate limit of $2,500 applies to borrowers with a FICO score below 620,
+with no FICO score on file, or with an equivalent score from an alternative scoring model that
+falls below the equivalent of a 620 FICO; originating a loan that would exceed this limit
+without affirmative documented underwriting justification constitutes an unfair, deceptive, or
+abusive act or practice.
 Lenders may impose lower or higher aggregate limits above the federal floor through their own
-underwriting policies, subject to CFPB guidelines. If aggregate Tier 2 BNPL availability to
-borrowers with FICO scores below 620 drops more than 25% in any 18-month period following
-this section's effective date, the CFPB must report to Congress within 60 days describing
-market conditions and recommending corrective action.
+underwriting policies, subject to CFPB guidelines. Within 90 days of the registry's effective
+date, the CFPB must publish a baseline report documenting the number of Tier 2 BNPL
+originations to borrowers with FICO scores below 620 or no FICO score on file in the first
+full calendar quarter of registry operation; this baseline is the reference point for all
+subsequent market monitoring. If the number of such originations drops more than 25% in any
+rolling 18-month period measured quarterly against that baseline, the CFPB must report to
+Congress within 60 days describing market conditions and recommending corrective action.
 
 **Rule-notes:**
 CFPB (2025) found 63% of BNPL borrowers carry simultaneous loans and 32% hold loans from
@@ -329,7 +336,7 @@ BNPL debt balance across all providers as reported by the real-time registry und
 0007. BNPL must be displayed with visual prominence equal to or less than credit card and debit
 card payment options; BNPL may not receive preferential placement, larger button size, brighter
 color treatment, or other visual design advantage. Violations of this section by either the
-BNPL lender or the merchant constitute unfair, deceptive, and abusive acts or practices.
+BNPL lender or the merchant constitute unfair, deceptive, or abusive acts or practices.
 
 **Rule-notes:**
 Peer-reviewed behavioral finance research (MDPI 2026, systematic review 2018-2025) documents
@@ -356,16 +363,25 @@ subsidizing it from tax revenue.
 **Rule-stmt:**
 BNPL lenders may not charge small merchants a merchant fee rate greater than 60% of the
 merchant fee rate charged to large merchants for the same BNPL product tier and term structure.
-A "small merchant" is defined as any merchant whose parent company or controlling entity has
-total annual revenue below $5 million, as established by the most recently filed federal
-business tax return. Aggregate parent-company or controlling-entity revenue is used to
-determine size classification; entities may not achieve small-merchant status through
-subsidiary or affiliate structuring that reduces individual-entity revenue below the threshold.
-BNPL lenders must publish their merchant fee schedules, including the small-merchant rate and
-large-merchant rate, on a publicly accessible webpage updated no less than quarterly. BNPL
-lenders may not refuse to provide BNPL services to small merchants solely on the basis of
-transaction volume. Violations of the fee-tiering requirement give rise to a civil penalty
-of up to $10,000 per merchant per calendar year enforced by the CFPB.
+The reference rate for this comparison is the large-merchant rate published on the lender's
+quarterly fee schedule under this section; if the lender publishes a rate range rather than a
+single rate, the reference rate is the midpoint of that range. A "small merchant" is defined
+as any merchant whose parent company or controlling entity has total annual revenue below
+$5 million, as established by the most recently filed federal business tax return. Aggregate
+parent-company or controlling-entity revenue is used to determine size classification; entities
+may not achieve small-merchant status through subsidiary or affiliate structuring that reduces
+individual-entity revenue below the threshold. BNPL lenders must publish their merchant fee
+schedules, including the small-merchant rate and large-merchant rate, on a publicly accessible
+webpage updated no less than quarterly. BNPL lenders may not refuse to provide BNPL services
+to small merchants solely on the basis of transaction volume. The merchant fee tiering
+requirement is a condition of BNPL lender registration and supervision under CFPB authority
+(12 U.S.C. § 5512); it applies as a regulatory obligation on covered persons providing
+consumer financial products or services, with the consumer-facing purpose of ensuring small
+business merchant access to payment infrastructure that serves those businesses' consumer
+customers. Enforcement authority is held jointly by the CFPB under 12 U.S.C. § 5512 and by
+the FTC under Section 5 of the FTC Act (15 U.S.C. § 45) as an unfair method of competition
+affecting commerce. Civil penalties of up to $10,000 per merchant per calendar year apply for
+violations of the fee-tiering requirement.
 
 **Rule-notes:**
 Current BNPL merchant fees of 3-6% plus per-transaction fees create prohibitive costs for
@@ -388,7 +404,7 @@ Per PAOS-TEST-0008, the following issues were identified and addressed in the ca
 
 | Issue | Severity | Resolution |
 |-------|----------|-----------|
-| Registry timing gap: 24-hour reporting window allows parallel originations | Medium | Changed to 1-hour reporting; 24-hour fallback only for documented system outages (0007) |
+| Registry timing gap: 24-hour reporting window allows parallel originations | Medium | Mitigated: changed to 1-hour reporting; 24-hour fallback only for documented system outages (0007). Simultaneous-query gap within the 1-hour window remains a known limitation; real-time hold-and-confirm would fully close it but is deferred as infrastructure scope. |
 | Intentional default with no deterrent cost under zero-fee model | Low | Acknowledged in rule-notes; credit damage + collection action are real consequences (0004) |
 | 10% cap may cause market exit for deep-subprime Tier 2, reducing access | Medium | Market monitoring trigger added: CFPB must report to Congress if subprime access drops >25% in 18 months (0007) |
 | Small-merchant threshold gaming through subsidiary structuring | Medium | Aggregate parent-company revenue rule prevents fragmentation (0009) |
@@ -418,6 +434,18 @@ directly into the relevant card specifications.
 **Cross-reference updates required:**
 - CNSR-PDLS-0001, 0002, 0003, 0004 rule-notes: add cross-reference to CNSR-BNPL-0001 where BNPL is within scope of the usury cap framework
 - CNSR-CRDS-0001 rule-notes: add cross-reference to CNSR-BNPL-0002
+
+---
+
+## Known Remaining Gaps (Out of Scope for This Spec)
+
+Identified during spec review; deferred for follow-on work:
+
+1. **Embedded merchant installment plans:** A merchant offering their own "pay over 4 months" plan through a proprietary app, without a third-party BNPL lender, may fall outside "BNPL lender" as defined. A broader product definition or a follow-on spec is needed to cover vertically integrated merchant installment products.
+
+2. **Post-origination tier migration:** The spec defines tiers at origination but does not address reclassification if a Tier 1 loan is restructured after missed payments in a way that would qualify as Tier 2. Implementation guidance or a follow-on position is needed.
+
+3. **Registry data security:** The spec designates the registry as non-public but does not specify GLBA data security requirements, breach notification obligations, or privacy protections for registry data. Implementation must address these.
 
 ---
 
