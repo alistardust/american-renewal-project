@@ -145,7 +145,7 @@ PolicyOS is a cross-cutting rule architecture that all policy must comply with. 
 ## Current state of the platform
 
 - 26 live pillar pages — all policy cards complete as of May 2026
-- 3,993 policy positions in the catalog
+- 3,992 policy positions in the catalog
 - Research documents (internal working documents, not on site):
   - `policy/research/new-bill-of-rights-adversarial-review.md`
   - `policy/research/senate-reform-research.md`
