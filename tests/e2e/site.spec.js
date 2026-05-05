@@ -152,6 +152,33 @@ for (const { slug, title } of SAMPLE_PILLARS) {
   });
 }
 
+// ── CONSUMER RIGHTS — BNPL FAMILY ────────────────────────────────────────────
+
+test.describe('Consumer Rights — BNPL family', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/pillars/consumer-rights.html');
+  });
+
+  test('BNPL family section is present', async ({ page }) => {
+    // fam-con-bnpl inserted after PDL family, before CFP family
+    await expect(page.locator('#fam-con-bnpl')).toBeAttached();
+  });
+
+  test('all 9 BNPL policy card IDs render', async ({ page }) => {
+    for (const cardId of [
+      'CNSR-BNPL-0001', 'CNSR-BNPL-0002', 'CNSR-BNPL-0003',
+      'CNSR-BNPL-0004', 'CNSR-BNPL-0005', 'CNSR-BNPL-0006',
+      'CNSR-BNPL-0007', 'CNSR-BNPL-0008', 'CNSR-BNPL-0009',
+    ]) {
+      await expect(page.locator(`#${cardId}`)).toBeAttached();
+    }
+  });
+
+  test('retired CNSR-PDLS-0007 card is absent', async ({ page }) => {
+    await expect(page.locator('#CNSR-PDLS-0007')).not.toBeAttached();
+  });
+});
+
 // ── COMPARE PAGES ─────────────────────────────────────────────────────────────
 
 test.describe('Compare index', () => {
