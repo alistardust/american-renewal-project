@@ -100,27 +100,24 @@ CREATE TABLE policyos_families (
 );
 ```
 
-Platform Values rows in `policyos_rules` have `family_code = NULL` and are associated with the `values` layer by joining through a `layer_id` column added to `policyos_rules`:
-
-```sql
-ALTER TABLE policyos_rules ADD COLUMN layer_id TEXT REFERENCES policyos_layers(id);
-```
-
-For System Principles and Authoring OS rules: `layer_id = NULL`, `family_code` is set (derivable from the family's own `layer_id`). For Platform Values rules: `layer_id = 'values'`, `family_code = NULL`.
-
 ### `policyos_rules`
 
 ```sql
 CREATE TABLE policyos_rules (
-    id          TEXT PRIMARY KEY,   -- 'PLOS-KERN-0001', 'PAOS-NORM-0001', etc.
-    family_code TEXT REFERENCES policyos_families(code),   -- NULL for Platform Values rows
-    rule_text   TEXT NOT NULL,
+    id           TEXT PRIMARY KEY,  -- 'PLOS-KERN-0001', 'PAOS-NORM-0001', etc.
+    layer_id     TEXT REFERENCES policyos_layers(id),         -- set for Platform Values rows; NULL otherwise
+    family_code  TEXT REFERENCES policyos_families(code),     -- NULL for Platform Values rows
+    value_name   TEXT,              -- e.g., 'Human Dignity'; set for Platform Values rows; NULL otherwise
+    rule_text    TEXT NOT NULL,
     rule_subtype TEXT,              -- 'floor' or 'duty' for Platform Values rows; NULL otherwise
-    sort_order  INTEGER NOT NULL
+    sort_order   INTEGER NOT NULL
 );
 ```
 
-`family_code` is nullable to accommodate Platform Values rules, which belong to a layer (`values`) but have no family codes. `rule_subtype` is only populated for rows in the `values` layer; System Principles and Authoring OS rows leave it NULL.
+- **System Principles and Authoring OS rules:** `layer_id = NULL`, `family_code` set, `value_name = NULL`, `rule_subtype = NULL`.
+- **Platform Values rules:** `layer_id = 'values'`, `family_code = NULL`, `value_name` set to the named value (e.g., `'Human Dignity'`), `rule_subtype` set to `'floor'` or `'duty'`.
+
+`value_name` groups floor/duty pairs under their named value so the generation script can produce correctly headed sections.
 
 ### `policyos_pillar_overlays`
 
@@ -128,11 +125,15 @@ CREATE TABLE policyos_rules (
 CREATE TABLE policyos_pillar_overlays (
     pillar_id      TEXT NOT NULL,   -- matches siteData.pillars[].id, e.g., 'healthcare'
     family_code    TEXT NOT NULL REFERENCES policyos_families(code),
-    overlay_type   TEXT NOT NULL,   -- 'mandatory' or 'conditional'
+    overlay_type   TEXT NOT NULL CHECK (overlay_type IN ('mandatory', 'conditional')),
     notes          TEXT,
-    PRIMARY KEY (pillar_id, family_code)
+    PRIMARY KEY (pillar_id, family_code),
+    -- Only System Principles families (layer_id = 'principles') are valid here
+    CHECK (family_code IN (SELECT code FROM policyos_families WHERE layer_id = 'principles'))
 );
 ```
+
+Only System Principles family codes (KERN, GEOG, FEDR, REGD, ENFA, AIGV, ECOL, THRV, DEMO, PRIV, ECON) are valid in this table. Authoring OS codes (NORM, AUTH, TEST, ENFC, PLAC, MAINT) must not appear — `app.js` looks up overlay families in `siteData.policyosFamilies` which contains System Principles only.
 
 ---
 
@@ -146,7 +147,7 @@ A migration script (`scripts/migrate-policyos-to-db.py`) parses the source files
 
 **Platform Values migration:** Each Platform Values statement is stored with `family_code = NULL` and `layer_id = 'values'`. The `rule_subtype` column distinguishes `'floor'` statements (negative prohibitions) from `'duty'` statements (positive obligations). The migration script parses the floor/duty structure from the markdown — each value section has clearly labeled floor and duty statements.
 
-**Sentinel initialization:** As part of migration, the script also inserts the two sentinel comment blocks into `data.js` if they are not already present. It appends them to the end of the file, before the closing `</script>` or at the end of the `siteData` block as appropriate. The sentinels must exist before `generate-policyos.py` can run.
+**Sentinel initialization:** As part of migration, the script also inserts the two sentinel comment blocks into `data.js` if they are not already present. They are appended immediately after the `window.siteData = siteData;` line at the end of the file. The sentinels must exist before `generate-policyos.py` can run.
 
 ```js
 /* POLICYOS-FAMILIES-START */
@@ -173,7 +174,7 @@ The page uses the same HTML shell as `approach.html` and `platform.html` (doctyp
 3. **Layer 1: Platform Values** — intro to the floor/duty model; each value with its floor prohibition and positive duty statement
 4. **Layer 2: System Principles** — intro on the overlay inheritance model; each of the 11 families as its own subsection with label, summary, applicability note, and all rules listed with IDs
 5. **Layer 3: Authoring OS** — same treatment for NORM, AUTH, TEST, ENFC, PLAC, MAINT
-6. **Governance** — the amendment process from `policyos_governance_v1.md` (governance rules are not in the DB — this section is templated inline in the script, or read from a separate governance markdown file)
+6. **Governance** — the amendment process from `policyos_governance_v1.md` (governance rules are not in the DB; this section is generated by reading `policyos_governance_v1.md` at script run time)
 7. **Pillar compliance** — brief note that all pillars must satisfy applicable families; link to `classification.html`
 
 Each family section has a stable lowercase anchor derived from `policyos_families.anchor`: `#kern`, `#geog`, `#fedr`, etc.
@@ -208,7 +209,7 @@ siteData.policyosFamilies = {
 };
 ```
 
-**Per-pillar overlay format:** For each pillar with overlay rows in `policyos_pillar_overlays`, the script emits:
+**Per-pillar overlay format:** The inheritance matrix CSV covers all 25 pillars. After migration, all 25 pillars will have rows in `policyos_pillar_overlays`. For each pillar in `siteData.pillars`, the script emits an overlay IIFE — if a pillar has no rows in the table (only possible if migration is incomplete), the script emits a KERN-only fallback:
 
 ```js
 (function() {
@@ -219,7 +220,7 @@ siteData.policyosFamilies = {
 
 One IIFE per pillar, emitted inside the POLICYOS-OVERLAYS sentinel block. Using `find` keeps this independent of array index and safe across future pillar reorderings.
 
-**Governance section:** The Governance section of `policyos.html` reads from `policyos_governance_v1.md` at generation time. The script converts the markdown to HTML using the `markdown2` Python library (`pip install markdown2`). This is the only markdown-to-HTML conversion in the script; all other content comes from the DB as plain text and is HTML-escaped before insertion.
+**Governance section:** The Governance section of `policyos.html` reads from `policyos_governance_v1.md` at generation time. The script converts it to HTML using the `markdown2` Python library. Add `markdown2` to `scripts/requirements.txt` (create the file if it does not exist). This is the only markdown-to-HTML conversion in the script; all other content comes from the DB as plain text and is HTML-escaped before insertion.
 
 The script exits with a non-zero code and writes no output if the DB tables are missing, empty, or if either sentinel block is absent from `data.js`.
 
@@ -252,7 +253,9 @@ On pillar pages (detected by the presence of `#pil-snav` in the DOM):
 
 **Path resolution:** Links use the `base` variable already established in `app.js`, resolving correctly from both root pages and `docs/pillars/` subdirectory.
 
-**Error handling:** If the pillar slug has no matching entry in `siteData.pillars`, injection is silently skipped — no broken page, no console error.
+**Error handling:** Two guards apply:
+- If the pillar slug has no matching entry in `siteData.pillars`, injection is silently skipped.
+- If the slug IS found but `pillar.policyosOverlays` is `undefined` (generate script not yet run), injection is silently skipped — no broken page, no console error.
 
 ---
 
@@ -268,7 +271,7 @@ On pillar pages (detected by the presence of `#pil-snav` in the DOM):
 
 Scan `docs/*.html` and `docs/pillars/*.html` for aggregate policy position counts in prose. `docs/compare/*.html` is excluded.
 
-**Scope:** Pre-implementation scan identified approximately 5 files with aggregate counts (catalog-level totals like "3,810 positions" and per-pillar totals like "362 policy positions across 22 distinct family codes"). Per-family inline annotations within pillar design sections (e.g., "COV (Coverage, 30 positions)") are structural descriptions of family composition — leave them unchanged.
+**Scope:** The following files contain aggregate counts to remove: `equal-justice-and-policing.html`, `technology-and-ai.html`, `foreign-policy.html`, `science-technology-space.html`, `about-ai.html`. The developer should verify this list with a scan (`grep -r "positions" docs/*.html docs/pillars/*.html`) and treat the list as a reference, not a guaranteed-complete inventory.
 
 - Where the count was the substance: remove the sentence or replace with "the full policy catalog"
 - Where the count was incidental: drop the number
