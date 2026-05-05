@@ -110,7 +110,8 @@ CREATE TABLE policyos_rules (
     value_name   TEXT,              -- e.g., 'Human Dignity'; set for Platform Values rows; NULL otherwise
     rule_text    TEXT NOT NULL,
     rule_subtype TEXT,              -- 'floor' or 'duty' for Platform Values rows; NULL otherwise
-    sort_order   INTEGER NOT NULL
+    sort_order   INTEGER NOT NULL,
+    CHECK (layer_id IS NOT NULL OR family_code IS NOT NULL)   -- every row must belong to a layer or a family
 );
 ```
 
@@ -127,13 +128,11 @@ CREATE TABLE policyos_pillar_overlays (
     family_code    TEXT NOT NULL REFERENCES policyos_families(code),
     overlay_type   TEXT NOT NULL CHECK (overlay_type IN ('mandatory', 'conditional')),
     notes          TEXT,
-    PRIMARY KEY (pillar_id, family_code),
-    -- Only System Principles families (layer_id = 'principles') are valid here
-    CHECK (family_code IN (SELECT code FROM policyos_families WHERE layer_id = 'principles'))
+    PRIMARY KEY (pillar_id, family_code)
 );
 ```
 
-Only System Principles family codes (KERN, GEOG, FEDR, REGD, ENFA, AIGV, ECOL, THRV, DEMO, PRIV, ECON) are valid in this table. Authoring OS codes (NORM, AUTH, TEST, ENFC, PLAC, MAINT) must not appear — `app.js` looks up overlay families in `siteData.policyosFamilies` which contains System Principles only.
+Only System Principles family codes (KERN, GEOG, FEDR, REGD, ENFA, AIGV, ECOL, THRV, DEMO, PRIV, ECON) are valid in this table. Authoring OS codes must not appear — `app.js` looks up overlay families in `siteData.policyosFamilies` which contains System Principles only. SQLite does not support subquery-based CHECK constraints, so this restriction is enforced in the migration script: before inserting each row, the script validates `family_code` against the set of codes in `policyos_families WHERE layer_id = 'principles'` and raises an error if a non-matching code is found.
 
 ---
 
@@ -209,7 +208,7 @@ siteData.policyosFamilies = {
 };
 ```
 
-**Per-pillar overlay format:** The inheritance matrix CSV covers all 25 pillars. After migration, all 25 pillars will have rows in `policyos_pillar_overlays`. For each pillar in `siteData.pillars`, the script emits an overlay IIFE — if a pillar has no rows in the table (only possible if migration is incomplete), the script emits a KERN-only fallback:
+**Per-pillar overlay format:** The inheritance matrix CSV covers all 25 pillars. After migration, all 25 pillars will have rows in `policyos_pillar_overlays`. The script determines the list of pillar IDs from the distinct `pillar_id` values in `policyos_pillar_overlays` — not by parsing `data.js`. For each pillar ID, the script emits an overlay IIFE. If a pillar in the DB has no overlay rows (only possible if migration is incomplete), the script emits a KERN-only fallback:
 
 ```js
 (function() {
@@ -220,9 +219,16 @@ siteData.policyosFamilies = {
 
 One IIFE per pillar, emitted inside the POLICYOS-OVERLAYS sentinel block. Using `find` keeps this independent of array index and safe across future pillar reorderings.
 
-**Governance section:** The Governance section of `policyos.html` reads from `policyos_governance_v1.md` at generation time. The script converts it to HTML using the `markdown2` Python library. Add `markdown2` to `scripts/requirements.txt` (create the file if it does not exist). This is the only markdown-to-HTML conversion in the script; all other content comes from the DB as plain text and is HTML-escaped before insertion.
+**Governance section:** The Governance section of `policyos.html` reads from `policyos_governance_v1.md` at generation time. The script converts it to HTML using the `markdown2` Python library. Add `markdown2` to `scripts/requirements.txt` (create the file if it does not exist). Heading levels in the markdown are offset by +2 during conversion so that `#` headings become `<h3>` and `##` headings become `<h4>`, keeping the governance section consistent with the `<h2>`-level section headings used elsewhere on the page. This is the only markdown-to-HTML conversion in the script; all other content comes from the DB as plain text and is HTML-escaped before insertion.
 
-The script exits with a non-zero code and writes no output if the DB tables are missing, empty, or if either sentinel block is absent from `data.js`.
+**Script execution order:**
+
+```
+1. python3 scripts/migrate-policyos-to-db.py    # populates DB tables + inserts data.js sentinels
+2. python3 scripts/generate-policyos.py          # reads DB, writes policyos.html, updates data.js
+```
+
+This order is enforced by `generate-policyos.py` failing fast (non-zero exit, no output written) if the sentinels are absent. The error message names `migrate-policyos-to-db.py` as the prerequisite. This execution order must also be documented in `README.md` under the Scripts section.
 
 ---
 
