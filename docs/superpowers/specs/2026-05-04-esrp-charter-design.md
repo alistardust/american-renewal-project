@@ -60,15 +60,6 @@ ESRP does not maintain its own governance, recruit independently, or operate out
 platform's standards. When the platform's contributor recruitment infrastructure (Roadmap
 stages 03–04) activates, ESRP contributor roles are recruited through it, not in parallel.
 
-**Repository structure:**
-ESRP operates in a dedicated repository (`esrp`, under the same GitHub account as the main
-platform). This is a requirement, not a preference. ESRP outputs — research memos, mechanism
-catalog, adversarial review logs, eventually code and data — are research artifacts with
-different lifecycle and structure than policy cards. This charter and the connection to PolicyOS
-live in the main platform repository. All ESRP research outputs live in the ESRP repository.
-The two repositories are explicit siblings: this charter links to the ESRP repo; the ESRP repo
-README links back to the main platform and PolicyOS.
-
 ---
 
 ## 3. Scope and Boundaries
@@ -353,9 +344,9 @@ judgments. Will hand off the director role when a more qualified research direct
 identified and recruited, while remaining involved in the project.
 
 **First Contributor — Research and Synthesis**
-Part-time, 5–15 hrs/week. Domain expertise in land use, regenerative agriculture, and
-ecological economics. Primary focus: classical Georgism research, mechanism catalog entries
-in land use and food systems economics, literature synthesis. Git-capable; no advanced
+Part-time, 5–15 hrs/week. Role not yet filled. Ideal profile: strong reading and synthesis
+skills; domain knowledge in one or more areas relevant to mechanism catalog workstreams
+(land use, ecology, labor economics, public finance, or similar). Git-capable; no advanced
 technical requirements for Phase 1.
 
 ### Contributor onboarding pathway
@@ -400,8 +391,8 @@ project from an ideological project.
   methodologically intractable
 - Whether simulation is feasible at the resource levels ESRP will realistically reach, or
   whether the research stops at system design
-- The timeline and scale of AI-driven labor displacement — the anchor crisis framing is
-  calibrated to the direction being clear, not the timing
+- The timeline and scale of AI-driven labor displacement — the direction of disruption to
+  payroll-funded social programs is clear; the pace is not
 - Whether ESRP can recruit credentialed economists willing to engage seriously with a
   non-academic research project
 
@@ -443,9 +434,9 @@ These are the outputs that prove Phase 1 is real.
 | Mechanism catalog: 5–10 additional entries | Alice + contributor | Initial entries across workstreams A and B; each following the catalog template; each through the adversarial review loop |
 | Platform values mapping | Alice | One-page document mapping ESRP research questions to PolicyOS obligations (ECON-0001–0004, THRV; Values 2, 3, 7, 11) |
 
-The LVT mechanism catalog entry is specifically the first contributor's first task. It is
-achievable, draws directly on her domain knowledge, follows a defined template, and produces
-a real research artifact she can point to.
+The LVT mechanism catalog entry is designed as a first-contributor task: it is bounded,
+follows a defined template, draws on classical Georgism literature that is accessible to a
+motivated non-economist, and produces a real research artifact.
 
 ---
 
