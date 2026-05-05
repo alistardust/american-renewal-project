@@ -128,6 +128,7 @@ All three layers are canonicalized as of 2026-04-27. Amendments follow the proce
 ## Known open items
 
 - **Policy card audit** — **complete** as of May 2026; zero `status-missing` cards remain across all 25 pillars; 2,773 cards at `status-included`
+- **Consumer Rights BNPL family** — 9 proposal cards added (CNSR-BNPL-0001 through 0009); CNSR-PDLS-0007 retired; DB and HTML in sync
 - **PolicyOS canonicalization** — **complete** as of 2026-04-27; all three layers locked; governance process defined
 - **Plain language** — all positions have `rule-plain` descriptions
 - **Science/Technology/Space content** — live page; content expanded May 2026
@@ -142,6 +143,7 @@ Background research committed to `policy/research/`:
 - `new-bill-of-rights-adversarial-review.md` — per-amendment adversarial analysis of the project's proposed New Bill of Rights; 15 issues identified (some critical: standing, enforcement, horizontal application)
 - `senate-reform-research.md` — malapportionment data (68.5:1 WY-CA ratio), filibuster history, reform proposals, comparative democracy analysis; ⚠ several calculated figures flagged for human verification before publication
 - `pillars/` — per-pillar background research used to draft policy cards
+- `bnpl/bnpl_policy_overview.md` — BNPL market analysis, regulatory framework gaps, enforcement history; source document for CNSR-BNPL-0001 through 0009
 
 
 ## Known issues for human review
@@ -157,7 +159,7 @@ Background research committed to `policy/research/`:
 ## Test suite
 
 - **Unit (Vitest):** `npm run test:unit` — 42 tests, all passing
-- **E2E (Playwright/Firefox):** `npm run test:e2e` — 222 tests, all passing
+- **E2E (Playwright/Firefox):** `npm run test:e2e` — 248 tests, all passing
 - `PILLAR_COUNT` constant in both test files — update when adding pillars
 
 ## Scaffolding tools
