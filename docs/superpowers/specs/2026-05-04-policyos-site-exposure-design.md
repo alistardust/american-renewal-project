@@ -219,7 +219,7 @@ siteData.policyosFamilies = {
 
 One IIFE per pillar, emitted inside the POLICYOS-OVERLAYS sentinel block. Using `find` keeps this independent of array index and safe across future pillar reorderings.
 
-**Governance section:** The Governance section of `policyos.html` reads from `policyos_governance_v1.md` at generation time. The script converts it to HTML using the `markdown2` Python library. Add `markdown2` to `scripts/requirements.txt` (create the file if it does not exist). Heading levels in the markdown are offset by +2 during conversion so that `#` headings become `<h3>` and `##` headings become `<h4>`, keeping the governance section consistent with the `<h2>`-level section headings used elsewhere on the page. This is the only markdown-to-HTML conversion in the script; all other content comes from the DB as plain text and is HTML-escaped before insertion.
+**Governance section:** The Governance section of `policyos.html` reads from `policyos_governance_v1.md` at generation time. If the file is absent, the script exits non-zero and writes no output. The script converts the markdown to HTML using the `markdown2` Python library, then post-processes the output with a regex pass to shift heading levels by +2 (`<h1>` → `<h3>`, `<h2>` → `<h4>`) so that governance headings stay below the `<h2>`-level section headings used elsewhere on the page. Add `markdown2` to `scripts/requirements.txt` (create the file if it does not exist). This is the only markdown-to-HTML conversion in the script; all other content comes from the DB as plain text and is HTML-escaped before insertion.
 
 **Script execution order:**
 
@@ -229,6 +229,8 @@ One IIFE per pillar, emitted inside the POLICYOS-OVERLAYS sentinel block. Using 
 ```
 
 This order is enforced by `generate-policyos.py` failing fast (non-zero exit, no output written) if the sentinels are absent. The error message names `migrate-policyos-to-db.py` as the prerequisite. This execution order must also be documented in `README.md` under the Scripts section.
+
+The migration script must enable FK enforcement with `PRAGMA foreign_keys = ON` at connection time so that invalid `layer_id` values in `policyos_families` and other FK relationships are caught at insert time rather than silently accepted.
 
 ---
 
@@ -255,6 +257,7 @@ On pillar pages (detected by the presence of `#pil-snav` in the DOM):
 
 - Heading: "PolicyOS Overlays"
 - Note: "KERN applies to all pillars. [View KERN rules →](policyos.html#kern)"
+- If `policyosOverlays.mandatory` contains any families beyond KERN, render those as mandatory cards before the conditional list.
 - List of conditional families: each as a card showing family code, label, summary, and a "View rules →" link to `base + 'policyos.html#' + anchor`
 
 **Path resolution:** Links use the `base` variable already established in `app.js`, resolving correctly from both root pages and `docs/pillars/` subdirectory.
@@ -300,6 +303,7 @@ Dynamic `[data-dynamic]` spans are unaffected.
 - All 11 System Principles family anchors exist on `policyos.html`
 - All 6 Authoring OS family anchors exist on `policyos.html`
 - A sample pillar page (e.g., `healthcare.html`) has `#pil-policyos` section injected after load
+- The same sample pillar page has a "PolicyOS" item in `#pil-snav` after load
 - PolicyOS nav link appears in "The Platform" dropdown
 - `classification.html` status badges read "Locked", not "Under review"
 
