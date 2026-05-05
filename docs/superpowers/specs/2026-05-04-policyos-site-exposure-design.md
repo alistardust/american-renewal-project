@@ -1,0 +1,192 @@
+# Design Spec: PolicyOS Site Exposure
+
+**Date:** 2026-05-04
+**Status:** Approved
+**Author:** Sam (GitHub Copilot)
+
+---
+
+## Problem Statement
+
+PolicyOS is the meta-layer governing how all policy on this platform is designed, scoped, and enforced. It has three locked layers (Platform Values, System Principles, Authoring OS) and 11 rule families covering 25 pillars. The site currently exposes only a 3-row summary table on `classification.html` with stale "Under review" status badges. The actual rules, intent, and pillar-specific overlay mappings are not accessible to visitors.
+
+---
+
+## Goal
+
+Expose PolicyOS fully on the site:
+
+1. A dedicated `policyos.html` page with the full three-layer rule system
+2. Each pillar page showing the domain-specific PolicyOS overlay families that apply to it
+3. `classification.html` updated with correct status and a link to the new page
+4. PolicyOS added to the "The Platform" nav dropdown
+5. Hard-coded policy position counts removed from prose throughout the site
+
+---
+
+## Approach
+
+**Option B — Static `policyos.html` + data-injected pillar sections**
+
+`policyos.html` is hand-authored HTML (following the pattern of `constitution.html` and `approach.html`). The pillar-to-families mapping lives in `data.js` and is injected into each pillar page at runtime by `app.js`. This matches the site's existing architecture: unique reference pages are hand-authored; repeated patterns across pages are data-driven.
+
+---
+
+## Architecture
+
+### New file
+
+- `docs/policyos.html` — standalone PolicyOS reference page, hand-authored HTML
+
+### Modified files
+
+| File | Change |
+|------|--------|
+| `docs/assets/js/data.js` | Add `ARP.policyosOverlays` (11 family metadata objects) + `policyosOverlays` field on each of the 25 pillar entries |
+| `docs/assets/js/app.js` | Inject PolicyOS nav link under "The Platform" dropdown; inject `#pil-policyos` section into pillar pages |
+| `docs/classification.html` | Update status badges to "Locked"; add link to `policyos.html` |
+| `docs/pillars/*.html` | No manual edits — overlay section is injected by `app.js` |
+| `tests/unit/data.test.js` | Tests for new overlay data structure |
+| `tests/e2e/site.spec.js` | Tests for `policyos.html`, nav link, per-pillar injection, classification.html badges |
+| Various `docs/*.html` | Remove hard-coded policy position counts from prose |
+
+### Data flow
+
+```
+data.js (policyosOverlays + per-pillar mappings)
+  → app.js (reads pillar slug from URL, injects overlay section)
+    → pillar pages (shows applicable families with links to policyos.html#anchor)
+```
+
+---
+
+## `policyos.html` Page Structure
+
+Follows the same HTML shell as `constitution.html` and `approach.html`. Sections in order:
+
+1. **Hero** — "PolicyOS: The Rules Behind the Rules" — short intro; PolicyOS is the operating logic that governs how all policy on this platform is designed, scoped, and enforced
+2. **How it fits** — brief prose on the relationship between PolicyOS and the five foundations; why a meta-layer exists
+3. **Layer 1: Platform Values** — intro to the floor/duty model; each value with its floor prohibition and positive duty
+4. **Layer 2: System Principles** — intro explaining overlays and the inheritance model; each of the 11 families as its own named subsection with: what it governs, when it applies, and all rules with IDs (e.g., `PLOS-KERN-0001`)
+5. **Layer 3: Authoring OS** — same treatment for NORM, AUTH, TEST, ENFC, PLAC, MAINT families; rules with IDs (e.g., `PAOS-NORM-0001`)
+6. **Governance** — the amendment process; how PolicyOS rules are proposed, reviewed, and locked
+7. **Pillar compliance** — brief note that all pillars must satisfy applicable families; link to `classification.html`
+
+Each family section has a stable lowercase anchor: `#kern`, `#geog`, `#fedr`, `#regd`, `#enfa`, `#aigv`, `#ecol`, `#thrv`, `#demo`, `#priv`, `#econ`, `#norm`, `#auth`, `#test`, `#enfc`, `#plac`, `#maint`.
+
+---
+
+## `data.js` Additions
+
+### `ARP.policyosOverlays`
+
+An object keyed by family code, each entry having:
+
+```js
+{
+  label: string,    // Human-readable name, e.g., 'Core Kernel'
+  anchor: string,   // Page anchor on policyos.html, e.g., 'kern'
+  summary: string,  // One-sentence description
+}
+```
+
+Families:
+
+| Code | Label | When it applies |
+|------|-------|-----------------|
+| KERN | Core Kernel | Universal — all pillars |
+| GEOG | Geography & Access | Equal access regardless of location |
+| FEDR | Federalism | Power distribution and intergovernmental design |
+| REGD | Regulatory Design | Anti-capture and structural safeguards |
+| ENFA | Enforcement Architecture | All pillars with enforcement, penalties, or eligibility |
+| AIGV | AI Governance | Automated systems affecting rights or access |
+| ECOL | Ecological Habitability | Environmental preconditions for rights |
+| THRV | Material Security | Health, shelter, and material preconditions for freedom |
+| DEMO | Democratic Participation | Anti-entrenchment and participation design |
+| PRIV | Privacy & Surveillance | Data collection, retention, and surveillance limits |
+| ECON | Economic Domination | Anti-extraction, anti-monopoly, structural fairness |
+
+### Per-pillar overlay field
+
+Each pillar entry in `ARP.pillars` receives:
+
+```js
+policyosOverlays: {
+  mandatory: ['KERN'],
+  conditional: ['GEOG', 'REGD', 'ENFA', 'AIGV'],  // varies per pillar
+}
+```
+
+Source: `policy/policyos/policyos_1_0_inheritance_matrix.csv` — all 25 pillars are already mapped.
+
+---
+
+## `app.js` Injection
+
+### Nav injection
+
+Add "PolicyOS" to the "The Platform" dropdown alongside "Rights" and "Policy Library". Follows the same path-resolution pattern used for existing injected links.
+
+### Per-pillar section injection
+
+On pillar pages (detected by `#pil-snav` presence or pillar slug in URL):
+
+1. Find the current pillar in `ARP.pillars` by matching the page slug
+2. Read `pillar.policyosOverlays`
+3. Inject `<section id="pil-policyos">` into the page
+
+**Rendered section structure:**
+
+- Heading: "PolicyOS Overlays"
+- Subhead or note: "This pillar is governed by the following PolicyOS rule families. [KERN applies to all pillars.](policyos.html#kern)"
+- List of conditional families: each rendered as a card/pill showing family code, label, summary, and a "View rules →" link to `policyos.html#anchor`
+
+KERN is shown as a universal baseline note rather than in the conditional list, keeping the displayed list focused on the domain-specific overlays.
+
+**Error handling:** If a pillar slug has no matching entry in `ARP.pillars` (e.g., a pillar added before `data.js` is updated), the injection is silently skipped — no broken page, no console error.
+
+---
+
+## `classification.html` Changes
+
+1. Update the three status badges from "Under review" to "Locked" (reflecting the April 2026 canonicalization)
+2. Add after the summary table: `For the full PolicyOS documentation, including all rule families and individual rules, see <a href="policyos.html">PolicyOS</a>.`
+
+---
+
+## Hard-Coded Count Removal
+
+Scan `docs/*.html` and `docs/pillars/*.html` for hard-coded policy position counts in prose (patterns like `\d[,\d]+ positions`, `\d+ subdomains`, `\d+ policy cards`). Remove or replace with neutral phrasing:
+
+- Where the count was the substance: remove the sentence or replace with "the full policy catalog"
+- Where the count was incidental color: drop the number
+
+Dynamic `[data-dynamic]` spans (pillar count, family count, policy count on current page) are unaffected.
+
+---
+
+## Testing
+
+### Unit tests (`data.test.js`)
+
+- All 25 pillar entries have `policyosOverlays` with at least `mandatory: ['KERN']`
+- `ARP.policyosOverlays` has exactly 11 keys
+- Each family object has `label`, `anchor`, and `summary`
+
+### E2E tests (`site.spec.js`)
+
+- `policyos.html` loads; has correct title; nav and footer visible
+- All 11 System Principles family anchors exist on `policyos.html`
+- At least the 6 Authoring OS family anchors exist on `policyos.html`
+- A sample pillar page (e.g., `healthcare.html`) has `#pil-policyos` section injected after load
+- PolicyOS nav link appears in the "The Platform" dropdown
+- `classification.html` status badges read "Locked", not "Under review"
+
+---
+
+## Out of Scope
+
+- Generating `policyos.html` dynamically from the database
+- Making PolicyOS rules editable through the site
+- Linking individual policy positions to the specific PLOS/PAOS rules that shaped them
+- Pillar compliance audit or scoring
