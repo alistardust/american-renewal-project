@@ -28,7 +28,7 @@ Expose PolicyOS fully on the site:
 
 **Option B — Static `policyos.html` + data-injected pillar sections**
 
-`policyos.html` is hand-authored HTML (following the pattern of `constitution.html` and `approach.html`). The pillar-to-families mapping lives in `data.js` and is injected into each pillar page at runtime by `app.js`. This matches the site's existing architecture: unique reference pages are hand-authored; repeated patterns across pages are data-driven.
+`policyos.html` is hand-authored HTML (following the pattern of `approach.html` and `platform.html`). The pillar-to-families mapping lives in `data.js` and is injected into each pillar page at runtime by `app.js`. This matches the site's existing architecture: unique reference pages are hand-authored; repeated patterns across pages are data-driven.
 
 ---
 
@@ -62,7 +62,7 @@ data.js (policyosOverlays + per-pillar mappings)
 
 ## `policyos.html` Page Structure
 
-Follows the same HTML shell as `constitution.html` and `approach.html`. Sections in order:
+Follows the same HTML shell as `approach.html` and `platform.html`. Sections in order:
 
 1. **Hero** — "PolicyOS: The Rules Behind the Rules" — short intro; PolicyOS is the operating logic that governs how all policy on this platform is designed, scoped, and enforced
 2. **How it fits** — brief prose on the relationship between PolicyOS and the five foundations; why a meta-layer exists
@@ -117,7 +117,7 @@ policyosOverlays: {
 }
 ```
 
-Source: `policy/policyos/policyos_1_0_inheritance_matrix.csv` — all 25 pillars are already mapped.
+Source: `policy/policyos/policyos_1_0_inheritance_matrix.csv` — all 25 pillars are already mapped. The CSV uses `|` as a delimiter within the `mandatory_families` and `conditional_families` columns (e.g., `"GEOG|FEDR"`). When reading this CSV to populate `data.js`, split each field on `|` to produce an array. Keys are uppercase family codes (e.g., `'KERN'`, `'GEOG'`).
 
 > **Naming note:** The global family metadata lives at `siteData.policyosFamilies` (11 entries, keyed by code). The per-pillar field is named `policyosOverlays` and has a different shape (`{ mandatory, conditional }`). These are intentionally distinct names to avoid ambiguity in `app.js`.
 
@@ -138,9 +138,9 @@ On pillar pages (detected by the presence of `#pil-snav` in the DOM — the esta
 **Empty conditional overlay case:** If a pillar's `policyosOverlays.conditional` list is empty, the section still renders showing only the KERN baseline note — it is never suppressed entirely, since KERN always applies.
 
 1. Derive the pillar slug from `location.pathname`: take the filename without extension (e.g., `executive-power` from `executive-power.html`), then replace all hyphens with underscores (`executive_power`). This normalizes to the format used in `siteData.pillars[].id`.
-2. Find the current pillar in `siteData.pillars` by matching the normalized slug against `pillar.id`
-2. Read `pillar.policyosOverlays`
-3. Inject `<section id="pil-policyos">` into the page
+2. Find the current pillar in `siteData.pillars` by matching the normalized slug against `pillar.id`.
+3. Read `pillar.policyosOverlays`.
+4. Inject `<section id="pil-policyos">` into the page.
 
 **Rendered section structure:**
 
@@ -166,6 +166,8 @@ KERN is shown as a universal baseline note rather than in the conditional list, 
 ## Hard-Coded Count Removal
 
 Scan `docs/*.html` and `docs/pillars/*.html` for hard-coded policy position counts in prose (patterns like `\d[,\d]+ positions`, `\d+ subdomains`, `\d+ policy cards`). `docs/compare/*.html` is excluded — those pages describe party platforms, not this project's catalog. Remove or replace with neutral phrasing:
+
+**Scope:** Based on a pre-implementation scan, approximately 5 files contain aggregate counts (catalog-level totals like "3,810 positions" and per-pillar totals like "145 positions in this pillar" or "362 policy positions across 22 distinct family codes"). Per-family inline annotations within pillar design sections (e.g., "COV (Coverage, 30 positions)") are structural descriptions of family composition, not catalog stats — leave them unchanged.
 
 - Where the count was the substance: remove the sentence or replace with "the full policy catalog"
 - Where the count was incidental color: drop the number
