@@ -42,7 +42,7 @@ Expose PolicyOS fully on the site:
 
 | File | Change |
 |------|--------|
-| `docs/assets/js/data.js` | Add `ARP.policyosOverlays` (11 family metadata objects) + `policyosOverlays` field on each of the 25 pillar entries |
+| `docs/assets/js/data.js` | Add `siteData.policyosFamilies` (11 family metadata objects) + `policyosOverlays` field on each of the 25 pillar entries |
 | `docs/assets/js/app.js` | Inject PolicyOS nav link under "The Platform" dropdown; inject `#pil-policyos` section into pillar pages |
 | `docs/classification.html` | Update status badges to "Locked"; add link to `policyos.html` |
 | `docs/pillars/*.html` | No manual edits — overlay section is injected by `app.js` |
@@ -78,7 +78,7 @@ Each family section has a stable lowercase anchor: `#kern`, `#geog`, `#fedr`, `#
 
 ## `data.js` Additions
 
-### `ARP.policyosOverlays`
+### `siteData.policyosFamilies`
 
 An object keyed by family code, each entry having:
 
@@ -108,7 +108,7 @@ Families:
 
 ### Per-pillar overlay field
 
-Each pillar entry in `ARP.pillars` receives:
+Each pillar entry in `siteData.pillars` receives:
 
 ```js
 policyosOverlays: {
@@ -119,20 +119,26 @@ policyosOverlays: {
 
 Source: `policy/policyos/policyos_1_0_inheritance_matrix.csv` — all 25 pillars are already mapped.
 
+> **Naming note:** The global family metadata lives at `siteData.policyosFamilies` (11 entries, keyed by code). The per-pillar field is named `policyosOverlays` and has a different shape (`{ mandatory, conditional }`). These are intentionally distinct names to avoid ambiguity in `app.js`.
+
 ---
 
 ## `app.js` Injection
 
 ### Nav injection
 
-Add "PolicyOS" to the "The Platform" dropdown alongside "Rights", "Policy Library", and "Platform Overview". Follows the same path-resolution pattern used for existing injected links.
+Add "PolicyOS" as the fourth item in the "The Platform" dropdown (after "Rights", "Policy Library", and "Platform Overview"). Follows the same path-resolution pattern used for existing injected links.
 
 ### Per-pillar section injection
 
 On pillar pages (detected by the presence of `#pil-snav` in the DOM — the established signal already used by `app.js` for scrollspy and other pillar-page logic):
 
-1. Derive the pillar slug from `location.pathname`: take the filename without extension (e.g., `executive-power` from `executive-power.html`), then replace all hyphens with underscores (`executive_power`). This normalizes to the format used in `ARP.pillars[].id`.
-2. Find the current pillar in `ARP.pillars` by matching the normalized slug against `pillar.id`
+**Injection position:** The `#pil-policyos` section is appended after `#pil-related` (the final section on all pillar pages), making it the last section on the page. A corresponding nav item ("PolicyOS") is also injected into `#pil-snav` as the final list item.
+
+**Empty conditional overlay case:** If a pillar's `policyosOverlays.conditional` list is empty, the section still renders showing only the KERN baseline note — it is never suppressed entirely, since KERN always applies.
+
+1. Derive the pillar slug from `location.pathname`: take the filename without extension (e.g., `executive-power` from `executive-power.html`), then replace all hyphens with underscores (`executive_power`). This normalizes to the format used in `siteData.pillars[].id`.
+2. Find the current pillar in `siteData.pillars` by matching the normalized slug against `pillar.id`
 2. Read `pillar.policyosOverlays`
 3. Inject `<section id="pil-policyos">` into the page
 
@@ -146,13 +152,13 @@ KERN is shown as a universal baseline note rather than in the conditional list, 
 
 **Path resolution:** Pillar pages are served from `docs/pillars/`, so links to the PolicyOS page must use the `base` variable already established in `app.js` (e.g., `base + 'policyos.html#kern'`), which resolves correctly as `../policyos.html#kern` from a pillar page context.
 
-**Error handling:** If a pillar slug has no matching entry in `ARP.pillars` (e.g., a pillar added before `data.js` is updated), the injection is silently skipped — no broken page, no console error.
+**Error handling:** If a pillar slug has no matching entry in `siteData.pillars` (e.g., a pillar added before `data.js` is updated), the injection is silently skipped — no broken page, no console error.
 
 ---
 
 ## `classification.html` Changes
 
-1. Update the three status badges from "Under review" to "Locked" (reflecting the April 2026 canonicalization)
+1. Update the two "Under review" status badges (Layer 2: System Principles and Layer 3: Authoring OS) to "Locked". Layer 1 (Platform Values) is already "Locked" and requires no change.
 2. Add after the summary table: `For the full PolicyOS documentation, including all rule families and individual rules, see <a href="policyos.html">PolicyOS</a>.`
 
 ---
@@ -173,7 +179,7 @@ Dynamic `[data-dynamic]` spans (pillar count, family count, policy count on curr
 ### Unit tests (`data.test.js`)
 
 - All 25 pillar entries have `policyosOverlays` with at least `mandatory: ['KERN']`
-- `ARP.policyosOverlays` has exactly 11 keys
+- `siteData.policyosFamilies` has exactly 11 keys
 - Each family object has `label`, `anchor`, and `summary`
 
 ### E2E tests (`site.spec.js`)
