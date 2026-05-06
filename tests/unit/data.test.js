@@ -129,3 +129,59 @@ describe('window.siteData', () => {
     expect(siteData.pillars).toBeDefined();
   });
 });
+
+// ── POLICYOS FAMILIES ─────────────────────────────────────────────────────────
+
+describe('policyosFamilies', function () {
+  it('is defined on siteData', function () {
+    expect(siteData.policyosFamilies).toBeDefined();
+  });
+
+  it('has exactly 11 entries (System Principles only)', function () {
+    // 11 PLOS families; Authoring OS families are not included in the JS runtime array
+    expect(siteData.policyosFamilies).toHaveLength(11);
+  });
+
+  it('every entry has code, label, anchor, and summary', function () {
+    siteData.policyosFamilies.forEach(function (f) {
+      expect(f.code).toBeTruthy();
+      expect(f.label).toBeTruthy();
+      expect(f.anchor).toBeTruthy();
+      expect(f.summary).toBeTruthy();
+    });
+  });
+
+  it('KERN is the first family', function () {
+    expect(siteData.policyosFamilies[0].code).toBe('KERN');
+  });
+});
+
+// ── POLICYOS OVERLAYS ─────────────────────────────────────────────────────────
+
+describe('policyosOverlays', function () {
+  it('is defined on siteData', function () {
+    expect(siteData.policyosOverlays).toBeDefined();
+  });
+
+  it('has exactly 25 pillar entries', function () {
+    expect(Object.keys(siteData.policyosOverlays)).toHaveLength(25);
+  });
+
+  it('every entry is a non-empty array of {code, type} objects', function () {
+    Object.values(siteData.policyosOverlays).forEach(function (overlays) {
+      expect(overlays.length).toBeGreaterThan(0);
+      overlays.forEach(function (o) {
+        expect(o.code).toBeTruthy();
+        expect(['mandatory', 'conditional']).toContain(o.type);
+      });
+    });
+  });
+
+  it('KERN is mandatory for every pillar', function () {
+    Object.entries(siteData.policyosOverlays).forEach(function ([slug, overlays]) {
+      var kern = overlays.find(function (o) { return o.code === 'KERN'; });
+      expect(kern, slug + ' should have KERN overlay').toBeDefined();
+      expect(kern.type).toBe('mandatory');
+    });
+  });
+});

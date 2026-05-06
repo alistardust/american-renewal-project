@@ -68,6 +68,8 @@ For technical contributors:
 | `npm run serve` | Serve `docs/` locally at port 5500 |
 | `npm run briefing-pack` | Regenerate `policy/briefing-pack.md` dynamic sections manually |
 | `python3 scripts/update-briefing-pack.py` | Same as above — also runs automatically via pre-commit hook |
+| `python3 scripts/migrate-policyos-to-db.py` | One-time: parse PolicyOS markdown + CSV into DB tables; init data.js sentinels |
+| `python3 scripts/generate-policyos.py` | Regenerate `docs/policyos.html` and fill `data.js` PolicyOS sentinels from DB |
 
 Git hooks are stored in `.githooks/` (tracked) and activated by the `prepare` npm script. Running `npm install` once after cloning is enough to set them up.
 

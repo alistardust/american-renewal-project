@@ -833,3 +833,102 @@ test.describe('Letter from the Founder page', () => {
     await expect(page.locator('.footer-links a[href*="compare"]')).toBeAttached();
   });
 });
+
+// ── POLICYOS PAGE ─────────────────────────────────────────────────────────────
+
+test.describe('policyos.html', () => {
+  test('loads with correct title', async ({ page }) => {
+    await page.goto('/policyos.html');
+    await expect(page).toHaveTitle(/PolicyOS/i);
+  });
+
+  test('has all three layer sections', async ({ page }) => {
+    await page.goto('/policyos.html');
+    await expect(page.locator('#plos-values')).toBeAttached();
+    await expect(page.locator('#plos-principles')).toBeAttached();
+    await expect(page.locator('#plos-authoring')).toBeAttached();
+    await expect(page.locator('#plos-governance')).toBeAttached();
+  });
+
+  test('nav includes PolicyOS link', async ({ page }) => {
+    await page.goto('/policyos.html');
+    await page.locator('.nav-hamburger').click();
+    await expect(page.locator('.site-tree a[href*="policyos"]')).toBeAttached();
+  });
+
+  test('Platform Values section has value cards', async ({ page }) => {
+    await page.goto('/policyos.html');
+    await expect(page.locator('.plos-value-card').first()).toBeAttached();
+    const count = await page.locator('.plos-value-card').count();
+    // 11 platform values
+    expect(count).toBe(11);
+  });
+
+  test('System Principles has 11 collapsible family details', async ({ page }) => {
+    await page.goto('/policyos.html');
+    const count = await page.locator('#plos-principles details.plos-family').count();
+    expect(count).toBe(11);
+  });
+
+  test('Authoring OS has 6 collapsible family details', async ({ page }) => {
+    await page.goto('/policyos.html');
+    const count = await page.locator('#plos-authoring details.plos-family').count();
+    expect(count).toBe(6);
+  });
+
+  test('expanding a family shows its rules', async ({ page }) => {
+    await page.goto('/policyos.html');
+    await page.locator('#plos-kern summary').click();
+    await expect(page.locator('#plos-kern ol.plos-rule-list li').first()).toBeVisible();
+  });
+});
+
+// ── PILLAR POLICYOS OVERLAY ───────────────────────────────────────────────────
+
+test.describe('pillar PolicyOS overlay', () => {
+  test('#pil-policyos section is injected after #pil-related', async ({ page }) => {
+    await page.goto('/pillars/healthcare.html');
+    await expect(page.locator('#pil-policyos')).toBeAttached();
+
+    const isAfterRelated = await page.evaluate(function () {
+      const related = document.getElementById('pil-related');
+      const overlay  = document.getElementById('pil-policyos');
+      if (!related || !overlay) return false;
+      return !!(related.compareDocumentPosition(overlay) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    expect(isAfterRelated).toBe(true);
+  });
+
+  test('snav gains a PolicyOS link', async ({ page }) => {
+    await page.goto('/pillars/healthcare.html');
+    await expect(page.locator('#pil-snav a[href="#pil-policyos"]')).toBeAttached();
+  });
+
+  test('#pil-policyos has at least one overlay family listed', async ({ page }) => {
+    await page.goto('/pillars/healthcare.html');
+    await expect(page.locator('#pil-policyos .plos-overlay-list li').first()).toBeAttached();
+  });
+});
+
+// ── CLASSIFICATION PAGE POLICYOS STATUS ──────────────────────────────────────
+
+test.describe('classification.html PolicyOS status', () => {
+  test('System Principles badge is Locked', async ({ page }) => {
+    await page.goto('/classification.html');
+    const rows = page.locator('tbody tr');
+    const systemPrinciplesRow = rows.filter({ hasText: 'System Principles' });
+    await expect(systemPrinciplesRow.locator('.clf-badge')).toHaveText('Locked');
+  });
+
+  test('Authoring OS badge is Locked', async ({ page }) => {
+    await page.goto('/classification.html');
+    const rows = page.locator('tbody tr');
+    const authoringRow = rows.filter({ hasText: 'Authoring OS' });
+    await expect(authoringRow.locator('.clf-badge')).toHaveText('Locked');
+  });
+
+  test('link to policyos.html is present', async ({ page }) => {
+    await page.goto('/classification.html');
+    await expect(page.locator('a[href="policyos.html"]').first()).toBeAttached();
+  });
+});
