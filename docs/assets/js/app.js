@@ -160,6 +160,7 @@
           { label: 'Rights',          href: base + 'rights.html' },
           { label: 'Policy Library',  href: base + 'policy-library.html', children: policyLibraryChildren },
           { label: 'Platform Overview', href: base + 'platform.html' },
+          { label: 'PolicyOS',          href: base + 'policyos.html' },
         ]},
         { label: 'Get Involved', href: base + 'get-involved.html' },
         { label: 'Roadmap',      href: base + 'roadmap.html' },
@@ -607,6 +608,67 @@
         }
       });
     });
+  })();
+
+  /* ── POLICYOS PILLAR OVERLAY ─────────────────────── */
+  // Injects a PolicyOS design-rules section after #pil-related on pillar pages.
+  (function () {
+    var related = document.getElementById('pil-related');
+    if (!related) return;
+    if (!window.siteData || !siteData.policyosOverlays || !siteData.policyosFamilies) return;
+
+    var fileName = location.pathname.split('/').pop();
+    var slug = (fileName || '').replace('.html', '').replace(/-/g, '_');
+
+    var pillarOverlays = siteData.policyosOverlays[slug];
+    if (!pillarOverlays || !pillarOverlays.length) return;
+
+    var allFamilies = siteData.policyosFamilies;
+    var base = /\/(pillars|compare)\//.test(location.pathname) ? '../' : '';
+
+    function familyMeta(code) {
+      return allFamilies.find(function (f) { return f.code === code; }) || {};
+    }
+
+    function renderList(items, heading) {
+      if (!items.length) return '';
+      var lis = items.map(function (f) {
+        var meta = familyMeta(f.code);
+        return '<li><strong>' + f.code + ' \u2014 ' + (meta.label || f.code) + ':</strong> '
+          + '<span>' + (meta.summary || '') + '</span> '
+          + '<a href="' + base + 'policyos.html#' + (meta.anchor || 'plos-' + f.code.toLowerCase()) + '">View rules \u2192</a></li>';
+      }).join('');
+      return '<h3>' + heading + '</h3><ul class="plos-overlay-list">' + lis + '</ul>';
+    }
+
+    var mandatory   = pillarOverlays.filter(function (f) { return f.type === 'mandatory'; });
+    var conditional = pillarOverlays.filter(function (f) { return f.type === 'conditional'; });
+
+    var section = document.createElement('section');
+    section.className = 'bg-white ruled';
+    section.id = 'pil-policyos';
+    section.innerHTML =
+      '<div class="wrap">'
+      + '<h2>PolicyOS Design Rules</h2>'
+      + '<p style="font-size:.92rem;color:#666;margin-bottom:.5rem">'
+      + 'System design rules that apply to this pillar under the PolicyOS framework.'
+      + '</p>'
+      + renderList(mandatory, 'Mandatory overlays')
+      + renderList(conditional, 'Conditional overlays')
+      + '<p style="margin-top:1.5rem"><a href="' + base + 'policyos.html">Full PolicyOS documentation \u2192</a></p>'
+      + '</div>';
+
+    related.insertAdjacentElement('afterend', section);
+
+    var snav = document.getElementById('pil-snav');
+    if (snav) {
+      var ul = snav.querySelector('ul');
+      if (ul) {
+        var li = document.createElement('li');
+        li.innerHTML = '<a href="#pil-policyos">PolicyOS</a>';
+        ul.appendChild(li);
+      }
+    }
   })();
 
 })();
