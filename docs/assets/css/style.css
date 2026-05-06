@@ -3393,3 +3393,76 @@ a.f-pillar-card:hover { box-shadow: 0 3px 8px rgba(0,0,0,.12); }
   .arch-intro { grid-template-columns: 1fr; }
   .rights-cards-grid { grid-template-columns: 1fr; }
 }
+
+/* ── POLICYOS PAGE ────────────────────────────────────── */
+.plos-layer-nav { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
+.plos-layer-nav a {
+  color: #fff; border: 1px solid rgba(255,255,255,.4); border-radius: 4px;
+  padding: .3rem .75rem; font-size: .88rem; text-decoration: none;
+}
+.plos-layer-nav a:hover { background: rgba(255,255,255,.12); }
+
+.plos-status-badge { margin: -.25rem 0 1rem; }
+
+.plos-values-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+@media (min-width: 740px) { .plos-values-grid { grid-template-columns: 1fr 1fr; } }
+
+.plos-value-card {
+  background: #fff; border: 1px solid var(--rule); border-radius: 8px; padding: 1.25rem;
+}
+.plos-value-name { font-size: 1.05rem; margin: 0 0 .75rem; color: var(--navy); }
+.plos-floor-duty { display: flex; flex-direction: column; gap: .75rem; }
+.plos-floor, .plos-duty { background: var(--cream); border-radius: 4px; padding: .75rem 1rem; }
+.plos-floor strong { color: #8b5e1a; }
+.plos-duty strong  { color: #1a5f3a; }
+.plos-floor p, .plos-duty p { margin: .25rem 0 0; font-size: .9rem; }
+
+.plos-families-hint { font-size: .9rem; color: #555; }
+
+.plos-families-list { display: flex; flex-direction: column; gap: .5rem; }
+
+.plos-family {
+  border: 1px solid var(--rule); border-radius: 6px; overflow: hidden;
+  background: #fff;
+}
+.plos-family[open] { border-color: var(--navy); }
+.plos-family-summary {
+  display: flex; align-items: center; gap: .75rem;
+  padding: .9rem 1.1rem; cursor: pointer; list-style: none;
+  background: var(--cream);
+}
+.plos-family-summary::-webkit-details-marker { display: none; }
+.plos-family-summary::before {
+  content: '+'; font-size: 1.1rem; color: var(--navy); width: 1.1rem; text-align: center;
+}
+details[open] .plos-family-summary::before { content: '\2212'; }
+.plos-family-code {
+  font-family: monospace; font-size: .9rem; font-weight: 700;
+  background: var(--navy); color: #fff; padding: .1em .45em; border-radius: 3px;
+}
+.plos-family-label { font-weight: 600; color: var(--navy); }
+.plos-family-desc { padding: .75rem 1.1rem .5rem; font-size: .9rem; color: #555; margin: 0; }
+
+.plos-rule-list {
+  padding: .5rem 1.1rem 1rem 2.5rem; margin: 0;
+  display: flex; flex-direction: column; gap: .6rem;
+}
+.plos-rule-list li { font-size: .9rem; line-height: 1.55; }
+.plos-rule-id {
+  font-size: .78rem; background: #f0f0f0; padding: .1em .4em;
+  border-radius: 3px; margin-right: .4em; vertical-align: middle;
+}
+
+.plos-governance-prose h3 { color: var(--navy); }
+.plos-governance-prose h4 { color: #444; }
+
+/* ── PILLAR POLICYOS OVERLAY SECTION ─────────────────── */
+#pil-policyos .plos-overlay-list {
+  list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .6rem;
+}
+#pil-policyos .plos-overlay-list li {
+  background: var(--cream); border: 1px solid var(--rule); border-radius: 6px;
+  padding: .7rem 1rem; font-size: .9rem;
+}
+#pil-policyos .plos-overlay-list li strong { color: var(--navy); }
+#pil-policyos .plos-overlay-list a { font-size: .85rem; margin-left: .5rem; }

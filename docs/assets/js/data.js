@@ -94,9 +94,483 @@ siteData.getPillarsByFoundation = id => siteData.pillars.filter(p => p.foundatio
 /* Expose on window so app.js guard (window.siteData) works — const doesn't auto-attach */
 window.siteData = siteData;
 // %%POLICYOS-FAMILIES-BEGIN%%
-siteData.policyosFamilies = [];
+siteData.policyosFamilies = [
+  {
+    "code": "KERN",
+    "label": "Core Kernel",
+    "anchor": "plos-kern",
+    "summary": "Universal rules that apply to every pillar."
+  },
+  {
+    "code": "GEOG",
+    "label": "Geography & Access",
+    "anchor": "plos-geog",
+    "summary": "Rights and services may not vary by geography in ways that create unequal classes of people."
+  },
+  {
+    "code": "FEDR",
+    "label": "Federalism & Anti-Centralization",
+    "anchor": "plos-fedr",
+    "summary": "Power must be distributed to prevent single-point failure and abuse."
+  },
+  {
+    "code": "REGD",
+    "label": "Regulatory Design",
+    "anchor": "plos-regd",
+    "summary": "Regulation must protect the public interest and resist capture by the regulated."
+  },
+  {
+    "code": "ENFA",
+    "label": "Enforcement Architecture",
+    "anchor": "plos-enfa",
+    "summary": "Enforcement must be designed, not assumed; penalties must be proportionate and actionable."
+  },
+  {
+    "code": "AIGV",
+    "label": "AI Governance",
+    "anchor": "plos-aigv",
+    "summary": "AI and algorithmic systems require transparency, accountability, and human oversight."
+  },
+  {
+    "code": "ECOL",
+    "label": "Ecological Habitability",
+    "anchor": "plos-ecol",
+    "summary": "Policy must not degrade the ecological conditions for human survival and flourishing."
+  },
+  {
+    "code": "THRV",
+    "label": "Material Security",
+    "anchor": "plos-thrv",
+    "summary": "Policy must actively secure the material preconditions for a dignified life."
+  },
+  {
+    "code": "DEMO",
+    "label": "Democratic Participation",
+    "anchor": "plos-demo",
+    "summary": "Policy must protect and expand the practical capacity for civic participation."
+  },
+  {
+    "code": "PRIV",
+    "label": "Privacy & Surveillance",
+    "anchor": "plos-priv",
+    "summary": "Policy must protect persons against surveillance, data exploitation, and coercive monitoring."
+  },
+  {
+    "code": "ECON",
+    "label": "Economic Domination",
+    "anchor": "plos-econ",
+    "summary": "Policy must prevent and correct dangerous concentrations of private economic power."
+  }
+];
 // %%POLICYOS-FAMILIES-END%%
 // %%POLICYOS-OVERLAYS-BEGIN%%
-siteData.policyosOverlays = {};
+siteData.policyosOverlays = {
+  "executive_power": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "FEDR",
+      "type": "conditional"
+    }
+  ],
+  "elections_and_representation": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "GEOG",
+      "type": "conditional"
+    },
+    {
+      "code": "FEDR",
+      "type": "conditional"
+    }
+  ],
+  "anti_corruption": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "REGD",
+      "type": "conditional"
+    },
+    {
+      "code": "ENFA",
+      "type": "conditional"
+    }
+  ],
+  "checks_and_balances": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "FEDR",
+      "type": "conditional"
+    }
+  ],
+  "courts_and_judicial_system": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "FEDR",
+      "type": "conditional"
+    },
+    {
+      "code": "AIGV",
+      "type": "conditional"
+    }
+  ],
+  "term_limits_and_fitness": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    }
+  ],
+  "administrative_state": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "FEDR",
+      "type": "conditional"
+    },
+    {
+      "code": "REGD",
+      "type": "conditional"
+    },
+    {
+      "code": "ENFA",
+      "type": "conditional"
+    },
+    {
+      "code": "AIGV",
+      "type": "conditional"
+    }
+  ],
+  "antitrust_and_corporate_power": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "REGD",
+      "type": "conditional"
+    },
+    {
+      "code": "ENFA",
+      "type": "conditional"
+    },
+    {
+      "code": "AIGV",
+      "type": "conditional"
+    }
+  ],
+  "information_and_media": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "AIGV",
+      "type": "conditional"
+    }
+  ],
+  "equal_justice_and_policing": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "GEOG",
+      "type": "conditional"
+    },
+    {
+      "code": "FEDR",
+      "type": "conditional"
+    },
+    {
+      "code": "AIGV",
+      "type": "conditional"
+    },
+    {
+      "code": "ENFA",
+      "type": "conditional"
+    }
+  ],
+  "immigration": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "GEOG",
+      "type": "conditional"
+    },
+    {
+      "code": "FEDR",
+      "type": "conditional"
+    },
+    {
+      "code": "AIGV",
+      "type": "conditional"
+    },
+    {
+      "code": "ENFA",
+      "type": "conditional"
+    }
+  ],
+  "rights_and_civil_liberties": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "GEOG",
+      "type": "conditional"
+    },
+    {
+      "code": "AIGV",
+      "type": "conditional"
+    }
+  ],
+  "foreign_policy": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "FEDR",
+      "type": "conditional"
+    },
+    {
+      "code": "AIGV",
+      "type": "conditional"
+    }
+  ],
+  "gun_policy": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "ENFA",
+      "type": "conditional"
+    }
+  ],
+  "technology_and_ai": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "REGD",
+      "type": "conditional"
+    },
+    {
+      "code": "ENFA",
+      "type": "conditional"
+    },
+    {
+      "code": "AIGV",
+      "type": "conditional"
+    }
+  ],
+  "consumer_rights": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "REGD",
+      "type": "conditional"
+    },
+    {
+      "code": "ENFA",
+      "type": "conditional"
+    },
+    {
+      "code": "AIGV",
+      "type": "conditional"
+    }
+  ],
+  "healthcare": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "GEOG",
+      "type": "conditional"
+    },
+    {
+      "code": "REGD",
+      "type": "conditional"
+    },
+    {
+      "code": "ENFA",
+      "type": "conditional"
+    },
+    {
+      "code": "AIGV",
+      "type": "conditional"
+    }
+  ],
+  "taxation_and_wealth": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "REGD",
+      "type": "conditional"
+    },
+    {
+      "code": "ENFA",
+      "type": "conditional"
+    },
+    {
+      "code": "AIGV",
+      "type": "conditional"
+    }
+  ],
+  "environment_and_agriculture": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "GEOG",
+      "type": "conditional"
+    },
+    {
+      "code": "REGD",
+      "type": "conditional"
+    },
+    {
+      "code": "ENFA",
+      "type": "conditional"
+    },
+    {
+      "code": "AIGV",
+      "type": "conditional"
+    }
+  ],
+  "infrastructure_and_public_goods": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "GEOG",
+      "type": "conditional"
+    },
+    {
+      "code": "FEDR",
+      "type": "conditional"
+    },
+    {
+      "code": "REGD",
+      "type": "conditional"
+    },
+    {
+      "code": "ENFA",
+      "type": "conditional"
+    },
+    {
+      "code": "AIGV",
+      "type": "conditional"
+    }
+  ],
+  "education": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "GEOG",
+      "type": "conditional"
+    },
+    {
+      "code": "AIGV",
+      "type": "conditional"
+    },
+    {
+      "code": "ENFA",
+      "type": "conditional"
+    }
+  ],
+  "labor_and_workers_rights": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "REGD",
+      "type": "conditional"
+    },
+    {
+      "code": "ENFA",
+      "type": "conditional"
+    },
+    {
+      "code": "AIGV",
+      "type": "conditional"
+    }
+  ],
+  "housing": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "GEOG",
+      "type": "conditional"
+    },
+    {
+      "code": "REGD",
+      "type": "conditional"
+    },
+    {
+      "code": "ENFA",
+      "type": "conditional"
+    }
+  ],
+  "legislative_reform": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "FEDR",
+      "type": "conditional"
+    }
+  ],
+  "science_technology_space": [
+    {
+      "code": "KERN",
+      "type": "mandatory"
+    },
+    {
+      "code": "REGD",
+      "type": "conditional"
+    },
+    {
+      "code": "ENFA",
+      "type": "conditional"
+    },
+    {
+      "code": "AIGV",
+      "type": "conditional"
+    }
+  ]
+};
 // %%POLICYOS-OVERLAYS-END%%
 
