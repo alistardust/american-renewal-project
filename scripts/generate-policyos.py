@@ -236,10 +236,13 @@ def build_html(data: dict) -> str:
 <a href="#main-content" class="skip-link sr-only focusable">Skip to main content</a>
 
 <nav class="site-nav" aria-label="Site navigation">
-  <div class="wrap nav-inner">
-    <a href="index.html" class="nav-brand">Freedom &amp; Dignity</a>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="assets/img/logo.svg" alt="Freedom and Dignity Project seal" width="36" height="36">
+      <span class="nav-wordmark">Freedom and Dignity<span>Project</span></span>
+    </a>
     <ul class="nav-links"></ul>
-    <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+    <button class="nav-hamburger" aria-label="Open site menu">&#9776;</button>
   </div>
 </nav>
 
@@ -248,7 +251,7 @@ def build_html(data: dict) -> str:
 <section class="pil-hero" style="background:var(--navy)">
   <div class="wrap">
     <h1>PolicyOS</h1>
-    <p class="hero-sub">The meta-layer governing how all policy is written, tested, enforced, and maintained across this platform.</p>
+    <p class="hero-sub" style="color:rgba(255,255,255,.75)">The meta-layer governing how all policy is written, tested, enforced, and maintained across this platform.</p>
     <nav class="plos-layer-nav" aria-label="PolicyOS layers">
       <a href="#plos-values">Layer 1: Platform Values</a>
       <a href="#plos-principles">Layer 2: System Principles</a>
