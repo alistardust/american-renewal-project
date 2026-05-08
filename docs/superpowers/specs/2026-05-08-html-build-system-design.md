@@ -10,12 +10,12 @@
 
 The site's ~45 HTML pages were hand-authored. Over time, three different nav authoring patterns diverged, producing:
 
-- One page (`policyos.html`) with a text-only nav and no logo SVG
-- One page (`policy-library.html`) with 4 hamburger buttons (hand-coded nav plus `app.js` injection on top)
+- `policyos.html` with a text-only nav and no logo SVG
+- `policy-library.html` with 4 hamburger buttons (hand-coded nav plus `app.js` injection on top)
 - Inconsistent footer structures across compare pages
 - No enforced single source of truth for the nav/footer shell
 
-Every new page is at risk of diverging again. The current `app.js` nav-injection pattern is a footgun: it assumes the page shell is already correct and fails silently when it isn't.
+Every new page is at risk of diverging again. The current `app.js` nav/footer-injection pattern is a footgun: it assumes the page shell is already correct and fails silently when it is not.
 
 ---
 
@@ -27,9 +27,7 @@ This is Phase 1 only. Pillar page content (policy cards, hero sections, etc.) st
 
 ---
 
-## Architecture
-
-### Directory layout
+## Directory layout
 
 ```
 src/
@@ -42,13 +40,14 @@ src/
     about-ai.njk
     pillars/
       healthcare.njk
-      ...
+      ...              # one .njk per pillar
     compare/
       republican-party.njk
-      ...
-    policyos.njk       # content block only; generator writes this file
+      ...              # one .njk per compare page
+    policyos.njk       # content block only; generate-policyos.py writes this file
   data/
-    nav.json           # shared nav item list
+    nav.json           # shared top nav item list
+    footer-links.json  # shared footer link list
 
 scripts/
   build-site.js        # Nunjucks renderer: src/ → docs/
@@ -59,7 +58,9 @@ scripts/
 docs/                  # build output; committed; GH Pages deploys from here
 tests/
   visual/
-    baselines/         # committed reference screenshots (10 files)
+    visual.spec.js     # Playwright visual regression tests
+                       # snapshots stored alongside spec by Playwright default
+                       # (tests/visual/visual.spec.js-snapshots/)
 ```
 
 ---
@@ -76,7 +77,23 @@ tests/
   {% if description %}
   <meta name="description" content="{{ description | escape }}">
   {% endif %}
-  {# OG/Twitter meta, favicon, stylesheet defined once here #}
+
+  {# Open Graph / Twitter — per-page values override defaults #}
+  <meta property="og:type"       content="website">
+  <meta property="og:site_name"  content="Freedom and Dignity Project">
+  <meta property="og:image"      content="https://alistardust.github.io/freedom-and-dignity-project/og-image.png">
+  <meta property="og:image:alt"  content="Freedom and Dignity Project">
+  <meta name="twitter:card"      content="summary_large_image">
+  <meta name="twitter:image"     content="https://alistardust.github.io/freedom-and-dignity-project/og-image.png">
+  <meta property="og:title"      content="{% block og_title %}Freedom and Dignity Project{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}An open project to rebuild America's rights, institutions, and economy for everyone.{% endblock %}">
+  <meta property="og:url"        content="https://alistardust.github.io/freedom-and-dignity-project/{% block og_url %}{% endblock %}">
+  <meta name="twitter:title"     content="{% block twitter_title %}Freedom and Dignity Project{% endblock %}">
+  <meta name="twitter:description" content="{% block twitter_description %}An open project to rebuild America's rights, institutions, and economy for everyone.{% endblock %}">
+
+  <link rel="icon" href="{{ base }}favicon.ico">
+  <link rel="stylesheet" href="{{ base }}assets/css/style.css">
+
   {% block head_extra %}{% endblock %}
 </head>
 <body class="{{ body_class | default('') }}">
@@ -104,14 +121,26 @@ tests/
   </div>
 </nav>
 
-<div id="site-tree" hidden></div>
+{# Static placeholder — app.js populates this element rather than creating a new one #}
+<nav id="site-tree" class="site-tree" hidden aria-label="Site menu"></nav>
 
 <main id="main-content">
   {% block content %}{% endblock %}
 </main>
 
 <footer class="site-footer">
-  {# standard footer defined once here #}
+  <div class="wrap">
+    <span class="footer-brand">Freedom and Dignity Project</span>
+    <ul class="footer-links">
+      {% for item in footerLinks %}
+      <li><a href="{{ base }}{{ item.href }}">{{ item.label }}</a></li>
+      {% endfor %}
+    </ul>
+    <span class="footer-note">
+      Freedom and Dignity Project &middot;
+      <a href="{{ base }}about-ai.html" class="footer-ai-link">On the Use of AI</a>
+    </span>
+  </div>
 </footer>
 
 <script src="{{ base }}assets/js/data.js" defer></script>
@@ -122,13 +151,64 @@ tests/
 
 ### Key decisions
 
-- **Nav links are rendered statically** from `src/data/nav.json`. `app.js` handles behavior only (hamburger toggle, active-link `aria-current`, mobile tree menu). This eliminates the runtime injection footgun.
-- **`aria-current="page"`** is set at build time by comparing `currentPage` to each nav item's `href`. No JS timing issues.
-- **`#site-tree` is a static placeholder** in the shell. `app.js` populates and toggles it rather than injecting it from scratch, keeping `aria-controls` valid from initial parse.
-- **`<main id="main-content">`** wraps the content block in the shell so skip links always work and pages cannot omit it.
-- **`base` is computed from output path depth** in `build-site.js` (empty string for root pages, `../` for one-level subdirs). Computed generically so a third directory level does not break it.
-- **`description` is conditional** — the meta tag is omitted rather than rendered empty. The build script emits a warning for any public page missing a description.
-- **`defer`** on both script tags.
+**Nav links rendered statically** from `src/data/nav.json`. `app.js` handles behavior only (hamburger toggle, active-link `.active` class, mobile tree menu). This eliminates the runtime injection footgun.
+
+**`aria-current="page"` set at build time** by comparing `currentPage` to each nav item's `href`. For pages that are not themselves nav destinations (pillar pages, compare pages), no nav item is marked active at build time. `app.js` can still add `.active` class at runtime via URL comparison for these pages.
+
+**Active link class is `.active`** throughout — this matches the existing CSS selectors (`.nav-links a.active`) and e2e test assertions. Do not rename to `.is-active`.
+
+**`#site-tree` is a static `<nav>` placeholder** in the shell. The element must be `<nav>` (not `<div>`) to be semantically correct for the role it plays. `app.js` `buildPanel()` is rewritten to:
+1. Find the existing element: `const panel = document.getElementById('site-tree')`
+2. Populate it (append `st-header`, `st-root`, `ul[role="tree"]`) rather than creating a new element
+3. Remove `hidden` and manage visibility via class instead
+4. The `burger.setAttribute('aria-controls', 'site-tree')` line in app.js is removed (it is now in static HTML)
+5. The overlay (`div.site-overlay`) continues to be created and appended to `document.body` by app.js — this is fine since it is purely presentational
+
+**`<main id="main-content">`** wraps the content block in the shell so skip links always work and pages cannot omit it.
+
+**`base` computed from output path depth** in `build-site.js`:
+```js
+const depth = outputPath.replace(/^docs\//, '').split('/').length - 1;
+const base = '../'.repeat(depth);
+```
+Root pages (`docs/*.html`) → `base = ""`. One-level subdir (`docs/pillars/*.html`) → `base = "../"`. Generic: a third level would produce `"../../"` automatically.
+
+**`description` is conditional** — the meta tag is omitted rather than rendered empty. The build script emits a non-fatal warning for any public page missing a description.
+
+**Footer links rendered statically** from `src/data/footer-links.json`. `app.js` footer-injection code is removed entirely. The inline `style="color:inherit;opacity:.7"` on the AI disclosure link moves to a CSS class `.footer-ai-link` in `style.css`.
+
+**OG/Twitter meta** has site-level defaults in the base template. Per-page pages override using `{% block og_title %}`, `{% block og_description %}`, `{% block og_url %}`, `{% block twitter_title %}`, `{% block twitter_description %}` blocks. The OG image is a site-level constant (same image for all pages).
+
+**`defer`** on both script tags.
+
+### Initial `src/data/nav.json`
+
+```json
+[
+  { "href": "index.html",       "label": "Home" },
+  { "href": "problem.html",     "label": "Problem" },
+  { "href": "approach.html",    "label": "Approach" },
+  { "href": "get-involved.html","label": "Get Involved" }
+]
+```
+
+### Initial `src/data/footer-links.json`
+
+```json
+[
+  { "href": "index.html",          "label": "Home" },
+  { "href": "platform.html",       "label": "Platform" },
+  { "href": "policy-library.html", "label": "Policy Library" },
+  { "href": "problem.html",        "label": "Problem" },
+  { "href": "approach.html",       "label": "Approach" },
+  { "href": "rights.html",         "label": "Rights" },
+  { "href": "get-involved.html",   "label": "Get Involved" },
+  { "href": "roadmap.html",        "label": "Roadmap" },
+  { "href": "about-us.html",       "label": "About" },
+  { "href": "compare/index.html",  "label": "Perspectives" },
+  { "href": "about-ai.html",       "label": "About AI" }
+]
+```
 
 ### Page file pattern
 
@@ -136,7 +216,14 @@ tests/
 {% extends "_base.njk" %}
 {% set description = "Our healthcare policy positions." %}
 {% set body_class = "pillar pillar-healthcare" %}
+
 {% block title %}Healthcare — Freedom and Dignity Project{% endblock %}
+{% block og_title %}Healthcare — Freedom and Dignity Project{% endblock %}
+{% block og_description %}Our healthcare policy positions.{% endblock %}
+{% block og_url %}pillars/healthcare.html{% endblock %}
+{% block twitter_title %}Healthcare — Freedom and Dignity Project{% endblock %}
+{% block twitter_description %}Our healthcare policy positions.{% endblock %}
+
 {% block content %}
   ... existing page HTML, unchanged ...
 {% endblock %}
@@ -144,31 +231,60 @@ tests/
 
 ### Intermediate templates
 
-`_pillar.njk` and `_compare.njk` extending `_base.njk` are **deferred to Phase 2**. In Phase 1, all pages extend `_base.njk` directly. Intermediate templates will be added when the first cross-pillar structural change requires them.
+`_pillar.njk` and `_compare.njk` extending `_base.njk` are deferred to Phase 2. In Phase 1, all pages extend `_base.njk` directly.
 
 ---
 
 ## Section 2: Build script (`scripts/build-site.js`)
 
-Responsibilities:
+### Responsibilities
 
-1. Load `src/data/nav.json`
-2. For each `src/pages/**/*.njk`:
-   - Compute output path under `docs/`
-   - Compute `base` from output path depth
-   - Compute `currentPage` from the output filename relative to `docs/`
-   - Render with Nunjucks, passing `{ nav, base, currentPage }`
+1. Load `src/data/nav.json` and `src/data/footer-links.json`
+2. Configure Nunjucks with `src/templates/` as the template path
+3. For each `src/pages/**/*.njk`:
+   - Compute output path under `docs/` (mirror directory structure, `.njk` → `.html`)
+   - Compute `base` from output path depth: `'../'.repeat(depth)`
+   - Compute `currentPage` as the output filename relative to `docs/` (e.g. `problem.html`, `pillars/healthcare.html`)
+   - Render with Nunjucks, passing `{ nav, footerLinks, base, currentPage }`
    - Write to `docs/`
-3. Emit a warning (non-fatal) for any page where `description` is not set
-4. Exit non-zero if any render fails
+4. Emit a warning (non-fatal) for any page where `description` is not set
+5. Exit non-zero if any render fails
 
-`npm run build` invokes this script. It is idempotent.
+### New npm scripts (to be added to `package.json`)
+
+```json
+"build":       "node scripts/build-site.js",
+"check:html":  "node scripts/check-html.js",
+"check:parity":"node scripts/check-parity.js",
+"test:visual": "playwright test tests/visual/visual.spec.js",
+"test:visual:update": "playwright test tests/visual/visual.spec.js --update-snapshots"
+```
+
+### New dependencies (to be added to `package.json`)
+
+```json
+"devDependencies": {
+  "nunjucks": "^3.2.4"
+}
+```
+
+`serve` is already installed. Playwright is already installed.
 
 ---
 
 ## Section 3: CI workflow
 
-### Trigger
+### Prerequisites (must be done before the new workflow is merged)
+
+1. **Switch GitHub Pages source to "GitHub Actions":** Repository Settings > Pages > Source = "GitHub Actions". If this step is omitted before the workflow is merged, the deploy job will succeed but GitHub Pages will not update.
+
+### Workflow file
+
+New file: `.github/workflows/build-and-deploy.yml`
+
+The existing `.github/workflows/tests.yml` is retained. It continues to run unit and e2e tests. The new workflow adds build, conformance, and deploy steps. Visual regression tests are added to the new workflow's build job (see Section 4).
+
+### Trigger and concurrency
 
 ```yaml
 on:
@@ -176,85 +292,128 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-```
 
-### Concurrency
-
-```yaml
 concurrency:
   group: pages-${{ github.ref }}
   cancel-in-progress: true
 ```
 
-### Jobs
+### `build` job
 
-**`build` job:**
+```yaml
+build:
+  runs-on: ubuntu-latest
+  permissions:
+    contents: read
+    pages: write
+    id-token: write
+  steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: npm
+    - run: npm ci
+    - run: npx playwright install firefox --with-deps
+    - run: npm run build
+    - run: git diff --exit-code docs/   # fail if docs/ is stale
+    - run: npm run check:html
+    - run: npm run test:visual          # visual regression (see Section 4)
+    - uses: actions/upload-pages-artifact@v3
+      with:
+        path: docs/
+```
 
-1. `actions/checkout@v4`
-2. `actions/setup-node@v4` with npm cache
-3. `npm ci`
-4. `npm run build` — renders `src/` to `docs/`
-5. `npm run check:html` — conformance assertions (see below); gates the build
-6. `actions/upload-pages-artifact@v3` with `path: docs/`
+### `deploy` job (runs only on push to `main`)
 
-**`deploy` job** (runs only on push to `main`, not on PRs):
+```yaml
+deploy:
+  needs: build
+  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  runs-on: ubuntu-latest
+  environment:
+    name: github-pages
+    url: ${{ steps.deployment.outputs.page_url }}
+  permissions:
+    pages: write
+    id-token: write
+  steps:
+    - id: deployment
+      uses: actions/deploy-pages@v4
+```
 
-1. `needs: build`
-2. `environment: github-pages`
-3. `actions/deploy-pages@v4`
+### `docs/` freshness strategy
 
-### Required one-time repo change
+`docs/` remains committed to the repo as the verified, reviewable build output. Contributors must run `npm run build` locally before committing any changes to `src/`. CI enforces this with `git diff --exit-code docs/` — if `docs/` does not match what `npm run build` produces, the build fails and no artifact is uploaded. This eliminates the "CI commits back to the repo" footgun entirely.
 
-GitHub Pages source must be switched from "Deploy from a branch" to "GitHub Actions" in repository Settings > Pages. The `docs/` directory remains committed as a last-known-good snapshot for local development and diff history, but CI deploys from the artifact, not the branch.
+### Conformance check (`npm run check:html` → `scripts/check-html.js`)
 
-### Conformance check (`npm run check:html`)
+Scans every `.html` file in `docs/` and asserts the following. Any violation exits non-zero and prints the offending file and failed assertion.
 
-Scans every `.html` file in `docs/` and asserts:
+| Assertion | Expected |
+|---|---|
+| `<nav class="site-nav">` | Exactly 1 |
+| `<main id="main-content">` | Exactly 1 |
+| `<footer class="site-footer">` | Exactly 1 |
+| `<button class="nav-hamburger">` | Exactly 1 |
+| `<nav id="site-tree">` | Exactly 1 |
+| `<ul class="nav-links">` with children | Not empty |
+| `<ul class="footer-links">` with children | Not empty |
+| `<meta name="description" content="">` | Must not exist |
 
-- Exactly 1 `<nav class="site-nav">`
-- Exactly 1 `<main id="main-content">`
-- Exactly 1 `<footer class="site-footer">`
-- Exactly 1 `<button class="nav-hamburger">`
-- Exactly 1 `<div id="site-tree">`
-- `<ul class="nav-links">` is not empty (nav was rendered)
-- No `<meta name="description" content="">` (empty description not permitted)
-
-Any violation exits non-zero and prints the offending file and assertion. This is the enforcement layer that makes the template guarantee durable — a hand-edited or malformed page cannot be deployed.
+Additionally, a source-level lint over `src/pages/**/*.njk` rejects any file containing `<nav class="site-nav">`, `<footer class="site-footer">`, or `<script src=` — enforcing that page sources never hand-author shell structure.
 
 ---
 
 ## Section 4: Visual regression testing
 
-### Baseline pages
-
-Ten screenshots are captured at two viewports each (desktop 1280px, mobile 390px):
-
-| Page | Template type |
-|---|---|
-| `index.html` | Root |
-| `pillars/healthcare.html` | Pillar |
-| `compare/republican-party.html` | Compare |
-| `policyos.html` | Generated |
-| `policy-library.html` | Multi-section root |
-
 ### Tool
 
-Playwright (`tests/visual/visual.spec.js`), using the existing Playwright install and Firefox configuration. Playwright's built-in `toHaveScreenshot()` handles pixel diffing with a configurable threshold.
+Playwright (`tests/visual/visual.spec.js`), using the existing Playwright install and Firefox configuration. Playwright's `toHaveScreenshot()` handles pixel diffing. Snapshots are stored alongside the spec file in `tests/visual/visual.spec.js-snapshots/` (Playwright's default; do not override `snapshotDir`).
+
+### Server
+
+The existing `playwright.config.js` already defines:
+
+```js
+webServer: {
+  command: 'npx serve docs -p 5500 -n',
+  url: 'http://localhost:5500',
+  reuseExistingServer: !process.env.CI,
+},
+use: { baseURL: 'http://localhost:5500' }
+```
+
+Visual tests use this config. The base URL is `http://localhost:5500/freedom-and-dignity-project/` at runtime (GH Pages path prefix is part of the served path). The visual test config either reuses the existing `playwright.config.js` or points to it via `--config`.
+
+### Baseline pages and viewports
+
+Ten screenshots: five pages at two viewports each.
+
+| Page | Path |
+|---|---|
+| Home | `/freedom-and-dignity-project/` |
+| Healthcare pillar | `/freedom-and-dignity-project/pillars/healthcare.html` |
+| Republican party compare | `/freedom-and-dignity-project/compare/republican-party.html` |
+| PolicyOS | `/freedom-and-dignity-project/policyos.html` |
+| Policy Library | `/freedom-and-dignity-project/policy-library.html` |
+
+Viewports: desktop (1280×800) and mobile (390×844).
 
 ### Threshold
 
-0.1% pixel difference. Tight enough to catch real regressions (layout collapse, missing logo, invisible text), tolerant enough to survive minor antialiasing differences between CI and local environments.
+`0.1%` pixel difference (default `maxDiffPixelRatio: 0.001` in `toHaveScreenshot()`). Tight enough to catch real regressions; tolerant enough for minor antialiasing differences between CI and local.
 
-### Workflow
+### Baseline workflow
 
-- Baselines are committed at `tests/visual/baselines/`. They are the reference images.
-- On every PR, the CI build step spins up the built site and runs `npm run test:visual`. Screenshots are diffed against baselines.
-- If any diff exceeds threshold, the check fails. The diff image is uploaded as a CI artifact.
-- To intentionally update baselines (after a real design change), run `npm run test:visual:update` locally, which overwrites the baseline files. Commit the new baselines in the same PR as the design change.
+- Snapshots committed at `tests/visual/visual.spec.js-snapshots/`
+- On every PR, CI runs `npm run test:visual` and diffs against committed snapshots
+- Diff exceeding threshold → CI fails; diff images uploaded as CI artifact
+- To update baselines intentionally: run `npm run test:visual:update` locally, commit new snapshots in the same PR as the design change
 
 ### What it catches
 
-Layout breakage, missing logo, footer structure changes, hero section collapse, text going invisible (contrast failures). It does not check content accuracy or policy text.
+Layout breakage, missing logo, footer structure changes, hero section collapse, text going invisible (contrast failures like those seen in the triggering bug reports).
 
 ---
 
@@ -265,40 +424,86 @@ Layout breakage, missing logo, footer structure changes, hero section collapse, 
 A one-time migration script (`scripts/migrate-to-njk.js`) does the mechanical conversion:
 
 1. For each `.html` file in `docs/`:
-   - Strip the `<html>`, `<head>`, `<nav>`, `<footer>`, and `<script>` boilerplate
-   - Extract `<title>` content into `{% block title %}`
-   - Extract any description meta into `{% set description %}`
+   - Strip `<html>`, `<head>`, `<nav class="site-nav">`, `<footer class="site-footer">`, and `<script>` boilerplate
+   - Extract `<title>` text into `{% block title %}`
+   - Extract description meta content into `{% set description %}`
    - Wrap remaining body content in `{% extends "_base.njk" %}` and `{% block content %}`
-   - Write to the corresponding path under `src/pages/` with a `.njk` extension
-2. Run `npm run build` to regenerate `docs/`
-3. Run `npm run check:parity` to diff each regenerated file against the original and flag structural differences
+   - Write to the corresponding path under `src/pages/` with `.njk` extension
+2. **Edge case handling:** if the script cannot unambiguously identify the shell boundaries in a page (e.g. `policyos.html` with a non-standard nav, `policy-library.html` with duplicate navs), it skips that file, prints a warning, and continues. Skipped files are migrated manually.
+3. Run `npm run build` to regenerate `docs/`
+4. Run `npm run check:parity` to diff each regenerated file against the original
+
+### Parity check (`scripts/check-parity.js`)
+
+- Parses both files with an HTML parser
+- Compares element structure (tag names, ids, classes, text content) — not whitespace or attribute ordering
+- Exits non-zero if structural differences are found
+- Prints: file path + a list of elements present in one file but not the other
+- Whitespace-only differences are not flagged
 
 ### Migration order
 
-1. Root pages (`index.html`, `policy-library.html`, `get-involved.html`, etc.) — highest traffic, easiest to verify
+1. Root pages (`index.html`, `policy-library.html`, `get-involved.html`, etc.) — highest traffic, easiest to verify manually
 2. Compare pages — structurally uniform, easy to batch
 3. Pillar pages (~22) — most numerous, also structurally uniform
-4. Generated pages — update generators to write content blocks only
+4. Generated pages — update generators last (see below)
 
-### Generator scripts
+### Generator scripts (`generate-policyos.py` etc.)
 
-`scripts/generate-policyos.py` and similar scripts currently write complete HTML files. After migration, they write only the `{% block content %}` body for their corresponding `.njk` file. The base template owns the shell. This requires a small targeted change to each generator.
+Currently these write complete HTML files. After migration they write only the content block for their `.njk` file. Example of what `generate-policyos.py` would write to `src/pages/policyos.njk`:
 
-### Atomicity
+```nunjucks
+{% extends "_base.njk" %}
+{% set description = "The PolicyOS framework — the cross-platform rules layer for all Freedom and Dignity policy." %}
+{% set body_class = "policyos" %}
+{% block title %}PolicyOS — Freedom and Dignity Project{% endblock %}
+{% block og_title %}PolicyOS — Freedom and Dignity Project{% endblock %}
+{% block og_url %}policyos.html{% endblock %}
+{% block content %}
+<section class="pos-hero">
+  ... generated hero HTML ...
+</section>
+<section class="pos-families">
+  ... generated families HTML ...
+</section>
+{% endblock %}
+```
 
-The live site never breaks during migration. `docs/` is always either the old hand-authored files or the freshly built files. The switch happens in a single commit that adds all `src/` source files and replaces all `docs/` output files simultaneously. There is no intermediate state where `docs/` is partially migrated.
+The generator reads from the DB, builds the content sections, and writes this file. `npm run build` is then run to produce `docs/policyos.html`.
 
 ### `app.js` changes
 
-After migration, `app.js` loses its nav-injection and footer-injection responsibilities. It retains:
+After migration, `app.js` loses its nav-injection and footer-injection responsibilities. Retained:
 
-- Hamburger toggle (sets `aria-expanded`, populates and shows `#site-tree`)
-- Active-link visual highlight (reads `aria-current` from the static markup, adds `.is-active` class for CSS)
+- Hamburger toggle: finds `document.getElementById('site-tree')` (already in DOM), populates it if empty, manages `aria-expanded`, toggles visibility
+- `buildPanel()` rewrite: find existing `#site-tree` element, append `st-header`, `st-root`, `ul[role="tree"]` to it; do not create a new element
+- Overlay: `div.site-overlay` continues to be created and appended to `document.body` by app.js (purely presentational, this is fine)
+- Active-link `.active` class: reads current URL, compares to nav link hrefs, adds `.active` class (handles clean URL / no-.html-extension environments on GH Pages)
 - Mobile tree menu behavior
-- Dynamic value rendering (policy counts, pillar counts via `data-dynamic` spans)
-- Any other page-behavior logic unrelated to shell structure
+- Dynamic value rendering (`data-dynamic` spans for policy/pillar counts)
+- Section sub-nav highlighting (pillar and compare pages)
+- All other page-behavior logic unrelated to shell structure
 
-All nav-injection and footer-injection code in `app.js` is removed. The conformance check will catch any page that still relies on it.
+Removed from `app.js`:
+- All nav link injection code (the `navList.appendChild` block)
+- All footer link injection code (the `footerLinks.appendChild` block)
+- `burger.setAttribute('aria-controls', 'site-tree')` — now in static HTML
+- Skip link injection — now in static HTML
+
+### Atomicity
+
+`docs/` is always either the old hand-authored files or the freshly built files. The switch happens in a single commit that adds all `src/` source files and updates all `docs/` output files simultaneously. There is no intermediate state where `docs/` is partially migrated.
+
+### `.footer-ai-link` CSS class
+
+The inline `style="color:inherit;opacity:.7"` on the AI disclosure link in the footer moves to a CSS class. Add to `style.css`:
+
+```css
+.footer-ai-link {
+  color: inherit;
+  opacity: .7;
+}
+```
 
 ---
 
@@ -307,15 +512,21 @@ All nav-injection and footer-injection code in `app.js` is removed. The conforma
 - Intermediate templates (`_pillar.njk`, `_compare.njk`)
 - Generating policy card HTML from the database
 - Changing pillar page content structure
-- CSS changes beyond what migration requires
+- CSS changes other than `.footer-ai-link` above
 
 ---
 
 ## Success criteria
 
-- Every HTML file in `docs/` passes the conformance check
-- Visual regression baselines established for all 5 page types at 2 viewports
-- CI build + conformance + visual regression run on every PR
-- GH Pages deploys from Actions artifact
-- No hand-authored nav, footer, or script tags in any page source file
-- All existing unit and e2e tests continue to pass
+All are verifiable by automated check or manual inspection:
+
+1. `npm run check:html` passes on every file in `docs/` (0 violations)
+2. `npm run check:html` source-level lint passes on every file in `src/pages/` (no hand-authored shell elements)
+3. `git diff --exit-code docs/` passes after `npm run build` (docs/ is never stale)
+4. Visual regression baselines established for all 5 page types at 2 viewports; `npm run test:visual` passes
+5. `npm run test:unit` passes (50 tests)
+6. `npm run test:e2e` passes (all existing assertions)
+7. CI build + conformance + visual regression runs on every PR; deploy runs on push to main
+8. GH Pages deploys from Actions artifact (not branch)
+9. No `<nav class="site-nav">`, `<footer class="site-footer">`, or `<script src=` in any `src/pages/*.njk` file
+10. `generate-policyos.py` writes to `src/pages/policyos.njk` (content block only); full HTML is built by `npm run build`
