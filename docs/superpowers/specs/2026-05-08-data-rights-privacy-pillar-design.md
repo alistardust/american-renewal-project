@@ -84,12 +84,12 @@ overlay where algorithmic systems are used). REGD applies to regulatory design.
 
 | Code | Family name | Cards | PolicyOS primary |
 |------|-------------|-------|-----------------|
-| PRIV-DBKR | Data Broker Regulation | 6 | KERN-0008, PRIV-0001, PRIV-0002 |
-| PRIV-ADTC | Ad-Tech and RTB Reform | 5 | PRIV-0001, PRIV-0002, KERN-0015 |
-| PRIV-BMOD | Behavioral Modification | 5 | KERN-0016, KERN-0017, PRIV-0002 |
-| PRIV-SVPR | Surveillance Pricing | 7 | ECON-0002, KERN-0008, KERN-0017 |
-| PRIV-ALGO | Algorithmic Discrimination | 5 | KERN-0007, KERN-0012, KERN-0013 |
-| PRIV-ENFA | Enforcement Architecture | 6 | ENFA-0001 through 0005, KERN-0027 |
+| PRIV-DBKR | Data Broker Regulation | 6 | PLOS-KERN-0008, PLOS-PRIV-0001, PLOS-PRIV-0002 |
+| PRIV-ADTC | Ad-Tech and RTB Reform | 5 | PLOS-PRIV-0001, PLOS-PRIV-0002, PLOS-KERN-0015 |
+| PRIV-BMOD | Behavioral Modification | 5 | PLOS-KERN-0016, PLOS-KERN-0017, PLOS-PRIV-0002 |
+| PRIV-SVPR | Surveillance Pricing | 7 | PLOS-ECON-0002, PLOS-KERN-0008, PLOS-KERN-0017 |
+| PRIV-ALGO | Algorithmic Discrimination | 5 | PLOS-KERN-0007, PLOS-KERN-0012, PLOS-KERN-0013 |
+| PRIV-ENFA | Enforcement Architecture | 6 | PLOS-ENFA-0001 through PLOS-ENFA-0005, PLOS-KERN-0027 |
 
 **Total: 34 positions**
 
@@ -254,10 +254,10 @@ The categorical approach follows GDPR Article 9 (special categories of personal 
 further: the GDPR permits processing special categories with explicit consent; this rule does not.
 The consent exception was deliberately excluded based on the academic evidence (Solove 2013,
 Acquisti et al. 2015) that consent in data contexts is structurally fictional, and on the
-PolicyOS data minimization baseline (PRIV-0001: collection minimized to stated purpose). The
+PolicyOS data minimization baseline (PLOS-PRIV-0001: collection minimized to stated purpose). The
 reproductive health category was added in response to documented post-Dobbs risks of law
 enforcement procurement of location and purchase data to identify patients seeking abortion
-services. Cross-reference: PRIV-PRIV-0004 (government procurement ban), PRIV-DBKR-0001
+services. Cross-reference: PRIV-DBKR-0006 (government procurement ban), PRIV-DBKR-0001
 (definition scope).
 
 ---
@@ -868,7 +868,7 @@ discretion subject to proportionality standards established by rulemaking.
 **Rule-notes:**
 Complaint-driven enforcement is structurally inadequate for surveillance pricing because
 consumers cannot detect whether their price was individually set through behavioral profiling.
-This is the enforcement design failure identified in PolicyOS PAOS-ENFC (enforcement
+This is the enforcement design failure identified in PolicyOS PAOS-ENFC-0002 (enforcement
 architecture must include proactive monitoring, not just complaint response). The FTC/CFPB
 lane assignment follows the model established for financial regulation generally: CFPB
 covers financial entities regulated under Dodd-Frank Title X; FTC covers the rest.
@@ -1202,7 +1202,7 @@ selected for audit must cooperate and may not withhold requested records on trad
 where the FTC has issued a Civil Investigative Demand.
 
 **Rule-notes:**
-PAOS-ENFC requirements specify that enforcement must include proactive monitoring, not just
+PAOS-ENFC-0002 requirements specify that enforcement must include proactive monitoring, not just
 complaint-driven response. The invisibility problem is structural: consumers cannot detect
 personalized pricing, cannot read behavioral profiles compiled about them, and cannot observe
 engagement optimization mechanisms operating in real time. Complaint-driven enforcement is
@@ -1289,16 +1289,17 @@ a practice that, if enforceable, would eliminate the practical effect of whistle
 | Value 1 (Human Dignity) | Categorical prohibition treats persons as rights-holders, not data points |
 | Value 2 (Equal Standing) | Algorithmic discrimination family; distributional harm named in SVPR; proxy prohibition |
 | Value 3 (Real Liberty) | Behavioral modification prohibition; consent fiction rejection; surveillance pricing ban |
+| Value 4 (Democratic self-government) | Political ad transparency repository (PRIV-ADTC-0004); psychographic political profiling ban (PRIV-BMOD-0003) |
 | Value 5 (Accountable Power) | Enforcement architecture; proactive audits; individual officer liability |
 | Value 6 (Transparency) | Adverse action notice; pricing transparency; RTB data minimization |
 | Value 10 (Enforceable Fairness) | FCRA extension; disparate impact burden-shifting; private right of action |
 | Value 11 (Durability against capture) | State AG concurrent authority; floor not ceiling; FTC capture prevention |
 
 ### KERN rules applied
-KERN-0008 (no hidden rules/trade secret shields), KERN-0012 (anti-bias), KERN-0013 (challenge
-and appeal), KERN-0015 (prevent foreseeable abuse), KERN-0016 (no deprivation/coercion as
-compliance mechanism), KERN-0017 (no extraction incentives), KERN-0022 (adapt to technological
-change), KERN-0027 (whistleblower protections).
+PLOS-KERN-0008 (no hidden rules/trade secret shields), PLOS-KERN-0012 (anti-bias), PLOS-KERN-0013 (challenge
+and appeal), PLOS-KERN-0015 (prevent foreseeable abuse), PLOS-KERN-0016 (no deprivation/coercion as
+compliance mechanism), PLOS-KERN-0017 (no extraction incentives), PLOS-KERN-0022 (adapt to technological
+change), PLOS-KERN-0027 (whistleblower protections).
 
 ### Overlays applied
 PRIV, ECON, ENFA, AIGV (for algorithmic systems), REGD (for regulatory design).
@@ -1365,7 +1366,7 @@ PRIV, ECON, ENFA, AIGV (for algorithmic systems), REGD (for regulatory design).
 
 **New pillar page:** `docs/pillars/data-rights-and-privacy.html`
 **Suggested pillar color:** `#2a4a6b` (deep navy, consistent with civil liberties/rights palette)
-**Foundation assignment:** Freedom to be confirmed in `docs/assets/js/data.js`
+**Foundation assignment:** Real Freedom (primary), cross-referenced to Equal Justice
 **DB entries required:**
 - New domain: `PRIV` (Data Rights and Privacy)
 - New subdomains: DBKR, ADTC, BMOD, SVPR, ALGO, ENFA
