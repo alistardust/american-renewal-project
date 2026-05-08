@@ -160,7 +160,7 @@ tests/
 **`#site-tree` is a static `<nav>` placeholder** in the shell. The element must be `<nav>` (not `<div>`) to be semantically correct for the role it plays. `app.js` `buildPanel()` is rewritten to:
 1. Find the existing element: `const panel = document.getElementById('site-tree')`
 2. Populate it (append `st-header`, `st-root`, `ul[role="tree"]`) rather than creating a new element
-3. Remove `hidden` and manage visibility via class instead
+3. Remove the `hidden` attribute when populating the panel (`panel.removeAttribute('hidden')`); visibility continues to be toggled via `.st-open` class as before — no CSS changes needed (`.site-tree.st-open` already defined in `style.css`)
 4. The `burger.setAttribute('aria-controls', 'site-tree')` line in app.js is removed (it is now in static HTML)
 5. The overlay (`div.site-overlay`) continues to be created and appended to `document.body` by app.js — this is fine since it is purely presentational
 
@@ -305,8 +305,6 @@ build:
   runs-on: ubuntu-latest
   permissions:
     contents: read
-    pages: write
-    id-token: write
   steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -316,7 +314,10 @@ build:
     - run: npm ci
     - run: npx playwright install firefox --with-deps
     - run: npm run build
-    - run: git diff --exit-code docs/   # fail if docs/ is stale
+    - run: |
+        git diff --exit-code docs/
+        test -z "$(git ls-files --others --exclude-standard docs/)"
+      # fail if docs/ is stale or has untracked new files
     - run: npm run check:html
     - run: npm run test:visual          # visual regression (see Section 4)
     - uses: actions/upload-pages-artifact@v3
@@ -344,7 +345,7 @@ deploy:
 
 ### `docs/` freshness strategy
 
-`docs/` remains committed to the repo as the verified, reviewable build output. Contributors must run `npm run build` locally before committing any changes to `src/`. CI enforces this with `git diff --exit-code docs/` — if `docs/` does not match what `npm run build` produces, the build fails and no artifact is uploaded. This eliminates the "CI commits back to the repo" footgun entirely.
+`docs/` remains committed to the repo as the verified, reviewable build output. Contributors must run `npm run build` locally before committing any changes to `src/`. CI enforces this with a two-step check: `git diff --exit-code docs/` (catches modified tracked files) and `git ls-files --others --exclude-standard docs/` (catches new untracked files). If either check fails, the build fails and no artifact is uploaded. This eliminates the "CI commits back to the repo" footgun entirely.
 
 ### Conformance check (`npm run check:html` → `scripts/check-html.js`)
 
@@ -384,7 +385,7 @@ webServer: {
 use: { baseURL: 'http://localhost:5500' }
 ```
 
-Visual tests use this config. The base URL is `http://localhost:5500/freedom-and-dignity-project/` at runtime (GH Pages path prefix is part of the served path). The visual test config either reuses the existing `playwright.config.js` or points to it via `--config`.
+Visual tests use this config. `npx serve docs -p 5500 -n` serves `docs/` as the filesystem root — there is no `/freedom-and-dignity-project/` path prefix in the local dev server. That prefix only exists on GitHub Pages. All test paths are relative to `http://localhost:5500` directly.
 
 ### Baseline pages and viewports
 
@@ -392,11 +393,11 @@ Ten screenshots: five pages at two viewports each.
 
 | Page | Path |
 |---|---|
-| Home | `/freedom-and-dignity-project/` |
-| Healthcare pillar | `/freedom-and-dignity-project/pillars/healthcare.html` |
-| Republican party compare | `/freedom-and-dignity-project/compare/republican-party.html` |
-| PolicyOS | `/freedom-and-dignity-project/policyos.html` |
-| Policy Library | `/freedom-and-dignity-project/policy-library.html` |
+| Home | `/` |
+| Healthcare pillar | `/pillars/healthcare.html` |
+| Republican party compare | `/compare/republican-party.html` |
+| PolicyOS | `/policyos.html` |
+| Policy Library | `/policy-library.html` |
 
 Viewports: desktop (1280×800) and mobile (390×844).
 
