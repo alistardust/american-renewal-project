@@ -320,6 +320,11 @@ build:
       # fail if docs/ is stale or has untracked new files
     - run: npm run check:html
     - run: npm run test:visual          # visual regression (see Section 4)
+    - uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: visual-regression-diffs
+        path: test-results/            # Playwright default outputDir for diffs
     - uses: actions/upload-pages-artifact@v3
       with:
         path: docs/
@@ -525,7 +530,7 @@ All are verifiable by automated check or manual inspection:
 2. `npm run check:html` source-level lint passes on every file in `src/pages/` (no hand-authored shell elements)
 3. `git diff --exit-code docs/` passes after `npm run build` (docs/ is never stale)
 4. Visual regression baselines established for all 5 page types at 2 viewports; `npm run test:visual` passes
-5. `npm run test:unit` passes (50 tests)
+5. `npm run test:unit` passes (all tests)
 6. `npm run test:e2e` passes (all existing assertions)
 7. CI build + conformance + visual regression runs on every PR; deploy runs on push to main
 8. GH Pages deploys from Actions artifact (not branch)
