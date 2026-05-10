@@ -19,7 +19,7 @@ We stand in the tradition of structural populism: concentrated power — whether
 | **I. Accountable Power** | Executive Power, Checks & Balances, Term Limits & Fitness, Courts & Judicial System, Administrative State, Legislative Reform |
 | **II. Clean Democracy** | Elections & Representation, Anti-Corruption, Antitrust & Corporate Power, Information & Media |
 | **III. Equal Justice** | Equal Justice & Policing, Immigration, Rights & Civil Liberties, Foreign Policy |
-| **IV. Real Freedom** | Gun Policy, Technology & AI, Consumer Rights |
+| **IV. Real Freedom** | Gun Policy, Technology & AI, Consumer Rights, Data Rights & Privacy |
 | **V. Freedom to Thrive** | Healthcare, Taxation & Wealth, Environment & Agriculture, Infrastructure & Public Goods, Education, Labor & Workers' Rights, Housing, Science, Technology & Space |
 
 ---
@@ -144,7 +144,7 @@ PolicyOS is a cross-cutting rule architecture that all policy must comply with. 
 
 ## Current state of the platform
 
-- 26 live pillar pages — all policy cards complete as of May 2026
+- 27 live pillar pages — all policy cards complete as of May 2026
 - 3,992 policy positions in the catalog
 - Research documents (internal working documents, not on site):
   - `policy/research/new-bill-of-rights-adversarial-review.md`
