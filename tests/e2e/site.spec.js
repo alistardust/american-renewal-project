@@ -8,7 +8,7 @@ const { test, expect } = require('@playwright/test');
 // ── SHARED CONSTANTS ──────────────────────────────────────────────────────────
 // Update PILLAR_COUNT when adding pillars to data.js.
 // All count assertions below derive from this constant.
-const PILLAR_COUNT = 25; // pillars in data.js
+const PILLAR_COUNT = 26; // pillars in data.js
 
 // ── HOMEPAGE ─────────────────────────────────────────────────────────────────
 
@@ -125,6 +125,7 @@ const SAMPLE_PILLARS = [
   { slug: 'labor-and-workers-rights',      title: 'Labor' },
   { slug: 'housing',                       title: 'Housing' },
   { slug: 'consumer-rights',              title: 'Consumer' },
+  { slug: 'data-rights-and-privacy',     title: 'Data Rights' },
   { slug: 'legislative-reform',            title: 'Legislative' },
   { slug: 'foreign-policy',               title: 'Foreign Policy' },
   { slug: 'science-technology-space',     title: 'Science Technology Space' },

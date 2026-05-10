@@ -43,7 +43,7 @@ const siteData = {
       why: 'The old freedom debate is over. The threats to freedom today come not just from government but from corporations with unprecedented power to monitor, manipulate, and control. Real freedom requires confronting both.',
       demands: ['Constitutional protection against corporate surveillance', 'Algorithmic accountability for platforms that shape public life', 'Sensible gun policy grounded in public safety and the actual text of the Second Amendment'],
       rejects: ['The surveillance economy as the price of modernity', 'Platforms that amplify hate and call it free speech', 'Weapons of war in civilian hands'],
-      pillars: ['rights_and_civil_liberties', 'gun_policy', 'technology_and_ai', 'consumer_rights']
+      pillars: ['rights_and_civil_liberties', 'gun_policy', 'technology_and_ai', 'consumer_rights', 'data_rights_and_privacy']
     },
     {
       id: 'freedom-to-thrive',
@@ -83,6 +83,7 @@ const siteData = {
     { id: 'housing',                       title: 'Housing',                       foundation: 'freedom-to-thrive',  summary: 'Housing is a human necessity. No one should be priced out of stability by speculation or policy failure.',                 points: ['Anti-speculation controls and vacancy taxes', 'Community land trust investment', 'Tenant protections and anti-eviction standards'] },
     { id: 'science_technology_space',      title: 'Science, Technology & Space',   foundation: 'freedom-to-thrive',  summary: 'Scientific leadership, public research infrastructure, and responsible stewardship of space are national imperatives.',       points: ['Federal R&D floor of 3% GDP', 'Open-access research publishing mandate', 'National crewed space capability and debris accountability'] },
     { id: 'consumer_rights',               title: 'Consumer Rights',               foundation: 'real-freedom',       summary: 'Corporations cannot be allowed to strip consumers of rights through contracts, monopoly, or engineered dependency.',        points: ['Right-to-repair legislation', 'Ban mandatory arbitration clauses', 'Data exploitation and dark pattern protections'] },
+    { id: 'data_rights_and_privacy',       title: 'Data Rights & Privacy',         foundation: 'real-freedom',       summary: 'Surveillance capitalism must end. Your data is not a commodity to be harvested, profiled, and sold without your meaningful consent.', points: ['Federal data broker registration and deletion', 'Ban on behavioral modification and dark patterns', 'Prohibition on surveillance pricing'] },
     { id: 'legislative_reform',            title: 'Legislative Reform',            foundation: 'accountable-power',  summary: 'Congress must be able to legislate. Structural dysfunction serves concentrated power and no one else.',                    points: ['Filibuster reform to restore majority governance', 'Senate representation and House size reform', 'Anti-gridlock procedural mechanisms'] }
   ]
 };

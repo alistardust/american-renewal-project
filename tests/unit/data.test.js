@@ -16,7 +16,7 @@ const siteData = (() => {
 
 // Single source of truth for expected counts.
 // Update these when intentionally adding pillars or foundations to data.js.
-const PILLAR_COUNT     = siteData.pillars.length;      // currently 25
+const PILLAR_COUNT     = siteData.pillars.length;      // currently 26
 const FOUNDATION_COUNT = siteData.foundations.length;  // currently 5
 
 // ── FOUNDATIONS ──────────────────────────────────────────────────────────────
