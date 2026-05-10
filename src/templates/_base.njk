@@ -54,9 +54,13 @@
 {# Static placeholder — app.js populates this element rather than creating a new one #}
 <nav id="site-tree" class="site-tree" hidden aria-label="Site menu"></nav>
 
+{% block before_main %}{% endblock %}
+
 <main id="main-content">
   {% block content %}{% endblock %}
 </main>
+
+{% block after_main %}{% endblock %}
 
 <footer class="site-footer">
   <div class="wrap">

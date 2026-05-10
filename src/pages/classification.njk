@@ -1,0 +1,140 @@
+{% extends "_base.njk" %}
+{% set description = "How this platform classifies policy positions — the catalog system, classification methodology, and the PolicyOS rules framework that governs how policy is structured." %}
+{% block title %}Policy Classification — Freedom and Dignity Project{% endblock %}
+{% block og_description %}How this platform classifies policy positions — the catalog system, classification methodology, and the PolicyOS rules framework.{% endblock %}
+{% block og_url %}classification.html{% endblock %}
+{% block twitter_description %}How this platform classifies policy positions — the catalog system, classification methodology, and the PolicyOS rules framework that governs how policy is structured.{% endblock %}
+{% block content %}
+<header class="page-hero-standard">
+  <span class="hero-eyebrow">How the Platform is Structured</span>
+  <h1>Policy <span>Classification</span></h1>
+  <p class="hero-statement">Every position in this catalog has an ID, a type, a pillar, and a legal grounding. None of that is accidental.</p>
+</header>
+
+<div class="page-body" id="main-content">
+
+  <h2>The Policy Catalog</h2>
+
+  <p>This platform maintains a structured policy catalog — a database of every policy position, with its ID, pillar, foundation, classification type, plain-language summary, formal policy statement, and citation record. The catalog is version-controlled, publicly available, and the authoritative source for every position on this platform.</p>
+
+  <p>The catalog is organized as a SQLite database with a public schema. Every policy position has a canonical ID in the format <code>DOMAIN-SUBDOMAIN-NNNN</code> (e.g., <code>HLTH-COVR-0001</code> for a healthcare coverage position). Positions are grouped by domain, subdomain, foundation, and pillar.</p>
+
+  <p>The source files, schema documentation, and build scripts are all available in the project repository:</p>
+
+  <p>
+    <a href="https://github.com/alistardust/freedom-and-dignity-project" class="btn-outline" target="_blank" rel="noopener" style="display:inline-block">View on GitHub →</a>
+    <a href="https://github.com/alistardust/freedom-and-dignity-project/tree/main/data" class="btn-outline" target="_blank" rel="noopener" style="display:inline-block;margin-left:1rem">View Data Directory →</a>
+  </p>
+
+  <h2>Classification Methodology</h2>
+
+  <p>Each policy position is classified by its implementation type. This classification determines the legal pathway for adoption, the level of government responsible for enforcement, and how the position is tracked in the policy review process.</p>
+
+  <div class="clf-method-table-wrap">
+    <table class="clf-method-table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Examples</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="clf-badge clf-badge--amendment">Amendment</span></td>
+          <td>Requires a constitutional amendment to enact. These are structural changes to how government works — voting rights, term limits, anti-corruption rules.</td>
+          <td>Congressional term limits, independent redistricting mandate, public financing requirement</td>
+        </tr>
+        <tr>
+          <td><span class="clf-badge clf-badge--statute">Statute</span></td>
+          <td>Requires federal legislation — an act of Congress. Most policy positions on this platform are statute-level.</td>
+          <td>Universal healthcare, minimum wage, labor rights, drug pricing, antitrust enforcement</td>
+        </tr>
+        <tr>
+          <td><span class="clf-badge clf-badge--policy">Policy</span></td>
+          <td>Can be implemented through executive action, agency rulemaking, or administrative policy change without new legislation.</td>
+          <td>Agency enforcement priorities, federal contractor requirements, regulatory guidance</td>
+        </tr>
+        <tr>
+          <td><span class="clf-badge clf-badge--state">State / Local</span></td>
+          <td>Primarily implemented at the state or local level, or requires federal-state coordination.</td>
+          <td>Tenant protection ordinances, local minimum wage laws, state Medicaid expansion</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>The Two-Field Requirement</h2>
+
+  <p>Every policy position in the catalog must have two text representations:</p>
+
+  <ul style="color:var(--ink);line-height:1.75;padding-left:1.5rem;margin-bottom:1.5rem">
+    <li style="margin-bottom:.6rem"><strong>Plain language</strong> — 1–3 sentences at approximately an 8th-grade reading level. What does this position do, and why does it matter? No jargon.</li>
+    <li style="margin-bottom:.6rem"><strong>Policy statement</strong> — The full technical/legal statement with precise language, thresholds, enforcement mechanisms, and regulatory detail.</li>
+  </ul>
+
+  <p>Both fields are required. The plain-language field is not a summary of the policy statement — it is an independent, accessible explanation. This is not an accessibility accommodation. It is a substantive requirement: if a policy position cannot be explained to a person without legal training in two or three sentences, that is a sign the position itself needs more work.</p>
+
+  <h2>PolicyOS Rule Families</h2>
+
+  <p>PolicyOS is the cross-platform rules layer being developed in parallel with the policy content. It governs how policy is designed, scoped, enforced, and maintained across the platform. PolicyOS rules have their own ID space (prefixed <code>PLOS-</code> and <code>PAOS-</code>) and are not the same as policy positions.</p>
+
+  <p>The current PolicyOS architecture has three layers:</p>
+
+  <div class="clf-policyos-table-wrap">
+    <table class="clf-method-table">
+      <thead>
+        <tr>
+          <th>Layer</th>
+          <th>Rule Families</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Platform Values</td>
+          <td>The moral and political anchor for all rules. <code>floor + duty</code> model — what policy must not violate vs. what it must actively secure.</td>
+          <td><span class="clf-badge clf-badge--statute">Locked</span></td>
+        </tr>
+        <tr>
+          <td>System Principles</td>
+          <td>Cross-platform design rules. Families: <code>KERN</code> (core principles), <code>GEOG</code> (jurisdiction), <code>FEDR</code> (federalism), <code>REGD</code> (regulatory design), <code>ENFA</code> (enforcement architecture), <code>AIGV</code> (AI governance).</td>
+          <td><span class="clf-badge clf-badge--statute">Locked</span></td>
+        </tr>
+        <tr>
+          <td>Authoring OS</td>
+          <td>How policy must be written, tested, scoped, enforced, and maintained. Families: <code>NORM</code> (normative framing), <code>AUTH</code> (authoring), <code>TEST</code> (testing), <code>ENFC</code> (enforcement), <code>PLAC</code> (placement), <code>MAINT</code> (maintenance).</td>
+          <td><span class="clf-badge clf-badge--statute">Locked</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="margin-top:1rem">
+    <a href="policyos.html">View full PolicyOS documentation →</a>
+  </p>
+
+  <h2>ID Format Reference</h2>
+
+  <p>Policy position IDs follow the v2 format:</p>
+
+  <pre style="background:var(--parchment);border:1px solid var(--rule);border-radius:6px;padding:1rem 1.25rem;font-size:.9rem;overflow-x:auto;color:var(--navy)">DOMAIN-SUBDOMAIN-NNNN
+
+Examples:
+  HLTH-COVR-0001   Healthcare / Coverage
+  LBOR-WAGE-0001   Labor / Wage
+  CLMT-EMSS-0001   Climate / Emissions
+  ADMN-CHVS-0001   Administration / Checks and Balances
+  TAXN-TAXS-0001   Taxation / Tax Structure</pre>
+
+  <p>Domain and subdomain codes are defined in the <code>domains</code> and <code>subdomains</code> tables of the policy catalog database. Cross-pillar appearances (where a position is relevant to more than one pillar) are tracked in the <code>position_pillar_appearances</code> table rather than as separate position records.</p>
+
+</div>
+
+<div class="page-nav-cta">
+  <div class="wrap">
+    <p>Want to help build and maintain this catalog? Start here.</p>
+    <a href="get-involved.html" class="btn-primary">Get Involved →</a>
+  </div>
+</div>
+{% endblock %}

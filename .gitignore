@@ -16,3 +16,7 @@ sources/
 
 # Build artifacts
 tmp/
+
+# Local diagnostic logs
+migration-log.txt
+parity-log.txt
