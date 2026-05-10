@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Freedom and Dignity Project{% endblock %}</title>
+  {% if description %}
+  <meta name="description" content="{{ description | escape }}">
+  {% endif %}
+
+  {# Open Graph / Twitter — per-page values override defaults #}
+  <meta property="og:type"         content="website">
+  <meta property="og:site_name"    content="Freedom and Dignity Project">
+  <meta property="og:image"        content="https://alistardust.github.io/freedom-and-dignity-project/og-image.png">
+  <meta property="og:image:alt"    content="Freedom and Dignity Project">
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:image"       content="https://alistardust.github.io/freedom-and-dignity-project/og-image.png">
+  <meta property="og:title"        content="{% block og_title %}Freedom and Dignity Project{% endblock %}">
+  <meta property="og:description"  content="{% block og_description %}An open project to rebuild America's rights, institutions, and economy for everyone.{% endblock %}">
+  <meta property="og:url"          content="https://alistardust.github.io/freedom-and-dignity-project/{% block og_url %}{% endblock %}">
+  <meta name="twitter:title"       content="{% block twitter_title %}Freedom and Dignity Project{% endblock %}">
+  <meta name="twitter:description" content="{% block twitter_description %}An open project to rebuild America's rights, institutions, and economy for everyone.{% endblock %}">
+
+  <link rel="icon" type="image/svg+xml" href="{{ base }}assets/img/logo.svg">
+  <link rel="stylesheet" href="{{ base }}assets/css/style.css">
+
+  {% block head_extra %}{% endblock %}
+</head>
+<body class="{{ body_class | default('') }}">
+<a href="#main-content" class="skip-link sr-only focusable">Skip to main content</a>
+
+<nav class="site-nav" aria-label="Site navigation">
+  <div class="nav-inner">
+    <a href="{{ base }}index.html" class="nav-brand">
+      <img src="{{ base }}assets/img/logo.svg"
+           alt="Freedom and Dignity Project seal" width="36" height="36">
+      <span class="nav-wordmark">Freedom and Dignity<span>Project</span></span>
+    </a>
+    <ul class="nav-links">
+      {% for item in nav %}
+      <li>
+        <a href="{{ base }}{{ item.href }}"
+           {% if currentPage == item.href %}aria-current="page"{% endif %}>
+          {{ item.label }}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+    <button type="button" class="nav-hamburger" aria-label="Open site menu"
+            aria-expanded="false" aria-controls="site-tree">&#9776;</button>
+  </div>
+</nav>
+
+{# Static placeholder — app.js populates this element rather than creating a new one #}
+<nav id="site-tree" class="site-tree" hidden aria-label="Site menu"></nav>
+
+<main id="main-content">
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span class="footer-brand">Freedom and Dignity Project</span>
+    <ul class="footer-links">
+      {% for item in footerLinks %}
+      <li><a href="{{ base }}{{ item.href }}">{{ item.label }}</a></li>
+      {% endfor %}
+    </ul>
+    <span class="footer-note">
+      Freedom and Dignity Project &middot;
+      <a href="{{ base }}about-ai.html" class="footer-ai-link">On the Use of AI</a>
+    </span>
+  </div>
+</footer>
+
+<script src="{{ base }}assets/js/data.js" defer></script>
+<script src="{{ base }}assets/js/app.js" defer></script>
+{% block scripts_extra %}{% endblock %}
+</body>
+</html>
