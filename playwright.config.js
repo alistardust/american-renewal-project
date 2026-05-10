@@ -13,6 +13,7 @@ module.exports = defineConfig({
   },
   projects: [
     { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: 'visual-firefox', testDir: './tests/visual', use: { ...devices['Desktop Firefox'] } },
   ],
   webServer: {
     command: 'npx serve docs -p 5500 -n',
