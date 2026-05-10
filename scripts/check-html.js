@@ -78,18 +78,22 @@ function checkFile(html, filePath) {
     errors.push(`${filePath}: expected exactly 1 <nav id="site-tree">, found ${siteTrees.length}`);
   }
 
-  // <ul class="nav-links"> has at least 1 li
+  // <ul class="nav-links"> must exist and have at least 1 li
   const navLinks = findOne(doc, n => n.tagName === 'ul' && hasClass(n, 'nav-links'));
-  if (navLinks) {
+  if (!navLinks) {
+    errors.push(`${filePath}: <ul class="nav-links"> not found`);
+  } else {
     const items = (navLinks.childNodes || []).filter(n => n.tagName === 'li');
     if (items.length === 0) {
       errors.push(`${filePath}: <ul class="nav-links"> is empty`);
     }
   }
 
-  // <ul class="footer-links"> has at least 1 li
+  // <ul class="footer-links"> must exist and have at least 1 li
   const footerLinks = findOne(doc, n => n.tagName === 'ul' && hasClass(n, 'footer-links'));
-  if (footerLinks) {
+  if (!footerLinks) {
+    errors.push(`${filePath}: <ul class="footer-links"> not found`);
+  } else {
     const items = (footerLinks.childNodes || []).filter(n => n.tagName === 'li');
     if (items.length === 0) {
       errors.push(`${filePath}: <ul class="footer-links"> is empty`);
