@@ -1,0 +1,12 @@
+[
+  { "href": "index.html",          "label": "Home" },
+  { "href": "platform.html",       "label": "Platform" },
+  { "href": "policy-library.html", "label": "Policy Library" },
+  { "href": "problem.html",        "label": "Problem" },
+  { "href": "approach.html",       "label": "Approach" },
+  { "href": "rights.html",         "label": "Rights" },
+  { "href": "get-involved.html",   "label": "Get Involved" },
+  { "href": "roadmap.html",        "label": "Roadmap" },
+  { "href": "about-us.html",       "label": "About" },
+  { "href": "compare/index.html",  "label": "Perspectives" }
+]
