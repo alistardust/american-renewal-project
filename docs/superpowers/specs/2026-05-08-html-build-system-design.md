@@ -299,11 +299,19 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      update_snapshots:
+        description: 'Update visual regression snapshots'
+        type: boolean
+        default: false
 
 concurrency:
   group: pages-${{ github.ref }}
   cancel-in-progress: true
 ```
+
+The `workflow_dispatch` trigger with `update_snapshots` input enables the snapshot update workflow: trigger manually from the Actions tab with `update_snapshots: true`, download the snapshot artifact, commit the updated files. The build job passes `--update-snapshots` to Playwright when this input is true (see `build` job below).
 
 ### `build` job
 
@@ -326,12 +334,19 @@ build:
         git ls-files --others --exclude-standard docs/ | grep -v '^docs/superpowers/' | grep . && exit 1 || true
       # fail if docs/ (excluding docs/superpowers/) is stale or has untracked new files
     - run: npm run check:html
-    - run: npm run test:visual          # visual regression (see Section 4)
+    - run: |
+        if [ "${{ inputs.update_snapshots }}" = "true" ]; then
+          npm run test:visual:update
+        else
+          npm run test:visual
+        fi
     - uses: actions/upload-artifact@v4
-      if: failure()
+      if: always()
       with:
-        name: visual-regression-diffs
-        path: test-results/            # Playwright default outputDir for diffs
+        name: visual-snapshots-or-diffs
+        path: tests/visual/visual.spec.js-snapshots/
+        # On update runs: contains updated snapshots to download and commit.
+        # On normal runs: contains diff images if any test failed.
     - uses: actions/upload-pages-artifact@v3
       with:
         path: docs/
@@ -526,6 +541,8 @@ Create `src/pages/newpage.njk` extending `_base.njk`. Run `npm run build`. Commi
 
 ---
 
+## Out of scope (Phase 1)
+
 - Intermediate templates (`_pillar.njk`, `_compare.njk`)
 - Generating policy card HTML from the database
 - Changing pillar page content structure
@@ -539,11 +556,11 @@ All are verifiable by automated check or manual inspection:
 
 1. `npm run check:html` passes on every file in `docs/` (0 violations)
 2. `npm run check:html` source-level lint passes on every file in `src/pages/` (no hand-authored shell elements)
-3. `git diff --exit-code -- docs/ ':!docs/superpowers/'` passes after `npm run build` (docs/ build output is never stale)
+3. Both CI freshness commands pass after `npm run build`: `git diff --exit-code -- docs/ ':!docs/superpowers/'` (no stale tracked files) and the untracked-file grep (no new build output left uncommitted)
 4. Visual regression baselines established for all 5 page types at 2 viewports; `npm run test:visual` passes
 5. `npm run test:unit` passes (all tests)
 6. `npm run test:e2e` passes (all existing assertions)
 7. CI build + conformance + visual regression runs on every PR; deploy runs on push to main
 8. GH Pages deploys from Actions artifact (not branch)
-9. No `<nav class="site-nav">`, `<footer class="site-footer">`, or `<script src=` in any `src/pages/*.njk` file
+9. No `<nav class="site-nav">`, `<footer class="site-footer">`, or `<script src=` in any `src/pages/**/*.njk` file
 10. `generate-policyos.py` writes to `src/pages/policyos.njk` (content block only); full HTML is built by `npm run build`
