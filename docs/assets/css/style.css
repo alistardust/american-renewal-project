@@ -756,6 +756,10 @@ body:has(.site-tree.st-open) .st-overlay { display: block; }
 .footer-note { font-size: .7rem; color: rgba(255,255,255,.45); }
 .footer-note a { color: inherit; opacity: 1; text-decoration: underline; text-underline-offset: 2px; }
 .footer-note a:hover { color: var(--gold); }
+.footer-ai-link {
+  color: inherit;
+  opacity: .7;
+}
 
 /* ── BACK TO TOP ──────────────────────────────────────── */
 #back-to-top {
