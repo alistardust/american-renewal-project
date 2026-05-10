@@ -3,6 +3,14 @@
 Generate full-content pillar pages from pillars/*/overview.md and policy.md sources.
 Outputs to docs/pillars/{slug}.html.
 """
+
+# ⚠️  BYPASS WARNING: This script writes HTML directly to docs/ and bypasses
+# the Nunjucks build system post-migration. After the Phase 1 migration, this
+# script must be updated to write .njk source files and call 'npm run build'.
+# Until updated, do not run this script after migration — it will produce pages
+# without the canonical _base.njk shell.
+# Tracked in: GitHub issue #1
+
 import os
 import re
 import sys

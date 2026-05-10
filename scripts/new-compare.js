@@ -13,6 +13,13 @@
  * After generating, add the page to docs/compare/index.html manually.
  */
 
+// ⚠️  BYPASS WARNING: This script writes a complete HTML file directly to docs/.
+// After the Nunjucks migration (Phase 1), this script must be updated to write
+// src/pages/compare/<id>.njk (a content-block .njk, not full HTML) and call
+// 'npm run build'. Until updated, do not run this script after migration —
+// it will produce a page without the canonical _base.njk shell.
+// Tracked in: GitHub issue #1
+
 'use strict';
 
 const fs   = require('fs');
