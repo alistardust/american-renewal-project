@@ -41,7 +41,7 @@
       <li>
         <a href="{{ base }}{{ item.href }}"
            {% if currentPage == item.href %}aria-current="page"{% endif %}>
-          {{ item.label }}
+          {{ item.label | escape }}
         </a>
       </li>
       {% endfor %}
@@ -63,7 +63,7 @@
     <span class="footer-brand">Freedom and Dignity Project</span>
     <ul class="footer-links">
       {% for item in footerLinks %}
-      <li><a href="{{ base }}{{ item.href }}">{{ item.label }}</a></li>
+      <li><a href="{{ base }}{{ item.href }}">{{ item.label | escape }}</a></li>
       {% endfor %}
     </ul>
     <span class="footer-note">
