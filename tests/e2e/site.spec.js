@@ -44,6 +44,14 @@ test.describe('Homepage', () => {
     await expect(page.locator('.nav-links a')).toHaveCount(4);
   });
 
+  test('nav item has aria-current="page" on nav-destination page', async ({ page }) => {
+    await page.goto('/problem.html');
+    // Problem is a nav item — its link should have aria-current="page" set at build time
+    await expect(
+      page.locator('.nav-links a[aria-current="page"][href*="problem"]')
+    ).toBeAttached();
+  });
+
   test('name notice banner is present and dismissible', async ({ page }) => {
     // Banner should appear on fresh page load (no sessionStorage flag)
     const banner = page.locator('.name-notice-banner');
@@ -303,8 +311,8 @@ test.describe('About AI page', () => {
   });
 
   test('footer has About AI link', async ({ page }) => {
-    // About AI is in the footer, not the main nav
-    await expect(page.locator('.footer-links a[href*="about-ai"]')).toBeAttached();
+    // About AI is in the footer-note, not the main nav or footer-links
+    await expect(page.locator('.footer-note a[href*="about-ai"]')).toBeAttached();
   });
 
   test('footer has standard links', async ({ page }) => {
@@ -370,8 +378,8 @@ test.describe('About AI link reachable from all page types', () => {
   for (const { url, label } of pages) {
     test(`${label} has About AI in nav`, async ({ page }) => {
       await page.goto(url);
-      // About AI is in the footer-links, not the main nav
-      const link = page.locator('.footer-links a[href*="about-ai"]');
+      // About AI is in the footer-note, not the main nav or footer-links
+      const link = page.locator('.footer-note a[href*="about-ai"]');
       await expect(link).toBeAttached();
       const href = await link.getAttribute('href');
       // Must not be a broken cross-root path (../about-ai.html from root pages was the bug)
@@ -487,7 +495,7 @@ test.describe('Mission page', () => {
   });
 
   test('footer has About AI link', async ({ page }) => {
-    await expect(page.locator('.footer-links a[href*="about-ai"]')).toBeAttached();
+    await expect(page.locator('.footer-note a[href*="about-ai"]')).toBeAttached();
   });
 
   test('references section is present', async ({ page }) => {
