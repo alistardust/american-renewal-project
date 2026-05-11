@@ -26,6 +26,15 @@ function stripStatusMarkersFromContent(content) {
   // Remove <div class="rule-status">...</div> (single line, no nesting).
   result = result.replace(/<div class="rule-status">[^<]*<\/div>\n?/g, '');
 
+  // Validate: fail loudly if any markers remain (malformed HTML)
+  const remaining = [];
+  if (result.match(/<span class="rule-badge">/)) remaining.push('rule-badge spans');
+  if (result.match(/<div class="rule-status">/)) remaining.push('rule-status divs');
+  if (result.match(/class="policy-card (?:status-[a-z-]+|proposal)"/)) remaining.push('status class modifiers');
+  if (remaining.length > 0) {
+    throw new Error(`Failed to strip: ${remaining.join(', ')} (malformed HTML?)`);
+  }
+
   return result;
 }
 
@@ -55,4 +64,8 @@ function main() {
   console.log(`\nDone. Modified ${totalFiles} files, ~${totalChanges} lines removed.`);
 }
 
-main();
+if (require.main === module) {
+  main();
+}
+
+module.exports = { stripStatusMarkersFromContent };
