@@ -1497,25 +1497,8 @@ code { background: rgba(0,0,0,.07); border: 1px solid var(--rule); padding: .1em
   background: #fff; border: 1px solid #e0d8c8;
   font-size: .88rem; line-height: 1.55;
 }
-.policy-card.status-included { border-left: 4px solid #1e8449; }
-.policy-card.status-updated  { border-left: 4px solid #2471a3; }
-.policy-card.status-partial  { border-left: 4px solid #c9952a; }
-.policy-card.status-missing  { border-left: 4px solid #ccc; opacity: .72; }
-.policy-card.proposal        { border-left: 4px solid #1a6b8a; }
-.proposal .rule-badge        { background: #d0eaf5; color: #1a6b8a; }
-.rule-status                 { font-size: .78rem; color: #1a6b8a; margin: .25rem 0 .5rem; font-style: italic; }
-
 .rule-header  { display: flex; align-items: center; gap: .5rem; margin-bottom: .35rem; }
 .rule-id      { font-size: .72rem; color: #888; letter-spacing: .03em; }
-.rule-badge   {
-  font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
-  padding: .12em .45em; border-radius: 3px;
-}
-.status-included .rule-badge { background: #d4edda; color: #155724; }
-.status-updated  .rule-badge { background: #cce5ff; color: #004085; }
-.status-partial  .rule-badge { background: #fff3cd; color: #856404; }
-.status-missing  .rule-badge { background: #f0f0f0; color: #666; }
-
 .rule-title { font-weight: 600; margin: .2rem 0 .2rem; color: var(--ink); }
 .rule-plain { font-size: .88rem; color: #333; margin: .2rem 0 .15rem; font-style: italic; }
 .rule-stmt  { font-size: .85rem; color: #444; margin: .15rem 0 0; }
