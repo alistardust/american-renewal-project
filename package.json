@@ -9,7 +9,7 @@
   "scripts": {
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "vitest run tests/unit",
-    "test:e2e": "playwright test",
+    "test:e2e": "playwright test --project=firefox",
     "serve": "serve docs -p 5500 -n",
     "build": "node scripts/build-site.js",
     "check:html": "node scripts/check-html.js",
