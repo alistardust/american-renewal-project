@@ -6,14 +6,14 @@
 > platform name is selected. It is **not a final name**. All references to it in this repository,
 > website, and documentation are temporary and will be updated once a name is confirmed.
 
-An active U.S. political platform in development, organized around 25 policy pillars and 5 foundations. The live site is at **https://alistardust.github.io/freedom-and-dignity-project/**.
+An active U.S. political platform in development, organized around five policy foundations. The live site is at **https://alistardust.github.io/freedom-and-dignity-project/**.
 
 ## What's in this repository
 
 ```text
 docs/               Website — served by GitHub Pages
   assets/           Shared CSS, JS, and images
-  pillars/          25 pillar HTML pages
+  pillars/          Pillar HTML pages
   compare/          Party comparison pages
 policy/             All policy content
   briefing-pack.md  Condensed project context for AI brainstorming sessions
@@ -32,11 +32,10 @@ system_rules.md     Cross-domain system rule architecture
 
 ## Current state
 
-- **Pillars:** 25 active pillar pages across 5 foundations
-- **Policy positions:** 3,810 canonical positions in `policy/catalog/policy_catalog_v2.sqlite`; 2,773 positions fully defined on the live site (all `status-included`)
+- **Pillars:** Active pillar pages across five foundations — see [`.github/current-state.md`](.github/current-state.md) for the current registry.
 - **Plain language:** All positions have plain-language summaries
 - **Citations:** Inline APA citations across all pillar pages
-- **Policy card audit:** Complete as of May 2026 — zero `status-missing` cards remain across all 25 pillars
+- **Policy card audit:** Complete as of May 2026 — zero `status-missing` cards remain
 
 For detailed status, see [`.github/current-state.md`](.github/current-state.md).
 

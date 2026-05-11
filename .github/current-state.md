@@ -9,7 +9,7 @@ _Last updated: May 2026_
 Reconciliation between HTML and DB is complete (HTML→DB gap = 0, DB→HTML gap = 0 as of April 2026). Both are valid sources; keep them in sync.
 
 1. Site HTML (`docs/pillars/*.html`) — rendered policy cards; most recently edited content
-2. `policy/catalog/policy_catalog_v2.sqlite` — 3,810 positions in v2 ID format; canonical structured catalog
+2. `policy/catalog/policy_catalog_v2.sqlite` — canonical structured catalog (`SELECT COUNT(*) FROM positions` for current count)
 3. `policy/foundations/<foundation>/<pillar>/` narrative markdown — prose source; may lag behind site HTML
 
 **Any new position added to HTML must be backfilled into the DB in the same commit.**
@@ -26,7 +26,7 @@ Once PolicyOS and the generation pipeline are complete:
 
 The site (`docs/`) serves the published platform at https://alistardust.github.io/freedom-and-dignity-project/.
 
-**Current pillar count: 25** across 5 foundations. All live at `docs/pillars/<slug>.html`.
+**Pillars:** Active pages across 5 foundations. All live at `docs/pillars/<slug>.html`. See [Pillar registry](#pillar-registry-datajs) below for the current list.
 
 Each pillar page uses:
 - `<style>:root { --accent-color: #...; }</style>` — per-pillar accent color only
@@ -82,7 +82,7 @@ docs/
   adversarial-review.html — Adversarial policy review
   policyos.html           — PolicyOS system rules layer (generated)
   pillars/index.html      — Full pillar index (fullview grid)
-  pillars/*.html          — 25 pillar pages
+  pillars/*.html          — Pillar pages
   compare/index.html      — Party comparison index
   compare/*.html          — 6 party comparison pages (DSA, Green, Libertarian, Democrat, Republican, Working Families)
 ```
@@ -112,9 +112,8 @@ Rebuilt April 2026. Reconciliation gap = 0 (HTML and DB in sync).
 
 ### Current totals
 
-- 3,810 positions (`XXXX-XXXX-0000` v2 ID format)
+- Positions in `XXXX-XXXX-0000` v2 ID format — run `sqlite3 policy/catalog/policy_catalog_v2.sqlite "SELECT COUNT(*) FROM positions"` for current count
 - 506 subdomains
-- 3,810 legacy ID mappings (provenance)
 - `plain_language` column populated for all positions (backfill complete)
 
 To rebuild: `python3 scripts/build-catalog-v2.py`
@@ -132,7 +131,7 @@ All three layers are canonicalized as of 2026-04-27. Amendments follow the proce
 
 ## Known open items
 
-- **Policy card audit** — **complete** as of May 2026; zero `status-missing` cards remain across all 25 pillars; 2,773 cards at `status-included`
+- **Policy card audit** — **complete** as of May 2026; zero `status-missing` cards remain; all cards are `status-included`
 - **Consumer Rights BNPL family** — 9 proposal cards added (CNSR-BNPL-0001 through 0009); CNSR-PDLS-0007 retired; DB and HTML in sync
 - **PolicyOS canonicalization** — **complete** as of 2026-04-27; all three layers locked; governance process defined
 - **Plain language** — all positions have `rule-plain` descriptions
@@ -163,8 +162,8 @@ Background research committed to `policy/research/`:
 
 ## Test suite
 
-- **Unit (Vitest):** `npm run test:unit` — 42 tests, all passing
-- **E2E (Playwright/Firefox):** `npm run test:e2e` — 248 tests, all passing
+- **Unit (Vitest):** `npm run test:unit` — 118 tests, all passing
+- **E2E (Playwright/Firefox):** `npm run test:e2e` — 263 tests, all passing
 - `PILLAR_COUNT` constant in both test files — update when adding pillars
 
 ## Scaffolding tools
