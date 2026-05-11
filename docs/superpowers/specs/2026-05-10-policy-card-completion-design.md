@@ -42,12 +42,14 @@ No `class="status-included"`, no `class="proposal"`, no `rule-badge` span, no `r
 
 ### Field mapping (HTML to DB)
 
-| HTML class | DB column |
-|---|---|
-| `rule-title` | `short_title` |
-| `rule-plain` | `plain_language` |
-| `rule-stmt` | `full_statement` |
-| `rule-notes` | `rule_notes` (new column) |
+| HTML class | DB column | Notes |
+|---|---|---|
+| `rule-title` | `short_title` | |
+| `rule-plain` | `plain_language` | |
+| `rule-stmt` | `full_statement` | |
+| `rule-notes` | `rule_notes` (new column) | |
+| `rule-body` | (none) | Removed in Phase 4 during conversion |
+| `rule-citations` | (none) | Removed in Phase 4; content folded into `rule-notes` |
 
 ---
 
@@ -80,7 +82,9 @@ Commit: `chore(db): add rule_notes column to positions table`
 
 ### Phase 2: Mechanical HTML cleanup (script)
 
-A script processes every `docs/pillars/*.html` file and:
+New script: `scripts/strip-card-status.js` (Node.js, to be created in Phase 2).
+
+Processes every `docs/pillars/*.html` file and:
 
 - Removes the status class modifier from all cards: `class="policy-card status-included"` and `class="policy-card proposal"` and all other `status-*` variants become `class="policy-card"`
 - Removes all `<span class="rule-badge">...</span>` elements
@@ -97,11 +101,19 @@ CSS changes in `docs/assets/css/style.css`:
 
 After Phase 2, proposal cards are in a valid intermediate state: `class="policy-card"` with `rule-body` and `rule-citations` instead of `rule-stmt` and `rule-notes`. This is expected and temporary.
 
+The script must be idempotent: running it twice on the same file must produce the same result. This ensures safe re-runs if interrupted mid-pillar.
+
 Tests must pass after Phase 2. Commit: `refactor(cards): strip status classes and badges from all policy cards`
 
 ### Phase 3: Backfill existing rule_notes to DB
 
-A script reads every card from all 26 pillar HTML files, finds cards with a `rule-notes` paragraph (the formerly `status-included` cards), matches on the card ID, and writes the `rule-notes` content to the new `rule_notes` DB column.
+New script: `scripts/backfill-rule-notes.js` (Node.js, to be created in Phase 3).
+
+Reads every card from all 26 pillar HTML files, finds cards with a `rule-notes` paragraph, matches on the card ID (`data-id` attribute / card element `id`), and writes the `rule-notes` text content to the new `rule_notes` DB column.
+
+Miss-handling policy: if a card ID found in HTML has no matching row in the DB, log a warning to stdout and continue. After the run, print a summary of all unmatched IDs for review. Do not fail the script on a miss. Unmatched IDs should be investigated manually and backfilled into the DB separately.
+
+The script must be idempotent. Phase 3 modifies only the database, not HTML -- no test run is required after it.
 
 Commit: `chore(db): backfill rule_notes from existing status-included cards`
 
@@ -109,7 +121,7 @@ Commit: `chore(db): backfill rule_notes from existing status-included cards`
 
 For each pillar (in priority order), a subagent:
 
-1. Reads all cards with `rule-body` (the unconverted proposal cards)
+1. Reads all cards with `rule-body` (the unconverted proposal cards). Policy families are groupings of related cards within a pillar, each contained in a `<div class="policy-family">` element with a `family-header`. Work proceeds family by family within each pillar.
 2. For each card, by family:
    - Extracts a `rule-stmt` (short, formal, precise policy statement) from `rule-body`
    - Converts `rule-body` + `rule-citations` into `rule-notes` prose with inline citations and adversarial review
@@ -151,7 +163,7 @@ Research must use primary sources (federal statutes, court opinions, government 
 | P3 | legislative-reform | 14 |
 | P3 | courts-and-judicial-system | 13 |
 | P3 | term-limits-and-fitness | 4 |
-| P3 | data-rights-and-privacy | 0 (verify) |
+| P3 | data-rights-and-privacy | 0 -- all 34 cards already have rule-stmt + rule-notes; Phase 2 mechanical cleanup only |
 
 ---
 
