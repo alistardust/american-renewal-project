@@ -6,7 +6,7 @@
 
 ## Problem
 
-1,121 policy cards across 26 pillars are at `class="policy-card proposal"` status. These cards have substantive content (`rule-title`, `rule-plain`, `rule-body` with citations) but are in a different structural format from the canonical card format, have not been through adversarial review, and are not represented completely in the policy catalog database.
+1,201 policy cards across 26 pillars are at `class="policy-card proposal"` status. These cards have substantive content (`rule-title`, `rule-plain`, `rule-body` with citations) but are in a different structural format from the canonical card format, have not been through adversarial review, and are not represented completely in the policy catalog database.
 
 Additionally, the site currently uses status classes (`status-included`, `proposal`) and badge labels (`Included`, `Proposal`) on all cards. The status system is being redesigned as part of the human review workflow effort. This work strips all status markers site-wide and standardizes card structure before the new system is designed.
 
@@ -15,7 +15,7 @@ Additionally, the site currently uses status classes (`status-included`, `propos
 ## Goals
 
 1. Standardize all policy cards to a single format with no status markers
-2. Convert all 1,121 proposal cards to the canonical card format with adversarial review
+2. Convert all 1,201 proposal cards to the canonical card format with adversarial review
 3. Add a `rule_notes` column to the database and keep it in sync with HTML
 
 ---
@@ -130,10 +130,11 @@ Each subagent works sequentially through all families in its assigned pillar. Wi
    - Extracts a `rule-stmt` (formal, precise policy statement with thresholds and enforcement detail) from `rule-body`
    - Converts `rule-body` + `rule-citations` into `rule-notes` prose with inline citations and adversarial review
    - Removes `rule-body` and `rule-citations` from the HTML
-3. Updates the DB for all cards in the family in a single transaction:
+3. Updates the DB for all cards in the family in a single transaction using UPSERT semantics (`INSERT OR REPLACE` or equivalent). 113 proposal card IDs are known to be missing from the `positions` table -- a plain `UPDATE` would silently skip them. For each card:
    - `rule_notes` is set from the new `rule-notes` content
    - `full_statement` is set from the new `rule-stmt` content
    - `short_title` and `plain_language` are confirmed to be populated; if missing, backfill from the card's existing HTML `rule-title` and `rule-plain` fields respectively
+   - If inserting a new row, `id`, `domain`, and `subdomain` must be populated from the card's ID (parseable as `DOMAIN-SUBDOMAIN-NNNN`)
 
    If the transaction fails, roll back the entire family and surface the error -- do not partially commit DB updates.
 4. Writes the converted HTML for all cards in the family. HTML is written **after** a successful DB commit. If HTML writing fails after DB commit, log the error and surface it for manual recovery (the DB is already correct; re-running Phase 4 on that family will re-derive the HTML and skip cards that already have `rule-stmt`).
@@ -148,28 +149,28 @@ Research must use primary sources (federal statutes, court opinions, government 
 
 ## Pillar Priority Order (Phase 4)
 
-26 pillars total; 25 require Phase 4 content work. `data-rights-and-privacy` requires Phase 2 mechanical cleanup only (its 34 cards already have `rule-stmt` and `rule-notes`). Total proposal cards requiring Phase 4 conversion: 1,121.
+26 pillars total; 25 require Phase 4 content work. `data-rights-and-privacy` requires Phase 2 mechanical cleanup only (its 34 cards already have `rule-stmt` and `rule-notes`). Total proposal cards requiring Phase 4 conversion: 1,201.
 
 | Priority | Pillar | Proposal cards |
 |---|---|---|
-| P1 | equal-justice-and-policing | 98 |
+| P1 | equal-justice-and-policing | 101 |
+| P1 | environment-and-agriculture | 111 |
 | P1 | consumer-rights | 91 |
-| P1 | environment-and-agriculture | 82 |
 | P1 | antitrust-and-corporate-power | 79 |
 | P1 | healthcare | 79 |
-| P1 | education | 67 |
+| P1 | education | 70 |
 | P1 | labor-and-workers-rights | 61 |
-| P1 | housing | 60 |
-| P2 | taxation-and-wealth | 52 |
-| P2 | rights-and-civil-liberties | 50 |
-| P2 | foreign-policy | 49 |
+| P1 | housing | 61 |
+| P2 | foreign-policy | 64 |
+| P2 | rights-and-civil-liberties | 54 |
+| P2 | taxation-and-wealth | 55 |
+| P2 | anti-corruption | 46 |
 | P2 | infrastructure-and-public-goods | 41 |
+| P2 | technology-and-ai | 40 |
 | P2 | immigration | 39 |
 | P2 | information-and-media | 35 |
-| P2 | technology-and-ai | 34 |
 | P2 | elections-and-representation | 34 |
-| P2 | anti-corruption | 33 |
-| P3 | checks-and-balances | 25 |
+| P3 | checks-and-balances | 28 |
 | P3 | administrative-state | 25 |
 | P3 | science-technology-space | 23 |
 | P3 | gun-policy | 17 |
@@ -183,8 +184,8 @@ Research must use primary sources (federal statutes, court opinions, government 
 
 ## Testing
 
-After Phase 2: `npm run test:unit` must pass.
-After each Phase 4 pillar: `npm run test:unit` must pass.
+After Phase 2: `npm run test:unit` and `npm run test:e2e` must pass (Phase 2 modifies all 26 pillar files and CSS; e2e catches rendering regressions before Phase 4 begins).
+After each Phase 4 family commit: `npm run test:unit` must pass (per step 5 above).
 After all Phase 4 work: `npm run test:e2e` full site check.
 
 ---
