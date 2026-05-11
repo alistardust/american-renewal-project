@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Policy Classification — Freedom and Dignity Project</title>
   
-  <meta name="description" content="How this platform classifies policy positions — the catalog system, classification methodology, and the PolicyOS rules framework that governs how policy is structured.">
+  <meta name="description" content="How this platform classifies policy positions, the catalog system, classification methodology, and the PolicyOS rules framework that governs how policy is structured.">
   
 
   
@@ -16,10 +16,10 @@
   <meta name="twitter:card"        content="summary_large_image">
   <meta name="twitter:image"       content="https://alistardust.github.io/freedom-and-dignity-project/og-image.png">
   <meta property="og:title"        content="Freedom and Dignity Project">
-  <meta property="og:description"  content="How this platform classifies policy positions — the catalog system, classification methodology, and the PolicyOS rules framework.">
+  <meta property="og:description"  content="How this platform classifies policy positions, the catalog system, classification methodology, and the PolicyOS rules framework.">
   <meta property="og:url"          content="https://alistardust.github.io/freedom-and-dignity-project/classification.html">
   <meta name="twitter:title"       content="Freedom and Dignity Project">
-  <meta name="twitter:description" content="How this platform classifies policy positions — the catalog system, classification methodology, and the PolicyOS rules framework that governs how policy is structured.">
+  <meta name="twitter:description" content="How this platform classifies policy positions, the catalog system, classification methodology, and the PolicyOS rules framework that governs how policy is structured.">
 
   <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
   <link rel="stylesheet" href="assets/css/style.css">
@@ -89,7 +89,7 @@
 
   <h2>The Policy Catalog</h2>
 
-  <p>This platform maintains a structured policy catalog — a database of every policy position, with its ID, pillar, foundation, classification type, plain-language summary, formal policy statement, and citation record. The catalog is version-controlled, publicly available, and the authoritative source for every position on this platform.</p>
+  <p>This platform maintains a structured policy catalog, a database of every policy position, with its ID, pillar, foundation, classification type, plain-language summary, formal policy statement, and citation record. The catalog is version-controlled, publicly available, and the authoritative source for every position on this platform.</p>
 
   <p>The catalog is organized as a SQLite database with a public schema. Every policy position has a canonical ID in the format <code>DOMAIN-SUBDOMAIN-NNNN</code> (e.g., <code>HLTH-COVR-0001</code> for a healthcare coverage position). Positions are grouped by domain, subdomain, foundation, and pillar.</p>
 
@@ -116,12 +116,12 @@
       <tbody>
         <tr>
           <td><span class="clf-badge clf-badge--amendment">Amendment</span></td>
-          <td>Requires a constitutional amendment to enact. These are structural changes to how government works — voting rights, term limits, anti-corruption rules.</td>
+          <td>Requires a constitutional amendment to enact. These are structural changes to how government works, voting rights, term limits, anti-corruption rules.</td>
           <td>Congressional term limits, independent redistricting mandate, public financing requirement</td>
         </tr>
         <tr>
           <td><span class="clf-badge clf-badge--statute">Statute</span></td>
-          <td>Requires federal legislation — an act of Congress. Most policy positions on this platform are statute-level.</td>
+          <td>Requires federal legislation, an act of Congress. Most policy positions on this platform are statute-level.</td>
           <td>Universal healthcare, minimum wage, labor rights, drug pricing, antitrust enforcement</td>
         </tr>
         <tr>
@@ -143,11 +143,11 @@
   <p>Every policy position in the catalog must have two text representations:</p>
 
   <ul style="color:var(--ink);line-height:1.75;padding-left:1.5rem;margin-bottom:1.5rem">
-    <li style="margin-bottom:.6rem"><strong>Plain language</strong> — 1–3 sentences at approximately an 8th-grade reading level. What does this position do, and why does it matter? No jargon.</li>
-    <li style="margin-bottom:.6rem"><strong>Policy statement</strong> — The full technical/legal statement with precise language, thresholds, enforcement mechanisms, and regulatory detail.</li>
+    <li style="margin-bottom:.6rem"><strong>Plain language</strong>: 1–3 sentences at approximately an 8th-grade reading level. What does this position do, and why does it matter? No jargon.</li>
+    <li style="margin-bottom:.6rem"><strong>Policy statement</strong>: The full technical/legal statement with precise language, thresholds, enforcement mechanisms, and regulatory detail.</li>
   </ul>
 
-  <p>Both fields are required. The plain-language field is not a summary of the policy statement — it is an independent, accessible explanation. This is not an accessibility accommodation. It is a substantive requirement: if a policy position cannot be explained to a person without legal training in two or three sentences, that is a sign the position itself needs more work.</p>
+  <p>Both fields are required. The plain-language field is not a summary of the policy statement, it is an independent, accessible explanation. This is not an accessibility accommodation. It is a substantive requirement: if a policy position cannot be explained to a person without legal training in two or three sentences, that is a sign the position itself needs more work.</p>
 
   <h2>PolicyOS Rule Families</h2>
 
@@ -167,7 +167,7 @@
       <tbody>
         <tr>
           <td>Platform Values</td>
-          <td>The moral and political anchor for all rules. <code>floor + duty</code> model — what policy must not violate vs. what it must actively secure.</td>
+          <td>The moral and political anchor for all rules. <code>floor + duty</code> model: what policy must not violate vs. what it must actively secure.</td>
           <td><span class="clf-badge clf-badge--statute">Locked</span></td>
         </tr>
         <tr>
