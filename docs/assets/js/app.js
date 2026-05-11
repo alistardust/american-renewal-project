@@ -39,7 +39,7 @@
       return [
         { label: 'Home',         href: base + 'index.html' },
         { label: 'The Problem',  href: base + 'problem.html' },
-        { label: 'Our Approach', href: base + 'approach.html' },
+        { label: 'The Plan', href: base + 'plan.html' },
         { label: 'The Platform', children: [
           { label: 'Rights',          href: base + 'rights.html' },
           { label: 'Policy Library',  href: base + 'policy-library.html', children: policyLibraryChildren },
