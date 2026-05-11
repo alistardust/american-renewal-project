@@ -119,22 +119,24 @@ Commit: `chore(db): backfill rule_notes from existing status-included cards`
 
 ### Phase 4: Per-pillar proposal card content conversion
 
-For each pillar (in priority order), a subagent:
+Phase 4 uses one subagent per pillar. Each subagent works sequentially through all families in its assigned pillar. Within each family, the subagent:
 
 1. Reads all cards with `rule-body` (the unconverted proposal cards). Policy families are groupings of related cards within a pillar, each contained in a `<div class="policy-family">` element with a `family-header`. Work proceeds family by family within each pillar.
-2. For each card, by family:
+2. For each card in the family:
    - Extracts a `rule-stmt` (short, formal, precise policy statement) from `rule-body`
    - Converts `rule-body` + `rule-citations` into `rule-notes` prose with inline citations and adversarial review
    - Removes `rule-body` and `rule-citations` from the HTML
-   - Updates the DB row for that position ID with the new `rule_notes` content
-3. Runs `npm run test:unit` (must pass)
-4. Commits per family: `policy(<pillar>): complete <FAMILY> cards`
+3. Updates the DB for all cards in the family in a single transaction: each card's `rule_notes` column is set from the new `rule-notes` content. If the transaction fails, roll back the entire family and surface the error -- do not partially commit DB updates.
+4. Runs `npm run test:unit`. If tests pass, commits that family: `policy(<pillar>): complete <FAMILY> cards`. If tests fail, stop immediately, surface the failure with the test output, and do not proceed to the next family or commit. Do not attempt to auto-fix test failures.
+5. Moves to the next family and repeats.
 
 Research must use primary sources (federal statutes, court opinions, government data) and academic databases (Google Scholar, SSRN, NBER, PubMed where applicable). All citations go inline in `rule-notes` prose.
 
 ---
 
 ## Pillar Priority Order (Phase 4)
+
+26 pillars total; 25 require Phase 4 content work. `data-rights-and-privacy` requires Phase 2 mechanical cleanup only (its 34 cards already have `rule-stmt` and `rule-notes`).
 
 | Priority | Pillar | Proposal cards |
 |---|---|---|
