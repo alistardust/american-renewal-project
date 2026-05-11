@@ -39,9 +39,10 @@ test.describe('Homepage', () => {
     await expect(page.locator('.entry-grid .entry-card')).toHaveCount(4);
   });
 
-  test('nav has 4 links (Home, Problem, Approach, Get Involved)', async ({ page }) => {
-    // Baked-in nav: Home, Problem, Approach, Get Involved = 4
+  test('nav has 4 links (Home, Problem, The Plan, Get Involved)', async ({ page }) => {
+    // Baked-in nav: Home, Problem, The Plan, Get Involved = 4
     await expect(page.locator('.nav-links a')).toHaveCount(4);
+    await expect(page.locator('.nav-links a').nth(2)).toHaveText('The Plan');
   });
 
   test('nav item has aria-current="page" on nav-destination page', async ({ page }) => {
@@ -938,5 +939,46 @@ test.describe('classification.html PolicyOS status', () => {
   test('link to policyos.html is present', async ({ page }) => {
     await page.goto('/classification.html');
     await expect(page.locator('a[href="policyos.html"]').first()).toBeAttached();
+  });
+});
+
+// ── PLAN PAGE ────────────────────────────────────────────────────────────────
+
+test.describe('plan.html', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/plan.html');
+  });
+
+  test('has correct title', async ({ page }) => {
+    await expect(page).toHaveTitle('The Plan — Freedom and Dignity Project');
+  });
+
+  test('renders h1', async ({ page }) => {
+    await expect(page.locator('h1')).toContainText('The Plan');
+  });
+
+  test('renders hero statement', async ({ page }) => {
+    await expect(page.locator('.hero-statement')).toBeAttached();
+  });
+
+  test('renders all three phases', async ({ page }) => {
+    // 3 layer-cards: The Foundation, The Campaign, The Transformation
+    await expect(page.locator('.layer-card')).toHaveCount(3);
+  });
+
+  test('Get Involved CTA links correctly', async ({ page }) => {
+    const href = await page.locator('.page-nav-cta a').getAttribute('href');
+    expect(href).not.toBeNull();
+    expect(href).toContain('get-involved');
+  });
+
+  test('nav shows aria-current on plan.html', async ({ page }) => {
+    await expect(page.locator('.nav-links a[aria-current="page"]')).toHaveText('The Plan');
+  });
+
+  test('approach.html still loads after de-navving', async ({ page }) => {
+    await page.goto('/approach.html');
+    await expect(page).not.toHaveTitle(/404/);
+    await expect(page.locator('h1')).toBeAttached();
   });
 });
