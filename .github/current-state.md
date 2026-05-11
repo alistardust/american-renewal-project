@@ -71,6 +71,8 @@ docs/
   index.html              — Homepage (foundations + pillar cards)
   foundations.html        — 5-foundation deep dive
   mission.html            — Platform mission statement
+  plan.html               — The Plan: strategic brief and three-phase roadmap (nav: "The Plan")
+  approach.html           — Legacy page; de-navved; still accessible at direct URL
   constitution.html       — Framework & governing principles
   classification.html     — Rule ID system explanation
   about-ai.html           — AI use transparency page
@@ -78,11 +80,14 @@ docs/
   get-involved.html       — Contribution guidelines
   roadmap.html            — Project roadmap (tracks, pillar status)
   adversarial-review.html — Adversarial policy review
+  policyos.html           — PolicyOS system rules layer (generated)
   pillars/index.html      — Full pillar index (fullview grid)
   pillars/*.html          — 25 pillar pages
   compare/index.html      — Party comparison index
   compare/*.html          — 6 party comparison pages (DSA, Green, Libertarian, Democrat, Republican, Working Families)
 ```
+
+**Nav links (4-link primary nav):** Home, Problem, The Plan (`plan.html`), Get Involved
 
 ## Frontend architecture
 
