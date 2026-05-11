@@ -131,6 +131,8 @@ All three layers are canonicalized as of 2026-04-27. Amendments follow the proce
 
 ## Known open items
 
+- **Policy card completion (Issue #7)** — IN PROGRESS (feature/7-policy-card-completion). Phase 2 complete: status markers stripped from all 26 pillar source files; 18k lines removed; tests passing (commit e0de4fa). Phase 3 complete: 3,502 rule_notes rows backfilled to DB (commit 9a27a41). Phase 4 (proposal card content conversion) pending.
+- **154 DB-gap IDs** — backfill script found 154 HTML card IDs with no matching DB row (81 v2-format, 73 v1-format). These are status-included cards with rule_notes already in HTML; they do not block Phase 4. v2-format IDs can be upserted; v1-format require migration first. Track as post-Phase-4 cleanup.
 - **Policy card audit** — **complete** as of May 2026; zero `status-missing` cards remain; all cards are `status-included`
 - **Consumer Rights BNPL family** — 9 proposal cards added (CNSR-BNPL-0001 through 0009); CNSR-PDLS-0007 retired; DB and HTML in sync
 - **PolicyOS canonicalization** — **complete** as of 2026-04-27; all three layers locked; governance process defined
@@ -152,6 +154,7 @@ Background research committed to `policy/research/`:
 
 ## Known issues for human review
 
+- **154 HTML-only card IDs** — 154 card IDs exist in HTML source but have no DB row: 81 are valid v2-format (can be upserted), 73 are v1-format (need migration). All have rule_notes in HTML; flagged during Phase 3 backfill. Post-Phase-4 cleanup task.
 - **[VERIFY] markers in policy cards** — adversarial review agents left `[VERIFY]` markers on uncertain legal thresholds and regulatory figures throughout policy cards across all pillars; requires human review before publication
 - **Policy card ID audit** — a systematic scan of all `.policy-card` IDs for duplicates or format violations has not been done; spot checks pass; a full audit is warranted before v1.0
 - **Orphan footnotes** — several pillar pages have footnotes defined in the reference list but never cited inline: `immigration.html` (fn1, fn3), `technology-and-ai.html` (fn1–fn3), `consumer-rights.html` (fn3), `courts-and-judicial-system.html` (fn5–fn6), `elections-and-representation.html` (fn4–fn7), `environment-and-agriculture.html` (fn3), `gun-policy.html` (fn4–fn5), `legislative-reform.html` (fn4), `term-limits-and-fitness.html` (fn3–fn4)
@@ -163,7 +166,7 @@ Background research committed to `policy/research/`:
 ## Test suite
 
 - **Unit (Vitest):** `npm run test:unit` — 118 tests, all passing
-- **E2E (Playwright/Firefox):** `npm run test:e2e` — 263 tests, all passing
+- **E2E (Playwright/Firefox):** `npm run test:e2e` — 270 tests, all passing
 - `PILLAR_COUNT` constant in both test files — update when adding pillars
 
 ## Scaffolding tools
