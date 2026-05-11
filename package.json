@@ -36,6 +36,7 @@
   "homepage": "https://github.com/alistardust/freedom-and-dignity-project#readme",
   "devDependencies": {
     "@playwright/test": "^1.59.1",
+    "better-sqlite3": "^12.9.0",
     "nunjucks": "^3.2.4",
     "parse5": "^6.0.1",
     "serve": "^14.2.6",
