@@ -113,7 +113,9 @@
     function closeTree() {
       const panel = document.querySelector('.site-tree');
       const burger = document.querySelector('.nav-hamburger');
+      const overlay = document.querySelector('.st-overlay');
       if (panel) panel.classList.remove('st-open');
+      if (overlay) overlay.classList.remove('st-active');
       if (burger) {
         burger.setAttribute('aria-expanded', 'false');
         burger.setAttribute('aria-label', 'Open site menu');
@@ -156,7 +158,9 @@
       burger.setAttribute('aria-expanded', 'false');
       burger.addEventListener('click', function () {
         const panel = document.querySelector('.site-tree');
+        const overlay = document.querySelector('.st-overlay');
         const open = panel && panel.classList.toggle('st-open');
+        if (overlay) overlay.classList.toggle('st-active', !!open);
         burger.setAttribute('aria-expanded', open ? 'true' : 'false');
         burger.setAttribute('aria-label', open ? 'Close site menu' : 'Open site menu');
         if (open) {
