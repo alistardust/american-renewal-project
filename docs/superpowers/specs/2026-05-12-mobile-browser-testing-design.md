@@ -41,11 +41,14 @@ Shared constants module + separate mobile spec file.
 Exports two constants currently duplicated or at risk of diverging between spec files:
 
 ```js
-// Verify PILLAR_COUNT against data.js before implementation — this value tracks the live pillar list.
-const PILLAR_COUNT = 26;
+const PILLAR_COUNT = 26; // must match the count in docs/assets/js/data.js
 
 // Each entry: { slug: string, title: string }
 // slug matches the filename at docs/pillars/<slug>.html
+// This list is used to generate one describe block per pillar page (per-page smoke tests).
+// It reflects all pillar pages that existed when the test was written (25 entries).
+// PILLAR_COUNT (26) includes one pillar that shares a page or has no standalone test —
+// the two values are maintained separately and need not match exactly.
 const SAMPLE_PILLARS = [
   { slug: 'executive-power',               title: 'Executive Power' },
   { slug: 'elections-and-representation',  title: 'Elections' },
@@ -92,10 +95,17 @@ All three mobile projects run `site.spec.js` in addition to `mobile.spec.js`. Mo
 **How to handle failures found during the mobile bug sweep:**
 
 1. If the failure is a genuine layout/visibility bug in the site, fix the site (`style.css` / `app.js`).
-2. If the failure is a desktop-only assertion that is correct for desktop but wrong on mobile (e.g. checking nav link visibility), add a `test.skip(isMobile, 'desktop-only layout check')` guard in `site.spec.js` — do not delete the test.
-3. If a test is meaningful on both platforms but behaves differently, split it into a desktop and a mobile variant using `test.skip`.
+2. If the failure is a desktop-only assertion that is correct for desktop but wrong on mobile (e.g. checking nav link visibility), add a project-name guard to skip it on mobile profiles. Do not use the `isMobile` Playwright fixture — it is not set for the `mobile-firefox` project (which uses a custom viewport, not a device preset). Use `testInfo.project.name` instead:
+   ```js
+   test.skip(
+     ({}, testInfo) => testInfo.project.name.startsWith('mobile'),
+     'desktop-only layout check'
+   );
+   ```
+   Do not delete the test — keep it running on the `firefox` desktop project.
+3. If a test is meaningful on both platforms but behaves differently, split it into a desktop and a mobile variant using the same guard.
 
-Success criterion #1 ("zero failures across all four projects") applies after this triage is complete. The mobile bug sweep phase is where these failures are resolved.
+Both fixing the site and adding a skip guard are valid resolutions that satisfy success criterion #1 — the choice depends on whether the failure reflects a real bug.
 
 ### `playwright.config.js` (updated)
 
@@ -170,7 +180,7 @@ This is the most common mobile layout regression and the most invisible to deskt
 
 #### 3. Tap target sizes
 
-Checks that key interactive controls meet the WCAG 2.5.5 minimum of 44 × 44 CSS pixels in at least one dimension. Scoped to:
+Checks that key interactive controls meet the WCAG 2.5.5 minimum of 44 × 44 CSS pixels — both dimensions must meet the minimum. Scoped to:
 
 - `.nav-hamburger` button
 - Primary CTA buttons on the homepage (`.entry-card a`, `.f-card a`)
