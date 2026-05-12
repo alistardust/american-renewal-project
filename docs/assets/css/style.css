@@ -3391,6 +3391,7 @@ a.f-pillar-card:hover { box-shadow: 0 3px 8px rgba(0,0,0,.12); }
 }
 
 /* ── POLICYOS PAGE ────────────────────────────────────── */
+.pil-hero h1 { color: #fff; }
 .plos-layer-nav { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
 .plos-layer-nav a {
   color: #fff; border: 1px solid rgba(255,255,255,.4); border-radius: 4px;
