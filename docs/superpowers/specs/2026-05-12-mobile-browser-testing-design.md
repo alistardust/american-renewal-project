@@ -161,14 +161,17 @@ Four describe blocks:
 
 #### 1. Hamburger nav
 
-Runs on homepage. Verifies:
+The full open/close/overlay/escape cycle runs on the homepage **and** on a pillar page (`pillars/healthcare.html`). `app.js` branches on `/\/(pillars|compare)\//` for path resolution — the burger and overlay must work correctly on subdir pages, not just the root.
 
+Homepage assertions:
 - `.nav-links` links are hidden via `display: none` at ≤600px (confirmed in `style.css`); use `toBeHidden()` which correctly handles `display: none` without the `opacity:0` false-pass risk
 - `.nav-hamburger` button is visible and has `aria-expanded="false"` on load
 - Clicking the burger sets `aria-expanded="true"` and adds `.st-open` to `.site-tree`
 - Clicking the burger a second time toggles it closed (`st-open` removed, `aria-expanded="false"`)
 - Clicking the `.st-overlay` closes the panel (`st-open` removed, `aria-expanded="false"`)
 - Pressing Escape closes an open panel
+
+Pillar page (`pillars/healthcare.html`) assertions — same open/close/overlay/escape cycle. This verifies that the injected nav and overlay work correctly when `app.js` is running in subdir path mode.
 
 #### 2. No horizontal overflow
 
