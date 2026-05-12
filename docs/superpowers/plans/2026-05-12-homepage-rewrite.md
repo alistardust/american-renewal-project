@@ -6,7 +6,7 @@
 
 **Architecture:** Nav update first, then tests updated before running (TDD), then index.njk rewritten section-by-section, then build and full test suite. All edits to `.njk` source files only -- never to built `docs/` HTML. The approved design is in `~/.gstack/projects/alistardust-freedom-and-dignity-project/alice-main-eng-review-home-page-20260511-162717.md` and the companion design doc at `~/.gstack/projects/alistardust-freedom-and-dignity-project/alice-feature-7-policy-card-completion-design-20260511-153000.md`.
 
-**Tech Stack:** Nunjucks templates in `src/pages/`, built with `node scripts/build-site.js`, tested with `npm run test:unit` (Vitest) and `npm run test:e2e` (Playwright/Firefox). Nav data in `src/data/nav.json`.
+**Tech Stack:** Nunjucks templates in `src/pages/`, built with `node scripts/build-site.js`, tested with `npm run test:unit` (Vitest) and `npm run test:e2e:firefox` (Playwright/Firefox). Nav data in `src/data/nav.json`.
 
 ---
 
@@ -326,7 +326,7 @@ Note: The `[VERIFY]` comment is intentional -- the design doc flags the narrativ
 
 Replace with:
 ```html
-  <h2 id="building-heading">Five Foundations. <span data-dynamic="pillar-count">26</span> Policy Areas. Three Rights Frameworks.</h2>
+  <h2 id="building-heading">Five Foundations. Policy Areas. Three Rights Frameworks.</h2>
   <p style="max-width:600px;margin-bottom:1.75rem;color:var(--ink)">The platform is organized into five structural foundations, each containing concrete policy positions. The rights frameworks establish the floor. The foundations build the public systems required to keep those rights real.</p>
 ```
 
@@ -367,7 +367,7 @@ Replace with:
   <p style="margin-top:2rem;max-width:640px;color:var(--ink);font-size:.95rem">This is not a list of demands without structure. Every policy position on this platform must identify the right it serves, the institution responsible, the enforcement mechanism, and the standard by which the public can judge success. Those rules are PolicyOS. <a href="policyos.html" style="color:var(--navy);font-weight:600">Read the framework.</a></p>
 ```
 
-- [ ] Verify: `grep -n "f-num\|Pillars\.\|pillars\." src/pages/index.njk` -- all should return 0 results. Also confirm fdr-block is present in the history section and absent from the building section: `grep -n "fdr-block" src/pages/index.njk` -- should show exactly one result, inside the `history-heading` section.
+- [ ] Verify: `grep -n "f-num\|Pillars\.\|pillars\.\|pillar-count" src/pages/index.njk` -- all should return 0 results. Also confirm fdr-block is present in the history section and absent from the building section: `grep -n "fdr-block" src/pages/index.njk` -- should show exactly one result, inside the `history-heading` section.
 
 ---
 
@@ -508,7 +508,7 @@ git commit -m "feat(homepage): rewrite -- rights first, history bridge, new hero
 - New hero: 'The promise America never kept, and the plan to keep it.'
 - Rights section first (bg-cream, updated copy and heading)
 - New History bridge section (dark bg, FDR/MLK arc copy)
-- Platform section: dynamic pillar count, values callouts replace f-num, PolicyOS blurb
+- Platform section: values callouts replace f-num, PolicyOS blurb, no pillar count
 - Tour Step 3: remove hardcoded pillar count
 - CTA: page-nav-cta replaces site-closing
 - nav.json: Rights replaces Problem in top nav
