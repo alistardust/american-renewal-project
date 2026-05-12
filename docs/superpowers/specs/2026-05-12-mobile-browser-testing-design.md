@@ -41,6 +41,7 @@ Shared constants module + separate mobile spec file.
 Exports two constants currently duplicated or at risk of diverging between spec files:
 
 ```js
+// Verify PILLAR_COUNT against data.js before implementation — this value tracks the live pillar list.
 const PILLAR_COUNT = 26;
 
 // Each entry: { slug: string, title: string }
@@ -76,15 +77,25 @@ const SAMPLE_PILLARS = [
 module.exports = { PILLAR_COUNT, SAMPLE_PILLARS };
 ```
 
-### `tests/e2e/site.spec.js` (updated)
+## `site.spec.js` on Mobile Profiles
 
-Replace inline constant declarations with:
+All three mobile projects run `site.spec.js` in addition to `mobile.spec.js`. Most existing tests will pass unchanged on mobile profiles because they assert DOM presence, counts, text content, and attributes — not layout or visibility. Known safe categories:
 
-```js
-const { PILLAR_COUNT, SAMPLE_PILLARS } = require('./shared');
-```
+- Page title and heading assertions
+- Count assertions (nav links exist in the DOM at mobile even when `display:none`)
+- Text content assertions
+- Attribute assertions (`aria-current`, `href`, etc.)
+- Accordion open/close behaviour (click-based, not touch-specific)
 
-No other changes. All existing tests remain exactly as-is.
+**Expected failure surface:** Any `site.spec.js` test that uses `toBeVisible()` on an element that is hidden via CSS at mobile viewports could fail. The nav links use `display:none` at ≤600px — `toBeVisible()` on `.nav-links a` would fail.
+
+**How to handle failures found during the mobile bug sweep:**
+
+1. If the failure is a genuine layout/visibility bug in the site, fix the site (`style.css` / `app.js`).
+2. If the failure is a desktop-only assertion that is correct for desktop but wrong on mobile (e.g. checking nav link visibility), add a `test.skip(isMobile, 'desktop-only layout check')` guard in `site.spec.js` — do not delete the test.
+3. If a test is meaningful on both platforms but behaves differently, split it into a desktop and a mobile variant using `test.skip`.
+
+Success criterion #1 ("zero failures across all four projects") applies after this triage is complete. The mobile bug sweep phase is where these failures are resolved.
 
 ### `playwright.config.js` (updated)
 
@@ -146,7 +157,7 @@ Runs on homepage. Verifies:
 
 #### 2. No horizontal overflow
 
-Runs on homepage, pillars index, and one sample pillar page. For each:
+Runs on homepage, pillars index, and `pillars/healthcare.html` as a representative pillar page. For each:
 
 ```js
 const overflow = await page.evaluate(
@@ -165,7 +176,7 @@ Checks that key interactive controls meet the WCAG 2.5.5 minimum of 44 × 44 CSS
 - Primary CTA buttons on the homepage (`.entry-card a`, `.f-card a`)
 - Nav links (`.nav-links a`)
 
-Uses `locator.boundingBox()` and asserts `box.width >= 44 && box.height >= 44` (both dimensions, per WCAG 2.5.5).
+Uses `locator.boundingBox()` and asserts `box.width >= 44 && box.height >= 44` (WCAG 2.5.5 requires both dimensions to meet the minimum).
 
 #### 4. Mobile layout spot checks
 
@@ -197,7 +208,11 @@ Fixes go to `docs/assets/css/style.css` and/or `docs/assets/js/app.js`. Each dis
 
 `npm run test:e2e` currently runs `playwright test --project=firefox`. This will be updated to `playwright test` (no project filter) so all four projects run by default on every commit, matching the agreed behaviour. This will increase per-run time roughly 4x — acceptable given the suite is fast.
 
-`npm run test:e2e:mobile` will also be added as a convenience alias to run only the three mobile projects when debugging mobile-specific failures.
+`npm run test:e2e:mobile` will also be added as a convenience alias to run only the three mobile projects when debugging mobile-specific failures:
+
+```
+"test:e2e:mobile": "playwright test --project=mobile-chrome --project=mobile-safari --project=mobile-firefox"
+```
 
 ---
 
