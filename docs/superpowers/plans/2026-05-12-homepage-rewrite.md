@@ -483,10 +483,9 @@ Expected: all tests pass. The unit tests do not cover E2E behavior, but `content
 
 - [ ] **Run E2E tests (desktop Firefox only — mobile suite is separate):**
 ```bash
-npm run test:e2e
+npm run test:e2e:firefox
 ```
 Expected: all tests pass, including the 6 new homepage tests and the 6 updated nav tests.
-Note: `test:e2e:firefox` is added by the mobile testing plan (a later task). Use `test:e2e` here.
 
 - [ ] **Verify no "Pillars" in authored homepage content:**
 ```bash

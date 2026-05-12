@@ -38,7 +38,7 @@ Shared constants module + separate mobile spec file.
 
 ### `tests/e2e/shared.js` (new)
 
-Exports `SAMPLE_PILLARS`, the per-pillar slug/title list used by both spec files. `PILLAR_COUNT` is intentionally excluded — hardcoded pillar counts are being removed from the test suite.
+Exports `SAMPLE_PILLARS`, the per-pillar slug/title list used by both spec files. `PILLAR_COUNT` is intentionally excluded here. As part of the broader effort to retire "pillar" naming across the codebase, the existing `PILLAR_COUNT` constant in `site.spec.js` will also be removed in a dedicated cleanup task — do not add it to `shared.js` or `mobile.spec.js`.
 
 ```js
 // Each entry: { slug: string, title: string }
@@ -213,6 +213,7 @@ After the initial test run, triage all failures. Expected areas of risk based on
 - Pillar sub-nav (`.pil-snav`) — multiple breakpoints, likely to overflow on narrow screens
 - Compare pages — complex grid layout, several breakpoints down to 480px
 - Foundation cards — grid collapse to single column
+- `.nav-hamburger` CSS state — the hamburger button icon is driven by CSS transitions that target `.site-tree.st-open`. Verify that the visual icon state (e.g., X vs. burger lines) visually updates on toggle and is not stuck in a closed or open appearance due to a missing or mis-scoped CSS rule. This is separate from the `aria-expanded` assertion and must be verified visually with `--headed` if the test passes but the visual is wrong.
 
 Fixes go to `docs/assets/css/style.css` and/or `docs/assets/js/app.js`. Each distinct layout bug gets its own atomic commit (`fix(mobile): ...`).
 
@@ -220,13 +221,21 @@ Fixes go to `docs/assets/css/style.css` and/or `docs/assets/js/app.js`. Each dis
 
 ## npm Scripts
 
-`npm run test:e2e` currently runs `playwright test --project=firefox`. This will be updated to `playwright test` (no project filter) so all four projects run by default on every commit, matching the agreed behaviour. This will increase per-run time roughly 4x — acceptable given the suite is fast.
+`npm run test:e2e` is the default command run before every commit. It runs desktop Firefox plus Android Chrome as a quick mobile sanity check. The full four-project suite is reserved for CI, keeping local commit time fast while still catching the most common mobile regressions immediately.
 
-`npm run test:e2e:mobile` will also be added as a convenience alias to run only the three mobile projects when debugging mobile-specific failures:
+```json
+"test:e2e":              "playwright test --project=firefox --project=mobile-chrome",
+"test:e2e:all":          "playwright test",
+"test:e2e:firefox":      "playwright test --project=firefox",
+"test:e2e:mobile":       "playwright test --project=mobile-chrome --project=mobile-safari --project=mobile-firefox",
+"test:e2e:chrome":       "playwright test --project=mobile-chrome",
+"test:e2e:safari":       "playwright test --project=mobile-safari",
+"test:e2e:mobile-firefox": "playwright test --project=mobile-firefox"
+```
 
-```
-"test:e2e:mobile": "playwright test --project=mobile-chrome --project=mobile-safari --project=mobile-firefox"
-```
+CI (`.github/workflows/tests.yml`) must be updated to run `npm run test:e2e:all` so iOS Safari and Firefox Mobile are included on every push and pull request. The existing `e2e` job installs only Firefox -- it will need Chromium added alongside Firefox in the `playwright install` step.
+
+Use `npm run test:e2e:firefox` when running the desktop suite in isolation (e.g., during homepage or nav work that predates mobile test setup).
 
 ---
 
@@ -240,7 +249,7 @@ Fixes go to `docs/assets/css/style.css` and/or `docs/assets/js/app.js`. Each dis
 
 ## Success Criteria
 
-1. `npm run test:e2e` passes all four browser projects with zero failures
+1. `npm run test:e2e` passes desktop Firefox and mobile Chrome with zero failures; `npm run test:e2e:all` passes all four projects
 2. The horizontal overflow check passes on all tested pages
 3. The hamburger nav open/close/escape cycle passes on all three mobile profiles
 4. No regressions introduced to the existing desktop Firefox suite
