@@ -1504,18 +1504,6 @@ code { background: rgba(0,0,0,.07); border: 1px solid var(--rule); padding: .1em
 .rule-stmt  { font-size: .85rem; color: #444; margin: .15rem 0 0; }
 .rule-notes { font-size: .8rem; color: #666; font-style: italic; margin: .25rem 0 0; }
 
-/* Policy card body truncation (progressive enhancement — JS adds .card-clamped-active) */
-.policy-card.card-clamped-active .rule-body {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
-  overflow: hidden;
-}
-.policy-card.expanded .rule-body {
-  display: block;
-  -webkit-line-clamp: unset;
-  overflow: visible;
-}
 .card-expand-toggle {
   display: block; width: 100%; margin-top: .6rem;
   background: none; border: none; border-top: 1px solid #e0d8c8;
