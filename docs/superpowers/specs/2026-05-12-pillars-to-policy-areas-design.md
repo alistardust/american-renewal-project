@@ -348,7 +348,24 @@ node scripts/migrate-policy-areas.js --verify # scan for remaining "pillar" occu
 
 **Exclusions:** `node_modules/`, `.git/`, `*.png`, `*.sqlite`, `policy/catalog/`, `policy/policyos/`, `policy/foundations/` (markdown content), `docs/superpowers/` (spec/plan docs)
 
-**Python scripts excluded from automated migration — but require manual path updates:** `scripts/*.py` files are excluded from the automated migration script (their internal naming is outside the UI migration scope). However, at least 13 Python scripts hardcode `docs/pillars/` paths: `generate-pillar-cards.py`, `tag-policy-cards.py`, `reconcile-catalog.py`, and the five `add-proposals-*.py` scripts among others. These will throw `FileNotFoundError` at runtime after migration. The verify pass does not scan `.py` files and will not catch these. **Required before merge:** manually audit all `scripts/*.py` files for `docs/pillars` or `'pillars'` path references and update them to `docs/policy` / `'policy'`. The checklist includes this step. `build_pillar_pages.py` is an exception — deleted in Phase 1 (see Section 1).
+**Python scripts excluded from automated migration — but require manual path updates:** `scripts/*.py` files are excluded from the automated migration script (their internal naming is outside the UI migration scope). However, 12 Python scripts hardcode `docs/pillars/` file paths and will throw `FileNotFoundError` at runtime after migration. These must be updated before the PR merges:
+
+| Script | Path reference | Risk |
+|---|---|---|
+| `add-proposals-econ.py` | hardcoded dict `'docs/pillars/...'` | FileNotFoundError |
+| `add-proposals-imm-hlt.py` | hardcoded dict `'docs/pillars/...'` | FileNotFoundError |
+| `add-proposals-rest.py` | hardcoded dict `'docs/pillars/...'` | FileNotFoundError |
+| `add-proposals-tec.py` | `HTML_PATH = 'docs/pillars/...'` | FileNotFoundError |
+| `backfill_cnsr_plain_language.py` | `REPO_ROOT / "docs" / "pillars" / ...` | FileNotFoundError |
+| `backfill_hlth_plain_language.py` | `REPO / "docs/pillars/..."` | FileNotFoundError |
+| `complete-missing-cards.py` | `Path("docs/pillars/...")` | FileNotFoundError |
+| `complete-policy-cards.py` | `REPO_ROOT / "docs/pillars/..."` (2 files) | FileNotFoundError |
+| `fix-html-plain-language.py` | `ROOT / "docs/pillars/..."` | FileNotFoundError |
+| `rewrite_antr_proposals.py` | `Path("docs/pillars/...")` | FileNotFoundError |
+| `transform-healthcare-cards.py` | `Path("docs/pillars/...")` | FileNotFoundError |
+| `update-briefing-pack.py` | `(REPO_ROOT / 'docs' / 'pillars').glob(...)` | FileNotFoundError |
+
+Two additional scripts (`add-proposals-justice.py`, `import_policy_catalog.py`) contain `docs/pillars/` in docstrings or comments only — they will not break at runtime but should be updated for consistency. The verify pass does not scan `.py` files; this is an intentional exclusion. The checklist includes a required manual audit step. `build_pillar_pages.py` is deleted in Phase 1 (not updated).
 
 **`scripts/build-site.js` is in scope.** It is a `scripts/*.js` file and contains "pillar" prose and path references that will be caught by Phases 2, 4, and 5.
 
@@ -377,7 +394,7 @@ Before merging:
 - [ ] Re-run `node scripts/migrate-policy-areas.js --verify` against freshly built output — still zero occurrences
 - [ ] `npm run test:e2e` passes across all browser projects (run against freshly built output)
 - [ ] `node scripts/migrate-policy-areas.js --verify` reports zero remaining "pillar", `\bpil-`, and `#pil-` occurrences in source files (outside allowlist)
-- [ ] **Python scripts audited:** manually run `grep -rn "docs/pillars\|'pillars'" scripts/*.py` and update any hardcoded `docs/pillars` or `'pillars'` path strings to `docs/policy` / `'policy'`. At minimum: `generate-pillar-cards.py`, `tag-policy-cards.py`, `reconcile-catalog.py`, and all `add-proposals-*.py` files
+- [ ] **Python scripts updated:** the 12 scripts with hardcoded `docs/pillars/` file paths updated to `docs/policy/` (see Section 8 table). Also update `add-proposals-justice.py` and `import_policy_catalog.py` comments for consistency. Verify with: `grep -rn "docs/pillars" scripts/*.py`
 - [ ] `/policy/healthcare.html` loads correctly in browser
 - [ ] `/policy/index.html` loads correctly in browser
 - [ ] Nav links point to `/policy/` paths
@@ -434,7 +451,7 @@ Before merging:
 
 - G1 CRITICAL: Migration script renamed from `migrate-pillars-to-policy.js` → `migrate-policy-areas.js` throughout spec (script containing "pillars" in its name would cause verify pass to always fail or require allowlist exemption).
 - G2 CRITICAL: Verify pass expanded to three-check gate: (a) "pillar" word occurrences, (b) `\bpil-` / `#pil-` identifier patterns, (c) `completion-status` class names. Script and test file excluded via explicit allowlist.
-- G3/C1 HIGH: Python scripts with hardcoded `docs/pillars/` paths explicitly called out; 13 affected scripts named. Verify pass intentionally does not scan `.py`; manual audit added as required checklist item. Section 8 updated with concrete grep command.
+- G3/C1 HIGH: Python scripts with hardcoded `docs/pillars/` paths explicitly called out; 12 scripts confirmed with runtime-breaking paths, 2 more with comment-only references (full table in Section 8 — initial spec named 3 wrong script names, corrected after codebase verification). Verify pass intentionally does not scan `.py`; manual update required before merge.
 - G4 HIGH: parse5 serialization strategy split by file type. HTML files: full tree serialize. `.njk` files: sourceCodeLocation offset splicing on original source string (full serialization mangled Nunjucks tags).
 - G5 HIGH: `path.join(...)` audit added as pre-Phase-2 required dry-run step; migration script must halt if unaccounted `'pillars'` path segments found in `scripts/*.js` beyond the two named files.
 - C2 MEDIUM: Three additional targeted replacements for `new-compare.js` template comments added to Section 1 (cannot be caught by Phase 5 — Phase 5 never runs on JS files).
