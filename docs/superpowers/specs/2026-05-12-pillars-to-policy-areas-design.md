@@ -121,9 +121,9 @@ Applied in `docs/assets/css/style.css`, all HTML files, all njk files, and `app.
 | `.pillar-filter-btn` | `.policy-area-filter-btn` |
 | `.pillar-filters` | `.policy-area-filters` |
 | `.pillar-grid` | `.policy-area-grid` |
-| `.pillar-index-section` | `.area-index-section` |
+| `.pillar-index-section` | `.policy-area-index-section` |
 | `.pillar-card` | `.policy-area-card` |
-| `.pillar-status-pill` | `.area-status-pill` |
+| `.pillar-status-pill` | `.policy-area-status-pill` |
 | `.roadmap-pillar-table` | `.roadmap-area-table` |
 | `.cmp-th-pillar` | `.cmp-th-area` |
 | `.cmp-td-pillar` | `.cmp-td-area` |
@@ -186,6 +186,7 @@ These are deleted, not renamed:
 - `<span class="pil-pillar-count">N pillars</span>` — per-foundation count badges on the index page (5 instances in HTML + njk). Removed entirely.
 - `<span data-dynamic="pillar-count">25</span> pillars` — in `policy-library.html` and `policy-library.njk`. The surrounding sentence is reworded to remove the count.
 - `case 'pillar-count':` branch in app.js dynamic counts block — no remaining consumers.
+- `.pil-pillar-count` CSS rule in `style.css` — no remaining HTML consumers after the span removal above. Remove the CSS rule as well.
 - `.pillar-hero` rule in `style.css` responsive override block — dead selector (no matching HTML), remove entirely.
 - `.pillar-intro p` and `.pillar-summary` string literals in the `SELECTORS` constant in `app.js` (lines 243-244) — dead selectors that match no HTML or CSS classes in the codebase. Remove from the array.
 - Prose sentences referencing "25 pillars" or "N pillars" in meta descriptions and body text — reworded to describe content without counting policy areas.
@@ -222,7 +223,7 @@ These are deleted, not renamed:
 - `PILLAR_COUNT` → `POLICY_AREA_COUNT` (derived dynamically: `siteData.policyAreas.length`)
 - `siteData.getPillarsByFoundation` → `siteData.getPolicyAreasByFoundation`
 - All describe/test descriptions: "pillar" → "policy area"
-- `policyosOverlays` test: "has exactly 25 pillar entries" → "has one entry per policy area"
+- `policyosOverlays` test: description changes from "has exactly 25 pillar entries" → "has 25 entries (not all policy areas have an overlay)". The `toHaveLength(25)` literal stays — `policyosOverlays` currently has 25 keys because one policy area does not have a PolicyOS overlay, so `siteData.policyAreas.length` (26) would be wrong here.
 
 ### tests/unit/build.test.js
 - Example paths: `docs/pillars/healthcare.html` → `docs/policy/healthcare.html`
@@ -262,7 +263,7 @@ node scripts/migrate-pillars-to-policy.js --verify # scan for remaining "pillar"
 
 **Python scripts excluded from migration scope:** `scripts/*.py` files (e.g., `build_pillar_pages.py`, `tag-policy-cards.py`) contain "pillar" references but are standalone data-processing tools whose internal naming is outside the UI migration scope. They are excluded from both the migration script and the verify pass. These scripts may be updated separately if/when the underlying data model is renamed.
 
-**Verify pass scope:** `--verify` scans the same file globs as `--apply` (defined above). It does NOT scan `*.py`, `*.md`, `*.sqlite`, or `*.png` files. This ensures the checklist item "zero remaining occurrences" is achievable without false positives from excluded file types.
+**Verify pass scope:** `--verify` scans the same file globs as `--apply` (defined above). It does NOT scan `*.py`, `*.md`, `*.sqlite`, or `*.png` files. Markdown files (`README.md`, etc.) are intentionally out of scope for this UI migration — they will be updated as part of the repo documentation update committed with the same PR. This ensures the "zero remaining occurrences" checklist item is achievable.
 
 After the script runs, the implementer commits with `refactor(site): rename pillars to policy areas`.
 
