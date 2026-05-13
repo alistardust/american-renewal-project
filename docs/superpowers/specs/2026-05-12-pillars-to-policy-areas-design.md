@@ -9,7 +9,7 @@
 
 The concept of a "pillar" is retired. Individual policy sections are now "policy areas" — unremarkable parts of each foundation, not a special structural concept. This migration removes the word "pillar" and all related identifiers from every layer of the codebase: URLs, file paths, CSS classes, JavaScript identifiers, prose content, navigation labels, test files, and generator scripts.
 
-The migration is implemented via a single Node.js script (`scripts/migrate-pillars-to-policy.js`) that handles all mechanical changes in one pass, followed by a verify pass that flags any remaining occurrences for manual review. All changes land in one feature branch as one PR.
+The migration is implemented via a single Node.js script (`scripts/migrate-policy-areas.js`) that handles all mechanical changes in one pass, followed by a verify pass that flags any remaining occurrences for manual review. All changes land in one feature branch as one PR.
 
 ---
 
@@ -58,6 +58,7 @@ The script uses `fs.renameSync` / `fs.mkdirSync` to move all files. The old dire
 - Two nav link hrefs: `../pillars/index.html` → `../policy/index.html`
 - Template comment referencing `.cov-pillar` class updated to `.cov-area`
 - Prose strings "pillar" → "policy area" in any generated comments or labels
+- **Three additional targeted replacements (C2):** `// Pillar link` comment → `// Policy area link`; `// pillar card` comment → `// policy area card`; `// Connected pillars` comment → `// Connected policy areas` (exact strings; do not rely on Phase 5 prose pass — Phase 5 does not run on JS files)
 
 `new-pillar.js` is renamed to `new-policy-area.js` and updated throughout. Specific changes:
 - Script docblock: "new-pillar.js — Scaffold a new pillar HTML page" → "new-policy-area.js — Scaffold a new policy area HTML page"
@@ -199,7 +200,23 @@ Applied in `docs/assets/js/data.js` and `docs/assets/js/app.js`:
 
 ## 5. Content and prose replacements
 
-Applied in all HTML, njk, and XML files **only**. **Phase 5 must never run on JS files or test files.** JS string literals (including CSS selector strings in `app.js` and Playwright test files) are handled exclusively by Phase 3 (class renames, which includes `tests/**/*.js`) and Phase 4 (explicit JS identifier renames). Running word-boundary `\bpillar\b` on JS files would corrupt selector strings before Phase 6 can remove them — e.g., `'.pillar-intro p'` would become `'.policy area-intro p'` (a descendant selector with a space, causing a Playwright parse error). Case-sensitive variants handled explicitly:
+Applied in all HTML, njk, and XML files **only**. **Phase 5 must never run on JS files or test files.** JS string literals (including CSS selector strings in `app.js` and Playwright test files) are handled exclusively by Phase 3 (class renames, which includes `tests/**/*.js`) and Phase 4 (explicit JS identifier renames). Running word-boundary `\bpillar\b` on JS files would corrupt selector strings before Phase 6 can remove them — e.g., `'.pillar-intro p'` would become `'.policy area-intro p'` (a descendant selector with a space, causing a Playwright parse error). **Phase 5 replacements are case-sensitive** — use literal string matching, not case-insensitive flags, to avoid inadvertently replacing identifiers or code in `<code>` elements. Case variants handled explicitly:
+
+| Old text | New text |
+|---|---|
+| `Policy Pillar` | `Policy Area` |
+| `Policy Pillars` | `Policy Areas` |
+| `policy pillar` | `policy area` |
+| `policy pillars` | `policy areas` |
+| `Pillar` (standalone title case) | `Policy Area` |
+| `Pillars` (standalone title case) | `Policy Areas` |
+| `pillar` (standalone lowercase) | `policy area` |
+| `pillars` (standalone lowercase) | `policy areas` |
+| Navigation labels referencing "Pillars" | "Policy Areas" |
+
+**Targeted exception for `about-ai.html`:** `about-ai.html` contains a `<code>SAMPLE_PILLARS</code>` element referencing the test constant by name. This is a code identifier reference in contributor docs — it must be updated to `<code>SAMPLE_POLICY_AREAS</code>` as a targeted explicit replacement **before** Phase 5 runs, to prevent Phase 5's word-boundary match from producing `<code>SAMPLE_POLICY AREAS</code>` (broken identifier with space). Add this as an explicit pre-Phase-5 targeted replacement in the migration script.
+
+The script applies word-boundary replacements (`\bpillar\b`, `\bpillars\b`) to avoid corrupting identifiers in mid-replacement. After all replacements, a verify pass scans for any remaining "pillar" occurrences across all source files and prints them for manual review.
 
 | Old text | New text |
 |---|---|
@@ -221,7 +238,7 @@ The script applies word-boundary replacements (`\bpillar\b`, `\bpillars\b`) to a
 
 These are deleted, not renamed:
 
-- `<div class="completion-status">...</div>` — development status block with progress bar, present on all 26 area pages and their njk counterparts. Removed entirely. These blocks contain deeply nested `<div>` elements; a naive regex terminating on `</div>` will stop at the first inner close tag and produce malformed HTML. **The migration script must use `parse5`** to parse each file as an HTML tree, locate the `div.completion-status` node, remove it from the tree, and serialize back to string. (`parse5` is already a dev dependency at `^6.0.1`.) The sentinel approach is not specified and must not be used. **If `div.completion-status` is not found in a file that is expected to contain one (i.e., any file under `docs/pillars/*.html` or `src/pages/pillars/*.njk`), the script must throw an error rather than silently skip — silent skip would produce an undetectable incomplete migration.**
+- `<div class="completion-status">...</div>` — development status block with progress bar, present on all 26 area pages and their njk counterparts. Removed entirely. These blocks contain deeply nested `<div>` elements; a naive regex terminating on `</div>` will stop at the first inner close tag and produce malformed HTML. **The migration script must use `parse5`** to locate the `div.completion-status` node. (`parse5` is already a dev dependency at `^6.0.1`.) The sentinel approach is not specified and must not be used. **Serialization strategy differs by file type:** For `.html` files, parse the full document tree, remove the node, and serialize back to string. For `.njk` files, **do not serialize the parse5 tree** — Nunjucks tags (`{% ... %}`, `{{ ... }}`) are not HTML and can be mangled or escaped by an HTML serializer. Instead, use `parse5`'s `sourceCodeLocation` offsets on the `div.completion-status` node to identify the byte range in the original file, then splice that range out of the original source string, leaving everything else byte-for-byte unchanged. **If `div.completion-status` is not found in a file that is expected to contain one** (capture the expected file list from `docs/pillars/*.html` and `src/pages/pillars/*.njk` *before* Phase 1 moves them — the fail-loudly check uses pre-move paths to build its list, then runs post-move on the new locations), **the script must throw an error rather than silently skip — silent skip would produce an undetectable incomplete migration.**
 - `<span class="pil-pillar-count">N pillars</span>` — per-foundation count badges on the index page (5 instances in HTML + njk). Removed entirely.
 - `<span data-dynamic="pillar-count">25</span> pillars` — in `policy-library.html` and `policy-library.njk`. The `data-dynamic="pillar-count"` attribute and the surrounding sentence are removed. Replace the sentence "25 pillars of specific, evidence-grounded policy, each with a canonical ID..." with: "Specific, evidence-grounded policy across five foundations, each position with a canonical ID..." (preserving the rest of the original sentence after "ID"). Do not leave the replacement text to implementer discretion.
 - `case 'pillar-count':` branch in app.js dynamic counts block — no remaining consumers.
@@ -275,7 +292,7 @@ These are deleted, not renamed:
 **`tests/unit/scripts/migrate-phase3-sort.test.js`** — new file, validates Phase 3 rename table before the script runs on real files.
 
 ```js
-import { CLASS_RENAMES } from '../../scripts/migrate-pillars-to-policy.js';
+import { CLASS_RENAMES } from '../../scripts/migrate-policy-areas.js';
 // (Phase 3 rename map must be exported for testability)
 
 test('Phase 3 class renames are sorted longest-first', () => {
@@ -306,13 +323,13 @@ test('No class name in the rename list is a prefix of a longer class name that a
 
 ## 8. Migration script design
 
-**File:** `scripts/migrate-pillars-to-policy.js`
+**File:** `scripts/migrate-policy-areas.js`
 
 **Usage:**
 ```bash
-node scripts/migrate-pillars-to-policy.js          # dry run (prints changes, no writes)
-node scripts/migrate-pillars-to-policy.js --apply  # apply all changes
-node scripts/migrate-pillars-to-policy.js --verify # scan for remaining "pillar" occurrences
+node scripts/migrate-policy-areas.js          # dry run (prints changes, no writes)
+node scripts/migrate-policy-areas.js --apply  # apply all changes
+node scripts/migrate-policy-areas.js --verify # scan for remaining "pillar" occurrences
 ```
 
 **Phases (in order):**
@@ -323,17 +340,19 @@ node scripts/migrate-pillars-to-policy.js --verify # scan for remaining "pillar"
 4. **JS identifier renames** — `siteData.pillars`, `pillarCount`, `renderPillars`, `getElementById('pil-snav')`, section-header comments, and all other explicit identifiers per Section 4 table. Applied in JS files only.
 5. **Content/prose replacements** — word-boundary aware (`\bpillar\b`, `\bpillars\b`), case variants per Section 5 table. Applied to **HTML, njk, and XML files only — never JS or test files**.
 6. **Element removals** — `completion-status` divs (via parse5 or sentinel), count spans, dead `case 'pillar-count':` branch, dead CSS rules (`.pillar-hero,\n` line, `.pillar-tags`, `.pillar-tag`, `.pil-pillar-count`).
-7. **Verify pass** — scan all in-scope files for: (a) remaining "pillar" occurrences, and (b) remaining `completion-status` class names (confirming Phase 6 removal was complete). This is a **hard pass/fail gate**: zero occurrences of either pattern required before the PR can merge.
+7. **Verify pass** — scan all in-scope files for: (a) remaining "pillar" occurrences (case-insensitive — catches `PILLAR`, `Pillar`, `pillars`), (b) remaining `pil-` prefix patterns (`\bpil-` and `#pil-`) that signal un-migrated identifiers (these do not contain the word "pillar" and are not caught by check (a)), and (c) remaining `completion-status` class names (confirming Phase 6 removal was complete). The migration script itself (`scripts/migrate-policy-areas.js`) and its unit test (`tests/unit/scripts/migrate-phase3-sort.test.js`) are explicitly excluded from the verify scan via an allowlist. This is a **hard pass/fail gate**: zero occurrences of all three patterns (outside the allowlist) required before the PR can merge.
 
 **Scope of files processed:** `docs/**/*.html`, `docs/**/*.xml`, `src/pages/**/*.njk`, `docs/assets/js/*.js`, `docs/assets/css/style.css`, `tests/**/*.js`, `scripts/*.js`
 
+**`path.join` audit (required before applying Phase 2):** Before running Phase 2 replacements, the migration script must scan all `scripts/*.js` files for any `path.join(...)` or template-literal path constructions containing `'pillars'` as a path segment — not just the two named in the Phase 2 table (`backfill-rule-notes.js`, `strip-card-status.js`). Any unaccounted instance in a build script (e.g., `build-site.js`) would cause `npm run build` to regenerate `docs/pillars/` after migration, silently undoing the file moves. The audit must be run during the dry-run phase and halt with a clear error if unaccounted path.join instances are found.
+
 **Exclusions:** `node_modules/`, `.git/`, `*.png`, `*.sqlite`, `policy/catalog/`, `policy/policyos/`, `policy/foundations/` (markdown content), `docs/superpowers/` (spec/plan docs)
 
-**Python scripts excluded from migration scope:** `scripts/*.py` files (e.g., `tag-policy-cards.py`) are standalone data-processing tools whose internal naming is outside the UI migration scope. They are excluded from both the migration script and the verify pass. `build_pillar_pages.py` is an exception — it is deleted in Phase 1 rather than excluded (see Section 1).
+**Python scripts excluded from automated migration — but require manual path updates:** `scripts/*.py` files are excluded from the automated migration script (their internal naming is outside the UI migration scope). However, at least 13 Python scripts hardcode `docs/pillars/` paths: `generate-pillar-cards.py`, `tag-policy-cards.py`, `reconcile-catalog.py`, and the five `add-proposals-*.py` scripts among others. These will throw `FileNotFoundError` at runtime after migration. The verify pass does not scan `.py` files and will not catch these. **Required before merge:** manually audit all `scripts/*.py` files for `docs/pillars` or `'pillars'` path references and update them to `docs/policy` / `'policy'`. The checklist includes this step. `build_pillar_pages.py` is an exception — deleted in Phase 1 (see Section 1).
 
 **`scripts/build-site.js` is in scope.** It is a `scripts/*.js` file and contains "pillar" prose and path references that will be caught by Phases 2, 4, and 5.
 
-**Verify pass scope:** `--verify` scans the same file globs as `--apply`. It does NOT scan `*.py`, `*.md`, `*.sqlite`, or `*.png`. Markdown files are intentionally out of scope for this UI migration — they are updated as part of the repo documentation commit included in the same PR. The verify pass is a **hard pass/fail gate**: the PR cannot merge until zero occurrences are reported.
+**Verify pass scope:** `--verify` scans the same file globs as `--apply`. It does NOT scan `*.py`, `*.md`, `*.sqlite`, or `*.png`. Markdown files are intentionally out of scope for this UI migration — they are updated as part of the repo documentation commit included in the same PR. `scripts/migrate-policy-areas.js` and `tests/unit/scripts/migrate-phase3-sort.test.js` are explicitly excluded from the verify scan via allowlist (they contain the word "policy-areas" and valid `pil-` references in test fixture strings). The verify pass is a **hard pass/fail gate**: the PR cannot merge until zero occurrences of all three patterns are reported outside the allowlist.
 
 After the script runs, the implementer commits with `refactor(site): rename pillars to policy areas`.
 
@@ -355,9 +374,10 @@ Before merging:
 
 - [ ] `npm run test:unit` passes
 - [ ] `npm run build` (run after migration to verify `src/pages/` → `docs/` regeneration)
-- [ ] Re-run `node scripts/migrate-pillars-to-policy.js --verify` against freshly built output — still zero occurrences
+- [ ] Re-run `node scripts/migrate-policy-areas.js --verify` against freshly built output — still zero occurrences
 - [ ] `npm run test:e2e` passes across all browser projects (run against freshly built output)
-- [ ] `node scripts/migrate-pillars-to-policy.js --verify` reports zero remaining "pillar" occurrences in source files
+- [ ] `node scripts/migrate-policy-areas.js --verify` reports zero remaining "pillar", `\bpil-`, and `#pil-` occurrences in source files (outside allowlist)
+- [ ] **Python scripts audited:** manually run `grep -rn "docs/pillars\|'pillars'" scripts/*.py` and update any hardcoded `docs/pillars` or `'pillars'` path strings to `docs/policy` / `'policy'`. At minimum: `generate-pillar-cards.py`, `tag-policy-cards.py`, `reconcile-catalog.py`, and all `add-proposals-*.py` files
 - [ ] `/policy/healthcare.html` loads correctly in browser
 - [ ] `/policy/index.html` loads correctly in browser
 - [ ] Nav links point to `/policy/` paths
@@ -409,3 +429,15 @@ Before merging:
 - T1: New unit test added to Section 7: `tests/unit/scripts/migrate-phase3-sort.test.js` validates Phase 3 class rename array is sorted longest-first with no prefix collisions. Requires `CLASS_RENAMES` exported from migration script.
 - PF1: Fail-loudly requirement added to Phase 6 parse5 spec (covered by A2).
 - Checklist: Visual baseline refresh added as explicit checklist item (Section 10).
+
+**Final parallel review (2026-05-13, GPT-5.2 + Claude Opus):** Second parallel adversarial review completed. All Critical/High/Medium findings applied:
+
+- G1 CRITICAL: Migration script renamed from `migrate-pillars-to-policy.js` → `migrate-policy-areas.js` throughout spec (script containing "pillars" in its name would cause verify pass to always fail or require allowlist exemption).
+- G2 CRITICAL: Verify pass expanded to three-check gate: (a) "pillar" word occurrences, (b) `\bpil-` / `#pil-` identifier patterns, (c) `completion-status` class names. Script and test file excluded via explicit allowlist.
+- G3/C1 HIGH: Python scripts with hardcoded `docs/pillars/` paths explicitly called out; 13 affected scripts named. Verify pass intentionally does not scan `.py`; manual audit added as required checklist item. Section 8 updated with concrete grep command.
+- G4 HIGH: parse5 serialization strategy split by file type. HTML files: full tree serialize. `.njk` files: sourceCodeLocation offset splicing on original source string (full serialization mangled Nunjucks tags).
+- G5 HIGH: `path.join(...)` audit added as pre-Phase-2 required dry-run step; migration script must halt if unaccounted `'pillars'` path segments found in `scripts/*.js` beyond the two named files.
+- C2 MEDIUM: Three additional targeted replacements for `new-compare.js` template comments added to Section 1 (cannot be caught by Phase 5 — Phase 5 never runs on JS files).
+- C3/G7 MEDIUM: Phase 5 explicitly marked case-sensitive. `about-ai.html` `<code>SAMPLE_PILLARS</code>` added as targeted pre-Phase-5 replacement to prevent word-boundary match producing broken `SAMPLE_POLICY AREAS` identifier.
+- G6 MEDIUM: Section 6 fail-loudly rule updated to specify that expected file list is captured from pre-Phase-1 `docs/pillars/*.html` and `src/pages/pillars/*.njk` paths before Phase 1 moves them.
+
