@@ -769,8 +769,10 @@ body:has(.site-tree.st-open) .site-nav { z-index: 501; }
 .footer-note a { color: inherit; opacity: 1; text-decoration: underline; text-underline-offset: 2px; }
 .footer-note a:hover { color: var(--gold); }
 .footer-ai-link { color: inherit; opacity: .7; }
-  color: inherit;
-  opacity: .7;
+@media (max-width: 600px) {
+  .site-footer { padding: 1.5rem 1.25rem; }
+  .site-footer .wrap { flex-direction: column; align-items: flex-start; gap: .6rem; }
+  .footer-links { flex-wrap: wrap; gap: .4rem .9rem; }
 }
 
 /* ── BACK TO TOP ──────────────────────────────────────── */
