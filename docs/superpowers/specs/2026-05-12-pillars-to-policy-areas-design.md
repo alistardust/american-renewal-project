@@ -51,7 +51,10 @@ The script uses `fs.renameSync` / `fs.mkdirSync` to move all files. The old dire
 |---|---|
 | `scripts/new-pillar.js` | `scripts/new-policy-area.js` |
 
-`new-compare.js` is updated in-place (nav link templates and HTML comments reference "pillars").
+`new-compare.js` is updated in-place. Specific changes:
+- Two nav link hrefs: `../pillars/index.html` → `../policy/index.html`
+- Template comment referencing `.cov-pillar` class updated to `.cov-area`
+- Prose strings "pillar" → "policy area" in any generated comments or labels
 
 ---
 
@@ -69,7 +72,7 @@ Applied across all HTML, njk, JS, and test files:
 
 ## 3. CSS class renames
 
-Applied in `docs/assets/css/style.css`, all HTML files, all njk files, and `app.js`. Replacements are applied longest-match-first to avoid partial collisions.
+Applied in `docs/assets/css/style.css`, all HTML files, all njk files, and `app.js`. Replacements are applied longest-match-first to avoid partial collisions. The migration script sorts ALL classes from both tables together by descending string length in a single pass — not table-by-table.
 
 ### .pil-* prefix renames
 | Old class | New class |
@@ -101,19 +104,34 @@ Applied in `docs/assets/css/style.css`, all HTML files, all njk files, and `app.
 ### Other pillar-named classes
 | Old class | New class |
 |---|---|
+| `.adv-pillar-header` | `.adv-area-header` |
+| `.adv-pillar-title` | `.adv-area-title` |
+| `.adv-pillar-badge` | `.adv-area-badge` |
+| `.adv-pillar-body` | `.adv-area-body` |
+| `.adv-pillar` | `.adv-area` |
+| `.cov-pillar` | `.cov-area` |
+| `.f-pillar-grid` | `.f-area-grid` |
+| `.f-pillar-card` | `.f-area-card` |
+| `.f-pillars-header` | `.f-areas-header` |
+| `.mission-pillars-grid` | `.mission-areas-grid` |
+| `.mission-pillar-card` | `.mission-area-card` |
+| `.pi-fv-pillars` | `.pi-fv-areas` |
+| `.pfc-pillars` | `.pfc-areas` |
 | `.pillar-filter-btn` | `.policy-area-filter-btn` |
 | `.pillar-filters` | `.policy-area-filters` |
 | `.pillar-grid` | `.policy-area-grid` |
+| `.pillar-index-section` | `.area-index-section` |
 | `.pillar-card` | `.policy-area-card` |
-| `.f-pillar-grid` | `.f-area-grid` |
-| `.f-pillar-card` | `.f-area-card` |
-| `.mission-pillars-grid` | `.mission-areas-grid` |
+| `.pillar-status-pill` | `.area-status-pill` |
+| `.roadmap-pillar-table` | `.roadmap-area-table` |
 | `.cmp-th-pillar` | `.cmp-th-area` |
 | `.cmp-td-pillar` | `.cmp-td-area` |
 | `.fd-pillars` | `.fd-policy-areas` |
 | `.fd-pillar-tag` | `.fd-policy-area-tag` |
 
 **Note:** `.policy-card` already exists as the class for policy rule/position cards. `.policy-area-card` is used for area index cards to avoid collision.
+
+**Note:** `.pillar-hero` appears in one responsive override block in `style.css` but is unused in all HTML and njk files (dead selector). Remove it rather than rename.
 
 ---
 
@@ -130,7 +148,7 @@ Applied in `docs/assets/js/data.js` and `docs/assets/js/app.js`:
 | `pillarCount` variable | `policyAreaCount` | app.js |
 | `case 'pillar-count':` | *(removed — see Section 6)* | app.js |
 | `pillarGrid` / `#pillar-grid` | `policyAreaGrid` / `#policy-area-grid` | app.js + HTML |
-| `pillarFilters` / `#pillar-filters` | `policyAreaFilters` / `#policy-area-filters` | app.js + HTML |
+| `getElementById('pillar-filters')` → `getElementById('policy-area-filters')` | (ID renamed; `filterBar` variable name stays as-is) | app.js |
 | `.pillar-filter-btn` (in JS querySelector) | `.policy-area-filter-btn` | app.js |
 | `.pillar-card` (in JS-generated HTML) | `.policy-area-card` | app.js |
 | `pillarOverlays` | `policyAreaOverlays` | app.js |
@@ -179,7 +197,9 @@ These are deleted, not renamed:
 
 ### tests/e2e/site.spec.js
 - `const { SAMPLE_PILLARS }` → `const { SAMPLE_POLICY_AREAS }`
-- `PILLAR_COUNT` constant removed; tests that asserted exact link counts are replaced with dynamic assertions using `siteData.policyAreas.length` (imported from data.js) or, where appropriate, removed if they were testing the count concept rather than behavior
+- `PILLAR_COUNT` constant removed. The two affected assertions become:
+  - Line 131-132 (index accordion links): `await expect(page.locator('a.area-link')).toHaveCount(siteData.policyAreas.length)`
+  - Line 596-598 (foundation cards): `await expect(page.locator('a.f-area-card')).toHaveCount(siteData.policyAreas.length + 1)` (comment updated to explain the +1 is for the rights cross-area card)
 - All `/pillars/` paths → `/policy/`
 - All `.pil-pillar-link`, `.pil-pillar-card`, `.f-pillar-card` selectors updated to new class names
 - Test descriptions updated: "pillar page" → "policy area page", "Pillars index" → "Policy areas index", etc.
@@ -204,6 +224,11 @@ These are deleted, not renamed:
 ### tests/unit/build.test.js
 - Example paths: `docs/pillars/healthcare.html` → `docs/policy/healthcare.html`
 - `pillars/healthcare.html` → `policy/healthcare.html`
+
+### tests/visual/visual.spec.js
+- `{ name: 'pillar-healthcare', path: '/pillars/healthcare.html' }` → `{ name: 'policy-area-healthcare', path: '/policy/healthcare.html' }`
+- Comment "pillar pages exceed the 32767px CDP screenshot limit" → "policy area pages exceed..."
+- Visual baselines must be refreshed after the migration (see Section 9)
 
 ---
 
@@ -231,6 +256,10 @@ node scripts/migrate-pillars-to-policy.js --verify # scan for remaining "pillar"
 **Scope of files processed:** `docs/**/*.html`, `src/pages/**/*.njk`, `docs/assets/js/*.js`, `docs/assets/css/style.css`, `tests/**/*.js`, `scripts/*.js`
 
 **Exclusions:** `node_modules/`, `.git/`, `*.png`, `*.sqlite`, `policy/catalog/`, `policy/policyos/`, `policy/foundations/` (markdown content), `docs/superpowers/` (spec/plan docs)
+
+**Python scripts excluded from migration scope:** `scripts/*.py` files (e.g., `build_pillar_pages.py`, `tag-policy-cards.py`) contain "pillar" references but are standalone data-processing tools whose internal naming is outside the UI migration scope. They are excluded from both the migration script and the verify pass. These scripts may be updated separately if/when the underlying data model is renamed.
+
+**Verify pass scope:** `--verify` scans the same file globs as `--apply` (defined above). It does NOT scan `*.py`, `*.md`, `*.sqlite`, or `*.png` files. This ensures the checklist item "zero remaining occurrences" is achievable without false positives from excluded file types.
 
 After the script runs, the implementer commits with `refactor(site): rename pillars to policy areas`.
 
