@@ -56,6 +56,16 @@ The script uses `fs.renameSync` / `fs.mkdirSync` to move all files. The old dire
 - Template comment referencing `.cov-pillar` class updated to `.cov-area`
 - Prose strings "pillar" → "policy area" in any generated comments or labels
 
+`new-pillar.js` is renamed to `new-policy-area.js` and updated throughout. Specific changes:
+- Script docblock: "new-pillar.js — Scaffold a new pillar HTML page" → "new-policy-area.js — Scaffold a new policy area HTML page"
+- Usage comment: `--id my-pillar-name` → `--id my-policy-area-name`, `--title "My Pillar Title"` → `--title "My Policy Area Title"`
+- `outputDir` path: `'../docs/pillars'` → `'../docs/policy'`
+- Inline comment in src reference: `src/pages/pillars/<id>.njk` → `src/pages/policy/<id>.njk`
+- Template HTML: nav label `<a href="index.html" class="active">Pillars</a>` → `Policy Areas`; footer nav `<a href="index.html">Pillars</a>` → `Policy Areas`
+- Template HTML: `<!-- ═══ PILLAR SECTION NAV ═══ -->` → `<!-- ═══ POLICY AREA SECTION NAV ═══ -->`; `<!-- Per-pillar accent color -->` → `<!-- Per-area accent color -->`
+- Template HTML: `<h2>What This Pillar Covers</h2>` → `<h2>What This Policy Area Covers</h2>`; `<p class="eyebrow">Connected Pillars</p>` → `Connected Policy Areas`; `<!-- Add links to related pillars here -->` → `related policy areas`
+- `console.log` output: "Add pillar to docs/assets/js/data.js — pillars array + foundation .pillars list" → "Add policy area to ... — policyAreas array + foundation .policyAreas list"; stale `PILLAR_COUNT` reference removed from step 2 message
+
 ---
 
 ## 2. URL and path replacements
@@ -148,13 +158,17 @@ Applied in `docs/assets/js/data.js` and `docs/assets/js/app.js`:
 | `siteData.pillars` (consumers) | `siteData.policyAreas` | app.js |
 | `pillarCount` variable | `policyAreaCount` | app.js |
 | `case 'pillar-count':` | *(removed — see Section 6)* | app.js |
-| `pillarGrid` / `#pillar-grid` | `policyAreaGrid` / `#policy-area-grid` | app.js + HTML |
+| `pillarGrid` / `#pillar-grid` | `policyAreaGrid` / `#policy-area-grid` | app.js only (no current HTML has these IDs) |
 | `getElementById('pillar-filters')` → `getElementById('policy-area-filters')` | (ID renamed; `filterBar` variable name stays as-is) | app.js |
 | `.pillar-filter-btn` (in JS querySelector) | `.policy-area-filter-btn` | app.js |
 | `.pillar-card` (in JS-generated HTML) | `.policy-area-card` | app.js |
 | `pillarOverlays` | `policyAreaOverlays` | app.js |
 | `"apply to this pillar"` (string literal) | `"apply to this policy area"` | app.js |
+| `'All Pillars'` (filter button label, line 196) | `'All Policy Areas'` | app.js |
+| `/* ── PILLAR FILTER + RENDER ─── */` (comment) | `/* ── POLICY AREA FILTER + RENDER ─── */` | app.js |
 | `/(pillars\|compare)/` (regex) | `/(policy\|compare)/` | app.js |
+| `"summary": "Universal rules that apply to every pillar."` (in `policyosFamilies`) | `"...every policy area."` | data.js |
+| `pillarGrid` / `#pillar-grid` | `policyAreaGrid` / `#policy-area-grid` | app.js only (no current HTML has these IDs) |
 
 ---
 
@@ -222,7 +236,7 @@ These are deleted, not renamed:
 - `f.pillars` → `f.policyAreas`
 - `PILLAR_COUNT` → `POLICY_AREA_COUNT` (derived dynamically: `siteData.policyAreas.length`)
 - `siteData.getPillarsByFoundation` → `siteData.getPolicyAreasByFoundation`
-- All describe/test descriptions: "pillar" → "policy area"
+- All describe/test descriptions and inline `expect()` failure message strings: "pillar" → "policy area" throughout
 - `policyosOverlays` test: description changes from "has exactly 25 pillar entries" → "has 25 entries (not all policy areas have an overlay)". The `toHaveLength(25)` literal stays — `policyosOverlays` currently has 25 keys because one policy area does not have a PolicyOS overlay, so `siteData.policyAreas.length` (26) would be wrong here.
 
 ### tests/unit/build.test.js
@@ -289,7 +303,8 @@ Before merging:
 - [ ] `/policy/healthcare.html` loads correctly in browser
 - [ ] `/policy/index.html` loads correctly in browser
 - [ ] Nav links point to `/policy/` paths
-- [ ] Foundation page pillar cards (on platform page) link to `/policy/` paths
+- [ ] Foundation page policy area cards (on platform page) link to `/policy/` paths
 - [ ] PolicyOS overlay still appears on policy area pages
 - [ ] `completion-status` block is absent from all policy area pages
 - [ ] No "pillar" text visible anywhere on the live site
+- [ ] Repo documentation updated in same commit: `README.md`, `.github/current-state.md`, `.github/copilot-instructions.md`, `CODING_STANDARDS.md` (any pillar references), `.github/ai-repo-context.md`
