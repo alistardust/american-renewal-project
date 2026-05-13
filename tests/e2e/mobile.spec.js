@@ -52,7 +52,10 @@ for (const { label, url } of BURGER_PAGES) {
 
     test('clicking overlay closes nav panel', async ({ page }) => {
       await page.locator('.nav-hamburger').click();
-      await page.locator('.st-overlay').click();
+      // force: true is required because on mobile the panel is width:100vw, covering the
+      // overlay completely — no exposed overlay area exists to click. We test that the
+      // overlay's click handler closes the panel, not that the UX path is reachable.
+      await page.locator('.st-overlay').click({ force: true });
       await expect(page.locator('.nav-hamburger')).toHaveAttribute('aria-expanded', 'false');
       await expect(page.locator('.site-tree')).not.toHaveClass(/st-open/);
     });

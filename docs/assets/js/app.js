@@ -147,6 +147,8 @@
 
       const overlay = document.createElement('div');
       overlay.className = 'st-overlay';
+      // aria-hidden: overlay is decorative; keyboard/Escape and the X button handle close.
+      overlay.setAttribute('aria-hidden', 'true');
       overlay.addEventListener('click', closeTree);
       document.body.appendChild(overlay);
     }
