@@ -4,7 +4,7 @@ update-briefing-pack.py
 
 Regenerates the dynamic sections of policy/briefing-pack.md:
   - "Last updated" date
-  - Foundations & pillars table (from data.js)
+  - Foundations & policy areas table (from data.js)
   - Current state section (card count from DB, research file list)
 
 Safe to run at any time. Only touches the sections it owns;
@@ -40,8 +40,8 @@ def parse_foundations(js: str) -> list[dict]:
             for m in pattern.finditer(js)]
 
 
-def parse_pillars(js: str) -> list[dict]:
-    """Extract pillar objects (id, title, foundation) from data.js.
+def parse_policy_areas(js: str) -> list[dict]:
+    """Extract policy area objects (id, title, foundation) from data.js.
 
     Handles escaped single quotes inside JS string values (e.g. "Workers\\'").
     """
@@ -79,13 +79,13 @@ def list_research_files() -> list[str]:
     )
 
 
-def build_table(foundations: list[dict], pillars: list[dict]) -> str:
-    rows = ["| Foundation | Pillars |", "|---|---|"]
+def build_table(foundations: list[dict], policy_areas: list[dict]) -> str:
+    rows = ["| Foundation | Policy Areas |", "|---|---|"]
     for f in foundations:
-        pillar_titles = [
-            p["title"] for p in pillars if p["foundation"] == f["id"]
+        area_titles = [
+            p["title"] for p in policy_areas if p["foundation"] == f["id"]
         ]
-        row = f"| **{f['num']}. {f['title']}** | {', '.join(pillar_titles)} |"
+        row = f"| **{f['num']}. {f['title']}** | {', '.join(area_titles)} |"
         rows.append(row)
     return "\n".join(rows)
 
@@ -94,7 +94,7 @@ def build_current_state(card_count: int, research_files: list[str]) -> str:
     month = date.today().strftime("%B %Y")
     file_lines = "\n".join(f"  - `policy/research/{fn}`" for fn in research_files)
     return (
-        f"- {len(list((REPO_ROOT / 'docs' / 'pillars').glob('*.html')))} live pillar pages"
+        f"- {len(list((REPO_ROOT / 'docs' / 'policy').glob('*.html')))} live policy area pages"
         f" — all policy cards complete as of {month}\n"
         f"- {card_count:,} policy positions in the catalog\n"
         f"- Research documents (internal working documents, not on site):\n"
@@ -122,7 +122,7 @@ def replace_section(text: str, start_marker: str, end_marker: str, new_body: str
 def main() -> None:
     js_text = DATA_JS.read_text(encoding="utf-8")
     foundations = parse_foundations(js_text)
-    pillars     = parse_pillars(js_text)
+    policy_areas = parse_policy_areas(js_text)
 
     card_count     = get_canonical_count()
     research_files = list_research_files()
@@ -138,11 +138,11 @@ def main() -> None:
         count=1,
     )
 
-    # 2. Rebuild foundations/pillars table
-    new_table = build_table(foundations, pillars)
+    # 2. Rebuild foundations/policy areas table
+    new_table = build_table(foundations, policy_areas)
     content = replace_section(
         content,
-        "## The 5 foundations and 25 pillars",
+        "## The 5 foundations and 26 policy areas",
         "---\n\n## Voice and tone",
         new_table,
     )
@@ -158,7 +158,7 @@ def main() -> None:
 
     PACK.write_text(content, encoding="utf-8")
     print(f"✓ briefing-pack.md updated ({card_count:,} canonical positions, "
-          f"{len(foundations)} foundations, {len(pillars)} pillars, "
+          f"{len(foundations)} foundations, {len(policy_areas)} policy areas, "
           f"{len(research_files)} research files)")
 
 

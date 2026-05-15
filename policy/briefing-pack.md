@@ -12,9 +12,9 @@ We stand in the tradition of structural populism: concentrated power — whether
 
 ---
 
-## The 5 foundations and 25 pillars
+## The 5 foundations and 26 policy areas
 
-| Foundation | Pillars |
+| Foundation | Policy Areas |
 |---|---|
 | **I. Accountable Power** | Executive Power, Checks & Balances, Term Limits & Fitness, Courts & Judicial System, Administrative State, Legislative Reform |
 | **II. Clean Democracy** | Elections & Representation, Anti-Corruption, Antitrust & Corporate Power, Information & Media |
@@ -144,7 +144,7 @@ PolicyOS is a cross-cutting rule architecture that all policy must comply with. 
 
 ## Current state of the platform
 
-- 0 live pillar pages — all policy cards complete as of May 2026
+- 27 live policy area pages — all policy cards complete as of May 2026
 - 3,999 policy positions in the catalog
 - Research documents (internal working documents, not on site):
   - `policy/research/new-bill-of-rights-adversarial-review.md`
