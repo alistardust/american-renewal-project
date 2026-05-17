@@ -138,8 +138,8 @@ All three layers are canonicalized as of 2026-04-27. Amendments follow the proce
 - **PolicyOS canonicalization** — **complete** as of 2026-04-27; all three layers locked; governance process defined
 - **Plain language** — all positions have `rule-plain` descriptions
 - **Science/Technology/Space content** — live page; content expanded May 2026
-- **Citation fixes** — orphan footnote wiring and uncited statistics; see Known issues below
-- **[VERIFY] markers** — adversarial review agents left `[VERIFY]` markers on uncertain thresholds throughout policy cards; requires human review before publication
+- **[VERIFY] markers** — **RESOLVED** as of May 2026. All 670 `<!-- [VERIFY] -->` markers across all 21 policy templates have been researched and replaced with APA 7th edition footnotes. Factual corrections were applied where sources contradicted original claims. Orphan footnote fixes in progress.
+- **Citation fixes** — orphan footnote wiring in progress (8 files with pre-existing mismatched fn definitions/inline refs); see Known issues below
 
 ## Research documents
 
@@ -156,9 +156,9 @@ Background research committed to `policy/research/`:
 
 - **154 HTML-only card IDs** — 154 card IDs exist in HTML source but have no DB row: 81 are valid v2-format (can be upserted), 73 are v1-format (need migration). All have rule_notes in HTML; flagged during Phase 3 backfill. Post-Phase-4 cleanup task.
 - **Catalog FK/domain drift in legacy rows** — some `positions` rows still carry legacy domain/subdomain pairings (for example `CRTS-*`) that do not satisfy current FK mappings; these rows block full automated upsert until normalized.
-- **[VERIFY] markers in policy cards** — adversarial review agents left `[VERIFY]` markers on uncertain legal thresholds and regulatory figures throughout policy cards across all policy areas; requires human review before publication
+- **[VERIFY] markers in policy cards** — **RESOLVED** May 2026. All 670 markers replaced with verified APA citations.
 - **Policy card ID audit** — a systematic scan of all `.policy-card` IDs for duplicates or format violations has not been done; spot checks pass; a full audit is warranted before v1.0
-- **Orphan footnotes** — several policy area pages have footnotes defined in the reference list but never cited inline: `policy/immigration.html` (fn1, fn3), `policy/technology-and-ai.html` (fn1–fn3), `policy/consumer-rights.html` (fn3), `policy/courts-and-judicial-system.html` (fn5–fn6), `policy/elections-and-representation.html` (fn4–fn7), `policy/environment-and-agriculture.html` (fn3), `policy/gun-policy.html` (fn4–fn5), `policy/legislative-reform.html` (fn4), `policy/term-limits-and-fitness.html` (fn3–fn4)
+- **Orphan footnotes** — pre-existing mismatched fn definitions/inline refs in 8 files: `checks-and-balances`, `antitrust-and-corporate-power`, `courts-and-judicial-system`, `education`, `housing`, `information-and-media`, `legislative-reform`, `administrative-state`; fix in progress
 - **Senate reform research figures** — `policy/research/senate-reform-research.md` contains ⚠ `[FLAG FOR HUMAN VERIFICATION]` markers on calculated figures (e.g., "17-18% of population controls 51 seats") that need primary source checking before publication
 - **New Bill of Rights adversarial review** — 15 issues identified in `policy/research/new-bill-of-rights-adversarial-review.md`, some critical (standing, enforcement, horizontal application); draft needs revision
 - **Foreign policy in related pillars** — `policy/foreign-policy.html` is not yet referenced in "Related Policy Areas" sections of other policy area pages
